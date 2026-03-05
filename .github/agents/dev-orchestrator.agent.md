@@ -51,12 +51,15 @@ When a user provides a requirement, PBI, user story, or bug report:
    - Follow the call chain through all layers: Controller → Service → Repository → Database
    - Map current data flow, transformations, and validations
    - Identify external service calls and integrations
+   - **Identify what each layer already handles** (validation, business logic, data access)
+   - **In multi-module projects**, map module boundaries and responsibilities
 
 2. **Document current state**:
    - List existing components with file paths and line numbers
    - Note current database schema (tables, columns, constraints, indexes)
    - Capture current business rules and edge cases
    - Record current test coverage for affected code
+   - **Document which layer handles which validation** (to prevent duplication)
 
 ### 2b. To-Be Analysis
 
@@ -152,6 +155,13 @@ Once confirmed, implement code following these principles:
 8. **Configuration** — Any config/properties changes
 
 ### Code Quality Standards
+- **Read and trace existing code flow BEFORE writing any code** — never assume how code works
+- **Confirm business logic alignment** — proposed changes must match existing business rules
+- **No duplicate validation across layers** — if upper layer validates, lower layer must NOT duplicate:
+  - REST/Controller: input format validation (Bean Validation)
+  - Service: business rule validation
+  - Repository/Database: data integrity constraints
+- **Multi-module: respect module boundaries** — don't duplicate logic across modules
 - Match existing codebase patterns EXACTLY
 - Follow project naming conventions
 - Add proper JavaDoc/KDoc for all public methods

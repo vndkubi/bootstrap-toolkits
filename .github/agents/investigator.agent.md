@@ -22,12 +22,21 @@ Parse the PBI/issue to identify:
    - Follow the call chain: Controller → Service → Repository → Database
    - Map current data flow and transformations
    - Identify external service calls (HTTP, JMS, SOAP)
+   - **Identify what each layer already handles** (validation, business logic, data access)
+   - **In multi-module projects**, map module boundaries and which module owns which responsibility
 
 2. **Document current behavior**:
    - Current database queries and their performance
    - Current business rules and validations
    - Current error handling
    - Current test coverage
+   - **Which layer handles which validation** — document explicitly to prevent duplication in the to-be design
+
+3. **Confirm business logic alignment**:
+   - Verify the proposed changes align with existing business rules
+   - If the codebase validates at a specific layer, the to-be design must respect that pattern
+   - Flag any potential contradictions with existing business flows
+   - Present findings and ask the user to confirm business intent when in doubt
 
 3. **Identify pain points** (for performance investigations):
    - N+1 query patterns
@@ -171,6 +180,10 @@ Produce a structured markdown report:
 
 ## Guidelines
 
+- **Always trace actual code** — never assume how the code works; read the implementation
+- **Confirm business logic alignment** — proposed to-be must match existing business rules
+- **Document layer responsibilities** — explicitly state which layer validates what, to prevent duplication
+- **Multi-module: map module boundaries** — identify cross-module duplication risks
 - Always reference actual file paths and line numbers in the codebase
 - Include code snippets for current behavior that needs changing
 - For Oracle-specific issues, suggest proper index strategies and query optimization

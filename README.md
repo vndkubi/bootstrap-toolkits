@@ -57,6 +57,45 @@ PBI/Issue ──▶ @investigator ──▶ @mobile-architect ──▶ @mobile-
           @sequence-diagrammer ──▶ @code-reviewer
 ```
 
+## 🧱 Core Principles
+
+### 1. Understand Before Changing — Read the Current Code Flow First
+
+**Every agent and skill MUST thoroughly read and trace the existing code flow before making any change.** Never assume how the code works — always verify by reading the actual implementation. This applies to investigation, implementation, testing, code review, and all other workflows.
+
+- Trace the full call chain: Controller/Resource → Service → Repository → Database
+- Understand what each layer is responsible for (validation, business logic, data access)
+- Identify what is already handled at each layer before proposing changes
+
+### 2. Confirm Business Logic — Match Existing Business Rules
+
+Before implementing or suggesting changes, confirm that they align with the current business logic and rules already in the codebase. Do not introduce behavior that contradicts existing business flows unless explicitly requested with clear justification.
+
+- If the codebase validates a field at the service layer, respect that pattern
+- If business rules are enforced via database constraints, don't duplicate them incorrectly in code
+- When in doubt, present findings and ask the user to confirm the business intent
+
+### 3. No Duplicate Validation Across Layers
+
+**Critical rule**: If validation is already handled at one layer, do NOT duplicate it at another layer unless there is a clear architectural reason (e.g., defense-in-depth for security input sanitization).
+
+| Layer | Validates | Examples |
+|-------|-----------|----------|
+| **REST/Controller** | Input format | `@NotNull`, `@Size`, `@Pattern` |
+| **Service** | Business rules | "order total must not exceed credit limit" |
+| **Repository/Database** | Data integrity | unique, foreign key, check constraints |
+
+Each layer validates what it owns. Do not re-validate upstream concerns downstream.
+
+### 4. Multi-Module Awareness
+
+In multi-module projects, understand module boundaries before making changes:
+
+- Identify which module owns a given responsibility (validation, transformation, persistence)
+- Do not duplicate logic that is already handled by another module
+- Respect module APIs — don't bypass a module's public interface to access its internals
+- When reviewing code, flag cross-module duplication as a 🔴 Critical issue
+
 ## 📁 Directory Structure
 
 ```

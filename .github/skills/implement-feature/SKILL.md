@@ -30,6 +30,15 @@ Read the investigation report or PBI:
 - What database changes are needed?
 - What tests need to be written?
 
+### Step 1.5: Trace Existing Code Flow & Confirm Business Logic
+
+**MANDATORY before writing any code:**
+- Trace the full call chain: Controller/Resource → Service → Repository → Database
+- Identify what each layer already handles (validation, business logic, data access)
+- Confirm proposed changes align with existing business rules
+- In multi-module projects, understand module boundaries and responsibilities
+- Document which layer handles which validation to prevent duplication
+
 ### Step 2: Analyze Existing Patterns
 
 Before writing code, examine:
@@ -68,6 +77,10 @@ Run:
 
 ## Validation
 
+- [ ] **Existing code flow was traced before implementation**
+- [ ] **Business logic confirmed** — changes match existing business rules
+- [ ] **No duplicate validation across layers** (REST/Service/Repository)
+- [ ] **No duplicate logic across modules** (multi-module projects)
 - [ ] All layers follow existing codebase patterns
 - [ ] Database migration is reversible
 - [ ] Unit tests cover all new business branches

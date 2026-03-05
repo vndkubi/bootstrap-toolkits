@@ -23,11 +23,15 @@ Identify all files that were changed:
 - From a branch: `git diff main..feature-branch --name-only`
 - From working directory: `git diff --name-only`
 
-### Step 2: Understand Context
+### Step 2: Understand Context & Trace Code Flow
 
 - Read PR description or commit messages
 - Identify the PBI/issue being addressed
 - Check if an investigation report exists
+- **Trace the current code flow** before reviewing changes:
+  - Follow the full call chain: Controller/Resource → Service → Repository → Database
+  - Understand what each layer already handles (validation, business logic, data access)
+  - In multi-module projects, understand module boundaries and responsibilities
 
 ### Step 3: Review Each File
 
@@ -35,7 +39,9 @@ For each changed file, analyze:
 
 | Aspect | Check |
 |--------|-------|
-| Business Logic | Does it correctly implement the requirement? |
+| Business Logic | Does it correctly implement the requirement? Does it match existing business rules? |
+| Layer Validation | 🔴 Is validation duplicated across layers? Each layer should validate ONLY what it owns |
+| Multi-Module | 🔴 Is logic duplicated across modules? Does it bypass module boundaries? |
 | Code Quality | Readable? Meaningful names? Small methods? |
 | Maintainability | Future-proof? Loosely coupled? Testable? |
 | Performance | N+1 queries? Large collections? Missing indexes? |
@@ -70,7 +76,10 @@ Severity levels:
 ## Validation
 
 - [ ] Every changed file was reviewed
-- [ ] Business logic matches requirements
+- [ ] **Existing code flow was traced before reviewing**
+- [ ] Business logic matches requirements and existing business rules
+- [ ] **No duplicate validation across layers** (REST/Service/Repository)
+- [ ] **No duplicate logic across modules** (multi-module projects)
 - [ ] Critical issues are clearly marked
 - [ ] Suggestions include code examples
 - [ ] Positive patterns are acknowledged

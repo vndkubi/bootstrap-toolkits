@@ -21,10 +21,13 @@ Full lifecycle development workflow from requirement to delivery.
 - Ask clarifying questions if ambiguous
 
 ### Step 2: Investigate
-- Trace current code flow (as-is)
+- **Trace current code flow (as-is)** — follow the full call chain, understand what each layer handles
+- **Identify layer responsibilities** — document which layer handles which validation to prevent duplication
+- **Confirm business logic alignment** — verify proposed changes match existing business rules
 - Design proposed solution (to-be)
 - Map all scenarios (happy path, errors, edge cases, concurrency)
 - Assess impact on existing code and database
+- In multi-module projects, map module boundaries and responsibilities
 - Identify risks with mitigation plans
 
 ### Step 3: Confirm with User ⏸️
@@ -61,3 +64,7 @@ Full lifecycle development workflow from requirement to delivery.
 - Branch coverage meets 100% target
 - Documentation is complete and accurate
 - Existing tests still pass
+- **Existing code flow was traced before implementation**
+- **No duplicate validation across layers** (REST/Service/Repository)
+- **No duplicate logic across modules** (multi-module projects)
+- **Business logic confirmed** — changes match existing business rules

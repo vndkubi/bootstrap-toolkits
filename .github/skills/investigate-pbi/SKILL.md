@@ -35,6 +35,9 @@ Trace the current flow through the codebase:
 4. Note current database queries and schemas
 5. Identify external service calls
 6. Assess current test coverage for affected code
+7. **Identify what each layer already handles** (validation, business logic, data access)
+8. **In multi-module projects**, map module boundaries and which module owns which responsibility
+9. **Document which layer handles which validation** — to prevent duplication in the to-be design
 
 ### Step 3: To-Be Design
 
@@ -81,6 +84,10 @@ Output a markdown file with all findings, following the format defined in the `@
 ## Validation
 
 - [ ] Current flow was traced from actual code (not assumed)
+- [ ] **Business logic confirmed** — proposed changes align with existing business rules
+- [ ] **Layer responsibilities documented** — which layer validates what
+- [ ] **No duplicate validation in to-be design** across layers
+- [ ] **Multi-module boundaries respected** — no cross-module duplication
 - [ ] All affected files are listed with their paths
 - [ ] All scenarios include expected results
 - [ ] Impact covers both direct and indirect dependencies
