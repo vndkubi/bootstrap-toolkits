@@ -1,41 +1,63 @@
 # Copilot Bootstrap Toolkit
 
-An automated system that analyzes any codebase and generates a complete GitHub Copilot configuration — including custom agents, skills, instructions, hooks, and domain context.
+An automated system that analyzes any codebase and generates a complete GitHub Copilot configuration — including custom agents, skills, instructions, hooks, agentic workflows, and domain context.
 
 ## Overview
 
 Bootstrap Toolkit contains a **conductor agent** that orchestrates specialized sub-agents through a pipeline:
 
 ```
-Analyze → Generate Instructions → Generate Agents → Generate Skills → Generate Prompts → Validate
+Analyze → Generate Instructions → Generate Agents → Generate Skills → Generate Hooks → Generate Workflows → Validate
 ```
 
-Each sub-agent is an expert in its own domain, designed for enterprise Java/Jakarta EE/Oracle projects but extensible to any tech stack.
+Each sub-agent is an expert in its own domain, designed for senior developers working in agile teams across multiple tech stacks.
 
 ## Available Agents
+
+### Core Development Agents
 
 | Agent | Purpose |
 |-------|---------|
 | `@conductor` | Main orchestrator — coordinates the entire bootstrap pipeline and developer workflows |
 | `@codebase-analyzer` | Analyzes codebase: languages, frameworks, architecture, conventions, domain map |
 | `@investigator` | Investigates PBIs: as-is/to-be, scenarios, impact analysis, risk assessment → markdown |
-| `@implementor` | Implementation: writes code following project patterns, across all layers |
+| `@implementor` | Java/Jakarta EE implementation: writes code following project patterns, across all layers |
+| `@dotnet-implementor` | .NET/C# implementation: ASP.NET Core, EF Core, Clean Architecture, CQRS/MediatR |
+| `@python-implementor` | Python implementation: Django/FastAPI, SQLAlchemy, Pydantic, async/await |
+| `@php-implementor` | PHP implementation: Laravel/Symfony, Eloquent/Doctrine, PSR standards |
 | `@test-specialist` | Unit tests: minimal mocks, full branch coverage, test builders, JUnit 5 |
 | `@sequence-diagrammer` | Mermaid sequence diagrams: trace flows, mark changes with 🆕✏️❌ |
 | `@code-reviewer` | Code review: per-file analysis → structured markdown with severity ratings |
 | `@mock-data-specialist` | WireMock stubs, test fixtures, mock data for local/devcontainer |
 | `@agent-generator` | Meta-agent: generates agents/skills/instructions from codebase analysis |
+
+### Mobile Development Agents
+
+| Agent | Purpose |
+|-------|---------|
 | `@mobile-implementor` | Mobile implementation: Android (Kotlin/Compose) and iOS (Swift/SwiftUI) |
 | `@mobile-test-specialist` | Mobile tests: JUnit/MockK/Turbine (Android), XCTest/Swift Testing (iOS) |
 | `@mobile-architect` | Mobile architecture: MVVM, Clean Architecture, module structure |
-| `@dev-orchestrator` | Full lifecycle: requirement → analyze → confirm → implement → test (100% branch coverage) → documentation |
 
-## Primary Focus
+### Agile & Workflow Agents
 
-- **Java Enterprise**: Java, Maven, Jakarta EE, Oracle
-- **Mobile**: Android (Kotlin, Jetpack Compose, Hilt, Room), iOS (Swift, SwiftUI, async/await)
+| Agent | Purpose |
+|-------|---------|
+| `@dev-orchestrator` | Full lifecycle: requirement → investigate → confirm → implement → test → PR → documentation |
+| `@sprint-planner` | Sprint planning: PBI decomposition, story point estimation, capacity planning, risk assessment |
+| `@refactoring-specialist` | Refactoring: code smell detection, safe refactoring, tech debt reduction, before/after metrics |
+| `@pr-manager` | PR lifecycle: description generation, review readiness, merge strategy, changelog |
 
-Agents can analyze and generate config for any tech stack.
+## Supported Tech Stacks
+
+| Stack | Languages & Frameworks | Agents |
+|-------|----------------------|--------|
+| **Java Enterprise** | Java, Maven/Gradle, Jakarta EE, Spring Boot, Oracle | `@implementor`, `@test-specialist` |
+| **.NET** | C#, ASP.NET Core, EF Core, MediatR, SQL Server | `@dotnet-implementor` |
+| **Python** | Python 3.11+, Django, FastAPI, SQLAlchemy, PostgreSQL | `@python-implementor` |
+| **PHP** | PHP 8.x, Laravel, Symfony, Eloquent/Doctrine, MySQL | `@php-implementor` |
+| **Android** | Kotlin, Jetpack Compose, Hilt, Room, Retrofit | `@mobile-implementor`, `@mobile-test-specialist` |
+| **iOS** | Swift, SwiftUI, async/await, Core Data/SwiftData | `@mobile-implementor`, `@mobile-test-specialist` |
 
 ## Core Principles
 
@@ -83,8 +105,11 @@ In multi-module projects, understand module boundaries before making changes:
 # Investigate a PBI
 @investigator Investigate PBI-123: Add discount calculation for VIP customers
 
-# Implementation
-@implementor Implement the discount calculation feature based on the investigation report
+# Implementation (auto-detects tech stack via @dev-orchestrator, or use stack-specific agents)
+@implementor Implement the discount calculation feature (Java)
+@dotnet-implementor Implement the discount feature (C#/.NET)
+@python-implementor Implement the discount feature (Python/FastAPI)
+@php-implementor Implement the discount feature (PHP/Laravel)
 
 # Write unit tests
 @test-specialist Write comprehensive unit tests for OrderService with minimal mocking
@@ -107,14 +132,46 @@ In multi-module projects, understand module boundaries before making changes:
 # Mobile Architecture
 @mobile-architect Review the current architecture and suggest improvements
 
-# Full feature implementation
+# Full feature implementation (end-to-end, any stack)
 @dev-orchestrator Implement PBI-456: Add VIP discount calculation
+
+# Sprint Planning
+@sprint-planner Break down PBI-789 into technical tasks with story point estimates
+
+# Refactoring
+@refactoring-specialist Refactor OrderService — it's 800 lines, extract business logic
+
+# Pull Request
+@pr-manager Generate PR description for current branch changes
 
 # Bootstrap (Prompts)
 /bootstrap-copilot
 /analyze-project
 /implement-feature
 ```
+
+## Available Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `analyze-codebase` | Deep codebase analysis → structured report |
+| `generate-copilot-config` | Full bootstrap pipeline: analyze → generate all config |
+| `investigate-pbi` | PBI investigation with as-is/to-be analysis |
+| `implement-feature` | Feature implementation across all layers |
+| `implement-mobile-feature` | Mobile feature implementation (Android/iOS) |
+| `generate-unit-tests` | Unit tests with 100% branch coverage |
+| `generate-mobile-tests` | Mobile tests (Android/iOS) |
+| `generate-sequence-diagram` | Mermaid sequence diagrams |
+| `generate-wiremock` | WireMock stub configurations |
+| `generate-adr` | Architecture Decision Records |
+| `generate-agentic-workflow` | GitHub Copilot Agentic Workflow automation |
+| `review-code-changes` | Code review with structured reports |
+| `orchestrate-development` | Full lifecycle development orchestration |
+| `sprint-planning` | Sprint planning & PBI decomposition |
+| `estimate-effort` | Story point estimation with codebase analysis |
+| `conventional-commit` | Conventional commit message generation |
+| `generate-pr-description` | Pull request description generation |
+| `technical-debt-analysis` | Tech debt assessment & remediation backlog |
 
 ## Available Prompts
 
