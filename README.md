@@ -9,9 +9,9 @@
 Bootstrap Toolkit solves the problem: **Given any codebase, automatically detect and generate a complete, tailored Copilot configuration.**
 
 The toolkit includes:
-- **19 custom agents** — specialized for every developer role across 6 tech stacks + agile workflows
-- **18 reusable skills** — automated workflows from sprint planning to PR management
-- **19 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, Kotlin, Swift
+- **20 custom agents** — specialized for every developer role across 6 tech stacks + agile workflows + devcontainer optimization
+- **20 reusable skills** — automated workflows from sprint planning to PR management
+- **20 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, Kotlin, Swift, DevContainer
 - **1 conductor** — master orchestrator that coordinates the entire pipeline
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
 
@@ -102,13 +102,23 @@ In multi-module projects, understand module boundaries before making changes:
 - Respect module APIs — don't bypass a module's public interface to access its internals
 - When reviewing code, flag cross-module duplication as a 🔴 Critical issue
 
+### 5. Clarify Before Acting — Ask the Right Questions First
+
+**Every agent MUST ask clarifying questions when the user's request lacks sufficient detail.** Do not guess or make assumptions about business logic, scope, constraints, or preferences. Each agent has domain-specific questions built-in and will ask them in the chat session before proceeding.
+
+- Compose domain-specific questions and wait for answers before proceeding
+- Batch related questions (max 3-5 at a time) — don't overwhelm
+- Provide sensible defaults when possible
+- Skip obvious questions the codebase already answers
+- Confirm understanding before major actions
+
 ## 📁 Directory Structure
 
 ```
 .github/
 ├── copilot-instructions.md                          # 📖 Project-wide context
 │
-├── agents/                                          # 🤖 Custom AI Agents (19)
+├── agents/                                          # 🤖 Custom AI Agents (20)
 │   ├── conductor.agent.md                           #   Main orchestrator
 │   ├── dev-orchestrator.agent.md                    #   Full lifecycle orchestrator (multi-stack)
 │   ├── codebase-analyzer.agent.md                   #   Codebase analysis
@@ -127,9 +137,10 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── mobile-architect.agent.md                    #   📱 Mobile architecture
 │   ├── sprint-planner.agent.md                      #   📊 Sprint planning & estimation
 │   ├── refactoring-specialist.agent.md              #   ♻️ Refactoring & tech debt
-│   └── pr-manager.agent.md                          #   🔀 PR lifecycle management
+│   ├── pr-manager.agent.md                          #   🔀 PR lifecycle management
+│   └── devcontainer-reviewer.agent.md               #   🐳 DevContainer review & optimization
 │
-├── skills/                                          # 🎯 Reusable Skills (18)
+├── skills/                                          # 🎯 Reusable Skills (20)
 │   ├── analyze-codebase/SKILL.md                    #   Deep analysis
 │   ├── investigate-pbi/SKILL.md                     #   PBI investigation
 │   ├── implement-feature/SKILL.md                   #   Implementation guide
@@ -148,9 +159,10 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── estimate-effort/SKILL.md                     #   📊 Story point estimation
 │   ├── conventional-commit/SKILL.md                 #   💬 Conventional commits
 │   ├── generate-pr-description/SKILL.md             #   🔀 PR description generation
-│   └── technical-debt-analysis/SKILL.md             #   🏗️ Tech debt analysis
+│   ├── technical-debt-analysis/SKILL.md             #   🏗️ Tech debt analysis
+│   └── optimize-devcontainer/SKILL.md               #   🐳 DevContainer optimization
 │
-├── instructions/                                    # 📋 Coding Standards (19)
+├── instructions/                                    # 📋 Coding Standards (20)
 │   ├── java.instructions.md                         #   Java conventions
 │   ├── jakartaee.instructions.md                    #   Jakarta EE patterns
 │   ├── maven.instructions.md                        #   Maven POM standards
@@ -169,7 +181,8 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── gradle.instructions.md                       #   📱 Gradle KTS standards
 │   ├── dotnet.instructions.md                       #   🟣 .NET/C# conventions
 │   ├── php.instructions.md                          #   🐘 PHP/Laravel/Symfony standards
-│   └── python.instructions.md                       #   🐍 Python/Django/FastAPI standards
+│   ├── python.instructions.md                       #   🐍 Python/Django/FastAPI standards
+│   └── devcontainer.instructions.md                 #   🐳 DevContainer configuration standards
 │
 ├── prompts/                                         # 🚀 Reusable Prompts (6)
 │   ├── bootstrap-copilot.prompt.md                  #   Full bootstrap pipeline
@@ -234,6 +247,12 @@ In multi-module projects, understand module boundaries before making changes:
 | **`@refactoring-specialist`** | Safe refactoring: code smell detection, behavior-preserving changes, before/after metrics, tech debt tracking | Refactor a class, reduce tech debt |
 | **`@pr-manager`** | PR lifecycle: description generation, review readiness, merge strategy, changelog | Create PR, improve PR description |
 
+### DevContainer & Infrastructure Agents 🐳
+
+| Agent | Description | When to Use |
+|-------|-------------|-------------|
+| **`@devcontainer-reviewer`** | DevContainer review: optimize performance, security, DX, generate configs for any stack | Review devcontainer, improve startup, create devcontainer config |
+
 > **Note**: All agents use all available tools — codebase, terminal, edit, fetch, GitHub, MCP servers.
 
 ## 🎯 Skills List
@@ -271,6 +290,7 @@ In multi-module projects, understand module boundaries before making changes:
 | `generate-pr-description` | PR description with impact analysis and review checklist | "PR description", "pull request", "create PR" |
 | `technical-debt-analysis` | Tech debt assessment with prioritized remediation backlog | "tech debt", "code quality", "code smells" |
 | `generate-agentic-workflow` | GitHub Copilot Agentic Workflow automation (`.md` → Actions) | "agentic workflow", "automate", "scheduled" |
+| `optimize-devcontainer` | DevContainer analysis, optimization, and config generation | "devcontainer", "optimize container", "docker", "startup" |
 
 ## 📋 Instructions List
 
@@ -307,6 +327,12 @@ In multi-module projects, understand module boundaries before making changes:
 | File | applyTo | Contents |
 |------|---------|----------|
 | `php.instructions.md` | `**/*.php, **/composer.json` | Laravel/Symfony, Eloquent/Doctrine, PSR-12, PHP 8.x |
+
+### DevContainer 🐳
+
+| File | applyTo | Contents |
+|------|---------|----------|
+| `devcontainer.instructions.md` | `**/.devcontainer/**, **/devcontainer.json` | Image selection, Features, lifecycle scripts, volumes, security, performance |
 
 ### Mobile 📱
 
@@ -560,6 +586,22 @@ Output → tech-debt-report.md:
 - Dependency health check
 - Prioritized remediation backlog (Quick Wins → Strategic → Deferred)
 - Health score: X/10
+```
+
+#### 🐳 DevContainer Review & Optimization
+
+```
+@devcontainer-reviewer Review and optimize the devcontainer configuration
+
+Output → devcontainer-review-report.md:
+- Health Score: X/10
+- Base image analysis (pinning, official image)
+- Feature audit (versions, redundancy)
+- Lifecycle script placement
+- Performance optimization (volumes, caching, pre-build)
+- Security assessment (root user, capabilities, secrets)
+- DX improvements (extensions, settings, port labels)
+- Optimized devcontainer.json (copy-paste ready)
 ```
 
 ## 🏢 Strategy for Large Codebases (Multi-Domain)

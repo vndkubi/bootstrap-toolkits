@@ -48,6 +48,12 @@ Each sub-agent is an expert in its own domain, designed for senior developers wo
 | `@refactoring-specialist` | Refactoring: code smell detection, safe refactoring, tech debt reduction, before/after metrics |
 | `@pr-manager` | PR lifecycle: description generation, review readiness, merge strategy, changelog |
 
+### DevContainer & Infrastructure Agents
+
+| Agent | Purpose |
+|-------|--------|
+| `@devcontainer-reviewer` | DevContainer review: optimize performance, security, DX, generate configs |
+
 ## Supported Tech Stacks
 
 | Stack | Languages & Frameworks | Agents |
@@ -95,6 +101,90 @@ In multi-module projects, understand module boundaries before making changes:
 - Do not duplicate logic that is already handled by another module
 - Respect module APIs — don't bypass a module's public interface to access its internals
 - When reviewing code, flag cross-module duplication as a 🔴 Critical issue
+
+### 5. Clarify Before Acting — Ask the Right Questions First
+
+**Every agent MUST ask clarifying questions when the user's request lacks sufficient detail to proceed accurately.** Do not guess or make assumptions about business logic, scope, constraints, or preferences.
+
+- **Compose domain-specific questions** in the chat and wait for the user's answers before proceeding
+- **Batch related questions** (max 3-5 at a time) — don't overwhelm with 20 questions at once
+- **Provide sensible defaults** when possible: "I'll use PostgreSQL unless you prefer another database?"
+- **Confirm understanding** before major actions: summarize what you understood and ask the user to confirm
+- **Skip obvious questions**: If the codebase already answers a question (e.g., the project uses Maven), don't ask — just confirm your assumption briefly
+- **Re-ask only when requirements change**: Once answered, incorporate the decision and don't re-ask
+
+When to ask:
+- The request is ambiguous ("implement the feature" — which feature? which layer?)
+- Multiple valid approaches exist ("CQRS or traditional CRUD?")
+- Business rules are unclear ("what happens when the discount exceeds the order total?")
+- Infrastructure decisions affect cost or performance ("how much RAM for Docker?")
+- Breaking changes are possible ("this will change the API contract — is that acceptable?")
+
+When NOT to ask:
+- The answer is clearly in the codebase (project uses Spring Boot → don't ask "which framework?")
+- There's an obvious best practice (use parameterized queries → don't ask "should I prevent SQL injection?")
+- The user has already specified details in their request
+
+### 6. Business Domain Awareness — Understand the Business Before Writing Code
+
+**Every agent MUST understand the business domain context before implementing, testing, investigating, or reviewing code.** Writing technically correct code that violates business rules is a critical failure.
+
+- **Read business rules** from existing service classes, validators, and domain models before making changes
+- **Understand entity lifecycles** — know what states exist and what transitions are valid
+- **Respect domain terminology** — use the same business terms the codebase uses (don't rename `CreditLimit` to `MaxCredit`)
+- **Map business workflows** — understand the end-to-end business process before touching any part of it
+- **Validate business invariants** — ensure changes don't break data consistency rules
+- **Reference business context** in code comments, test names, and PR descriptions
+
+When implementing, agents should explain:
+- "This validation exists because [business rule]" 
+- "I chose this approach because the existing OrderService handles [workflow] in this way"
+- "The test covers the scenario where [business condition] triggers [business outcome]"
+
+### 7. Explain Decisions & Report Outcomes — Show Your Reasoning
+
+**Every agent MUST explain its decisions during execution and provide a structured summary when done.** Never make silent decisions — the user should understand WHY each choice was made.
+
+#### During Execution:
+- **Before each major action**, briefly state what you're about to do and why:
+  > "I'll add the discount calculation in OrderService because this is where existing pricing logic lives (line 45-67)."
+- **When choosing between alternatives**, explain the trade-off:
+  > "I chose to add a new column instead of a separate table because the data is always accessed together and the existing pattern uses single-table approach."
+- **When skipping something**, explain why:
+  > "I'm not adding validation here because it's already handled by the @Valid annotation in OrderResource (line 23)."
+
+#### Post-Execution Summary:
+After completing any significant task, provide a **structured summary**:
+
+```markdown
+## Summary of Changes
+
+### What Was Done
+| # | Action | File | Reason |
+|---|--------|------|--------|
+| 1 | Created entity | Order.java | New entity for order tracking per PBI-123 |
+| 2 | Added validation | OrderService.java | Business rule: order total cannot exceed credit limit |
+| 3 | Created migration | V2__add_orders.sql | New table with indexes for order queries |
+
+### Business Rules Implemented
+- ✅ VIP customers get 15% discount on orders > $100
+- ✅ Order cannot be modified after SHIPPED status
+- ✅ Credit limit check before order confirmation
+
+### Test Coverage
+- 12 unit tests covering all 8 branches in OrderService
+- Tests validate: happy path, validation errors, edge cases, concurrent access
+
+### Design Decisions
+| Decision | Alternatives Considered | Rationale |
+|----------|------------------------|----------|
+| Discount in OrderService | Separate DiscountService | Follows existing pricing logic pattern in same class |
+| BigDecimal for amounts | Double | Business requirement for exact decimal arithmetic |
+
+### What Was NOT Done (and why)
+- Did not add API rate limiting — not in scope for this PBI
+- Did not modify CustomerService — validation already handled there
+```
 
 ## Quick Start
 
@@ -144,6 +234,9 @@ In multi-module projects, understand module boundaries before making changes:
 # Pull Request
 @pr-manager Generate PR description for current branch changes
 
+# DevContainer Review
+@devcontainer-reviewer Review and optimize the devcontainer configuration
+
 # Bootstrap (Prompts)
 /bootstrap-copilot
 /analyze-project
@@ -172,6 +265,7 @@ In multi-module projects, understand module boundaries before making changes:
 | `conventional-commit` | Conventional commit message generation |
 | `generate-pr-description` | Pull request description generation |
 | `technical-debt-analysis` | Tech debt assessment & remediation backlog |
+| `optimize-devcontainer` | DevContainer optimization & configuration generation |
 
 ## Available Prompts
 

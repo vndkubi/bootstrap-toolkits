@@ -32,6 +32,15 @@ Create `.github/copilot-instructions.md` with:
 - Key patterns to follow and avoid
 - Domain overview (for large projects)
 
+**Business Domain Context** (CRITICAL for quality output):
+- **Domain Glossary**: Key business terms extracted from entity names, enums, constants, service methods, and documentation
+- **Business Rules Summary**: Core business rules discovered in service/validator classes — what they enforce and where in the codebase
+- **Entity Relationship Map**: How business entities relate to each other with business-meaningful descriptions (not just FK relationships)
+- **Business Workflows**: Key processes and state transitions (e.g., order lifecycle: DRAFT → SUBMITTED → APPROVED → SHIPPED → COMPLETED)
+- **Business Invariants**: Data consistency rules with business justification (e.g., "sum of line items must equal order total")
+
+This domain context enables all agents to make business-aware decisions when implementing, testing, investigating, or reviewing code.
+
 ### Phase 3: Generate Agents
 
 Create `.github/agents/*.agent.md`:
