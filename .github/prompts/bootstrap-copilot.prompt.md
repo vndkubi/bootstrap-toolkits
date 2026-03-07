@@ -141,6 +141,44 @@ After generating all files, calculate the context budget for common scenarios:
 
 Scan the project root and explore **ALL directories recursively** to build a complete picture. Do NOT rely on surface-level checks.
 
+### Project Size Classification (detect FIRST — determines generation strategy)
+
+Before diving into tech stack detection, classify the project size to determine the appropriate generation strategy:
+
+```
+Small Project:   ≤ 20 source files, ≤ 3 domains, single module
+Medium Project:  21-100 source files, 3-5 domains, 1-3 modules
+Large Project:   101-500 source files, 5-10 domains, 3+ modules
+Enterprise:      500+ source files, 10+ domains, 5+ modules
+```
+
+**How to measure quickly:**
+```bash
+# Count source files (adjust extensions for detected language)
+find . -name '*.java' -not -path '*/test/*' -not -path '*/target/*' | wc -l
+
+# Count domains (top-level packages/folders under main source root)
+ls src/main/java/com/company/project/ | head -20
+
+# Count modules (for multi-module projects)
+grep -c '<module>' pom.xml   # Maven
+grep -c "include(" settings.gradle.kts  # Gradle
+```
+
+**This classification determines:**
+
+| Aspect | Small/Medium | Large/Enterprise |
+|--------|-------------|-----------------|
+| Source file sampling | 5-10 files per language | **10-15 files per language, 2-3 per domain** |
+| Domain analysis depth | Inline in copilot-instructions.md | **Domain-scoped .instructions.md per domain** |
+| Business rules | In copilot-instructions.md (max 7 bullets) | **In domain-scoped .instructions.md files** |
+| Agent specificity | Generic project patterns | **Reference domain instructions by name** |
+| Skills detail | Standard workflows | **Domain-aware workflows with cross-module patterns** |
+| Instructions count | 5-10 files | **10-20+ files (including domain-scoped)** |
+| copilot-instructions.md | Full context fits in ≤ 4 KB | **Index/reference card only — domain pointers** |
+
+> **CRITICAL**: For Large/Enterprise projects, the copilot-instructions.md becomes a pure **index file** — it lists domains and points to domain-scoped instructions. Business rules, entity lifecycles, and domain glossaries live in domain-scoped .instructions.md files with narrow `applyTo` patterns, so they only load when the developer is editing that domain.
+
 ### Tech Stack Detection (Thorough Scan)
 
 **Build files & dependencies (READ the contents, don't just check existence):**
@@ -152,7 +190,17 @@ Scan the project root and explore **ALL directories recursively** to build a com
 - `Cargo.toml`, `go.mod`, `*.csproj`, `*.sln` → Read for framework dependencies
 - `Gemfile` → Read for Rails, RSpec, etc.
 
-**Source file inspection (read 5-10 representative files per language):**
+**Source file inspection (adaptive sampling based on project size):**
+
+*Small/Medium projects (≤ 100 source files):*
+- Read **5-10 representative files** per language (prioritize files with business logic)
+
+*Large/Enterprise projects (100+ source files):*
+- Read **10-15 files per language**, sampled across domains: **2-3 files from each detected domain**
+- Prioritize: 1 service class + 1 entity/model + 1 REST resource per domain
+- Also read **shared/common modules** to detect cross-cutting patterns
+- Count files per domain to gauge domain size (affects domain-scoped instruction depth)
+
 - Count files per extension: `.java`, `.kt`, `.swift`, `.ts`, `.tsx`, `.py`, `.php`, `.cs`, `.go`, `.rs`
 - Read actual source files to detect:
   - Framework annotations (`@Entity`, `@RestController`, `@Injectable`, `@Component`)
@@ -205,7 +253,10 @@ Scan the project root and explore **ALL directories recursively** to build a com
 
 ### Convention Detection (Read Real Code)
 
-Read **5-10 representative source files** per language (choose files with business logic, not generated code):
+Read representative source files (choose files with business logic, not generated code):
+
+*Small/Medium projects:* Read **5-10 files** per language.
+*Large/Enterprise projects:* Read **2-3 files per domain** + shared modules. Note which conventions are universal vs domain-specific.
 - Naming conventions (PascalCase classes, camelCase methods, snake_case variables, etc.)
 - Import organization (grouped? sorted? wildcard imports?)
 - Error handling patterns (custom exception hierarchy? Result types? try/catch patterns?)
@@ -238,6 +289,16 @@ Analyze service classes, domain models, validators, and business workflows to ex
 - Trace end-to-end business processes (e.g., order creation → payment → fulfillment)
 - Identify data consistency rules and constraints
 - Document cross-domain workflows and dependencies
+
+### Adaptive Depth by Project Size
+
+**Small/Medium projects:** Collect all domain context in a single document. This will go directly into `copilot-instructions.md` (max 7 bullets for business rules, brief domain glossary).
+
+**Large/Enterprise projects:** Analyze each domain separately and produce **per-domain context** that feeds into domain-scoped `.instructions.md` files (Step 5):
+- For each domain: extract its business rules, entity lifecycle, key relationships, and domain glossary
+- Limit analysis to **top 3-5 domains by complexity** (most entities, most services, most cross-domain calls) — remaining domains get lighter treatment
+- Note **cross-domain dependencies** (e.g., "Order domain calls Payment domain for settlement") — these go into `copilot-instructions.md` as a dependency map
+- Each domain's context becomes a separate domain-scoped `.instructions.md` in Step 5
 
 > This context enables agents to use correct business terminology, validate implementation against existing business rules, and write test names that describe business scenarios.
 
@@ -300,6 +361,31 @@ Use these in VS Code Chat with `/prompt-name`:
 
 > **IMPORTANT**: Populate the agents table with ONLY the agents generated in Step 3. Include the `@dev-orchestrator` first (if generated) since it's the primary entry point. Populate the prompts table with ONLY the prompts generated in Step 6. Use real project context in examples (e.g., actual entity names, service names).
 
+### Large/Enterprise Project Variant
+
+For Large/Enterprise projects (detected in Step 1), the copilot-instructions.md becomes a **pure index** — domain details live in domain-scoped `.instructions.md` files. Key differences:
+
+```markdown
+## Domain Map
+| Domain | Responsibility | Key Entities | Instructions |
+|--------|---------------|-------------|--------------|
+| Orders | Order lifecycle, pricing | Order, OrderLine, Discount | java-order-domain.instructions.md |
+| Payments | Payment processing, settlements | Payment, Refund, Invoice | java-payment-domain.instructions.md |
+| Users | Authentication, profiles | User, Role, Permission | java-user-domain.instructions.md |
+
+Cross-domain: Order → Payment (settlement), Order → Inventory (stock check), User → Order (ownership)
+
+## Business Domain Context
+Key invariants only — full rules live in domain-scoped instruction files:
+- Order total must equal sum of line items
+- Payment settlement is idempotent (retry-safe)
+- Inventory decrements are atomic (pessimistic lock)
+
+See domain-scoped .instructions.md files for full business rules per domain.
+```
+
+> The difference: Small projects inline business rules; Large projects index them with pointers to domain-scoped files. Both stay under 4 KB.
+
 ## Step 3: Generate Agents
 
 Create `.github/agents/` with agents tailored to the detected tech stack.
@@ -352,6 +438,27 @@ You are a [role]...
 
 > **IMPORTANT**: Do NOT include `tools` field — this gives agents access to ALL available tools.
 > **CONTEXT BUDGET**: Agent files load alongside copilot-instructions.md + matching .instructions.md files. Keep agents focused on role/routing — put detailed workflows in skills that load only when needed.
+
+### Large Project Agent Guidance
+
+For Large/Enterprise projects, agents should **reference domain-scoped instructions by name** instead of embedding domain knowledge:
+
+```markdown
+# ❌ BAD: Agent embeds domain rules
+## Order Domain Rules
+- Order total must equal sum of line items...
+- VIP discount is 15%...
+[100+ lines of domain context per domain]
+
+# ✅ GOOD: Agent references domain instructions
+## Domain Context
+When working in a specific domain, refer to the matching domain instruction file:
+- Order domain → java-order-domain.instructions.md
+- Payment domain → java-payment-domain.instructions.md
+These files auto-load when editing files in that domain's package.
+```
+
+This keeps agent files under 12 KB even for Enterprise projects with 10+ domains.
 
 ### Agent ↔ Skill Separation Pattern
 
@@ -540,10 +647,16 @@ applyTo: 'glob/pattern/**/*.ext'
 
 For large codebases, create **per-domain instruction files** that only load when editing files in that domain. This keeps each file small and provides domain-specific business context exactly when needed.
 
-**When to generate domain-scoped instructions:**
-- Project has **5+ distinct domains** (e.g., orders, payments, users, inventory, notifications)
-- Any single instruction file exceeds **6 KB** with domain-specific content
-- Business rules differ significantly between domains
+**Generation trigger (uses Step 1 Project Size Classification):**
+
+| Project Size | Domains | Action |
+|-------------|---------|--------|
+| Small | ≤ 3 | Domain rules inline in `copilot-instructions.md` — no domain-scoped files |
+| Medium | 3-5 | Domain rules inline if total ≤ 4 KB; create domain-scoped files if not |
+| Large | 5-10 | **Always create domain-scoped `.instructions.md` per domain** |
+| Enterprise | 10+ | Domain-scoped files + consider **sub-domain grouping** (e.g., `java-order-*.instructions.md`) |
+
+> **CRITICAL**: Domain-scoped instructions are populated with the per-domain context collected in Step 1b. Each domain's business rules, entity lifecycle, relationships, and glossary go into its own file — NOT into `copilot-instructions.md`.
 
 **Pattern:**
 ```
@@ -819,29 +932,55 @@ Perform these runtime checks to ensure the generated config is usable:
 
 ## Step 11: Output Summary
 
+Present the output adapted to project size:
+
+**Small/Medium project output:**
 ```
 ✅ Bootstrap Complete!
 
 📁 .github/
-├── copilot-instructions.md          ← Project context + usage guide
-├── agents/                          ← [X] agents created
-│   ├── [list each agent]
-├── skills/                          ← [X] skills created
-│   ├── [list each skill]
-├── instructions/                    ← [X] instruction files
-│   ├── [list each instruction]
-├── prompts/                         ← [X] prompts created
-│   ├── [list each prompt]
-├── hooks/                           ← [X] hook files
-│   ├── [list each hook]
-└── workflows/                       ← [X] agentic workflows (if applicable)
-    ├── [list each workflow]
+├── copilot-instructions.md          ← Project context + domain rules + usage guide
+├── agents/                          ← [5-8] agents
+├── skills/                          ← [5-8] skills
+├── instructions/                    ← [5-10] instruction files
+├── prompts/                         ← [3-6] prompts
+├── hooks/                           ← [1-3] hook files
+└── workflows/                       ← (if applicable)
 
+Project Size: Small/Medium ([X] source files, [Y] domains)
 Tech Stack: [detected]
 Architecture: [detected]
-Domains: [count if multi-domain]
-DevContainer: [reviewed/generated/skipped]
+```
 
+**Large/Enterprise project output:**
+```
+✅ Bootstrap Complete!
+
+📁 .github/
+├── copilot-instructions.md          ← Index card + domain map + usage guide (≤ 4 KB)
+├── agents/                          ← [8-12] agents (reference domain instructions)
+│   ├── [list each agent]
+├── skills/                          ← [8-15] skills (domain-aware workflows)
+│   ├── [list each skill]
+├── instructions/                    ← [10-20+] instruction files
+│   ├── java.instructions.md                    ← Universal conventions
+│   ├── java-order-domain.instructions.md       ← Order domain rules
+│   ├── java-payment-domain.instructions.md     ← Payment domain rules
+│   ├── [... domain-scoped per detected domain]
+│   ├── [... framework + testing + build instructions]
+├── prompts/                         ← [5-10] prompts
+├── hooks/                           ← [1-3] hook files
+└── workflows/                       ← (if applicable)
+
+Project Size: Large/Enterprise ([X] source files, [Y] domains, [Z] modules)
+Tech Stack: [detected]
+Architecture: [detected]
+Domain-Scoped Instructions: [count] domains with dedicated instruction files
+Context Budget: copilot-instructions.md=[size], avg instruction=[size], largest agent=[size]
+```
+
+**Common footer for both:**
+```
 💡 Quick Start:
 - Use `@dev-orchestrator` for any development task (auto-routes to the right agent)
 - Use `/implement-feature` to implement a feature end-to-end
