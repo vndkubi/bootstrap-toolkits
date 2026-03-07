@@ -26,6 +26,117 @@ Phase 12: Cleanup — delete generic bootstrap toolkit files, keep only project-
 
 **Phase 2 is CRITICAL** — without business domain context, agents will produce technically correct but business-unaware code. The domain glossary, business rules, and workflow maps enable all downstream agents to use correct business terminology and validate implementation against existing business rules.
 
+## Context Budget Strategy
+
+VS Code Copilot has a limited context window. Every loaded file competes with the user's actual code for context space. Generated configuration must be **dense, not verbose** — maximum signal per token.
+
+### How Context Loading Works
+
+| File Type | When Loaded | Frequency |
+|-----------|-------------|-----------|
+| `copilot-instructions.md` | **Every single request** | Always |
+| `.instructions.md` | When active file matches `applyTo` glob | Per-file type |
+| `.agent.md` | When user invokes `@agent-name` | On-demand |
+| `SKILL.md` | When agent references the skill | On-demand |
+| `.prompt.md` | When user types `/prompt-name` | On-demand |
+
+### Tiered Context Architecture
+
+**Tier 1 — Always Loaded (keep SMALL, ≤ 4 KB):**
+- `copilot-instructions.md` — Project identity, tech stack summary, build commands, agent quick-reference table
+- This file loads on EVERY request — every extra line here costs context across ALL interactions
+- **Rule**: If information is only relevant to specific file types, move it to an `.instructions.md` with `applyTo`
+- **Rule**: If information is only relevant when doing a specific workflow, move it to a `SKILL.md`
+
+**Tier 2 — Auto-Loaded by File Type (≤ 6 KB per file, ≤ 20 KB total loaded at once):**
+- `.instructions.md` files with `applyTo` globs
+- Multiple instructions can match simultaneously (e.g., editing a `*Test.java` file may load both `java.instructions.md` AND `testing.instructions.md`)
+- **Rule**: Estimate which instructions will co-load and keep total under 20 KB
+- **Rule**: Use narrow `applyTo` patterns — prefer `**/*Test*.java` over `**/*.java` when the convention only applies to tests
+
+**Tier 3 — On-Demand (≤ 12 KB per agent, skills can be longer):**
+- Agent files — loaded only when invoked, so can be more detailed
+- Skill files — loaded only when referenced, **best place for detailed workflows and domain context**
+- **Rule**: Put step-by-step workflows in skills, not in agents. Agent = personality + routing. Skill = detailed playbook.
+- **Rule**: Agents should reference skills by name so Copilot loads them when needed
+
+### Size Budget Guidelines
+
+| File Type | Target Size | Maximum | Rationale |
+|-----------|------------|---------|-----------|
+| `copilot-instructions.md` | 2-3 KB | 4 KB | Loaded EVERY request — must be lean |
+| `.instructions.md` | 2-4 KB | 6 KB | Auto-loaded, multiple can co-load |
+| `.agent.md` | 4-8 KB | 12 KB | On-demand, but competes with user code |
+| `SKILL.md` | 3-8 KB | 15 KB | On-demand, loaded only when needed |
+| `.prompt.md` | 1-2 KB | 3 KB | Entry point only — delegates to agent |
+
+### Strategies for Large Codebases
+
+**1. Domain-Scoped Instructions (for projects with 5+ domains):**
+
+Instead of one massive instruction file per language, split by domain:
+```
+instructions/
+├── java.instructions.md              ← Core Java conventions (all .java files)
+├── java-order.instructions.md        ← Order domain patterns (applyTo: '**/order/**/*.java')
+├── java-payment.instructions.md      ← Payment domain patterns (applyTo: '**/payment/**/*.java')
+└── java-testing.instructions.md      ← Test conventions (applyTo: '**/*Test*.java')
+```
+Each file stays small (2-4 KB) and only loads for its domain. The core `java.instructions.md` covers universal conventions; domain files add domain-specific business rules, entity relationships, and patterns.
+
+**2. Skill-Based Deep Context (for complex workflows):**
+
+Move detailed workflows and domain context from agents to skills:
+```
+# ❌ BAD: 15 KB agent with embedded workflow
+# agent.md contains: role + routing + full step-by-step + examples + patterns
+
+# ✅ GOOD: 6 KB agent + 8 KB skill
+# agent.md contains: role + routing + "use implement-feature skill for step-by-step"
+# skill/SKILL.md contains: full step-by-step + examples + patterns
+```
+Skills load only when the agent references them — saving context for requests that don't need the full workflow.
+
+**3. Concise copilot-instructions.md (always):**
+
+The copilot-instructions.md must be a **quick-reference card**, not a documentation dump:
+```markdown
+# ❌ BAD — 15 KB copilot-instructions.md
+## Business Domain Context
+[2000 words of domain glossary, rules, workflows, invariants...]
+
+# ✅ GOOD — 3 KB copilot-instructions.md  
+## Business Domain Context
+Key domains: Orders, Payments, Inventory, Users
+See domain-specific .instructions.md files for business rules per domain.
+Key invariants: Order total must match line items sum; inventory decrements are atomic.
+```
+
+**4. Reference Linking Between Files:**
+
+Use cross-references to avoid duplicating context:
+```markdown
+# In agent file:
+For implementation patterns, refer to the project's java.instructions.md and jakartaee.instructions.md.
+For step-by-step workflow, use the implement-feature skill.
+
+# In copilot-instructions.md:
+For domain-specific conventions, see the .instructions.md files matching your current file type.
+```
+
+### Measuring Context Budget
+
+After generating all files, calculate the context budget for common scenarios:
+
+| Scenario | Files Loaded | Budget Check |
+|----------|-------------|--------------|
+| General chat | copilot-instructions.md | Should be ≤ 4 KB |
+| Editing `*.java` | copilot-instructions.md + java.instructions.md + jakartaee.instructions.md + error-handling.instructions.md + security.instructions.md + logging.instructions.md | Total should be ≤ 24 KB |
+| Using `@implementor` on `*.java` | Above + implementor.agent.md | Total should be ≤ 36 KB |
+| Using `/implement-feature` | Above + implement-feature.prompt.md + implement-feature/SKILL.md | Total should be ≤ 48 KB |
+
+> **If total exceeds budget**: Split large instructions by domain, move detailed content from agents to skills, or trim copilot-instructions.md.
+
 ## Step 1: Analyze Codebase Structure
 
 Scan the project root and explore **ALL directories recursively** to build a complete picture. Do NOT rely on surface-level checks.
@@ -132,35 +243,36 @@ Analyze service classes, domain models, validators, and business workflows to ex
 
 ## Step 2: Generate copilot-instructions.md
 
-Create `.github/copilot-instructions.md` containing:
+Create `.github/copilot-instructions.md` — this file loads on EVERY request, so keep it **≤ 4 KB** (quick-reference card, not documentation).
+
+> **Context Budget Rule**: Move domain details to `.instructions.md` files (Tier 2), detailed workflows to skills (Tier 3). Only put universally-needed facts here.
 
 ```markdown
 # [Project Name]
 
 ## Overview
-[Brief project description based on README or observed structure]
+[1-2 sentences: what this project does]
 
 ## Tech Stack
-- **Language**: [detected]
-- **Framework**: [detected]
-- **Build Tool**: [detected]
-- **Database**: [detected]
-- **Testing**: [detected]
+[Language] | [Framework] | [Build Tool] | [Database] | [Test Framework]
 
 ## Architecture
-[Detected architecture pattern and module structure]
+[1-2 sentences: pattern + module structure]
 
 ## Build & Run
-[Commands found in build files, Makefile, README, or scripts/]
+[Essential commands only — build, test, run]
 
 ## Key Conventions
-[Top conventions detected from codebase analysis]
+[Top 5-7 rules ONLY — the most impactful conventions that apply across all files]
+[Move language-specific conventions to .instructions.md files]
 
 ## Domain Map
-[For multi-domain projects: domain boundaries and responsibilities]
+[For multi-domain: domain names + 1-line responsibility each]
+[Move domain details to domain-scoped .instructions.md files]
 
 ## Business Domain Context
-[Domain glossary, key business rules, entity lifecycles, workflows, and invariants extracted from Step 1b]
+[Key invariants and critical business rules ONLY — max 5-7 bullet points]
+[Move full domain glossary, entity lifecycles, workflows to domain-scoped .instructions.md]
 
 ## Available Agents & How to Use
 
@@ -226,7 +338,7 @@ Create `.github/agents/` with agents tailored to the detected tech stack.
 *Meta agents (always create for self-bootstrapping projects):*
 - If meta/generator project → `agent-generator.agent.md` (generates agents/skills/instructions from analysis)
 
-**Agent file format:**
+**Agent file format** (target: 4-8 KB, max: 12 KB — loaded on-demand when invoked):
 ```markdown
 ---
 name: 'Agent Name'
@@ -234,10 +346,47 @@ description: 'Clear description of role and expertise (10-1024 chars)'
 ---
 
 You are a [role]...
-[Detailed instructions tailored to THIS project's patterns]
+[Role definition + routing logic + project-specific patterns]
+[For detailed step-by-step workflows, reference a skill instead of embedding here]
 ```
 
 > **IMPORTANT**: Do NOT include `tools` field — this gives agents access to ALL available tools.
+> **CONTEXT BUDGET**: Agent files load alongside copilot-instructions.md + matching .instructions.md files. Keep agents focused on role/routing — put detailed workflows in skills that load only when needed.
+
+### Agent ↔ Skill Separation Pattern
+
+Agents should define WHAT they do and HOW they route. Skills should define the detailed WORKFLOW.
+
+```markdown
+# ❌ BAD: 15 KB agent with embedded workflow
+---
+name: 'Implementor'
+description: 'Implements features...'
+---
+You are the implementor for [project]...
+
+## Implementation Steps
+1. Read all related entities in src/domain/...
+2. Check existing validation in src/service/...
+3. Create DTO in src/dto/ following DtoMapper pattern...
+4. [... 200 more lines of step-by-step detail ...]
+
+# ✅ GOOD: 6 KB agent + referenced skill
+---
+name: 'Implementor'
+description: 'Implements features...'
+---
+You are the implementor for [project]...
+
+## How You Work
+- Follow the implement-feature skill for step-by-step implementation workflow
+- Project patterns: [key conventions — constructor injection, Result<T> returns, etc.]
+- Package structure: src/{domain}/{layer}/ (e.g., src/order/service/, src/order/entity/)
+
+## Key References
+- Domain business rules: see domain-scoped .instructions.md files
+- Testing patterns: coordinate with @test-specialist
+```
 
 ### Dev Orchestrator — Special Wiring (CRITICAL)
 
@@ -309,7 +458,7 @@ Create `.github/skills/[name]/SKILL.md` for common workflows detected.
 - If generator project → `generate-copilot-config/SKILL.md` (full bootstrap pipeline)
 - If hooks needed → `generate-hooks/SKILL.md` (lifecycle hook generation)
 
-**Skill file format:**
+**Skill file format** (target: 3-8 KB, max: 15 KB — loaded only when referenced, best place for detailed content):
 ```markdown
 ---
 name: skill-name
@@ -322,14 +471,17 @@ description: 'What this skill does, when to use it, trigger keywords (10-1024 ch
 [Conditions and trigger phrases]
 
 ## Workflow
-[Step-by-step instructions]
+[Detailed step-by-step instructions — this is where complex workflows belong]
+[Include project-specific patterns, examples, and domain context here]
 ```
+
+> **CONTEXT BUDGET**: Skills are the best place for detailed domain workflows — they only load when an agent explicitly references them. Move heavy content here instead of bloating agents or instructions.
 
 ## Step 5: Generate Instructions
 
 Create `.github/instructions/*.instructions.md` for each detected language/framework.
 
-**Instruction file format:**
+**Instruction file format** (target: 2-4 KB, max: 6 KB — auto-loaded when `applyTo` matches, multiple can co-load):
 ```markdown
 ---
 description: 'What standards this covers'
@@ -339,11 +491,13 @@ applyTo: 'glob/pattern/**/*.ext'
 # Standards Title
 
 ## Conventions
-[Language-specific rules detected from codebase]
+[Language-specific rules detected from codebase — concise bullet points, not essays]
 
 ## Examples
-[✅ Correct and ❌ Incorrect patterns]
+[✅ Correct and ❌ Incorrect patterns — 2-3 examples max]
 ```
+
+> **CONTEXT BUDGET**: Multiple instruction files load simultaneously (e.g., java + jakartaee + security for a single .java file). Keep each file ≤ 6 KB so the combined total stays under 20 KB. Use narrow `applyTo` patterns to avoid unnecessary loading.
 
 **Common patterns:**
 
@@ -381,6 +535,48 @@ applyTo: 'glob/pattern/**/*.ext'
 
 *Infrastructure:*
 - `**/.devcontainer/**, **/devcontainer.json` → DevContainer standards (`devcontainer.instructions.md`)
+
+### Domain-Scoped Instructions (for large projects with 5+ domains)
+
+For large codebases, create **per-domain instruction files** that only load when editing files in that domain. This keeps each file small and provides domain-specific business context exactly when needed.
+
+**When to generate domain-scoped instructions:**
+- Project has **5+ distinct domains** (e.g., orders, payments, users, inventory, notifications)
+- Any single instruction file exceeds **6 KB** with domain-specific content
+- Business rules differ significantly between domains
+
+**Pattern:**
+```
+instructions/
+├── java.instructions.md                        ← Universal Java conventions (applyTo: '**/*.java')
+├── java-order-domain.instructions.md           ← Order domain rules (applyTo: '**/order/**/*.java')
+├── java-payment-domain.instructions.md         ← Payment domain rules (applyTo: '**/payment/**/*.java')
+└── java-testing.instructions.md                ← Test conventions (applyTo: '**/*Test*.java')
+```
+
+**Domain instruction file content:**
+```markdown
+---
+description: 'Order domain business rules, entity relationships, and patterns'
+applyTo: '**/order/**/*.java'
+---
+
+# Order Domain Conventions
+
+## Business Rules
+- Order total must equal sum of line item amounts
+- Orders transition: DRAFT → PENDING → CONFIRMED → SHIPPED → DELIVERED
+- VIP customers (tier >= GOLD) get auto-discount at confirmation
+
+## Entity Relationships
+- Order → OrderLine (1:N), Order → Customer (N:1), Order → Payment (1:1)
+
+## Domain Patterns
+- All monetary calculations use BigDecimal with HALF_UP rounding
+- Order state transitions are validated in OrderService.transition()
+```
+
+> **CONTEXT BUDGET**: Domain instructions give you the best of both worlds — rich domain context that only loads when the developer is actually working in that domain. A developer editing `PaymentService.java` gets payment-specific business rules without the cognitive overhead of order/inventory/shipping rules.
 
 ## Step 6: Generate Prompts
 
@@ -586,6 +782,25 @@ Perform these runtime checks to ensure the generated config is usable:
    - Every prompt in `.github/prompts/` references an agent that exists in `.github/agents/`
    - The "Available Agents" table in `copilot-instructions.md` matches the agents in `.github/agents/`
    - The "Available Prompts" table in `copilot-instructions.md` matches the prompts in `.github/prompts/`
+
+6. **Context budget check**: Measure file sizes and verify budgets:
+   ```bash
+   # Measure copilot-instructions.md (must be ≤ 4 KB)
+   wc -c .github/copilot-instructions.md
+   
+   # Measure each agent (must be ≤ 12 KB)
+   wc -c .github/agents/*.agent.md
+   
+   # Measure each instruction (must be ≤ 6 KB)
+   wc -c .github/instructions/*.instructions.md
+   
+   # Estimate co-loading: which instructions match *.java files?
+   # Total matching instructions should be ≤ 20 KB
+   ```
+   If any file exceeds its budget:
+   - `copilot-instructions.md` > 4 KB → move domain details to `.instructions.md`, move workflows to skills
+   - `.instructions.md` > 6 KB → split into domain-scoped files or move detail to skills
+   - `.agent.md` > 12 KB → extract detailed workflows into a corresponding skill
 
 > **If any validation fails**: Fix the issue immediately. Do NOT proceed to output summary with broken config.
 
