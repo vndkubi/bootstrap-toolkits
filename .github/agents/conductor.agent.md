@@ -75,7 +75,8 @@ Phase 6: Generate skills for detected workflows
 Phase 7: Generate hooks for quality automation
 Phase 8: Generate agentic workflows for automation (if GitHub Actions available)
 Phase 9: Validate all generated files
-Phase 10: Cleanup — delete generic bootstrap toolkit files, keep only project-specific config
+Phase 10: DevContainer Setup — review existing or offer to generate new devcontainer configuration
+Phase 11: Cleanup — delete generic bootstrap toolkit files, keep only project-specific config
 ```
 
 **Phase 2 is CRITICAL** — without business domain context, agents will produce technically correct but business-unaware code. The domain glossary, business rules, and workflow maps enable all downstream agents to:
@@ -83,6 +84,21 @@ Phase 10: Cleanup — delete generic bootstrap toolkit files, keep only project-
 - Validate implementation against existing business rules
 - Write test names that describe business scenarios, not code methods
 - Explain decisions with business justification
+
+**Phase 10: DevContainer Setup** — Runs BEFORE cleanup so bootstrap toolkit agents are still available for generation.
+
+**If project HAS `.devcontainer/`**:
+→ Delegate to `@devcontainer-reviewer` to review and optimize the existing configuration.
+→ Output: health score, findings by severity, performance recommendations, optimized config.
+
+**If project does NOT have `.devcontainer/`**:
+1. Ask the user: "Your project doesn't have a devcontainer configuration. Would you like me to generate one for development environment setup? This will create devcontainer.json (and Dockerfile/docker-compose.yml if needed) based on your detected tech stack: **[detected stack]**."
+2. If yes → delegate to `@devcontainer-reviewer` agent, which will:
+   - Conduct detailed requirements interview (databases, services, tools, shell, extensions)
+   - Present resource estimation (RAM/CPU/disk for the tech stack + services)
+   - Wait for user confirmation on resources
+   - Generate optimized devcontainer.json, Dockerfile, docker-compose.yml, .dockerignore
+3. If no → skip and report "DevContainer setup: skipped (user declined)"
 
 ## Tech Stack Detection & Agent Selection
 

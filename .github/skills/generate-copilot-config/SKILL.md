@@ -115,6 +115,50 @@ Verify:
 - [ ] No duplicates or contradictions
 - [ ] References actual tech stack
 
+### Phase 8: DevContainer Setup
+
+Runs **BEFORE cleanup** so bootstrap toolkit agents (`@devcontainer-reviewer`) are still available.
+
+Check if `.devcontainer/devcontainer.json` or `.devcontainer.json` exists in the project.
+
+**If devcontainer EXISTS**: Delegate to `@devcontainer-reviewer` to review and optimize:
+- Audit the existing configuration (image pinning, Features, lifecycle scripts, performance, security, DX)
+- Output: health score (X/10), severity-rated findings, optimized devcontainer.json
+- Apply fixes if user approves
+
+**If devcontainer does NOT exist**: Ask the user:
+
+> "Your project doesn't have a devcontainer configuration. Would you like me to generate one for development environment setup? This will create devcontainer.json (and Dockerfile/docker-compose.yml if needed) based on your detected tech stack: **[detected stack]**."
+
+**If user says yes:**
+1. **Requirements interview** — use `optimize-devcontainer` skill Phase 0 questions:
+   - What databases / services do you need? (PostgreSQL, Redis, Kafka, etc.)
+   - What's your team's primary OS? (affects volume mount strategy)
+   - How much RAM/CPU can be allocated to Docker?
+   - Any must-have VS Code extensions beyond the language pack?
+   - Preferred shell? (bash, zsh + oh-my-zsh, fish)
+   - Docker-in-Docker needed? CI tools needed locally?
+2. **Resource estimation** — calculate and present total RAM/CPU/disk needs:
+   | Component | RAM (Min) | RAM (Recommended) | Disk |
+   |-----------|-----------|-------------------|------|
+   | [detected stack] | X GB | Y GB | Z GB |
+   | [each service] | X MB | Y MB | Z GB |
+   | **TOTAL** | **X GB** | **Y GB** | **Z GB** |
+3. **Wait for user confirmation** — if resources are tight, propose lighter alternatives
+4. **Generate files**:
+   - `.devcontainer/devcontainer.json` — optimized for detected stack with Features, lifecycle scripts, volumes, extensions, settings
+   - `.devcontainer/Dockerfile` — if custom image needed (multi-stage, additional tools)
+   - `.devcontainer/docker-compose.yml` — if databases/services are needed
+   - `.devcontainer/.dockerignore` — exclude build artifacts, .git, node_modules
+5. **Present configuration** with inline comments explaining every property
+
+**If user says no:**
+Skip and include in final report: "DevContainer setup: skipped (user declined)"
+
+### Phase 9: Cleanup & Final Report
+
+After devcontainer setup (or skip), delete bootstrap toolkit files and output final summary:
+
 Output summary:
 ```
 ✅ Bootstrap Complete!
@@ -124,4 +168,19 @@ Output summary:
 ├── skills/ ([count] skills)
 ├── instructions/ ([count] instruction files)
 └── hooks/ ([count] hooks)
+
+🐳 .devcontainer/                        ← (if generated or optimized)
+├── devcontainer.json               ← [stack] development environment
+├── Dockerfile                      ← Custom image with [tools]
+├── docker-compose.yml              ← [services list]
+└── .dockerignore
+
+Resource Estimate: ~[X] GB RAM / [Y] CPU cores / [Z] GB disk
 ```
+
+🧹 Cleanup:
+- Deleted [N] bootstrap agents
+- Deleted [N] bootstrap skills
+- Deleted [N] bootstrap instructions
+- Deleted bootstrap prompts/
+- Created [N] project-specific hooks

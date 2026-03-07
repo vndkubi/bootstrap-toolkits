@@ -375,6 +375,328 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 
 4. **Review the output** and adjust as needed
 
+### 📦 Bootstrapping a Brand New Project (From Scratch)
+
+If you have a **new, empty project** (or one that just started and has no Copilot config yet), here's how to use Bootstrap Toolkit step by step.
+
+#### Prerequisites
+
+- **VS Code** with [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extension installed
+- A Git repository (even if it's empty or has just a few files)
+- Basic project structure exists — at minimum a `pom.xml`, `build.gradle.kts`, `*.csproj`, `composer.json`, `pyproject.toml`, or any framework entry point
+
+#### Step 1: Copy Bootstrap Toolkit into Your Project
+
+```bash
+# Clone or download copilot-bootstrap
+git clone https://github.com/your-org/copilot-bootstrap.git
+
+# Copy the .github/ folder into your target project
+cp -r copilot-bootstrap/.github/ /path/to/your-new-project/.github/
+```
+
+Your project structure will now look like:
+```
+your-new-project/
+├── .github/
+│   ├── copilot-instructions.md
+│   ├── agents/          # 20 agents
+│   ├── skills/          # 20 skills
+│   ├── instructions/    # 20 instruction files
+│   └── prompts/         # 6 prompts
+├── src/                 # (your code, even if minimal)
+├── pom.xml              # (or build.gradle.kts, *.csproj, etc.)
+└── README.md
+```
+
+#### Step 2: Open in VS Code and Run Bootstrap
+
+Open the project in VS Code, then in Copilot Chat:
+
+```
+@conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+```
+
+The conductor will:
+1. **Detect your tech stack** — languages, frameworks, build tools, databases
+2. **Analyze architecture** — module structure, layers, patterns, conventions
+3. **Generate tailored `copilot-instructions.md`** — project-specific context, build commands, domain knowledge
+4. **Create domain-specific instructions** — coding standards matched to your detected stack
+5. **Suggest agent configuration** — which agents are most relevant for your project
+6. **Generate hooks** — auto-format, lint, compile checks matched to your tooling
+
+> **Tip**: Even if your project only has a `pom.xml` and one Java class, the analyzer will detect Java/Maven and generate the appropriate configuration. The more code you have, the more tailored the output.
+
+#### Step 3: Customize the Generated Config
+
+After bootstrap, review and adjust:
+
+| File | What to Customize |
+|------|-------------------|
+| `copilot-instructions.md` | Add business domain context, team conventions, deployment info |
+| `instructions/*.instructions.md` | Remove instruction files for stacks you don't use |
+| `agents/*.agent.md` | Remove agents for stacks you don't need |
+
+**For a Java/Jakarta EE project**, you might keep:
+- `java.instructions.md`, `jakartaee.instructions.md`, `maven.instructions.md`, `oracle-sql.instructions.md`
+- `@implementor`, `@test-specialist`, `@investigator`, `@code-reviewer`
+- Remove: `dotnet.instructions.md`, `php.instructions.md`, `python.instructions.md`, mobile agents
+
+**For a .NET project**, you might keep:
+- `dotnet.instructions.md`
+- `@dotnet-implementor`, `@code-reviewer`, `@investigator`
+- Remove: Java, PHP, Python, mobile-related files
+
+**For a mobile project (Android + iOS)**, keep:
+- `kotlin.instructions.md`, `swift.instructions.md`, `android.instructions.md`, `ios.instructions.md`, `gradle.instructions.md`
+- `@mobile-implementor`, `@mobile-test-specialist`, `@mobile-architect`
+
+#### Step 4: Start Using Agents
+
+Now use the agents for daily development:
+
+```
+# Investigate a requirement
+@investigator Investigate: Add user authentication with JWT
+
+# Implement the feature
+@implementor Implement JWT authentication based on the investigation
+
+# Write tests
+@test-specialist Write unit tests for AuthService
+
+# Review your changes
+@code-reviewer Review the changes I just made
+
+# Create PR
+@pr-manager Generate PR description for current branch
+```
+
+#### What If My Project Is Completely Empty?
+
+If you literally have zero code (just an empty folder):
+
+1. **Tell the conductor what you're building**:
+   ```
+   @conductor I'm starting a new Java/Jakarta EE project with Oracle database.
+   Generate a Copilot configuration for this stack.
+   ```
+
+2. **Use the prompt to generate stack-specific config**:
+   ```
+   /bootstrap-copilot
+   ```
+   This will ask you questions about your tech stack and generate config accordingly.
+
+3. **Use the implementor to scaffold initial code**:
+   ```
+   @implementor Create the initial project structure for a Jakarta EE REST API
+   with JPA entities, CDI services, and Flyway migrations
+   ```
+
+### 🎯 Use Cases
+
+#### Use Case 1: Greenfield Java Enterprise Project
+
+**Scenario**: You're starting a new Jakarta EE project and want Copilot configured from day one.
+
+```bash
+# 1. Create project (Maven archetype, Spring Initializr, or manual)
+mvn archetype:generate -DgroupId=com.company -DartifactId=my-app
+
+# 2. Copy bootstrap toolkit
+cp -r copilot-bootstrap/.github/ my-app/.github/
+
+# 3. Open in VS Code
+code my-app
+```
+
+```
+# 4. Bootstrap with stack hint
+@conductor This is a Jakarta EE project with Maven, JPA, Oracle DB.
+Generate Copilot config for this stack.
+
+# 5. Start implementing
+@investigator Investigate: Design the Order management domain
+@implementor Create Order entity, OrderService, OrderResource with CRUD operations
+@test-specialist Write tests for OrderService
+```
+
+#### Use Case 2: Adding Copilot to an Existing Large Codebase
+
+**Scenario**: You have a 100K+ LoC project and want Copilot to understand it.
+
+```
+# Full analysis — the analyzer will map all domains, patterns, and conventions
+@conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+```
+
+The conductor will:
+- Map all domains (orders, customers, payments, etc.)
+- Detect coding conventions (naming, patterns, error handling)
+- Generate per-domain instructions if the codebase is large
+- Create `copilot-instructions.md` with project-specific context
+
+#### Use Case 3: Mobile Project (Android + iOS)
+
+**Scenario**: Building a native mobile app with Kotlin/Compose and Swift/SwiftUI.
+
+```bash
+# Copy bootstrap toolkit
+cp -r copilot-bootstrap/.github/ my-mobile-app/.github/
+```
+
+```
+# Bootstrap
+@conductor This is a mobile project: Android (Kotlin, Jetpack Compose, Hilt)
+and iOS (Swift, SwiftUI). Generate Copilot config.
+
+# Architecture review
+@mobile-architect Review the current architecture and suggest MVVM + Clean Architecture
+
+# Implement a feature
+@mobile-implementor Implement the product list screen with offline-first support
+
+# Write tests
+@mobile-test-specialist Write tests for ProductListViewModel with fakes and Turbine
+```
+
+#### Use Case 4: Full Feature Delivery (End-to-End in One Session)
+
+**Scenario**: You received a PBI and want everything done — investigation, code, tests, PR.
+
+```
+@dev-orchestrator Implement PBI-456: Add VIP discount calculation for orders above $100
+```
+
+The dev-orchestrator will:
+1. Auto-detect your tech stack
+2. Investigate current code flow
+3. Design the solution
+4. **Ask for your confirmation** before coding
+5. Implement across all layers
+6. Write tests with 100% branch coverage
+7. Generate PR description
+8. Generate conventional commit message
+
+#### Use Case 5: Sprint Planning & Estimation
+
+**Scenario**: You need to break down a large PBI into tasks and estimate effort.
+
+```
+# Break down a PBI
+@sprint-planner Break down PBI-789: Implement payment gateway integration
+with Stripe for credit card processing
+
+# Estimate a specific task
+@sprint-planner Estimate effort for: Add webhook handler for Stripe payment events
+```
+
+Output: story points, task breakdown, dependencies, risks, and a sprint backlog table you can copy to Jira/Azure DevOps.
+
+#### Use Case 6: Refactoring & Tech Debt
+
+**Scenario**: A service class is 800 lines and growing. You want to refactor safely.
+
+```
+# Analyze tech debt
+@refactoring-specialist Analyze tech debt in OrderService.java
+
+# Execute refactoring
+@refactoring-specialist Refactor OrderService — extract pricing logic into PricingService
+and discount logic into DiscountService
+```
+
+Output: before/after metrics, new extracted classes, updated tests, behavior-preserving changes.
+
+#### Use Case 7: Multi-Stack Project
+
+**Scenario**: Your project has a Java backend, .NET microservice, and Android/iOS apps.
+
+```bash
+# Copy bootstrap toolkit once — it supports all stacks
+cp -r copilot-bootstrap/.github/ my-project/.github/
+```
+
+```
+# Bootstrap will detect all stacks
+@conductor Analyze this codebase and generate Copilot config
+
+# Use stack-specific agents as needed
+@implementor Add new REST endpoint for orders (Java backend)
+@dotnet-implementor Add payment processing service (.NET microservice)
+@mobile-implementor Implement order list screen (Android + iOS)
+```
+
+#### Use Case 8: DevContainer Setup
+
+**Scenario**: You want to set up a dev container for local development.
+
+```
+# Review existing devcontainer
+@devcontainer-reviewer Review and optimize the devcontainer configuration
+
+# Generate devcontainer from scratch
+@devcontainer-reviewer Generate a devcontainer config for our Java/Maven/Oracle project
+```
+
+#### Use Case 9: Onboarding a New Team Member
+
+**Scenario**: A new developer joins the team and needs to understand the codebase quickly.
+
+```
+# Get a full codebase overview
+@codebase-analyzer Analyze this codebase — show me the architecture,
+domains, tech stack, and how everything connects
+
+# Understand a specific flow
+@sequence-diagrammer Create a sequence diagram for the order creation flow
+
+# Understand conventions
+# → Just open any file — Copilot will auto-apply the matching instruction files
+# → e.g., opening a .java file activates java.instructions.md + jakartaee.instructions.md
+```
+
+#### Use Case 10: Automated Quality Workflows (Agentic Workflows)
+
+**Scenario**: You want Copilot to automatically triage issues or run compliance checks.
+
+```
+# Generate an agentic workflow
+@conductor Generate an agentic workflow for automatic issue triage
+that labels bugs, assigns priority, and suggests affected modules
+
+# Generate a scheduled compliance audit
+@conductor Generate an agentic workflow that runs weekly to check
+for outdated dependencies and security vulnerabilities
+```
+
+Output: `.github/copilot/` workflow files that run as GitHub Actions with Copilot as the AI agent.
+
+### 🔄 Workflow Summary
+
+| What You Want | Command |
+|---------------|---------|
+| Bootstrap Copilot for a new project | `@conductor Analyze this codebase and generate config` |
+| Bootstrap with a specific stack hint | `@conductor This is a [stack] project. Generate config.` |
+| Investigate a PBI / bug / feature | `@investigator Investigate: [description]` |
+| Implement a feature (auto-detect stack) | `@dev-orchestrator Implement: [description]` |
+| Implement (Java) | `@implementor [description]` |
+| Implement (.NET) | `@dotnet-implementor [description]` |
+| Implement (Python) | `@python-implementor [description]` |
+| Implement (PHP) | `@php-implementor [description]` |
+| Implement (Mobile) | `@mobile-implementor [description]` |
+| Write unit tests | `@test-specialist Write tests for [class]` |
+| Write mobile tests | `@mobile-test-specialist Write tests for [ViewModel]` |
+| Code review | `@code-reviewer Review changes in [branch]` |
+| Create sequence diagram | `@sequence-diagrammer Create diagram for [flow]` |
+| Sprint planning | `@sprint-planner Break down [PBI]` |
+| Refactoring | `@refactoring-specialist Refactor [class/module]` |
+| Create PR | `@pr-manager Generate PR description` |
+| Create WireMock stubs | `@mock-data-specialist Create stubs for [service]` |
+| Review devcontainer | `@devcontainer-reviewer Review devcontainer config` |
+| Full lifecycle (everything) | `@dev-orchestrator Implement [PBI]` |
+
 ### Developer Daily Workflows
 
 #### 📋 Investigate a PBI
