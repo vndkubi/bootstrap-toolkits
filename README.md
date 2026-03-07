@@ -184,9 +184,10 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── python.instructions.md                       #   🐍 Python/Django/FastAPI standards
 │   └── devcontainer.instructions.md                 #   🐳 DevContainer configuration standards
 │
-├── prompts/                                         # 🚀 Reusable Prompts (6)
+├── prompts/                                         # 🚀 Reusable Prompts (7)
 │   ├── bootstrap-copilot.prompt.md                  #   Full bootstrap pipeline
 │   ├── analyze-project.prompt.md                    #   Codebase analysis
+│   ├── learn-codebase.prompt.md                     #   🎓 Learn business & workflows
 │   ├── generate-agents.prompt.md                    #   Generate agents
 │   ├── generate-instructions.prompt.md              #   Generate instructions
 │   ├── generate-skills.prompt.md                    #   Generate skills
@@ -352,6 +353,7 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 |--------|-------------|-------------|
 | `/bootstrap-copilot` | Full bootstrap: analyze codebase → generate all config | Set up Copilot for a new project |
 | `/analyze-project` | Detailed codebase analysis → structured report | Understand project structure |
+| `/learn-codebase` | Learn business domains, workflows, rules, data model interactively | Onboarding, understand business logic, learn workflows |
 | `/generate-agents` | Generate agents from detected tech stack | Create agents for a project |
 | `/generate-instructions` | Generate coding standards from conventions | Create instruction files |
 | `/generate-skills` | Generate skills from detected workflows | Create workflow skills |
@@ -403,7 +405,7 @@ your-new-project/
 │   ├── agents/          # 20 agents
 │   ├── skills/          # 20 skills
 │   ├── instructions/    # 20 instruction files
-│   └── prompts/         # 6 prompts
+│   └── prompts/         # 7 prompts
 ├── src/                 # (your code, even if minimal)
 ├── pom.xml              # (or build.gradle.kts, *.csproj, etc.)
 └── README.md

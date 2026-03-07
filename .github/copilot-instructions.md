@@ -240,6 +240,7 @@ After completing any significant task, provide a **structured summary**:
 # Bootstrap (Prompts)
 /bootstrap-copilot
 /analyze-project
+/learn-codebase
 /implement-feature
 ```
 
@@ -275,6 +276,7 @@ Use `/prompt-name` in VS Code Chat:
 |--------|--------|
 | `/bootstrap-copilot` | Full bootstrap pipeline: analyze codebase → generate all config |
 | `/analyze-project` | Deep codebase analysis → structured report |
+| `/learn-codebase` | Learn business domains, workflows, rules, and data flows interactively |
 | `/generate-agents` | Generate agents from tech stack detection |
 | `/generate-instructions` | Generate coding standard instructions |
 | `/generate-skills` | Generate workflow skills |
