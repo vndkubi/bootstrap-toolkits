@@ -21,6 +21,7 @@ Automatically detect and adapt to the project's tech stack:
 - `*.csproj` / `*.sln` → .NET/C#/ASP.NET Core
 - `pyproject.toml` / `manage.py` → Python/Django/FastAPI
 - `composer.json` / `artisan` → PHP/Laravel/Symfony
+- `package.json` + React/Vue/Angular, `*.ts`, `*.tsx` → TypeScript/React/Frontend
 - `build.gradle.kts` + Android → Android/Kotlin
 - `Package.swift` / `*.xcodeproj` → iOS/Swift
 
@@ -57,6 +58,8 @@ Automatically detect and adapt to the project's tech stack:
 **Python (Django)**: Model → Migration → Serializer → Service/Selector → View/ViewSet → URL
 **PHP (Laravel)**: Model → Migration → FormRequest → API Resource → Service → Controller → Route
 **PHP (Symfony)**: Entity → Migration → DTO → Repository → Service → Controller → Validator
+**TypeScript (React/Next.js)**: Types/Interfaces → API Service → Custom Hook → Component → Tests → Page Route
+**TypeScript (Node/Express)**: Types → Prisma/Drizzle Schema → Repository → Service → Controller → Route → Middleware
 
 Universal rules:
 - Follow existing codebase patterns exactly

@@ -1,6 +1,6 @@
 # 🚀 Copilot Bootstrap Toolkit
 
-> An automated system that analyzes any codebase and generates a complete GitHub Copilot configuration — agents, skills, instructions, hooks, agentic workflows — supporting Java, .NET, Python, PHP, and Mobile (Android/iOS) projects. Designed for senior developers in agile teams.
+> An automated system that analyzes any codebase and generates a complete GitHub Copilot configuration — agents, skills, instructions, hooks, agentic workflows — supporting Java, .NET, Python, PHP, TypeScript/React, and Mobile (Android/iOS) projects. Designed for senior developers in agile teams working on enterprise-scale projects (20-100+ modules).
 
 ---
 
@@ -9,10 +9,11 @@
 Bootstrap Toolkit solves the problem: **Given any codebase, automatically detect and generate a complete, tailored Copilot configuration.**
 
 The toolkit includes:
-- **20 custom agents** — specialized for every developer role across 6 tech stacks + agile workflows + devcontainer optimization
-- **20 reusable skills** — automated workflows from sprint planning to PR management
-- **20 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, Kotlin, Swift, DevContainer
+- **23 custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
+- **26 reusable skills** — automated workflows from sprint planning to impact analysis
+- **23 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, TypeScript, React, Kotlin, Swift, DevContainer
 - **1 conductor** — master orchestrator that coordinates the entire pipeline
+- **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
 
 ## 🏗️ Architecture
@@ -138,7 +139,10 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── sprint-planner.agent.md                      #   📊 Sprint planning & estimation
 │   ├── refactoring-specialist.agent.md              #   ♻️ Refactoring & tech debt
 │   ├── pr-manager.agent.md                          #   🔀 PR lifecycle management
-│   └── devcontainer-reviewer.agent.md               #   🐳 DevContainer review & optimization
+│   ├── devcontainer-reviewer.agent.md               #   🐳 DevContainer review & optimization
+│   ├── frontend-implementor.agent.md                #   🌐 Frontend (TypeScript/React/Vue/Angular)
+│   ├── dependency-analyzer.agent.md                 #   🔗 Cross-module dependency analysis
+│   └── database-specialist.agent.md                 #   🗄️ Schema review & migration strategy
 │
 ├── skills/                                          # 🎯 Reusable Skills (20)
 │   ├── analyze-codebase/SKILL.md                    #   Deep analysis
@@ -160,7 +164,13 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── conventional-commit/SKILL.md                 #   💬 Conventional commits
 │   ├── generate-pr-description/SKILL.md             #   🔀 PR description generation
 │   ├── technical-debt-analysis/SKILL.md             #   🏗️ Tech debt analysis
-│   └── optimize-devcontainer/SKILL.md               #   🐳 DevContainer optimization
+│   ├── optimize-devcontainer/SKILL.md               #   🐳 DevContainer optimization
+│   ├── core-principles/SKILL.md                     #   📐 Core engineering principles
+│   ├── learn-codebase/SKILL.md                      #   🎓 Codebase learning workflow
+│   ├── domain-registry/SKILL.md                     #   🏢 Enterprise domain auto-detection
+│   ├── context-budget-check/SKILL.md                #   📏 Context budget validation
+│   ├── impact-analysis/SKILL.md                     #   💥 Cross-module impact analysis
+│   └── generate-domain-instructions/SKILL.md        #   📑 Per-domain instruction generation
 │
 ├── instructions/                                    # 📋 Coding Standards (20)
 │   ├── java.instructions.md                         #   Java conventions
@@ -182,7 +192,10 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── dotnet.instructions.md                       #   🟣 .NET/C# conventions
 │   ├── php.instructions.md                          #   🐘 PHP/Laravel/Symfony standards
 │   ├── python.instructions.md                       #   🐍 Python/Django/FastAPI standards
-│   └── devcontainer.instructions.md                 #   🐳 DevContainer configuration standards
+│   ├── devcontainer.instructions.md                 #   🐳 DevContainer configuration standards
+│   ├── typescript.instructions.md                   #   🔷 TypeScript strict mode & type safety
+│   ├── react.instructions.md                        #   ⚛️ React/Next.js component standards
+│   └── module-boundaries.instructions.md            #   🏗️ Cross-module dependency rules
 │
 ├── prompts/                                         # 🚀 Reusable Prompts (7)
 │   ├── bootstrap-copilot.prompt.md                  #   Full bootstrap pipeline
@@ -219,6 +232,7 @@ In multi-module projects, understand module boundaries before making changes:
 | **`@dotnet-implementor`** | .NET/C#/ASP.NET Core/EF Core | .NET projects with Clean Architecture |
 | **`@python-implementor`** | Python/Django/FastAPI/SQLAlchemy | Python web services |
 | **`@php-implementor`** | PHP/Laravel/Symfony/Eloquent/Doctrine | PHP web applications |
+| **`@frontend-implementor`** | TypeScript/React/Vue/Angular/Next.js | Frontend web applications |
 
 ### Analysis & Quality Agents
 
@@ -231,6 +245,13 @@ In multi-module projects, understand module boundaries before making changes:
 | **`@code-reviewer`** | Code review: per-file analysis, severity ratings → markdown report | Review PR, check code quality |
 | **`@mock-data-specialist`** | WireMock stubs, test fixtures, mock data for local/devcontainer | Create mock data, set up WireMock |
 | **`@agent-generator`** | Generates agents/skills/instructions from codebase analysis | Bootstrap Copilot config |
+
+### Enterprise Agents 🏢
+
+| Agent | Description | When to Use |
+|-------|-------------|-------------|
+| **`@dependency-analyzer`** | Cross-module dependency analysis, impact assessment, blast radius | Assess change impact, audit dependencies, detect circular deps |
+| **`@database-specialist`** | Schema review, migration strategy, query optimization, multi-schema | Database design, migration planning, performance tuning |
 
 ### Mobile Agents 📱
 
@@ -293,6 +314,17 @@ In multi-module projects, understand module boundaries before making changes:
 | `generate-agentic-workflow` | GitHub Copilot Agentic Workflow automation (`.md` → Actions) | "agentic workflow", "automate", "scheduled" |
 | `optimize-devcontainer` | DevContainer analysis, optimization, and config generation | "devcontainer", "optimize container", "docker", "startup" |
 
+### Enterprise Skills 🏢
+
+| Skill | Description | Trigger Keywords |
+|-------|--------|-----------------|
+| `core-principles` | 7 core engineering principles all agents follow | "principles", "core rules" |
+| `learn-codebase` | Interactive codebase learning: domains, workflows, rules | "learn", "onboard", "understand codebase" |
+| `domain-registry` | Auto-detect and register business domains from source | "domain registry", "domain map" |
+| `context-budget-check` | Validate config file sizes and co-loading budgets | "check budget", "validate sizes" |
+| `impact-analysis` | Cross-module blast radius analysis | "impact", "blast radius", "what breaks" |
+| `generate-domain-instructions` | Generate per-domain .instructions.md files | "domain instructions" |
+
 ## 📋 Instructions List
 
 ### Java & Enterprise
@@ -323,6 +355,13 @@ In multi-module projects, understand module boundaries before making changes:
 |------|---------|----------|
 | `python.instructions.md` | `**/*.py, **/pyproject.toml` | Django/FastAPI, SQLAlchemy, Pydantic, pytest, PEP compliance |
 
+### TypeScript & React 🔷
+
+| File | applyTo | Contents |
+|------|---------|----------|
+| `typescript.instructions.md` | `**/*.ts, **/*.tsx` | Strict mode, no `any`, discriminated unions, generics, null safety |
+| `react.instructions.md` | `**/*.tsx, **/*.jsx` | Functional components, hooks, state management, React Testing Library |
+
 ### PHP 🐘
 
 | File | applyTo | Contents |
@@ -334,6 +373,12 @@ In multi-module projects, understand module boundaries before making changes:
 | File | applyTo | Contents |
 |------|---------|----------|
 | `devcontainer.instructions.md` | `**/.devcontainer/**, **/devcontainer.json` | Image selection, Features, lifecycle scripts, volumes, security, performance |
+
+### Enterprise 🏢
+
+| File | applyTo | Contents |
+|------|---------|----------|
+| `module-boundaries.instructions.md` | `**/pom.xml, **/build.gradle*` | Cross-module dependency rules, API boundary conventions, circular dep prevention |
 
 ### Mobile 📱
 
