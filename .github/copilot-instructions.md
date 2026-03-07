@@ -43,7 +43,7 @@ Each sub-agent is an expert in its own domain, designed for senior developers wo
 
 | Agent | Purpose |
 |-------|---------|
-| `@dev-orchestrator` | Full lifecycle: requirement → investigate → confirm → implement → test → PR → documentation |
+| `@dev-orchestrator` | Full lifecycle with **auto-routing**: analyzes user intent → auto-delegates to sub-agents (investigate, implement, test, review, PR). Single entry point — user never needs to manually pick agents |
 | `@sprint-planner` | Sprint planning: PBI decomposition, story point estimation, capacity planning, risk assessment |
 | `@refactoring-specialist` | Refactoring: code smell detection, safe refactoring, tech debt reduction, before/after metrics |
 | `@pr-manager` | PR lifecycle: description generation, review readiness, merge strategy, changelog |

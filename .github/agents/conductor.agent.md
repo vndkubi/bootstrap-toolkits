@@ -50,7 +50,7 @@ When the codebase already provides the answer (e.g., only Java files exist), **c
 
 | Agent | Purpose | When to Delegate |
 |-------|---------|------------------|
-| `@dev-orchestrator` | Full lifecycle: requirement → investigate → confirm → implement → test → docs | User wants end-to-end feature delivery (the "do everything" agent) |
+| `@dev-orchestrator` | Full lifecycle with **auto-routing**: analyzes user intent and delegates to appropriate sub-agents automatically. Single entry point for feature delivery, investigation, testing, refactoring, PR. | User provides a requirement, PBI, or any development task \u2014 Dev Orchestrator auto-detects intent and routes (user never needs to manually pick agents) |
 | `@sprint-planner` | Sprint planning, PBI decomposition, story point estimation, capacity planning | User wants to plan a sprint or estimate effort |
 | `@refactoring-specialist` | Code refactoring, tech debt reduction, architecture improvement | User wants to refactor code or reduce tech debt |
 | `@pr-manager` | PR descriptions, review readiness, merge strategy, changelog generation | User wants to create a PR, generate PR description, or manage reviews |
@@ -131,9 +131,11 @@ When a developer asks for help with their daily work:
 
 ### Full Feature Delivery (End-to-End)
 1. Delegate to `@dev-orchestrator` for complete workflow
-2. Dev Orchestrator handles: investigate → confirm → implement → test → document
-3. The Dev Orchestrator automatically selects the right stack
-4. Output: production code + unit tests (100% branch coverage) + markdown documentation + PR description
+2. Dev Orchestrator **auto-analyzes** the requirement and routes to appropriate sub-agents:
+   - Detects tech stack → routes to correct implementor (Java/.NET/Python/PHP/Mobile)
+   - Detects intent → routes investigation/testing/review/refactoring automatically
+   - User never needs to specify which sub-agent to use
+3. Output: production code + unit tests (100% branch coverage) + markdown documentation + PR description
 
 ### Sprint Planning & Estimation
 1. Delegate to `@sprint-planner` for PBI decomposition and estimation
