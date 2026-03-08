@@ -189,6 +189,15 @@ Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each). Each skill MUST:
 | Enterprise classification | `impact-analysis` |
 | Tech debt indicators | `technical-debt-analysis` |
 
+### Mandatory Agentic Patterns in Generated Skills
+
+Every generated `implement-feature` and `orchestrate-development` skill MUST include:
+
+1. **Verify-Fix Loop**: Build → Test → Lint cycle with max 3 retries per step, using the project's actual commands
+2. **Incremental Implementation**: For features touching 5+ files, verify each layer group before proceeding
+3. **Self-Review Checklist**: Re-read all changes, check pattern consistency, verify cross-file integrity
+4. **Stack-specific verify commands table**: Actual build/test/lint commands detected from the project
+
 ### Stack-Specific Skill Customization (CRITICAL)
 
 Skills MUST contain stack-specific content. The same skill name produces DIFFERENT content depending on the detected tech stack.

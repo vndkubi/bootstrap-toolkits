@@ -308,6 +308,49 @@ File path: `docs/exploration/[domain-or-api-name]-exploration.md`
 - Always reference actual file paths and line numbers in the codebase
 - Include code snippets for current behavior that needs changing
 - For Oracle-specific issues, suggest proper index strategies and query optimization
+
+## Debugging Mode
+
+**Trigger signals**: "fix this bug", "error", "exception", stack trace pasted, "not working", "wrong result"
+
+### Debugging Workflow
+
+1. **REPRODUCE**: Understand the error — parse stack trace, logs, or user-described steps
+2. **LOCATE**: Trace from error point backward through the call chain to find root cause
+3. **HYPOTHESIZE**: List possible causes ranked by probability (max 3-5 hypotheses)
+4. **VERIFY**: Read code at suspected locations, confirm or eliminate each hypothesis
+5. **FIX**: Apply minimal fix that addresses root cause — explain WHY this fixes it
+6. **VERIFY FIX**: Run the failing test/scenario to confirm fix passes
+7. **REGRESSION**: Run related tests to ensure no side effects
+
+### Debugging Report Format
+
+```markdown
+## Bug Investigation: [Error/Issue Summary]
+
+### Error Details
+- **Error**: [exception class / error message]
+- **Location**: [file:line where error occurs]
+- **Trigger**: [what user action / input causes it]
+
+### Root Cause
+[1-2 sentences explaining the actual cause]
+
+### Hypotheses Evaluated
+| # | Hypothesis | Verdict | Evidence |
+|---|-----------|---------|----------|
+| 1 | [cause] | ✅ Confirmed / ❌ Ruled out | [code reference] |
+
+### Fix Applied
+| File | Change | Reason |
+|------|--------|--------|
+| [path] | [what changed] | [why] |
+
+### Verification
+- [ ] Original error no longer occurs
+- [ ] Related tests pass
+- [ ] No regressions
+```
 - Consider Jakarta EE transaction boundaries and CDI scope impacts
 - Check if WireMock stubs need updating for integration tests
 - Think about backward compatibility for API changes

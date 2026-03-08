@@ -119,3 +119,46 @@ In multi-module projects (enterprise scale), understand module boundaries:
 - If investigation only (no code changes), list analyzed files + findings instead
 - If planning only (stories/PBIs), list generated artifacts instead
 
+## Principle 8: Verify Before Delivering — Build-Test-Lint Loop
+
+**Every agent that writes code MUST verify it works before presenting results.** Writing code without running it is incomplete work.
+
+### Verify-Fix Loop (MANDATORY after implementation)
+
+1. **BUILD**: Run build command → if fails, read error, fix, rebuild (max 3 retries)
+2. **TEST**: Run tests → if fails, analyze output, fix code or test, re-run (max 3 retries)
+3. **LINT**: Run linter → if fails, fix violations, re-run
+
+Only report completion after all 3 pass. If still failing after 3 retries: STOP, report the issue with full error output, ask user for guidance.
+
+### Stack-Specific Verify Commands
+
+| Stack | Build | Test | Lint |
+|-------|-------|------|------|
+| Java/Maven | `mvn compile` | `mvn test` | `mvn checkstyle:check` |
+| Java/Gradle | `./gradlew compileJava` | `./gradlew test` | `./gradlew checkstyleMain` |
+| .NET | `dotnet build` | `dotnet test` | `dotnet format --verify-no-changes` |
+| Python | `python -m py_compile` | `pytest` | `ruff check` or `flake8` |
+| TypeScript | `tsc --noEmit` | `npm test` or `vitest` | `eslint .` |
+| PHP | `composer install` | `./vendor/bin/phpunit` | `./vendor/bin/phpstan` |
+| Android/Kotlin | `./gradlew compileDebugKotlin` | `./gradlew testDebugUnitTest` | `./gradlew detekt` |
+| iOS/Swift | `xcodebuild build` | `xcodebuild test` | `swiftlint` |
+
+### Terminal Execution Rules
+
+- **ALWAYS run build after writing production code** — verify compilation
+- **ALWAYS run tests after writing test code** — verify they pass
+- **Parse terminal output** — read error messages, don't just check exit code
+- **Set reasonable timeouts** — build: 120s, test: 300s, lint: 60s
+- **Never run destructive commands** without user confirmation (`DROP TABLE`, `rm -rf`, `git push --force`)
+
+## Principle 9: Manage Context in Long Sessions
+
+In long agentic sessions (multi-step implementations, large features), actively manage context to prevent losing track of decisions:
+
+- **Save progress to file**: After each major phase, write progress to a working document
+- **Summarize before switching phases**: When moving from investigation to implementation, summarize key decisions
+- **Use todo lists**: Track which files have been created/modified
+- **Reference files over memory**: Write decisions to investigation docs, reference them during implementation
+- **Break large tasks**: If a feature touches 10+ files, implement in verifiable chunks (see Incremental Implementation in `orchestrate-development` skill)
+

@@ -30,6 +30,8 @@ For detailed step-by-step workflows, follow the `orchestrate-development` skill.
 | "dependency", "impact", "which modules" | `@dependency-analyzer` | Cross-module analysis |
 | "database", "schema", "migration", "query" | `@database-specialist` | Database operations |
 | "requirement", "story", "PBI", "acceptance criteria", "define feature" | `@business-analyst` | Requirements → Story/PBI → saved markdown |
+| "debug", "fix bug", "error", "exception", stack trace pasted, "not working" | `@investigator` (Debugging Mode) | Debug workflow → locate → fix → verify |
+| "TDD", "test first", "test-driven" | **Self (TDD mode)** | Write tests → implement → refactor → verify |
 | Full PBI / user story with acceptance criteria | **Self (full pipeline)** | End-to-end orchestration |
 | Vague / unclear requirement | **Ask clarifying questions** | Disambiguation |
 
@@ -81,11 +83,12 @@ If the user provides a well-defined PBI, **skip redundant questions**:
 ## Orchestration Pipeline
 
 ```
-Phase 1: RECEIVE & PARSE → Extract requirement, detect stack, clarify ambiguity
+Phase 1: RECEIVE & PARSE → Extract requirement, detect stack, detect mode (Standard/TDD/BugFix)
 Phase 2: INVESTIGATE → As-is/to-be, scenarios, impact, risk, estimation
 Phase 3: CONFIRM ⏸️ → Present structured report, wait for explicit user confirmation
-Phase 4: IMPLEMENT → Stack-adaptive, explain every decision, match existing patterns
+Phase 4: IMPLEMENT → Stack-adaptive, incremental verification, explain every decision
 Phase 5: TEST → 100% branch coverage, minimal mocking, test builders
+Phase 5.5: VERIFY & SELF-REVIEW → Build+test+lint loop, self-review all changes
 Phase 6: DOCUMENT & DELIVER → Structured markdown report with full traceability
 ```
 
@@ -197,3 +200,6 @@ Present structured investigation, then ask:
 - ❌ Using mocks when real objects work
 - ❌ Writing generic code that doesn't match project patterns
 - ❌ Not considering backward compatibility
+- ❌ Writing all code then testing at the end — verify incrementally
+- ❌ Presenting results without running build+test first
+- ❌ Skipping self-review before showing final report to user

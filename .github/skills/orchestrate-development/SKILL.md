@@ -27,10 +27,14 @@ Automatically detect and adapt to the project's tech stack:
 
 ## Workflow
 
-### Step 1: Parse Requirement
+### Step 1: Parse Requirement & Detect Mode
 - Extract what, why, scope, constraints, acceptance criteria
 - Detect tech stack from project files
 - Ask clarifying questions if ambiguous
+- **Detect implementation mode**:
+  - **Standard** (default): Investigate → Implement → Test → Verify → Review
+  - **TDD**: If user says "TDD" or "test first" → Write failing tests → Implement to pass → Refactor → Verify
+  - **Bug Fix**: If user provides error/stack trace → Reproduce → Locate → Fix → Verify → Regression check
 
 ### Step 2: Investigate
 - **Trace current code flow (as-is)** — follow the full call chain, understand what each layer handles
@@ -75,6 +79,17 @@ Universal rules:
 - Add proper documentation
 - Respect module boundaries
 
+#### Incremental Implementation (for features touching 5+ files)
+
+Break work into verifiable chunks — each chunk MUST pass build+test before proceeding:
+
+1. **Data layer**: DB migration + entity/model → BUILD → verify schema
+2. **Business layer**: Repository + service → BUILD + unit tests → RUN tests
+3. **API layer**: Controller/resource + integration → BUILD + API tests → RUN tests
+4. **Final**: Full test suite → lint → PR
+
+Do NOT write all files then test at the end — verify incrementally.
+
 ### Step 5: Write Unit Tests
 - Analyze ALL branches in implemented code
 - Create test builders/factories for entities/DTOs
@@ -86,6 +101,23 @@ Universal rules:
 - Use real objects wherever possible, minimize mocks
 - Target 100% branch coverage
 - Ensure all tests execute fast (<100ms each)
+
+### Step 5.5: Verify-Fix & Self-Review (MANDATORY)
+
+**After writing code + tests, MUST execute:**
+
+1. **Build**: Run build command → if fails, read error, fix, rebuild (max 3 retries)
+2. **Test**: Run test suite → if fails, analyze output, fix code or test, re-run (max 3 retries)
+3. **Lint**: Run linter → if fails, fix violations, re-run
+4. **Self-Review**: Re-read ALL files created/modified and check:
+   - Does each file follow existing codebase patterns?
+   - Is there duplicate validation across layers?
+   - Are all acceptance criteria covered?
+   - Do test names reflect business scenarios (not method names)?
+   - Is every new field in Entity reflected in DTO, mapper, and tests?
+
+If any issue found → fix BEFORE presenting to user.
+If still failing after 3 retries → STOP, report status with error output, ask user.
 
 ### Step 6: Generate PR Description & Commits
 - Generate conventional commit messages for each logical change
@@ -138,3 +170,10 @@ ALWAYS produce this structured markdown report:
 - **No duplicate logic across modules** (multi-module projects)
 - **Business logic confirmed** — changes match existing business rules
 - **PR description generated and review-ready**
+- **Verify-Fix loop passed** — build + test + lint all green
+- **Cross-file consistency verified**:
+  - [ ] Every new Entity field → has DTO field + mapper logic
+  - [ ] Every new endpoint → has corresponding test
+  - [ ] Every new service method → referenced in controller/resource
+  - [ ] Every new validation → has negative test case
+  - [ ] Method signatures consistent across interface ↔ implementation
