@@ -11,8 +11,10 @@ Auto-generate per-domain `.instructions.md` files from the codebase analysis rep
 
 - After `@codebase-analyzer` produces a domain map
 - For enterprise projects with 5+ business domains
+- For multi-module projects with 3+ modules that form distinct groups
+- For framework/library projects where modules have different conventions
 - During bootstrap pipeline Phase 5
-- Keywords: "generate domain instructions", "per-domain rules"
+- Keywords: "generate domain instructions", "per-domain rules", "module group instructions"
 
 ## Prerequisites
 
@@ -55,7 +57,10 @@ For each domain, scan code to extract:
 
 ### Step 3: Generate Instruction Files
 
-For each domain, write `.github/instructions/[stack]-[domain]-domain.instructions.md`:
+**For application projects**: `.github/instructions/[stack]-[domain]-domain.instructions.md`
+**For framework/library projects**: `.github/instructions/[module-group]-domain.instructions.md`
+
+For each domain or module group, write the instruction file:
 
 Template:
 ```markdown

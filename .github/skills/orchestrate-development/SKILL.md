@@ -36,11 +36,14 @@ Automatically detect and adapt to the project's tech stack:
 - **Trace current code flow (as-is)** — follow the full call chain, understand what each layer handles
 - **Identify layer responsibilities** — document which layer handles which validation to prevent duplication
 - **Confirm business logic alignment** — verify proposed changes match existing business rules
-- Design proposed solution (to-be)
+- Design proposed solution (to-be) with change table: Component | Change Type | File | Business Reason
 - Map all scenarios (happy path, errors, edge cases, concurrency)
-- Assess impact on existing code and database
+- Assess impact on existing code and database — produce impact matrix: Area | Impact Level (🔴🟡🟢) | Details
 - In multi-module projects, map module boundaries and responsibilities
 - Identify risks with mitigation plans
+- **Generate sequence diagrams** — MUST produce both:
+  - **As-Is diagram** — current flow traced from actual code
+  - **To-Be diagram** — proposed flow with change markers: 🆕 New (green box), ✏️ Modified (yellow box), ❌ Removed (red box)
 - **Estimate effort** — story points with task breakdown by layer
 
 ### Step 3: Confirm with User ⏸️
@@ -50,6 +53,11 @@ Automatically detect and adapt to the project's tech stack:
 - **Wait for explicit user confirmation before proceeding**
 
 ### Step 4: Implement (Stack-Adaptive)
+
+**Code Reasoning Rule**: For every file created or modified, explain the business reasoning BEFORE writing code:
+- "Adding `XxxService` because [business rule] needs a dedicated service"
+- "Using [pattern] because the codebase uses this approach (see `ExistingClass:L45`)"
+- "Not adding validation here — already handled by `@Valid` in `XxxController`"
 
 **Java/Jakarta EE**: Migration → Entity → DTO → Mapper → Repository → Service → Resource
 **Java/Spring Boot**: Migration → Entity → DTO → Mapper → Repository → Service → Controller
@@ -84,14 +92,40 @@ Universal rules:
 - Generate structured PR description with:
   - Summary, changes, testing notes, impact analysis, review checklist
 
-### Step 7: Generate Documentation
-- Create markdown report with: summary, files changed, API changes, test coverage, scenarios verified
-- Include architecture decisions (ADRs) for significant changes
+### Step 7: Final Report — Mandatory Output
 
-### Step 8: Final Summary
+ALWAYS produce this structured markdown report:
+
+```markdown
+## Summary of Changes
+
+### What Was Done
+| # | Action | File | Business Reason |
+|---|--------|------|----------------|
+| 1 | Created | [path] | [why this was needed] |
+
+### Business Rules Implemented
+- ✅ [Rule — enforced at which layer]
+
+### Sequence Diagram (Updated)
+[To-Be Mermaid diagram with 🆕✏️❌ markers and colored boxes]
+
+### Design Decisions
+| Decision | Alternatives | Rationale |
+|----------|-------------|----------|
+| [choice] | [options] | [why] |
+
+### What Was NOT Done (and why)
+- [item] — [reason]
+
+### Quick Verify
+[build/test command]
+```
+
+### Step 8: Estimation Accuracy
 - Report all deliverables (code files, test files, docs, migrations, PR description)
-- Provide quick verification command (stack-appropriate)
 - Compare estimated vs actual effort
+- Provide stack-appropriate verification command
 
 ## Validation
 - All production code compiles / passes static analysis

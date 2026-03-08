@@ -80,40 +80,75 @@ Extract from service classes, validators, entities, config:
 
 ### Step 5: Explain Entity Relationships
 
-```markdown
-## Data Model
-- Entity A (1) ──── (N) Entity B
-- Entity B (N) ──── (1) Entity C
+Generate a **Mermaid ER diagram** showing relationships:
 
+```mermaid
+erDiagram
+    ENTITY_A ||--o{ ENTITY_B : contains
+    ENTITY_B }o--|| ENTITY_C : "belongs to"
+    ENTITY_A {
+        Long id PK
+        String name
+        String status
+    }
+```
+
+Then explain each key entity:
+
+```markdown
 ### Key Entity: [Name]
 | Field | Type | Business Meaning |
 |-------|------|-----------------|
 | [field] | [type] | [meaning] |
 
 **State Transitions**: [if applicable]
+DRAFT → SUBMITTED → APPROVED → SHIPPED → COMPLETED
 ```
 
-### Step 6: Map External Integrations
+### Step 6: Generate Sequence Diagrams
 
-| System | Purpose | Protocol | Direction | Code Location |
-|--------|---------|----------|-----------|---------------|
-| [name] | [why] | [REST/JMS/etc] | [In/Out/Both] | [file] |
+For each major workflow, produce a **Mermaid sequence diagram**:
+- Use actual class names and method names from the code
+- Include ALL layers: Client → Controller → Service → Repository → DB
+- Show external calls, async operations, error paths
+- Use `activate`/`deactivate`, `alt`/`else`, `opt`, `par` as needed
 
-### Step 7: Provide Interactive Learning Path
+### Step 7: Map External Integrations
+
+| System | Purpose | Protocol | Direction | Error Handling | Code Location |
+|--------|---------|----------|-----------|---------------|---------------|
+| [name] | [why] | [REST/JMS/etc] | [In/Out/Both] | [retry/circuit breaker] | [file:line] |
+
+### Step 8: Save Report as Markdown File
+
+**CRITICAL: Save the learning output as a markdown file**, not just chat output.
+
+File path: `docs/exploration/[domain-or-feature]-overview.md`
+
+The saved file MUST include:
+- Domain map table
+- Entity relationship diagram (Mermaid ER)
+- Sequence diagrams for major workflows
+- Business rules table with code locations
+- External integrations map
+- Non-obvious behaviors / gotchas
+
+### Step 9: Provide Interactive Learning Path
 
 Offer next steps:
 1. Deep dive into a specific domain
 2. Trace a specific flow
 3. Understand a specific file/class
-4. See a sequence diagram
+4. See additional sequence diagrams
 5. Start working on a task
 
 ## Presentation Guidelines
 
 - **Business first, code second** — explain WHAT before WHERE
-- **Use tables and diagrams** — visual > paragraphs
+- **Use tables and Mermaid diagrams** — visual > paragraphs
 - **Include real code references** — file names, line numbers
-- **Explain WHY, not just WHAT** — business justification
-- **Highlight gotchas** — non-obvious behavior
+- **Explain WHY, not just WHAT** — business justification for design choices
+- **Highlight gotchas** — non-obvious behavior, hidden side-effects, tech debt
 - **Group by business domain** — not by technical layer
 - **Use the codebase's own terminology** — don't rename concepts
+- **Always save as file** — exploration output is reusable team knowledge

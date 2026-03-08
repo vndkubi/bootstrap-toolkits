@@ -72,13 +72,16 @@ This domain context enables all agents to make business-aware decisions when imp
 **Agent file format:**
 ```markdown
 ---
-name: '[Agent Name]'
+name: agent-name
 description: '[WHAT expertise + WHEN to use. Include keywords for discovery.]'
+agents: ['Sub Agent 1']  # only for orchestrator agents that delegate to sub-agents
 ---
 
 You are a [ROLE] expert specializing in [DOMAIN].
 [Include detected tech stack, conventions, patterns]
 ```
+
+> **⚠️ Do NOT include `tools:` or `mode:` in generated agent frontmatter.** Only `name`, `description`, and `agents` (for orchestrators) are valid fields.
 
 ### Phase 4: Generate Skills
 

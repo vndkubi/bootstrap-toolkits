@@ -18,6 +18,8 @@ For detailed step-by-step workflows, follow the `orchestrate-development` skill.
 |---|---|---|
 | "implement", "build", "create feature", "add endpoint" | Stack-specific implementor | Direct implementation |
 | "investigate", "analyze impact", "what would change" | `@investigator` | Investigation before implementation |
+| "explore", "explain API", "how does X work", "trace flow", "understand" | `@investigator` (Exploration Mode) | Codebase exploration → saved markdown report |
+| "learn codebase", "onboard me", "explain this project" | `@codebase-analyzer` + `learn-codebase` skill | Full codebase learning → saved markdown report |
 | "write tests", "add coverage", "test this" | `@test-specialist` or `@mobile-test-specialist` | Focused test generation |
 | "review", "check code", "look at my changes" | `@code-reviewer` | Code review |
 | "diagram", "visualize flow", "sequence" | `@sequence-diagrammer` | Visualization |
@@ -78,11 +80,45 @@ If the user provides a well-defined PBI, **skip redundant questions**:
 ```
 Phase 1: RECEIVE & PARSE → Extract requirement, detect stack, clarify ambiguity
 Phase 2: INVESTIGATE → As-is/to-be, scenarios, impact, risk, estimation
-Phase 3: CONFIRM ⏸️ → Present findings, wait for explicit user confirmation
-Phase 4: IMPLEMENT → Stack-adaptive, layer-by-layer, match existing patterns
+Phase 3: CONFIRM ⏸️ → Present structured report, wait for explicit user confirmation
+Phase 4: IMPLEMENT → Stack-adaptive, explain every decision, match existing patterns
 Phase 5: TEST → 100% branch coverage, minimal mocking, test builders
-Phase 6: DOCUMENT & DELIVER → Implementation report, PR description, commits
+Phase 6: DOCUMENT & DELIVER → Structured markdown report with full traceability
 ```
+
+### Phase 2: Investigation — Mandatory Output
+
+**Every investigation MUST produce this structured output:**
+
+1. **As-Is Analysis** — Read and trace actual code. For each component:
+   - File path + line numbers
+   - What this component does (responsibility)
+   - Current validations/business rules it enforces
+   - Current tests covering it
+
+2. **To-Be Analysis** — Proposed changes:
+
+   | Component | Change | File | Reason |
+   |-----------|--------|------|--------|
+   | [name] | New/Modify/Delete | [path] | [business justification] |
+
+3. **Impact Matrix**:
+
+   | Affected Area | Impact Level | Details |
+   |--------------|-------------|--------|
+   | [module/service/table] | 🔴 High / 🟡 Medium / 🟢 Low | [what breaks or changes] |
+
+4. **Sequence Diagram** — MUST include both:
+   - **As-Is diagram** — current flow traced from code
+   - **To-Be diagram** — proposed flow with change markers:
+     - 🆕 New component/interaction (green box `rect rgb(200, 255, 200)`)
+     - ✏️ Modified interaction (yellow box `rect rgb(255, 255, 200)`)
+     - ❌ Removed interaction (red box `rect rgb(255, 200, 200)`)
+
+5. **Risk Assessment**:
+
+   | Risk | Probability | Impact | Mitigation |
+   |------|------------|--------|------------|
 
 ### Phase 3: Mandatory Checkpoint — DO NOT SKIP
 
@@ -90,6 +126,50 @@ Present structured investigation, then ask:
 > **Does this analysis look correct? Should I proceed with implementation?**
 
 **Do NOT proceed to Phase 4 until the user explicitly confirms.**
+
+## Phase 4: Implementation — Code Reasoning Required
+
+**CRITICAL: For every file created or modified, explain the business reasoning BEFORE writing code:**
+
+- **Creating a file**: "Adding `XxxService` because [business rule] needs a dedicated service — existing `YyyService` handles [other concern]."
+- **Choosing a pattern**: "Using `BigDecimal` because the codebase uses exact arithmetic for financial data (see `PriceCalculator:L45`)."
+- **Adding validation**: "Adding credit limit check because the business rule states [constraint]."
+- **Skipping something**: "Not adding validation here — already handled by `@Valid` in `XxxController` (line 23)."
+- **Following a pattern**: "Same approach as `PaymentService.processPayment()` at line 89."
+
+> **Never make silent decisions** — every code choice must have a traceable business justification.
+
+## Phase 6: Final Report — Mandatory Output
+
+**After completing implementation, ALWAYS produce this structured markdown report:**
+
+```markdown
+## Summary of Changes
+
+### What Was Done
+| # | Action | File | Business Reason |
+|---|--------|------|----------------|
+| 1 | Created | [path] | [why this was needed] |
+| 2 | Modified | [path] | [what changed and why] |
+
+### Business Rules Implemented
+- ✅ [Rule 1 — enforced at Service layer]
+- ✅ [Rule 2 — enforced at DB constraint]
+
+### Sequence Diagram (Updated)
+[Include to-be Mermaid diagram with 🆕✏️❌ markers]
+
+### Design Decisions
+| Decision | Alternatives Considered | Rationale |
+|----------|------------------------|----------|
+| [choice] | [option A vs B] | [why this was chosen] |
+
+### What Was NOT Done (and why)
+- [item] — [reason it was out of scope or already handled]
+
+### Quick Verify
+[Stack-appropriate build/test command]
+```
 
 ## Universal Code Quality Standards
 

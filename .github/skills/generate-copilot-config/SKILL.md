@@ -51,8 +51,10 @@ Delegate to `@codebase-analyzer` or use the `analyze-codebase` skill. This phase
 | **Small** | ≤ 5 source files, 1 module | Minimal: merged `copilot-instructions.md` + 1 implementor + 1 test agent |
 | **Standard** | ≤ 100 files, 1-3 modules | Standard: + investigator, code-reviewer, dev-orchestrator |
 | **Enterprise** | 5+ domains OR 10+ modules | Full suite + domain-scoped instructions + enterprise agents |
+| **Framework/Library** | Published as library/framework, not deployed as application | Treat as Enterprise for instruction generation; focus on API design, backward compat, contributor guidelines |
 
 > This classification determines what gets generated in Phases 4-11. It MUST happen before generation.
+> **Note**: Framework/Library projects with 3+ modules should generate domain-scoped instructions (Phase 5) regardless of domain count.
 
 ## Phase 3: DOMAIN — Business Domain Deep Analysis
 
@@ -75,15 +77,30 @@ Create `.github/copilot-instructions.md` (≤ 4 KB):
 - Domain overview with glossary (for Standard/Enterprise)
 - Module map with cross-references (for Enterprise)
 
-## Phase 5: GEN Domain-Scoped Instructions (Enterprise only)
+## Phase 5: GEN Domain-Scoped Instructions
 
-**Skip if Small or Standard.**
+**Trigger conditions** (generate if ANY are true):
+- Enterprise classification (5+ domains)
+- Multi-module project (3+ modules with distinct module groups)
+- Framework/Library project with module groups (e.g., core, web, data, messaging)
+
+**Skip if**: Small project with ≤ 1 module and ≤ 1 domain.
 
 Use `domain-registry` skill to:
-1. Auto-scan source code → detect domains
+1. Auto-scan source code → detect domains or module groups
 2. Generate `.github/domains/domain-registry.json`
 3. Generate per-domain `.instructions.md` with narrow `applyTo` patterns
 4. Each ≤ 4 KB with domain rules, entities, patterns, glossary
+
+**For framework/library projects**, generate per-module-group instructions:
+
+| Module Group | Instruction File | applyTo Example |
+|---|---|---|
+| Core modules | `core-domain.instructions.md` | `**/spring-core/**/*.java,**/spring-beans/**/*.java` |
+| Web modules | `web-domain.instructions.md` | `**/spring-web*/**/*.java` |
+| Data modules | `data-domain.instructions.md` | `**/spring-jdbc/**/*.java,**/spring-orm/**/*.java` |
+
+**For application projects**, generate per-business-domain instructions (existing behavior).
 
 ## Phase 6: GEN Language/Framework Instructions
 
@@ -110,6 +127,17 @@ Generate `.github/instructions/*.instructions.md` with correct `applyTo` globs:
 > **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/agents/*.agent.md` files first. Then create NEW agent files with content specific to THIS project's tech stack, patterns, and conventions from Phases 1-3. Do NOT copy or reuse content from the bootstrap toolkit templates.
 
 Use the `generate-agents` prompt as a guide for agent file format and detection logic.
+
+**Agent frontmatter format:**
+```yaml
+---
+name: agent-name
+description: "What the agent does, including project-specific tech stack keywords"
+agents: ["Sub Agent 1", "Sub Agent 2"]  # only for orchestrator agents that delegate
+---
+```
+
+> **⚠️ Do NOT include `tools:` or `mode:` fields in generated agent frontmatter.** These are not needed in generated output. Only `name`, `description`, and `agents` (for orchestrators) are valid fields.
 
 Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 - Reference the **actual tech stack** detected in Phase 1 (e.g., "Java 11, Jakarta EE 8, Maven" not "Java")
@@ -256,7 +284,7 @@ If triggered, generate `.github/copilot/` workflow files:
 ## Phase 12: VALIDATE — 3-Tier Validation
 
 ### Tier 1: Structural Validation
-- [ ] All `.agent.md` have valid YAML frontmatter (`name`, `description`, `tools`)
+- [ ] All `.agent.md` have valid YAML frontmatter (`name`, `description`; `agents:` list for orchestrators only; NO `tools:` or `mode:` fields)
 - [ ] All `SKILL.md` have `name` and `description` (10-1024 chars)
 - [ ] All `.instructions.md` have `description` and `applyTo` globs
 - [ ] All `.prompt.md` have valid frontmatter
