@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Analyze current codebase and generate a complete GitHub Copilot configuration — agents, skills, instructions, hooks, agentic workflows, and copilot-instructions.md. Full 14-phase bootstrap pipeline from source code analysis to validated output.'
 ---
 

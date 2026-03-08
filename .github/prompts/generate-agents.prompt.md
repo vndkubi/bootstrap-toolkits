@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Generate custom Copilot agents tailored to the current codebase. Detects tech stack and creates agent files with proper frontmatter, role instructions, and patterns from the existing source code.'
 ---
 

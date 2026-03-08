@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Learn and understand the business domains, workflows, rules, and data flows in the current codebase. Interactive onboarding guide for new team members.'
 ---
 

@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Generate reusable workflow skills from current codebase patterns. Detects developer workflows like testing, implementation, review, and deployment, then creates SKILL.md files with step-by-step instructions.'
 ---
 

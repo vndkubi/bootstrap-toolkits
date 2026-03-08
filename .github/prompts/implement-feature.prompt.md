@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Full feature implementation workflow: analyze requirement → investigate codebase → confirm with user → implement code → write unit tests (100% branch coverage) → generate documentation.'
 ---
 
