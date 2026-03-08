@@ -155,6 +155,7 @@ Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 | Detection | Agent | Must Include |
 |---|---|---|
 | Complex domains (5+ entities) | `investigator` | Actual domain entities and relationships |
+| Complex domains (5+ entities) | `business-analyst` | Actual domain entities, personas, workflows |
 | Multi-layer architecture | `sequence-diagrammer` | Actual layer structure |
 | Database / migrations | `database-specialist` | Actual DB type and migration tool |
 | WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |

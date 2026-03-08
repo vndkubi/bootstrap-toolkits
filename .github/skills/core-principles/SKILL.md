@@ -70,28 +70,52 @@ In multi-module projects (enterprise scale), understand module boundaries:
 
 ## Principle 7: Explain Decisions & Report Outcomes
 
-**Every agent MUST explain its decisions and provide a structured summary.**
+**Every agent MUST explain its decisions during execution AND produce a structured completion report.**
 
 ### During Execution
 - Before each major action, state what you're doing and why
 - When choosing between alternatives, explain the trade-off
 - When skipping something, explain why
 
-### Post-Execution Summary
-```markdown
-## Summary of Changes
+### Completion Report — MANDATORY
 
-### What Was Done
-| # | Action | File | Reason |
-|---|--------|------|--------|
+**Every agent MUST produce this completion table after finishing work.** This is NOT optional.
+
+**Trigger**: Any time an agent completes a task that involves code changes, investigation, analysis, or planning.
+
+```markdown
+## ✅ Completion Report
+
+### Work Summary
+| # | Action | File/Artifact | Description | Business Reason |
+|---|--------|--------------|-------------|----------------|
+| 1 | Created | `src/.../XxxService.java` | New service for order validation | PBI-123: Order limit check |
+| 2 | Modified | `src/.../OrderController.java` | Added new endpoint | PBI-123: Expose validation API |
+| 3 | Created | `test/.../XxxServiceTest.java` | Unit tests (12 tests, 100% branch) | Quality gate |
 
 ### Business Rules Implemented
-- ✅ [rule 1]
+- ✅ [Rule 1 — enforced at which layer, code location]
+- ✅ [Rule 2 — enforced at which layer, code location]
 
 ### Design Decisions
 | Decision | Alternatives Considered | Rationale |
 |----------|------------------------|----------|
+| [choice made] | [option A vs B vs C] | [why this was the best choice] |
 
 ### What Was NOT Done (and why)
-- [item] — [reason]
+- [item] — [reason: out of scope / already handled / deferred to next sprint]
+
+### Metrics
+- Files created: [N]
+- Files modified: [N]
+- Tests added: [N]
+- Test coverage: [%] branch coverage
+- Estimated effort: [X] SP → Actual: [Y] hours
 ```
+
+**Rules:**
+- The table must list EVERY file that was created, modified, or deleted
+- Each row must have a business reason — not just "added code"
+- If investigation only (no code changes), list analyzed files + findings instead
+- If planning only (stories/PBIs), list generated artifacts instead
+
