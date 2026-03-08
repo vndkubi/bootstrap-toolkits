@@ -107,29 +107,45 @@ Generate `.github/instructions/*.instructions.md` with correct `applyTo` globs:
 
 ## Phase 7: GEN Agents
 
-Create `.github/agents/*.agent.md` (≤ 10 KB each).
+> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/agents/*.agent.md` files first. Then create NEW agent files with content specific to THIS project's tech stack, patterns, and conventions from Phases 1-3. Do NOT copy or reuse content from the bootstrap toolkit templates.
 
-**Always generate:**
-- `dev-orchestrator` — single entry point, auto-routes to sub-agents
-- `code-reviewer` — PR/code review with severity ratings
+Use the `generate-agents` prompt as a guide for agent file format and detection logic.
 
-**Generate based on detection:**
+Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
+- Reference the **actual tech stack** detected in Phase 1 (e.g., "Java 11, Jakarta EE 8, Maven" not "Java")
+- Include **actual coding patterns** from Phase 1 (e.g., real package names, real class naming patterns)
+- Include **actual business domain context** from Phase 3 (e.g., domain glossary terms, entity names)
 
-| Detection | Agents to Generate |
-|---|---|
-| Any project | `implementor` (stack-specific), `test-specialist` |
-| Database / migrations | `database-specialist` |
-| Complex domains (5+ entities/domain) | `investigator`, `sequence-diagrammer` |
-| WireMock / external APIs | `mock-data-specialist` |
-| 10+ modules / Enterprise | `dependency-analyzer`, `codebase-analyzer` |
-| Multiple tech stacks | Stack-specific implementors (dotnet, python, php, frontend) |
-| Mobile platform detected | `mobile-implementor`, `mobile-test-specialist`, `mobile-architect` |
+**Always generate these core agents:**
+- `dev-orchestrator` — single entry point with `agents:` field listing ALL generated agents
+- `implementor` — stack-specific, referencing actual framework patterns
+- `test-specialist` — using project's actual test framework and patterns
+- `code-reviewer` — with project-specific review checklist
 
-**Dev Orchestrator wiring (CRITICAL):** The generated `dev-orchestrator.agent.md` MUST have `agents:` field listing ALL other generated agent names, so it can auto-delegate.
+**Conditionally generate based on Phase 1 detection:**
+
+| Detection | Agent | Must Include |
+|---|---|---|
+| Complex domains (5+ entities) | `investigator` | Actual domain entities and relationships |
+| Multi-layer architecture | `sequence-diagrammer` | Actual layer structure |
+| Database / migrations | `database-specialist` | Actual DB type and migration tool |
+| WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |
+| 10+ modules / Enterprise | `dependency-analyzer` | Actual module list and dependencies |
+| Mobile platform | `mobile-implementor` | Platform-specific patterns |
+
+**Dev Orchestrator wiring (CRITICAL):** The `dev-orchestrator.agent.md` `agents:` field MUST list ALL other generated agent names.
 
 ## Phase 8: GEN Skills
 
-Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each).
+> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/skills/*/SKILL.md` directories first. Then create NEW skill directories with content specific to THIS project. Do NOT copy bootstrap toolkit skills.
+
+Use the `generate-skills` prompt as a guide for skill file format and detection logic.
+
+Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each). Each skill MUST:
+- Reference **actual build commands** (e.g., `mvn clean verify -pl module-name` not `build`)
+- Reference **actual test commands** (e.g., `mvn test -Dtest=OrderServiceTest` not `run tests`)
+- Reference **actual project directory structure** (e.g., `src/main/java/com/company/...`)
+- Reference **actual framework patterns** (e.g., "Entity → DAO → Service → Resource" for Jakarta EE)
 
 **Auto-select based on detected capabilities:**
 
@@ -138,18 +154,64 @@ Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each).
 | Any project | `implement-feature`, `generate-unit-tests`, `review-code-changes` |
 | CI/CD pipeline exists | `generate-pr-description`, `conventional-commit` |
 | 3+ modules | `orchestrate-development`, `investigate-pbi`, `estimate-effort` |
-| Sprint/agile tool references (Jira, Azure DevOps) | `sprint-planning` |
-| Complex domain (5+ entities/domain) | `generate-sequence-diagram`, `generate-adr` |
+| Sprint/agile references | `sprint-planning` |
+| Complex domain (5+ entities) | `generate-sequence-diagram` |
 | WireMock / mock dependencies | `generate-wiremock` |
-| `.devcontainer/` exists or requested | `optimize-devcontainer` |
-| Enterprise classification | `domain-registry`, `impact-analysis`, `context-budget-check` |
-| Tech debt indicators (TODOs, deprecated code) | `technical-debt-analysis` |
+| Enterprise classification | `impact-analysis` |
+| Tech debt indicators | `technical-debt-analysis` |
+
+### Stack-Specific Skill Customization (CRITICAL)
+
+Skills MUST contain stack-specific content. The same skill name produces DIFFERENT content depending on the detected tech stack.
+
+**`implement-feature` — Implementation order per stack:**
+
+| Stack | Implementation Order in Skill |
+|---|---|
+| Java / Jakarta EE | DB Migration → `@Entity` + JPA annotations → DAO (`@Stateless`) → Service (`@Inject`) → `@Path` Resource → CDI event |
+| Java / Spring Boot | Migration → Entity → DTO + MapStruct → Repository → Service (`@Transactional`) → Controller → Config |
+| .NET / ASP.NET Core | Entity + EF Config → Migration → DTO → FluentValidation → Repository → Service/MediatR Handler → Controller → DI registration |
+| Python / Django | Model → Migration → Serializer → Service/Selector → View/ViewSet → URL config → Admin registration |
+| Python / FastAPI | SQLAlchemy Model → Alembic Migration → Pydantic Schema → Repository → Service → Dependencies → Router |
+| TypeScript / React | Types/Interfaces → API service → Custom Hook → Component → Storybook → Page route |
+| TypeScript / Next.js | Types → Server Action or Route Handler → Data fetching → Component → Page → Layout |
+| PHP / Laravel | Model + fillable/casts → Migration → FormRequest → API Resource → Service → Controller → Route |
+| PHP / Symfony | Entity + ORM mapping → Migration → DTO → Validator → Repository → Service → Controller → Route annotation |
+| Android / Kotlin | Room Entity + DAO → Repository → UseCase → ViewModel → Compose UI → Navigation → Hilt module |
+| iOS / Swift | SwiftData Model → Repository → Service → ViewModel (`@Observable`) → SwiftUI View → Navigation |
+| Kotlin Multiplatform | Shared: expect/actual → Repository → UseCase → Android ViewModel + iOS ObservableObject |
+
+**`generate-unit-tests` — Test framework per stack:**
+
+| Stack | Test Config in Skill |
+|---|---|
+| Java | JUnit 5 + `@Nested` + `@DisplayName` + AssertJ + Mockito (`@ExtendWith`) + `@ParameterizedTest` |
+| .NET | xUnit + `[Fact]`/`[Theory]` + FluentAssertions + Moq + nested classes |
+| Python | pytest + `@pytest.fixture` + `factory_boy` + `pytest-asyncio` + parametrize |
+| TypeScript / React | Vitest or Jest + React Testing Library + `render()`/`screen`/`userEvent` + MSW for API mocks |
+| PHP | PHPUnit or Pest + Model Factories + `RefreshDatabase` + mock facades |
+| Android / Kotlin | JUnit 5 + Turbine (Flow testing) + MockK + Hilt test + Compose testing (`createComposeRule`) |
+| iOS / Swift | XCTest + Swift Testing (`@Test`) + async/await testing + ViewInspector for SwiftUI |
+
+**`review-code-changes` — Review focus per stack:**
+
+| Stack | Review Focus Areas in Skill |
+|---|---|
+| Java / Jakarta EE | CDI scope correctness, JPA lazy/eager loading, transaction boundaries, JNDI naming |
+| .NET | EF query performance (N+1), DI lifetime (Scoped/Transient/Singleton), async/await patterns |
+| Python | Type hint completeness, async context managers, SQLAlchemy session handling, Pydantic validation |
+| TypeScript / React | Hook dependency arrays, re-render optimization, proper error boundaries, accessibility |
+| PHP | Eloquent N+1 (eager loading), mass assignment guards, middleware ordering |
+| Android / Kotlin | Compose recomposition, coroutine scope lifecycle, state hoisting, memory leaks |
+| iOS / Swift | Actor isolation, Sendable conformance, memory ownership (@Observable vs @State), accessibility |
 
 ## Phase 9: GEN Prompts
 
+> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/prompts/*.prompt.md` files first. Create NEW prompts for this project.
+
 Create `.github/prompts/*.prompt.md` (≤ 3 KB each):
-- Always: `bootstrap-copilot`, `analyze-project`, `implement-feature`
-- If complex codebase: `learn-codebase`
+- Always: `implement-feature` (entry point to dev-orchestrator)
+- If complex codebase: `learn-codebase` (entry point to understand this project)
 - Each prompt is an entry point only — delegates to agents + skills for real work
 
 ## Phase 10: GEN Hooks
@@ -234,15 +296,110 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 
 ## Phase 14: Cleanup & Final Report
 
-Delete bootstrap toolkit files, keep only project-specific generated config.
+> **This phase is CRITICAL.** The bootstrap toolkit ships with template files that were used DURING generation. ALL template files must be deleted. Only project-specific generated files remain.
 
-Output:
+### Step 1: Delete ALL Bootstrap Toolkit Template Files
+
+**Delete these bootstrap template agents** (ALL of them — they are toolkit templates, NOT project agents):
+```
+.github/agents/agent-generator.agent.md
+.github/agents/codebase-analyzer.agent.md
+.github/agents/conductor.agent.md
+.github/agents/devcontainer-reviewer.agent.md
+.github/agents/dotnet-implementor.agent.md
+.github/agents/frontend-implementor.agent.md
+.github/agents/mobile-architect.agent.md
+.github/agents/mobile-implementor.agent.md
+.github/agents/mobile-test-specialist.agent.md
+.github/agents/mock-data-specialist.agent.md
+.github/agents/php-implementor.agent.md
+.github/agents/pr-manager.agent.md
+.github/agents/python-implementor.agent.md
+.github/agents/refactoring-specialist.agent.md
+.github/agents/sequence-diagrammer.agent.md
+.github/agents/sprint-planner.agent.md
+.github/agents/dependency-analyzer.agent.md
+.github/agents/database-specialist.agent.md
+```
+
+**Delete these bootstrap template skills** (ALL skill directories):
+```
+.github/skills/analyze-codebase/
+.github/skills/context-budget-check/
+.github/skills/conventional-commit/
+.github/skills/core-principles/
+.github/skills/domain-registry/
+.github/skills/estimate-effort/
+.github/skills/generate-adr/
+.github/skills/generate-agentic-workflow/
+.github/skills/generate-copilot-config/
+.github/skills/generate-domain-instructions/
+.github/skills/generate-hooks/
+.github/skills/generate-mobile-tests/
+.github/skills/generate-pr-description/
+.github/skills/generate-sequence-diagram/
+.github/skills/generate-unit-tests/
+.github/skills/generate-wiremock/
+.github/skills/impact-analysis/
+.github/skills/implement-feature/
+.github/skills/implement-mobile-feature/
+.github/skills/investigate-pbi/
+.github/skills/learn-codebase/
+.github/skills/optimize-devcontainer/
+.github/skills/orchestrate-development/
+.github/skills/review-code-changes/
+.github/skills/sprint-planning/
+.github/skills/technical-debt-analysis/
+```
+
+**Delete these bootstrap template instructions** (ALL of them):
+```
+.github/instructions/*.instructions.md  (all 23 files)
+```
+
+**Delete these bootstrap template prompts** (ALL of them):
+```
+.github/prompts/bootstrap-copilot.prompt.md
+.github/prompts/generate-agents.prompt.md
+.github/prompts/generate-skills.prompt.md
+.github/prompts/generate-instructions.prompt.md
+.github/prompts/analyze-project.prompt.md
+.github/prompts/implement-feature.prompt.md
+.github/prompts/learn-codebase.prompt.md
+```
+
+**Delete the bootstrap copilot-instructions.md** (replaced by project-specific version in Phase 4):
+```
+.github/copilot-instructions.md  (the template version)
+```
+
+**Delete bootstrap documentation:**
+```
+docs/enterprise-guide.md
+docs/context-budget-guide.md
+```
+
+### Step 2: Verify Only Project-Specific Files Remain
+
+After cleanup, `.github/` should contain ONLY files generated in Phases 4-11:
+- `copilot-instructions.md` — generated in Phase 4, project-specific
+- `agents/` — generated in Phase 7, project-specific
+- `skills/` — generated in Phase 8, project-specific
+- `instructions/` — generated in Phase 6, project-specific
+- `prompts/` — generated in Phase 9, project-specific
+- `hooks/` — generated in Phase 10, project-specific
+- `domains/` — generated in Phase 5, Enterprise only
+
+**Verification**: List all remaining files. If ANY file contains generic/template content (not referencing this project's actual tech stack, entities, or patterns), it was not properly generated — delete and regenerate.
+
+### Step 3: Final Report
+
 ```
 ✅ Bootstrap Complete!
 📁 .github/
-├── copilot-instructions.md
-├── agents/ ([count] agents)
-├── skills/ ([count] skills)
+├── copilot-instructions.md  ← [project name] index card
+├── agents/ ([count] project-specific agents)
+├── skills/ ([count] project-specific skills)
 ├── instructions/ ([count] instruction files)
 ├── prompts/ ([count] prompts)
 └── hooks/ ([count] hooks)
@@ -253,11 +410,12 @@ Classification: [Small/Standard/Enterprise]
 Domains detected: [count]
 Context budget: [worst-case KB] / 45 KB max
 Validation: [passed/N issues fixed]
-```
 
 🧹 Cleanup:
-- Deleted [N] bootstrap agents
-- Deleted [N] bootstrap skills  
-- Deleted [N] bootstrap instructions
-- Deleted bootstrap prompts/
-- Created [N] project-specific configs
+- Deleted [N] bootstrap template agents
+- Deleted [N] bootstrap template skills
+- Deleted [N] bootstrap template instructions
+- Deleted [N] bootstrap template prompts
+- Deleted bootstrap copilot-instructions.md + docs/
+- Remaining: [N] project-specific generated files
+```
