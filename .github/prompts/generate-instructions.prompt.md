@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Generate coding standard instruction files from current codebase conventions. Scans source files to detect naming, error handling, import, and logging patterns, then creates .instructions.md files with applyTo glob patterns.'
 ---
 

@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Analyze current codebase and generate a complete GitHub Copilot configuration — agents, skills, instructions, hooks, agentic workflows, and copilot-instructions.md. Full bootstrap pipeline from source code analysis to validated output.'
 ---
 
@@ -712,7 +712,7 @@ Create `.github/prompts/` with project-specific prompt files for common workflow
 **Prompt file format:**
 ```markdown
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Clear description of what this prompt does and when to use it (10-1024 chars)'
 ---
 
