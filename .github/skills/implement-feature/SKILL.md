@@ -59,6 +59,8 @@ Before writing code, examine:
 7. **REST Resource** — Endpoint with validation, documentation
 8. **Configuration** — Properties, CDI producers if needed
 
+**Incremental verification (for 5+ files):** After completing each layer group (data → business → API), run `mvn compile` to verify before proceeding. Do NOT write all layers then compile at the end.
+
 ### Step 4: Write Unit Tests
 
 For each new/modified class:
@@ -67,13 +69,16 @@ For each new/modified class:
 - Cover all business logic branches
 - Follow existing test patterns in the project
 
-### Step 5: Verify
+### Step 5: Verify (MANDATORY)
 
-Run:
-- `mvn compile` — compilation check
-- `mvn test` — unit tests
-- `mvn verify` — integration tests (if applicable)
-- Check for any new linting/checkstyle warnings
+Execute the Verify-Fix Loop — do NOT skip:
+1. `mvn compile` — compilation check → if fails, fix and retry (max 3)
+2. `mvn test` — unit tests → if fails, analyze output, fix, retry (max 3)
+3. `mvn verify` — integration tests (if applicable)
+4. Check for any new linting/checkstyle warnings
+
+Only proceed to report/PR after all checks pass.
+If still failing after 3 retries: STOP, report the error, ask user.
 
 ## Validation
 
@@ -87,3 +92,10 @@ Run:
 - [ ] No compilation errors
 - [ ] No test failures
 - [ ] JavaDoc added for public APIs
+- [ ] **Verify-Fix loop passed** — build + test + lint all green
+- [ ] **Cross-file consistency**:
+  - [ ] Every new Entity field → has DTO field + mapper logic
+  - [ ] Every new endpoint → has corresponding test
+  - [ ] Every new service method → referenced in resource
+  - [ ] Every new validation → has negative test case
+  - [ ] Method signatures consistent across interface ↔ implementation
