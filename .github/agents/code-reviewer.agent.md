@@ -132,6 +132,33 @@ When code changes touch **abstract classes, base classes, shared DTOs, filters, 
 - Are edge cases tested?
 - Is mocking used minimally?
 
+#### Business Scenario Test Verification (🔴 Critical Check)
+For each business scenario the code change introduces or modifies, **verify a corresponding test exists and has been executed**:
+
+- **Derive scenarios from the code change** — for each `if/else`, status transition, validation rule, or business calculation, ask: "Is there a test proving this works?"
+- **Check scenario coverage table**:
+
+  | # | Business Scenario | Test Exists? | Test Name / Location | Verified? |
+  |---|-------------------|-------------|---------------------|-----------|
+  | 1 | Happy path — [describe] | ✅ / ❌ | `XxxServiceTest.should_xxx()` | ✅ Passed / ❌ Not run |
+  | 2 | Error — invalid input | ✅ / ❌ | | |
+  | 3 | Edge — boundary value | ✅ / ❌ | | |
+  | 4 | Edge — concurrent access | ✅ / ❌ | | |
+  | 5 | Business rule — [specific rule] | ✅ / ❌ | | |
+
+- **Flag as 🔴 Critical** if:
+  - A new business rule has NO test at all (e.g., discount calculation added but never tested)
+  - A status transition path exists in code but no test exercises it
+  - A validation rule is added but no test verifies rejection with invalid input
+  - An existing test was modified to "make it pass" instead of testing the actual business behavior
+- **Flag as 🟡 Warning** if:
+  - Tests exist but only cover happy path — no error/edge cases
+  - Tests mock the service under test's own dependencies so heavily that the business logic is never actually executed
+  - Test names don't describe the business scenario (e.g., `test1()` instead of `should_reject_order_when_credit_limit_exceeded()`)
+
+**Ask the author**: "Have you manually verified these scenarios? Which ones passed/failed during development?"
+> The goal is not just "does a test file exist" but "has the developer actually run and verified the business scenarios match expected behavior."
+
 ### Step 3: Check Cross-Cutting Concerns
 
 - Database migrations: Are they reversible? Oracle-specific syntax correct?
@@ -139,6 +166,38 @@ When code changes touch **abstract classes, base classes, shared DTOs, filters, 
 - API changes: Backward compatible? Documentation updated?
 - Dependencies: Any new dependencies? Are they justified?
 - WireMock stubs: Do they need updating?
+
+### Step 4: Client-Side Impact Verification
+
+**When API request/response, shared DTOs, error codes, or status flows change**, verify the impact on ALL clients consuming the API:
+
+#### 4a. Identify ALL Clients
+- Frontend apps (React, Angular, Vue) — check API service files, hooks, stores
+- Mobile apps (Android, iOS) — check Retrofit/Alamofire clients, data models
+- Other backend services — check Feign clients, RestTemplate, WebClient usages
+- Third-party integrations — check partner API documentation, webhook consumers
+- SDK/library consumers — check published client libraries
+
+#### 4b. Client Verification Checklist
+
+| # | Check | Status |
+|---|-------|--------|
+| 1 | **Field rename/remove**: Do clients still bind to the old field name? | ✅ / ❌ / N/A |
+| 2 | **New required field**: Do clients send this field? Will older app versions fail? | ✅ / ❌ / N/A |
+| 3 | **Validation rule change**: Does the client do pre-validation that now conflicts? (e.g., client allows 100 chars but server now limits to 50) | ✅ / ❌ / N/A |
+| 4 | **Error code/format change**: Does the client handle the new error code? Does the error message format match what the client parses? | ✅ / ❌ / N/A |
+| 5 | **Status/enum value change**: Does the client's UI/logic cover the new status? (e.g., new `PARTIALLY_SHIPPED` status — does the client render it or crash?) | ✅ / ❌ / N/A |
+| 6 | **Response structure change**: Does the client destructure the response correctly? (e.g., data moved from `response.data` to `response.data.items`) | ✅ / ❌ / N/A |
+| 7 | **Pagination/sorting change**: Does the client's infinite scroll or table sorting still work? | ✅ / ❌ / N/A |
+| 8 | **Auth/permission change**: Does the client handle 403 for endpoints that previously returned 200? | ✅ / ❌ / N/A |
+
+#### 4c. Flag Criteria
+- **🔴 Critical**: API contract change with NO corresponding client update in the same PR/sprint — breaking change ships without client fix
+- **🔴 Critical**: New enum/status value added but client has exhaustive switch/when — client crashes on unknown value
+- **🟡 Warning**: Client does local validation that may become out-of-sync with server changes (e.g., client regex vs server regex for email)
+- **🟡 Warning**: Error response format changed but no client error-handling update visible
+
+**Ask the author**: "Which clients consume this API? Have the client teams been notified of this change? Is there a client-side PR coordinated with this one?"
 
 ## Output Format
 
