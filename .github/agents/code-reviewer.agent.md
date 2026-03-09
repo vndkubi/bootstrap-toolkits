@@ -43,6 +43,44 @@ For each changed file, analyze:
 - Is the validation sufficient?
 - **Does the code match existing business rules?** Do not approve changes that contradict current business logic without explicit justification
 
+#### Field Usage & API Impact Check (🔴 Critical Check)
+- **For every field added, modified, renamed, or removed**, verify:
+  - Where is this field currently used? (search entity, DTO, mapper, service, query, event, API)
+  - Does the change override or contradict existing business logic handling this field?
+  - Are there downstream API consumers (other services, frontend, mobile) that depend on this field's name, type, or behavior?
+  - Are there database queries, indexes, or stored procedures that filter/sort/aggregate by this field?
+  - Are there integration tests or WireMock stubs that assert on this field?
+- **Flag as 🔴 Critical** if:
+  - A field change silently overrides an existing computed/derived value (e.g., adding a setter for a field that's currently calculated by business logic)
+  - A field rename breaks API contract without backward compatibility
+  - A new field bypasses existing validation or business rules (e.g., direct status assignment instead of using state machine)
+  - A field is added to the request DTO but no validation exists for it anywhere in the pipeline
+- **Flag as 🟡 Warning** if:
+  - A field change affects queries but no index impact is assessed
+  - A new field is exposed in the API response but not documented in OpenAPI/Swagger
+  - Test fixtures/builders don't cover the new field values
+
+**Use Cases — What to Catch:**
+> - Developer adds `discountType` to DTO, but `PricingService` already computes it → 🔴 silent override
+> - Developer renames `orderDate` → `createdAt` in response → 🔴 breaks Feign clients in other services
+> - Developer adds `status = COMPLETED` directly → 🔴 bypasses `OrderStateMachine.transition()` side effects
+> - Developer adds `quantity` to update request with no validation → 🔴 allows negative/zero values
+
+#### APIs Impact — Shared Component Changes (🔴 Critical Check)
+When code changes touch **abstract classes, base classes, shared DTOs, filters, interceptors, or error handlers**, check for cross-API pollution:
+- **Field hoisted to abstract/base class**: Does ANY subclass already have a field with the same name? Will ALL subclasses need this field and its logic? → If not, 🔴 flag inheritance pollution
+- **Shared filter/interceptor modified**: Does the change assume ALL endpoints have the same request structure? → List ALL URL patterns it applies to
+- **Shared DTO/wrapper modified**: Are new fields added to a response wrapper used by ALL APIs? → 🔴 if it adds null fields to unrelated APIs; suggest composition instead
+- **Abstract method behavior changed**: Was it no-op and now has side effects (logging, caching, DB calls)? → 🔴 all subclasses now inherit the side effect
+- **Shared error handler changed**: Does changing HTTP status codes or error format affect API consumers' retry/error-handling logic? → Check consumer contracts
+- **Cache key pattern in shared base**: Could key format collide across different subclasses? → Verify uniqueness
+
+**Review Checklist for Shared Components:**
+- [ ] `grep extends/implements [ClassName]` — list ALL subclasses
+- [ ] For each: does the change conflict with existing behavior?
+- [ ] For each: does the change add unwanted overhead?
+- [ ] Is the change appropriate for ALL consumers, or only some? (→ use intermediate class or composition)
+
 #### Layer Responsibility & Duplicate Validation (🔴 Critical Check)
 - **Is validation duplicated across layers?** Flag as 🔴 Critical if:
   - REST layer re-validates what the Service already validates

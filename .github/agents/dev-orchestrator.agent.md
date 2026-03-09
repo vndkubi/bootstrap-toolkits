@@ -102,13 +102,35 @@ Phase 6: DOCUMENT & DELIVER → Structured markdown report with full traceabilit
    - Current validations/business rules it enforces
    - Current tests covering it
 
-2. **To-Be Analysis** — Proposed changes:
+2. **Field Usage & API Impact Analysis** (🔴 MANDATORY when any field is added/modified/removed):
+
+   For EVERY field being changed, search and document its full usage chain before proposing changes:
+
+   | Field | Used In | Usage Type | Code Location | Risk if Changed |
+   |-------|---------|-----------|---------------|----------------|
+   | `[field]` | `[class.method()]` | Business logic / Query / API / Event / Validation | `[File:Line]` | 🔴/🟡/🟢 [impact] |
+
+   **Must check**: entity ↔ DTO ↔ mapper ↔ service logic ↔ validators ↔ queries ↔ API request/response ↔ events ↔ batch jobs ↔ downstream consumers (Feign clients, frontend bindings, WireMock stubs).
+
+   **Flag conflicts** where proposed changes would override existing handling:
+   | Conflict | Current Behavior | Proposed Change | Resolution |
+   |----------|-----------------|-----------------|------------|
+
+   **APIs Impact — Shared Component check** (🔴 when touching abstract/base classes, shared DTOs, filters, interceptors, error handlers):
+   - List ALL subclasses/consumers of the shared component (`grep extends/implements`)
+   - For each: does the change conflict with existing field names or behavior?
+   - For each: does the change add unwanted processing (Redis calls, DB calls, logging) to APIs that don't need it?
+   - Key lesson: Never hoist a field to a base class without verifying ALL subclasses — a concrete class's `fieldA` moved to `AbstractHandler` silently overrides `fieldA` in OTHER concrete classes that already handle it differently.
+
+   > **Why this matters**: Prevents silent overrides, broken API consumers, business rule bypasses, and inheritance pollution across ALL APIs. See `@investigator` for detailed use cases and 6 real-world lessons.
+
+3. **To-Be Analysis** — Proposed changes:
 
    | Component | Change | File | Reason |
    |-----------|--------|------|--------|
    | [name] | New/Modify/Delete | [path] | [business justification] |
 
-3. **Impact Matrix**:
+4. **Impact Matrix**:
 
    | Affected Area | Impact Level | Details |
    |--------------|-------------|--------|

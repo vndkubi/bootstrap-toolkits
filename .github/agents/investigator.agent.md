@@ -84,20 +84,113 @@ Parse the PBI/issue to identify:
    - Indirect dependencies that might break
    - Shared components affected
 
-2. **Database impact**:
+2. **Field Usage & API Impact Analysis** (🔴 MANDATORY for field changes):
+
+   **Before adding, modifying, or removing ANY field** (entity, DTO, API request/response, DB column), trace its full usage chain:
+
+   a. **Search all usages of the field** across the entire codebase:
+      - Entity/model classes that contain or map the field
+      - DTOs/mappers that read, write, or transform the field
+      - Service classes that apply business logic based on the field
+      - Validators/specifications that check the field's value
+      - API controllers/resources that expose the field in request/response
+      - Database queries (JPQL, native SQL, stored procedures) that filter/sort/aggregate by the field
+      - Event publishers/consumers that include the field in messages
+      - Batch jobs/schedulers that process the field
+      - Test fixtures/builders that set the field
+
+   b. **Document the Field Usage Map**:
+
+   | Field | Used In | Usage Type | Code Location | Risk if Changed |
+   |-------|---------|-----------|---------------|----------------|
+   | `status` | `OrderService.validateTransition()` | Business rule gate | `OrderService:L89` | 🔴 Breaks state machine |
+   | `status` | `OrderSearchSpec.filterByStatus()` | Query filter | `OrderSearchSpec:L34` | 🟡 Changes search results |
+   | `status` | `OrderDTO.getStatus()` | API response | `OrderMapper:L12` | 🟡 Breaks API consumers |
+   | `status` | `V5__add_status_index.sql` | DB index | `migration/V5` | 🟢 Index still valid |
+
+   c. **Identify hidden consumers** — APIs or services that may break:
+      - Other microservices calling this API (check OpenAPI/Swagger, Feign clients, RestTemplate usages)
+      - Frontend code binding to the field name
+      - Reporting/BI queries reading the field
+      - Audit/logging that captures the field's value
+      - Integration tests and WireMock stubs that assert on the field
+
+   d. **Flag conflicts** — fields where the proposed change would override or contradict existing handling:
+
+   | Conflict | Current Behavior | Proposed Change | Resolution |
+   |----------|-----------------|-----------------|------------|
+   | `amount` validation | `PaymentService:L45` validates amount > 0 | New discount allows amount = 0 | Update validation rule, add test |
+   | `status` transition | Only PENDING → CONFIRMED allowed | New flow adds PENDING → CANCELLED | Extend state machine, verify no bypass |
+
+   **Use Cases — When This Prevents Real Bugs:**
+
+   > **Use Case 1: Silent Override**
+   > Developer adds new field `discountType` to `OrderDTO`. Doesn't know `PricingService.calculateDiscount()` already derives discount type from `customerTier` + `promoCode`. The new field **silently overrides** the calculated value → wrong pricing in production.
+   > **Prevention**: Field Usage Map shows `discountType` is already computed at `PricingService:L67`. Developer must decide: replace the computation, or use a different field name.
+
+   > **Use Case 2: Breaking Downstream API Consumers**
+   > Developer renames field `orderDate` → `createdAt` in the response DTO. Three other microservices deserialize this field by name. The rename **breaks all consumers silently** (they get null instead of a date).
+   > **Prevention**: Field Usage Map traces `orderDate` to Feign clients in `billing-service` and `reporting-service`. Developer adds backward-compatible alias or coordinates the rename.
+
+   > **Use Case 3: Unintended Business Rule Bypass**
+   > Developer adds a direct setter for `order.status = COMPLETED` in a new endpoint. Doesn't know `OrderStateMachine.transition()` enforces SHIPPED → COMPLETED (with side effects: trigger invoice, update inventory). The direct set **bypasses all business rules**.
+   > **Prevention**: Field Usage Map shows `status` is governed by `OrderStateMachine:L23`. Developer must use `transition()` instead of direct assignment.
+
+   > **Use Case 4: Missing Validation on New API Field**
+   > Developer adds `quantity` field to `UpdateOrderRequest`. The field goes directly to `OrderItem.setQuantity()`. But `StockService.checkAvailability()` validates quantity at creation time only — not on update. Negative or zero quantities **slip through**.
+   > **Prevention**: Field Usage Map reveals `quantity` validation only exists in `CreateOrderService:L56`. Developer adds matching validation in the update flow.
+
+   e. **APIs Impact Lessons** — Common patterns that cause cross-API damage:
+
+   > **Lesson 1: Field Hoisting to Abstract/Base Class (Inheritance Pollution)**
+   > `AbstractApiHandler` is the base class for ALL API handlers. `ConcreteHandlerA` extends it and has `fieldA` with specific logic for API-1 (e.g., fetches from Redis, updates the value).
+   > A developer creates API-2, also extends `AbstractApiHandler`, and needs `fieldA` too. Instead of adding `fieldA` to their own concrete class, they **move `fieldA` up to `AbstractApiHandler`** along with the Redis fetch logic.
+   > **Result**: ALL APIs now inherit `fieldA` and its Redis processing. API-1's `fieldA` — which had its own specific handling — is **silently overridden** by the abstract class logic. API-3, API-4, etc. now execute Redis calls they never needed, causing performance degradation and unexpected data mutations.
+   > **Prevention**: Before moving ANY field/logic to a shared parent class, search ALL subclasses. Document which APIs already have this field. Ask: "Will this base-class logic be correct for ALL 15 APIs, or only for my new one?"
+   > **Check**: `grep -r "extends AbstractApiHandler" --include="*.java"` → review every subclass.
+
+   > **Lesson 2: Shared Filter/Interceptor Modification**
+   > A `RequestLoggingFilter` runs on ALL endpoints. Developer adds a new feature: extract `customerId` from the request body and store it in MDC for logging. But some APIs (e.g., health check, batch triggers) don't have `customerId` in the body. The filter **throws NullPointerException** on those endpoints, or worse, silently logs wrong customer IDs from unrelated request fields.
+   > **Prevention**: Before modifying any shared filter/interceptor, list ALL URL patterns it applies to. Check which APIs DON'T have the expected request structure.
+
+   > **Lesson 3: Shared DTO/Response Wrapper Pollution**
+   > All APIs return `ApiResponse<T>` wrapper with `data`, `status`, `message`. Developer adds `metadata` field (pagination info) to `ApiResponse` for their list endpoint. Now ALL APIs return `metadata: null` — bloating responses, confusing API consumers, and breaking strict-mode deserializers that reject unknown fields.
+   > **Prevention**: Before modifying shared DTOs/wrappers, check how many APIs use them. Use composition (new `PaginatedResponse<T> extends ApiResponse<T>`) instead of polluting the base class.
+
+   > **Lesson 4: Abstract Method Default Implementation Side Effects**
+   > `AbstractService` has method `preProcess()` that's empty (no-op). Developer overrides it in the abstract class to add audit logging for their API. Now ALL services that extend `AbstractService` **silently start audit-logging every request** — generating millions of unwanted audit records, filling the audit table, and potentially exposing sensitive data from other APIs.
+   > **Prevention**: Add new behavior to the CONCRETE class, not the abstract. If truly shared, add it as opt-in: `if (isAuditEnabled()) { audit(); }` with default `false`.
+
+   > **Lesson 5: Cache Key Collision from Shared Base Class**
+   > `AbstractCacheableService` uses `getClass().getSimpleName() + ":" + id` as cache key. Developer creates `OrderService` and `OrderSummaryService` — both extend the base. When abbreviated or using short names, keys collide: `Order:123` returns full order data when `OrderSummaryService` expects summary data. Data type mismatch causes ClassCastException or worse, silent wrong data.
+   > **Prevention**: Before using any shared caching pattern, verify key uniqueness across ALL subclasses. Use fully qualified names or explicit prefixes.
+
+   > **Lesson 6: Shared Error Handler Modification**
+   > `GlobalExceptionHandler` maps `BusinessException` → HTTP 400. Developer changes it to return HTTP 422 for their new API's validation semantics. Now ALL APIs return 422 instead of 400 for business exceptions. API consumers' retry logic (which retries on 400 but not 422) **stops retrying**, causing silent data loss.
+   > **Prevention**: Before changing shared error handlers, check ALL API consumers' error-handling contracts. Use specific exception subclasses instead of changing the base mapping.
+
+   **Investigation Checklist for Shared Component Changes:**
+   - [ ] List ALL classes extending/implementing the shared component (`grep extends/implements`)
+   - [ ] For each subclass, check: does the new field/logic conflict with existing behavior?
+   - [ ] For each subclass, check: does the new field/logic add unwanted overhead (DB calls, Redis calls, logging)?
+   - [ ] Document which APIs are affected and get explicit sign-off
+   - [ ] Consider: should this be in the base class (ALL need it) or a new intermediate class (SOME need it)?
+   - [ ] If field is moved UP to parent: verify no subclass already has a field with the same name and different semantics
+
+3. **Database impact**:
    - Tables affected
    - Migration scripts needed
    - Index changes
    - Stored procedure/package changes
    - Data migration requirements
 
-3. **Integration impact**:
+4. **Integration impact**:
    - APIs consumed by other systems
    - JMS messages/topics affected
    - Batch jobs affected
    - Downstream systems to notify
 
-4. **Risk assessment**:
+5. **Risk assessment**:
 
    | Risk | Probability | Impact | Mitigation |
    |------|------------|--------|------------|
