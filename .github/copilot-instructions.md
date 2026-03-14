@@ -43,6 +43,7 @@ For full detail on all 7 principles, see the `core-principles` skill.
 | Agent | Purpose |
 |-------|---------|
 | `@sequence-diagrammer` | Mermaid sequence diagrams |
+| `@spec-reviewer` | Spec review with Security + Testability lenses |
 | `@mock-data-specialist` | WireMock stubs, test fixtures |
 | `@sprint-planner` | Sprint planning, PBI decomposition, estimation |
 | `@refactoring-specialist` | Code smell detection, safe refactoring |
@@ -63,6 +64,7 @@ For full detail on all 7 principles, see the `core-principles` skill.
 
 - **Implement a feature**: `@dev-orchestrator Implement [description]`
 - **Investigate a PBI**: `@investigator Investigate [description]`
+- **Review a spec**: `@spec-reviewer Review spec at docs/requirements/[name].md`
 - **Write tests**: `@test-specialist Write tests for [class]`
 - **Code review**: `@code-reviewer Review changes in [branch]`
 - **Sprint planning**: `@sprint-planner Break down PBI-123`

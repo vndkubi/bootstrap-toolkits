@@ -17,6 +17,7 @@ Phase 3:  DOMAIN — Business domain deep analysis (rules, glossary, workflows)
 Phase 4:  GEN copilot-instructions.md (≤ 4 KB index card)
 Phase 5:  GEN domain-scoped .instructions.md per domain (Enterprise only)
 Phase 6:  GEN language/framework .instructions.md
+Phase 6b: GEN templates (.github/templates/ — PRD, API contract, DB schema)
 Phase 7:  GEN agents (stack-specific + conditional + enterprise)
 Phase 8:  GEN skills (auto-selected based on detected capabilities)
 Phase 9:  GEN prompts (entry points, ≤ 3 KB each)
@@ -122,6 +123,24 @@ Generate `.github/instructions/*.instructions.md` with correct `applyTo` globs:
 
 **Each file MUST**: reference conventions discovered in Phase 1, not generic placeholder text.
 
+## Phase 6b: GEN Standardized Templates
+
+Generate `.github/templates/` with output format templates for spec generation agents.
+
+**Always generate these templates:**
+
+| Template | Purpose | Used By |
+|---|---|---|
+| `PRD-template.md` | Product Requirements Document structure | `@business-analyst`, `@spec-reviewer` |
+| `API-contract-template.md` | OpenAPI/Swagger API contract format | `@business-analyst`, `@implementor` |
+| `DB-schema-template.md` | DBML database schema format | `@database-specialist`, `@business-analyst` |
+
+**Rules:**
+- Templates are **output format guides**, not instruction files — they don't have `applyTo` patterns
+- Templates MUST be customized with project-specific examples (actual entity names, actual enum values) from Phase 3
+- `@business-analyst` and `@spec-reviewer` agents MUST reference these templates in their output instructions
+- Templates should be ≤ 8 KB each
+
 ## Phase 7: GEN Agents
 
 > **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/agents/*.agent.md` files first. Then create NEW agent files with content specific to THIS project's tech stack, patterns, and conventions from Phases 1-3. Do NOT copy or reuse content from the bootstrap toolkit templates.
@@ -156,7 +175,9 @@ Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 |---|---|---|
 | Complex domains (5+ entities) | `investigator` | Actual domain entities and relationships |
 | Complex domains (5+ entities) | `business-analyst` | Actual domain entities, personas, workflows |
+| Spec/requirements workflow | `spec-reviewer` | Domain-specific NFR checks, template references |
 | Multi-layer architecture | `sequence-diagrammer` | Actual layer structure |
+| Entities with status/lifecycle | `sequence-diagrammer` + state diagrams | Status enums, transition logic |
 | Database / migrations | `database-specialist` | Actual DB type and migration tool |
 | WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |
 | 10+ modules / Enterprise | `dependency-analyzer` | Actual module list and dependencies |
@@ -184,7 +205,9 @@ Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each). Each skill MUST:
 | CI/CD pipeline exists | `generate-pr-description`, `conventional-commit` |
 | 3+ modules | `orchestrate-development`, `investigate-pbi`, `estimate-effort` |
 | Sprint/agile references | `sprint-planning` |
-| Complex domain (5+ entities) | `generate-sequence-diagram` |
+| Complex domain (5+ entities) | `generate-sequence-diagram`, `generate-state-diagram` |
+| Entities with status/lifecycle enums | `generate-state-diagram` |
+| Spec/requirements workflow | `review-spec`, `update-spec` |
 | WireMock / mock dependencies | `generate-wiremock` |
 | Enterprise classification | `impact-analysis` |
 | Tech debt indicators | `technical-debt-analysis` |
@@ -358,6 +381,7 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 .github/agents/sprint-planner.agent.md
 .github/agents/dependency-analyzer.agent.md
 .github/agents/database-specialist.agent.md
+.github/agents/spec-reviewer.agent.md
 ```
 
 **Delete these bootstrap template skills** (ALL skill directories):
@@ -388,11 +412,21 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 .github/skills/review-code-changes/
 .github/skills/sprint-planning/
 .github/skills/technical-debt-analysis/
+.github/skills/generate-state-diagram/
+.github/skills/review-spec/
+.github/skills/update-spec/
 ```
 
 **Delete these bootstrap template instructions** (ALL of them):
 ```
 .github/instructions/*.instructions.md  (all 23 files)
+```
+
+**Delete these bootstrap template templates** (ALL of them):
+```
+.github/templates/PRD-template.md
+.github/templates/API-contract-template.md
+.github/templates/DB-schema-template.md
 ```
 
 **Delete these bootstrap template prompts** (ALL of them):
