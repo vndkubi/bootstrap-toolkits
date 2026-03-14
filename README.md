@@ -9,8 +9,8 @@
 Bootstrap Toolkit solves the problem: **Given any codebase, automatically detect and generate a complete, tailored Copilot configuration.**
 
 The toolkit includes:
-- **23 custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
-- **26 reusable skills** — automated workflows from sprint planning to impact analysis
+- **27 custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
+- **30 reusable skills** — automated workflows from sprint planning to impact analysis
 - **23 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, TypeScript, React, Kotlin, Swift, DevContainer
 - **1 conductor** — master orchestrator that coordinates the entire pipeline
 - **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
@@ -22,13 +22,13 @@ The toolkit includes:
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│   @codebase-     │────▶│  @instruction-   │────▶│    @agent-       │
-│   analyzer       │     │   generator      │     │    generator     │
-│  (Analyze)       │     │  (Gen standards) │     │  (Gen agents)    │
+│   @codebase-     │────▶│   @conductor     │────▶│    @agent-       │
+│   analyzer       │     │  (Orchestrate)   │     │    generator     │
+│  (Analyze)       │     │                  │     │  (Gen agents)    │
 └─────────────────┘     └──────────────────┘     └──────────────────┘
                                                           │
 ┌─────────────────┐     ┌──────────────────┐              │
-│   @quality-      │◀───│   Gen skills,    │◀─────────────┘
+│   @code-         │◀───│   Gen skills,    │◀─────────────┘
 │   reviewer       │     │   prompts, hooks │
 │  (Validate)      │     └──────────────────┘
 └─────────────────┘
@@ -119,7 +119,7 @@ In multi-module projects, understand module boundaries before making changes:
 .github/
 ├── copilot-instructions.md                          # 📖 Project-wide context
 │
-├── agents/                                          # 🤖 Custom AI Agents (20)
+├── agents/                                          # 🤖 Custom AI Agents (27)
 │   ├── conductor.agent.md                           #   Main orchestrator
 │   ├── dev-orchestrator.agent.md                    #   Full lifecycle orchestrator (multi-stack)
 │   ├── codebase-analyzer.agent.md                   #   Codebase analysis
@@ -130,7 +130,11 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── php-implementor.agent.md                     #   Implementation (PHP/Laravel/Symfony)
 │   ├── test-specialist.agent.md                     #   Unit testing (Java)
 │   ├── sequence-diagrammer.agent.md                 #   Sequence diagrams
-│   ├── code-reviewer.agent.md                       #   Code review
+│   ├── code-reviewer.agent.md                       #   Code review orchestrator
+│   ├── functional-reviewer.agent.md                 #   🔍 Business logic review
+│   ├── technical-reviewer.agent.md                  #   🔍 Architecture & quality review
+│   ├── business-analyst.agent.md                    #   📝 Requirements & PBI writing
+│   ├── spec-reviewer.agent.md                       #   📋 Spec review (Security + Testability)
 │   ├── mock-data-specialist.agent.md                #   WireMock/mock data
 │   ├── agent-generator.agent.md                     #   Meta: generates config
 │   ├── mobile-implementor.agent.md                  #   📱 Mobile implementation
@@ -144,13 +148,17 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── dependency-analyzer.agent.md                 #   🔗 Cross-module dependency analysis
 │   └── database-specialist.agent.md                 #   🗄️ Schema review & migration strategy
 │
-├── skills/                                          # 🎯 Reusable Skills (20)
+├── skills/                                          # 🎯 Reusable Skills (30)
 │   ├── analyze-codebase/SKILL.md                    #   Deep analysis
+│   ├── analyze-requirements/SKILL.md                #   📝 Requirements & PBI writing
 │   ├── investigate-pbi/SKILL.md                     #   PBI investigation
 │   ├── implement-feature/SKILL.md                   #   Implementation guide
 │   ├── generate-unit-tests/SKILL.md                 #   Unit test generation
 │   ├── generate-sequence-diagram/SKILL.md           #   Sequence diagrams
+│   ├── generate-state-diagram/SKILL.md              #   🔄 State machine diagrams
 │   ├── review-code-changes/SKILL.md                 #   Code review
+│   ├── review-spec/SKILL.md                         #   📋 Spec review (Security + Testability)
+│   ├── update-spec/SKILL.md                         #   📋 Incremental spec updates from CRs
 │   ├── generate-wiremock/SKILL.md                   #   WireMock stubs
 │   ├── generate-copilot-config/SKILL.md             #   Full bootstrap
 │   ├── implement-mobile-feature/SKILL.md            #   📱 Mobile implementation
@@ -172,7 +180,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── impact-analysis/SKILL.md                     #   💥 Cross-module impact analysis
 │   └── generate-domain-instructions/SKILL.md        #   📑 Per-domain instruction generation
 │
-├── instructions/                                    # 📋 Coding Standards (20)
+├── instructions/                                    # 📋 Coding Standards (23)
 │   ├── java.instructions.md                         #   Java conventions
 │   ├── jakartaee.instructions.md                    #   Jakarta EE patterns
 │   ├── maven.instructions.md                        #   Maven POM standards
@@ -242,9 +250,18 @@ In multi-module projects, understand module boundaries before making changes:
 | **`@investigator`** | PBI investigation: as-is → to-be, scenarios, impact, risk → markdown report | Investigate a PBI, bug, or performance issue |
 | **`@test-specialist`** | Unit tests: minimal mocks, full branch coverage, test builders, <100ms | Write tests, increase coverage |
 | **`@sequence-diagrammer`** | Mermaid sequence diagrams with markers 🆕✏️❌ for changes | Create diagrams, document flows |
-| **`@code-reviewer`** | Code review: per-file analysis, severity ratings → markdown report | Review PR, check code quality |
+| **`@code-reviewer`** | Code review orchestrator: Functional → Technical pipeline | Review PR, check code quality |
+| **`@functional-reviewer`** | Business logic review: AC traceability, data integrity, edge cases | Validate business logic correctness |
+| **`@technical-reviewer`** | Architecture review: migration safety, domain boundaries, NFRs | Validate technical quality |
 | **`@mock-data-specialist`** | WireMock stubs, test fixtures, mock data for local/devcontainer | Create mock data, set up WireMock |
 | **`@agent-generator`** | Generates agents/skills/instructions from codebase analysis | Bootstrap Copilot config |
+
+### Requirements & Specs Agents 📝
+
+| Agent | Description | When to Use |
+|-------|-------------|-------------|
+| **`@business-analyst`** | Requirements analysis, PBI writing, acceptance criteria, impact assessment | Define features, write stories/PBIs |
+| **`@spec-reviewer`** | Spec review with Security + Testability lenses, severity-rated findings | Review specs before development |
 
 ### Enterprise Agents 🏢
 
@@ -293,6 +310,10 @@ In multi-module projects, understand module boundaries before making changes:
 | `generate-copilot-config` | Full bootstrap pipeline | "bootstrap", "generate config", "setup copilot" |
 | `generate-adr` | Architecture Decision Records | "ADR", "architecture decision" |
 | `generate-hooks` | Copilot hooks for quality automation | "hooks", "auto-format", "lint check" |
+| `analyze-requirements` | Requirements → User Stories, PBIs, acceptance criteria | "requirements", "user story", "PBI", "acceptance criteria" |
+| `generate-state-diagram` | Mermaid state diagrams from entity lifecycle analysis | "state diagram", "status flow", "lifecycle" |
+| `review-spec` | Spec review with Security + Testability lenses | "review spec", "check spec", "validate requirements" |
+| `update-spec` | Incremental spec updates from Change Requests | "update spec", "change request", "patch spec" |
 
 ### Mobile Skills 📱
 
@@ -447,9 +468,9 @@ Your project structure will now look like:
 your-new-project/
 ├── .github/
 │   ├── copilot-instructions.md
-│   ├── agents/          # 20 agents
-│   ├── skills/          # 20 skills
-│   ├── instructions/    # 20 instruction files
+│   ├── agents/          # 27 agents
+│   ├── skills/          # 30 skills
+│   ├── instructions/    # 23 instruction files
 │   └── prompts/         # 7 prompts
 ├── src/                 # (your code, even if minimal)
 ├── pom.xml              # (or build.gradle.kts, *.csproj, etc.)

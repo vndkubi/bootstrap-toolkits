@@ -40,6 +40,13 @@ For full detail on all 7 principles, see the `core-principles` skill.
 | `@functional-reviewer` | Business logic review, AC traceability, data integrity |
 | `@technical-reviewer` | Architecture, migration safety, domain boundaries, NFRs |
 
+### Bootstrap & Analysis
+
+| Agent | Purpose |
+|-------|---------|
+| `@agent-generator` | Meta-agent: generates Copilot agents, skills, instructions from codebase analysis |
+| `@business-analyst` | Requirements analysis, PBI writing, acceptance criteria |
+
 ### Specialized
 
 | Agent | Purpose |
