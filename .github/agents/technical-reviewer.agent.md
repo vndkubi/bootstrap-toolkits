@@ -16,14 +16,24 @@ Your single question: **"Is this code technically excellent, safe, and productio
 
 ## Review Process
 
-### Step 1: Gather Context
+### Step 1: Gather Context (Deep Context Retrieval)
 
-1. Identify all changed files and their types (source, test, migration, config)
-2. **Load related files via import graph** — for each changed file:
-   - Trace `import`/`require` statements to find dependencies
-   - Search for usages of changed classes/methods across the codebase
-   - Load these related files into context — changes here may break callers elsewhere
-3. Understand the module/service boundary this code belongs to
+**Do NOT review from diff chunks alone.** You must load full file contents and their dependency graph.
+
+1. **Read FULL content** of every changed file — not just the diff hunks
+2. **Trace outbound dependencies** — for each changed file:
+   - Read `import`/`require`/`using` statements
+   - Load the FULL content of imported interfaces, base classes, and DTOs
+   - If an imported class is a service/repository, load it to verify correct usage
+3. **Trace inbound dependencies (callers)** — this catches breakage OUTSIDE the PR:
+   - Search (`grep`) for references to changed class names and method names across the codebase
+   - Load FULL content of each caller file found
+   - Example: `grep -rn "OrderService" --include="*.java" src/main/`
+4. **Trace cross-service consumers**:
+   - For changed API endpoints: search for Feign clients, RestTemplate, WebClient referencing the same URL
+   - For changed DTOs: search for the DTO class name in other modules/services
+5. **Understand module/service boundary** this code belongs to
+6. **Load domain context** — for changed entities, load relationship graph, domain events, state machines
 
 ### Step 2: API Backward Compatibility
 

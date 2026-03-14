@@ -36,13 +36,18 @@ If the user provides a clear branch name, **proceed immediately**:
 
 ### 1. Context Gathering (Stage 0)
 
-- Get all changed files: `git diff [base]...[head] --name-only`
-- Categorize files by type (business logic, API, data, migration, tests, config)
-- **Load related files via import graph** — for each changed file:
-  - Trace `import`/`require` statements to find dependencies
-  - Search for usages of changed methods across the codebase
-  - Load caller files — changes here may break code NOT in the PR
-- Locate requirement document (PRD, PBI, issue link from PR description or `docs/requirements/`)
+**CRITICAL: Do NOT review from diff alone.** Build full context first:
+
+1. **Get changed files**: `git diff [base]...[head] --name-only`
+2. **Read FULL content** of every changed file — not just diff chunks
+3. **Trace dependencies** using tool calls (grep, search):
+   - **Outbound**: Read imports → load imported interfaces, base classes, DTOs
+   - **Inbound (callers)**: Search for references to changed class/method names → load caller files
+   - **Cross-service**: Search for Feign/HTTP clients referencing changed API paths
+4. **Locate requirement document** (PRD, PBI, issue link from PR description or `docs/requirements/`)
+5. **Build context map** summarizing changed files, related files, blast radius
+
+See `review-code-changes` skill Stage 0 for the complete context retrieval procedure.
 
 ### 2. Functional Review (Stage 2)
 

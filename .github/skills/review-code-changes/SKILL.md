@@ -29,30 +29,106 @@ Stage 3: TECHNICAL REVIEW → @technical-reviewer validates architecture & quali
 COMBINED REPORT → Merge findings from both stages with verdict
 ```
 
-## Stage 0: Context Gathering
+## Stage 0: Context Gathering (Deep Context Retrieval)
 
-**Before any review starts, build the full context:**
+**CRITICAL: Reading only the git diff is like "blind men and an elephant."** The reviewer MUST load FULL file contents and their dependencies — not just diff chunks.
 
-1. **Get changed files**: `git diff [base]...[head] --name-only`
-2. **Categorize files**:
+### 0a. Get Changed Files
 
-   | Type | Pattern | Reviewer |
-   |------|---------|----------|
-   | Business logic | `*Service*, *Validator*, *Calculator*, *StateMachine*` | Functional |
-   | API/Controller | `*Resource*, *Controller*, *DTO*, *Mapper*` | Both |
-   | Data access | `*Repository*, *DAO*, *Query*` | Technical |
-   | Database | `*.sql, *migration*` | Technical |
-   | Configuration | `*.properties, *.yml, *.yaml` | Technical |
-   | Tests | `*Test*, *Spec*` | Functional (coverage check) |
+```bash
+git diff [base]...[head] --name-only
+```
 
-3. **Load related files** outside the PR:
-   - For each changed file, trace imports → load imported files
-   - Search for usages of changed methods → load caller files
-   - This provides context for detecting breakage in code NOT in the PR
-4. **Locate requirement document**:
-   - Check PR description for PBI/issue link
-   - Search `docs/requirements/` for related spec
-   - Check commit messages for issue references
+### 0b. Categorize Changed Files
+
+| Type | Pattern | Reviewer | Priority |
+|------|---------|----------|----------|
+| Business logic | `*Service*, *Validator*, *Calculator*, *StateMachine*` | Functional | 🔴 Load first |
+| API/Controller | `*Resource*, *Controller*, *DTO*, *Mapper*` | Both | 🔴 Load first |
+| Data access | `*Repository*, *DAO*, *Query*` | Technical | 🟡 Load second |
+| Database | `*.sql, *migration*` | Technical | 🟡 Load second |
+| Configuration | `*.properties, *.yml, *.yaml` | Technical | 🟢 Load if relevant |
+| Tests | `*Test*, *Spec*` | Functional (coverage check) | 🔴 Load first |
+
+### 0c. Load FULL Content of Changed Files
+
+**Do NOT rely on diff chunks alone.** For every changed file:
+1. Read the **entire file** — the diff only shows what changed, not the surrounding logic that gives it meaning
+2. This ensures reviewers see: preceding validation, conditional branches, try-catch blocks, related methods in the same class
+
+### 0d. Context Retrieval — Find Related Files Outside the PR
+
+**This is the most important step.** For each changed class/method, use tool calls to build the dependency graph:
+
+#### Step 1: Trace Outbound Dependencies (what this file depends on)
+```
+For each changed file:
+  → Read import/require/using statements
+  → Load the FULL content of each imported file (especially interfaces, base classes, DTOs)
+  → If an imported class is also a service/repository, load it — the changed code may call it incorrectly
+```
+
+#### Step 2: Trace Inbound Dependencies (what depends on this file) — CALLERS
+```
+For each changed class/method:
+  → grep/search the codebase for references to the class name or method name
+  → Load the FULL content of each caller file
+  → These callers are NOT in the PR but may BREAK due to the change
+```
+
+**Tool usage pattern:**
+```
+# Find all callers of a changed method
+grep -rn "orderService.calculateTotal" --include="*.java" src/
+grep -rn "OrderService" --include="*.java" src/main/  # find all usages of the class
+
+# Find all implementations/subclasses
+grep -rn "extends OrderService\|implements OrderProcessor" --include="*.java" src/
+
+# Find all consumers of a changed DTO
+grep -rn "OrderResponseDto" --include="*.java" src/
+grep -rn "OrderResponseDto" --include="*.ts" src/  # frontend consumers too
+```
+
+#### Step 3: Trace Cross-Service Dependencies
+```
+For changed API endpoints (Controller/Resource):
+  → Search for Feign clients, RestTemplate, WebClient, HttpClient referencing the same URL path
+  → Search for OpenAPI/Swagger spec references
+  → These are OTHER SERVICES that will break if the API contract changes
+```
+
+#### Step 4: Load Domain Context
+```
+For changed entities/models:
+  → Load the entity class and all its relationships (@ManyToOne, @OneToMany, FK references)
+  → Load related domain events, listeners, observers
+  → Load state machine / status transition logic if entity has status field
+```
+
+### 0e. Locate Requirement Document
+
+1. Check PR description for PBI/issue link
+2. Search `docs/requirements/` for related spec
+3. Check commit messages for issue references
+4. If no requirement found → flag it, but continue review with best effort
+
+### 0f. Build Context Summary
+
+Before passing to reviewers, produce a brief context map:
+
+```markdown
+### Context Map
+- **Changed files**: [N] files ([list])
+- **Related files loaded**: [N] files
+  - Callers: [list of files that call changed methods]
+  - Dependencies: [list of files imported by changed files]
+  - Cross-service: [list of Feign/HTTP clients referencing changed APIs]
+- **Requirement**: [link or "not found"]
+- **Estimated blast radius**: Low (1-3 files) / Medium (4-10) / High (10+)
+```
+
+> **Budget rule**: If the PR touches 50+ files, prioritize context loading for 🔴-priority file types first. Load 🟡 and 🟢 types only if context budget allows.
 
 ## Stage 1: Self-Review Gate (Quick Sanity Check)
 

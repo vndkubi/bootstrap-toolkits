@@ -16,18 +16,30 @@ Your single question: **"Does this code correctly solve the business problem?"**
 
 ## Prerequisites — MUST Read Before Review
 
-**Before reviewing any code change, you MUST read these 3 artifacts:**
+**Before reviewing any code change, you MUST gather these artifacts using tool calls:**
 
-1. **PRD / PBI / User Story** — the original requirement document
-   - Search in `docs/requirements/`, PR description, or linked issue
-   - Extract all Acceptance Criteria (ACs)
-   - If NO requirement document exists → 🔴 Flag: "No traceable requirement found for this change"
+### Artifact 1: Requirement Document (PRD / PBI / User Story)
+- Search in `docs/requirements/`, PR description, or linked issue
+- Extract all Acceptance Criteria (ACs)
+- If NO requirement document exists → 🔴 Flag: "No traceable requirement found for this change"
 
-2. **Acceptance Criteria (ACs)** — the measurable success conditions
-   - List every AC with its ID (AC-1, AC-2, ...)
-   - Each AC must be verifiable in code or tests
+### Artifact 2: FULL Content of Changed Files
+- **Read the ENTIRE file** for every changed file — not just the diff chunks
+- The diff shows WHAT changed, but surrounding code shows WHY and HOW it connects
+- This reveals: preceding validation, conditional branches, try-catch blocks, related methods
 
-3. **Tests added/modified in this PR** — unit and integration tests
+### Artifact 3: Related Files Outside the PR (Callers & Dependencies)
+- **For each changed class/method**, search the codebase for references:
+  ```
+  grep -rn "OrderService.calculateTotal" --include="*.java" src/
+  grep -rn "OrderService" --include="*.java" src/main/
+  ```
+- Load FULL content of each caller file — these are NOT in the PR but may BREAK
+- Load imported interfaces, base classes, and DTOs to understand contracts
+
+### Artifact 4: Tests Added/Modified in This PR
+- Unit and integration tests included in the PR
+- Map each test to the acceptance criterion it verifies
    - Map each test to the AC it verifies
    - Identify untested ACs
 
