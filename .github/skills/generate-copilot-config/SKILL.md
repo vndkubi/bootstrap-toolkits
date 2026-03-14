@@ -182,6 +182,8 @@ Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 | WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |
 | 10+ modules / Enterprise | `dependency-analyzer` | Actual module list and dependencies |
 | Mobile platform | `mobile-implementor` | Platform-specific patterns |
+| Any project with code review | `functional-reviewer` | AC traceability, cross-domain data integrity, adversarial edge cases |
+| Any project with code review | `technical-reviewer` | Migration safety, domain boundary guardian, NFR compliance |
 
 **Dev Orchestrator wiring (CRITICAL):** The `dev-orchestrator.agent.md` `agents:` field MUST list ALL other generated agent names.
 
@@ -382,6 +384,8 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 .github/agents/dependency-analyzer.agent.md
 .github/agents/database-specialist.agent.md
 .github/agents/spec-reviewer.agent.md
+.github/agents/functional-reviewer.agent.md
+.github/agents/technical-reviewer.agent.md
 ```
 
 **Delete these bootstrap template skills** (ALL skill directories):

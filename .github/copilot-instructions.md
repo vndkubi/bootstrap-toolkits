@@ -36,7 +36,9 @@ For full detail on all 7 principles, see the `core-principles` skill.
 | `@php-implementor` | PHP implementation (Laravel/Symfony) |
 | `@frontend-implementor` | TypeScript/React/Vue/Angular implementation |
 | `@test-specialist` | Unit tests with 100% branch coverage target |
-| `@code-reviewer` | Code review with severity ratings |
+| `@code-reviewer` | Code review orchestrator (multi-stage pipeline) |
+| `@functional-reviewer` | Business logic review, AC traceability, data integrity |
+| `@technical-reviewer` | Architecture, migration safety, domain boundaries, NFRs |
 
 ### Specialized
 
@@ -66,7 +68,7 @@ For full detail on all 7 principles, see the `core-principles` skill.
 - **Investigate a PBI**: `@investigator Investigate [description]`
 - **Review a spec**: `@spec-reviewer Review spec at docs/requirements/[name].md`
 - **Write tests**: `@test-specialist Write tests for [class]`
-- **Code review**: `@code-reviewer Review changes in [branch]`
+- **Code review**: `@code-reviewer Review changes in [branch]` (runs Functional → Technical pipeline)
 - **Sprint planning**: `@sprint-planner Break down PBI-123`
 
 ## Prompts
