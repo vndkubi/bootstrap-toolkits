@@ -25,7 +25,7 @@ Phase 10: GEN hooks (format/lint/compile automation)
 Phase 11: GEN agentic workflows (if CI/CD detected)
 Phase 12: VALIDATE — structural + functional + context budget
 Phase 13: DEVCONTAINER — review existing or generate new
-Phase 14: CLEANUP & REPORT — delete bootstrap files, final summary
+Phase 14: MANIFEST & CLEANUP — generate manifest, delete bootstrap files, final summary
 ```
 
 ---
@@ -357,9 +357,64 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 
 **If user declines**: Skip, report "DevContainer: skipped"
 
-## Phase 14: Cleanup & Final Report
+## Phase 14: Manifest, Cleanup & Final Report
 
-> **This phase is CRITICAL.** The bootstrap toolkit ships with template files that were used DURING generation. ALL template files must be deleted. Only project-specific generated files remain.
+> **This phase is CRITICAL.** First, generate the bootstrap manifest to record what was generated and by which toolkit version. Then delete all bootstrap template files. Only project-specific generated files remain.
+
+### Step 0: Generate `.bootstrap-manifest.json`
+
+**MUST run BEFORE cleanup** — this step collects all generated file paths while they still exist.
+
+Read the toolkit version from the `VERSION` file at the repository root of the **bootstrap toolkit** (not the target project). Generate `.github/.bootstrap-manifest.json` in the **target project**:
+
+```json
+{
+  "$schema": "https://copilot-bootstrap.dev/manifest.schema.json",
+  "generatedBy": "copilot-bootstrap",
+  "toolkitVersion": "<version from VERSION file>",
+  "generatedAt": "<ISO 8601 UTC timestamp>",
+  "classification": "<Small | Standard | Enterprise>",
+  "domainsDetected": <number>,
+  "techStack": {
+    "languages": ["<lang> <version>"],
+    "frameworks": ["<framework> <version>"],
+    "buildTools": ["<tool> <version>"],
+    "databases": ["<db> <version>"],
+    "testFrameworks": ["<framework> <version>"]
+  },
+  "generatedFiles": {
+    "copilotInstructions": ".github/copilot-instructions.md",
+    "agents": [".github/agents/<name>.agent.md"],
+    "skills": [".github/skills/<name>/SKILL.md"],
+    "instructions": [".github/instructions/<name>.instructions.md"],
+    "prompts": [".github/prompts/<name>.prompt.md"],
+    "hooks": [".github/hooks/<name>.json"],
+    "templates": [".github/templates/<name>.md"],
+    "domains": [".github/domains/domain-registry.json", ".github/domains/<name>.instructions.md"],
+    "devcontainer": [".devcontainer/devcontainer.json"]
+  },
+  "contextBudget": {
+    "worstCaseKB": <number>,
+    "maxKB": 45,
+    "passed": <boolean>
+  },
+  "pipelineConfig": {
+    "phasesExecuted": [1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
+    "phasesSkipped": {
+      "5": "Not Enterprise classification",
+      "11": "No CI/CD detected",
+      "13": "User declined"
+    }
+  }
+}
+```
+
+**Rules:**
+- `generatedFiles` lists ONLY files actually generated (not skipped phases)
+- `techStack` values come from Phase 1 scan results
+- `pipelineConfig.phasesSkipped` records WHY each phase was skipped — this helps future migration agents
+- The manifest itself is NOT listed in `generatedFiles` (it's meta)
+- File MUST be valid JSON — validate before writing
 
 ### Step 1: Delete ALL Bootstrap Toolkit Template Files
 
@@ -457,7 +512,8 @@ docs/context-budget-guide.md
 
 ### Step 2: Verify Only Project-Specific Files Remain
 
-After cleanup, `.github/` should contain ONLY files generated in Phases 4-11:
+After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
+- `.bootstrap-manifest.json` — generated in Phase 14 Step 0
 - `copilot-instructions.md` — generated in Phase 4, project-specific
 - `agents/` — generated in Phase 7, project-specific
 - `skills/` — generated in Phase 8, project-specific
@@ -473,7 +529,8 @@ After cleanup, `.github/` should contain ONLY files generated in Phases 4-11:
 ```
 ✅ Bootstrap Complete!
 📁 .github/
-├── copilot-instructions.md  ← [project name] index card
+├── .bootstrap-manifest.json  ← toolkit version + generated file inventory
+├── copilot-instructions.md   ← [project name] index card
 ├── agents/ ([count] project-specific agents)
 ├── skills/ ([count] project-specific skills)
 ├── instructions/ ([count] instruction files)
@@ -482,10 +539,12 @@ After cleanup, `.github/` should contain ONLY files generated in Phases 4-11:
 
 🐳 .devcontainer/ (if generated)
 
+Toolkit version: [version from VERSION file]
 Classification: [Small/Standard/Enterprise]
 Domains detected: [count]
 Context budget: [worst-case KB] / 45 KB max
 Validation: [passed/N issues fixed]
+Manifest: .github/.bootstrap-manifest.json ✅
 
 🧹 Cleanup:
 - Deleted [N] bootstrap template agents
