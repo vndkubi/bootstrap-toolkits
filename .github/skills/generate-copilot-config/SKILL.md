@@ -42,8 +42,9 @@ Delegate to `@codebase-analyzer` or use the `analyze-codebase` skill. This phase
 - [ ] Read ≥ 3 test classes to detect test patterns
 - [ ] Check for CI/CD, Docker, devcontainer configurations
 - [ ] Scan for external service integrations (HTTP clients, message queues, event buses)
+- [ ] **Detect language/runtime version** — Java: check `<java.version>` in pom.xml or `sourceCompatibility` in Gradle; .NET: check `<TargetFramework>` in csproj; Node: check `engines.node` in package.json; Python: check `python_requires` in pyproject.toml or `.python-version` file; Kotlin: check `kotlinOptions.jvmTarget`; Swift: check `SWIFT_VERSION` or `Package.swift` tools version. Record exact versions in scan output.
 
-**Output**: Structured analysis report with: tech stack + versions, architecture pattern, module list, domain map, coding conventions, test patterns, infrastructure.
+**Output**: Structured analysis report with: tech stack + **exact versions**, architecture pattern, module list, domain map, coding conventions, test patterns, infrastructure.
 
 ## Phase 2: CLASSIFY — Project Size
 
@@ -57,6 +58,18 @@ Delegate to `@codebase-analyzer` or use the `analyze-codebase` skill. This phase
 > This classification determines what gets generated in Phases 4-11. It MUST happen before generation.
 > **Note**: Framework/Library projects with 3+ modules should generate domain-scoped instructions (Phase 5) regardless of domain count.
 
+### Context Pressure Estimate (run immediately after classification)
+
+After determining classification, estimate context risk for the upcoming pipeline:
+
+| Estimate | Threshold | Action |
+|---|---|---|
+| **Low** | ≤ 5 modules, ≤ 50 domain files | Proceed normally |
+| **Medium** | 6–10 modules OR 51–150 domain files | Warn user: "This project is large — Phase 3 will summarize findings to preserve context. May need 2 sessions for Phases 4-11." |
+| **High** | 10+ modules OR 150+ domain files | **HARD STOP** — output: "⚠️ Context Risk: Enterprise project with [N] modules. Running Phases 1-3 in this session. Start a new session for Phases 4-14 using the saved checkpoint. Proceed? (yes/no)" — wait for confirmation before continuing |
+
+**Record in state**: Save estimate as `"contextRisk": "low" | "medium" | "high"` in `BOOTSTRAP_STATE.json` (see Phase 14).
+
 ## Phase 3: DOMAIN — Business Domain Deep Analysis
 
 **CRITICAL for quality output.** Without this phase, agents produce technically correct but business-unaware code.
@@ -67,6 +80,47 @@ Extract from the codebase:
 - **Entity Relationship Map**: How entities relate with business-meaningful descriptions
 - **Business Workflows**: Key processes and state transitions (e.g., DRAFT → SUBMITTED → APPROVED → SHIPPED)
 - **Business Invariants**: Data consistency rules with justification (e.g., "sum of line items must equal order total")
+
+### Phase 3 Checkpoint — MANDATORY OUTPUT
+
+After completing domain analysis, produce a **checkpoint summary** before proceeding. This preserves findings if context is compacted during Phases 4-11.
+
+Write `.github/.phase3-checkpoint.md` (≤ 3 KB) with:
+
+```markdown
+# Bootstrap Checkpoint — Phase 3 Complete
+
+## Project Summary
+- **Classification**: [Small | Standard | Enterprise]
+- **Tech Stack**: [language version, framework, build tool]
+- **Modules**: [count and list]
+- **Domains**: [count and list with brief description]
+- **Context Risk**: [low | medium | high]
+
+## Domain Glossary (top 15 terms)
+| Term | Definition |
+|------|-----------|
+| ... | ... |
+
+## Key Business Rules (top 10)
+1. [rule — enforced at: Service/DB/Validator]
+...
+
+## Entity Relationship Summary
+[3-5 lines describing key entities and how they relate]
+
+## Key Workflows
+1. [workflow name]: [brief state transition, e.g., DRAFT → SUBMITTED → APPROVED]
+...
+
+## Tech Stack Details
+- Language version: [exact version detected]
+- Framework: [name + version]
+- Test framework: [name + version]
+- Build commands: [build / test / lint commands]
+```
+
+> **Why**: If context is compacted between sessions, agents in Phases 4-11 can load this ≤3 KB checkpoint instead of re-reading all source files.
 
 ## Phase 4: GEN copilot-instructions.md
 
@@ -182,6 +236,7 @@ Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 | WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |
 | 10+ modules / Enterprise | `dependency-analyzer` | Actual module list and dependencies |
 | Mobile platform | `mobile-implementor` | Platform-specific patterns |
+| Mobile platform | `mobile-reviewer` | Mobile-specific review: memory leaks, UI thread, Compose recomposition, actor isolation, accessibility |
 | Any project with code review | `functional-reviewer` | AC traceability, cross-domain data integrity, adversarial edge cases |
 | Any project with code review | `technical-reviewer` | Migration safety, domain boundary guardian, NFR compliance |
 
@@ -361,7 +416,48 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 
 > **This phase is CRITICAL.** First, generate the bootstrap manifest to record what was generated and by which toolkit version. Then delete all bootstrap template files. Only project-specific generated files remain.
 
-### Step 0: Generate `.bootstrap-manifest.json`
+### Step 0a: Generate `.github/.bootstrap-state.json` (Pipeline State Tracker)
+
+Write this file at the **START of Phase 1** and **update it after each phase completes**. This enables the `resume-bootstrap` skill to resume from any interrupted phase.
+
+```json
+{
+  "toolkitVersion": "<version from VERSION file>",
+  "startedAt": "<ISO 8601 UTC timestamp>",
+  "lastUpdatedAt": "<ISO 8601 UTC timestamp>",
+  "classification": "<Small | Standard | Enterprise | null>",
+  "contextRisk": "<low | medium | high | null>",
+  "phases": {
+    "1":  { "status": "completed | in_progress | pending | skipped", "completedAt": "<timestamp>", "summary": "<1-line result>" },
+    "2":  { "status": "...", "completedAt": "...", "summary": "<classification result>" },
+    "3":  { "status": "...", "completedAt": "...", "summary": "<N domains extracted, checkpoint written>" },
+    "4":  { "status": "...", "completedAt": "...", "summary": "<copilot-instructions.md written, N KB>" },
+    "5":  { "status": "...", "completedAt": "...", "summary": "<N domain instruction files | skipped: reason>" },
+    "6":  { "status": "...", "completedAt": "...", "summary": "<N instruction files written>" },
+    "6b": { "status": "...", "completedAt": "...", "summary": "<N templates written>" },
+    "7":  { "status": "...", "completedAt": "...", "summary": "<N agents written>" },
+    "8":  { "status": "...", "completedAt": "...", "summary": "<N skills written>" },
+    "9":  { "status": "...", "completedAt": "...", "summary": "<N prompts written>" },
+    "10": { "status": "...", "completedAt": "...", "summary": "<N hooks written | skipped>" },
+    "11": { "status": "...", "completedAt": "...", "summary": "<N workflows written | skipped: no CI/CD>" },
+    "12": { "status": "...", "completedAt": "...", "summary": "<validation passed | N issues fixed>" },
+    "13": { "status": "...", "completedAt": "...", "summary": "<devcontainer generated | optimized | skipped>" },
+    "14": { "status": "...", "completedAt": "...", "summary": "<manifest written, N files cleaned up>" }
+  },
+  "generatedFiles": ["<list of .github/ files generated so far — append after each phase>"],
+  "errors": ["<any errors encountered — helps diagnose resume>"]
+}
+```
+
+**Rules:**
+- Create this file before Phase 1 starts, with all phases set to `"pending"`
+- Update `status` → `"in_progress"` when a phase begins
+- Update `status` → `"completed"` + `completedAt` + `summary` immediately after each phase
+- For skipped phases: set `status` → `"skipped"` + `summary` → reason
+- Append newly generated file paths to `generatedFiles` after each generation phase
+- If pipeline is interrupted, the last `in_progress` phase is the resume point
+
+### Step 0b: Generate `.bootstrap-manifest.json`
 
 **MUST run BEFORE cleanup** — this step collects all generated file paths while they still exist.
 
@@ -441,6 +537,7 @@ Read the toolkit version from the `VERSION` file at the repository root of the *
 .github/agents/spec-reviewer.agent.md
 .github/agents/functional-reviewer.agent.md
 .github/agents/technical-reviewer.agent.md
+.github/agents/mobile-reviewer.agent.md
 ```
 
 **Delete these bootstrap template skills** (ALL skill directories):
@@ -474,6 +571,9 @@ Read the toolkit version from the `VERSION` file at the repository root of the *
 .github/skills/generate-state-diagram/
 .github/skills/review-spec/
 .github/skills/update-spec/
+.github/skills/resume-bootstrap/
+.github/skills/upgrade-config/
+.github/skills/validate-bootstrap-output/
 ```
 
 **Delete these bootstrap template instructions** (ALL of them):

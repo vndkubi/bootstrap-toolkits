@@ -1,9 +1,13 @@
 ---
-description: 'Java coding standards for enterprise applications. Naming conventions, error handling, logging, null safety, and code organization.'
+description: 'Java coding standards for enterprise applications. Naming conventions, error handling, logging, null safety, and code organization. Includes version-specific guidance for Java 8, Java 11+, and Java 17+.'
 applyTo: '**/*.java'
 ---
 
 # Java Coding Standards
+
+> **Version Note**: This file covers Java 8 baseline standards applicable to all Java projects.
+> Additional modern idioms are marked with **[Java 11+]** or **[Java 17+]** — only apply them if the project's detected Java version matches.
+> Java version is detected from `<java.version>` in `pom.xml`, `sourceCompatibility` in `build.gradle`, or `release` flag in compiler config.
 
 ## Naming Conventions
 
@@ -137,6 +141,67 @@ try (var connection = dataSource.getConnection();
     // use resources
 }
 ```
+
+## Version-Specific Features
+
+### [Java 11+] — Use if project targets Java 11 or higher
+
+```java
+// ✅ Local variable type inference
+var orders = new ArrayList<Order>();
+var result = orderService.findById(id);
+
+// ✅ String methods
+String trimmed = value.strip();           // Unicode-aware (prefer over trim())
+boolean blank  = value.isBlank();
+String repeated = "-".repeat(40);
+
+// ✅ Collection factory methods (available since Java 9, common from 11)
+List<String> names = List.of("Alice", "Bob");
+Map<String, Integer> codes = Map.of("PENDING", 1, "ACTIVE", 2);
+```
+
+### [Java 17+] — Use if project targets Java 17 or higher
+
+```java
+// ✅ Records for immutable data carriers (replaces Lombok @Value / manual builders for DTOs)
+public record OrderSummary(Long id, String status, BigDecimal total) {}
+
+// ✅ Sealed classes for closed type hierarchies
+public sealed interface PaymentResult
+    permits PaymentSuccess, PaymentFailure, PaymentPending {}
+
+public record PaymentSuccess(String transactionId) implements PaymentResult {}
+public record PaymentFailure(String reason, int code) implements PaymentResult {}
+
+// ✅ Pattern matching for instanceof (no more explicit cast)
+// ❌ Old style
+if (result instanceof PaymentSuccess) {
+    PaymentSuccess s = (PaymentSuccess) result;
+    log.info("Transaction: {}", s.transactionId());
+}
+// ✅ New style
+if (result instanceof PaymentSuccess s) {
+    log.info("Transaction: {}", s.transactionId());
+}
+
+// ✅ Switch expressions with pattern matching
+String label = switch (result) {
+    case PaymentSuccess s  -> "OK: " + s.transactionId();
+    case PaymentFailure f  -> "FAIL: " + f.reason();
+    case PaymentPending p  -> "PENDING";
+};
+
+// ✅ Text blocks for multiline strings (SQL, JSON, HTML)
+String query = """
+    SELECT o.id, o.status, c.name
+    FROM orders o
+    JOIN customers c ON c.id = o.customer_id
+    WHERE o.status = :status
+    """;
+```
+
+> **Anti-pattern**: Do NOT use Records for JPA `@Entity` classes — JPA requires mutable classes with a no-arg constructor. Records are for DTOs, response objects, and value types only.
 
 ## Documentation
 
