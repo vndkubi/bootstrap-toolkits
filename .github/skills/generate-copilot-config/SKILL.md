@@ -143,6 +143,237 @@ Write `.github/.phase3-checkpoint.md` (≤ 3 KB) with:
 
 > **Why**: If context is compacted between sessions, agents in Phases 4-11 can load this ≤3 KB checkpoint instead of re-reading all source files.
 
+## Phase 3b: GEN Module Dependency Map
+
+**Trigger**: Standard or Enterprise classification (skip for Small — single module has no inter-module graph).
+
+Build a pre-computed dependency graph from the codebase so that `@dependency-analyzer`, `@investigator`, and `@dev-orchestrator` can instantly answer "what is affected if X changes?" without re-scanning source files each time.
+
+### Step 1: Extract Module Dependencies (read-only — no tools needed)
+
+For each module detected in Phase 1, extract its dependencies by reading build files:
+
+| Build System | Where to Read | What to Extract |
+|---|---|---|
+| Maven multi-module | Each `pom.xml` → `<dependencies>`, `<parent>`, `<modules>` | Inter-module `artifactId` references |
+| Gradle multi-project | `settings.gradle` → `include`, each `build.gradle` → `dependencies {}` | `project(':module-name')` references |
+| npm workspaces | `package.json` → `workspaces`, each workspace `package.json` → `dependencies` | Local package references (`"@scope/module": "*"`) |
+| .NET solution | `*.sln` + each `*.csproj` → `<ProjectReference>` | `.csproj` path references |
+| Python (monorepo) | Each `pyproject.toml` or `setup.py` → `[tool.poetry.dependencies]` | Local package names |
+
+Then verify with **import scanning** — grep source files for cross-module imports to catch undeclared runtime dependencies:
+
+```
+# Java: find cross-module package imports
+grep -r "^import com\.company\." src/main/java/ --include="*.java"
+
+# TypeScript: find workspace imports
+grep -r "from '@scope/" src/ --include="*.ts"
+
+# Python: find local module imports
+grep -r "^from \." src/ --include="*.py"
+```
+
+### Step 2: Identify Module Layers and Types
+
+Classify each module by its architectural role:
+
+| Type | Indicators |
+|---|---|
+| `domain` | Contains only entities, value objects, enums — no framework annotations |
+| `service` | `@Service`, `@Stateless`, business logic classes, use cases |
+| `api` / `presentation` | `@Controller`, `@Path`, `@RestController`, HTTP handlers |
+| `persistence` | `@Repository`, DAO classes, migration files |
+| `shared` | `common`, `shared`, `core`, `utils` in name; no domain logic |
+| `integration` | External API clients, Feign, `@FeignClient`, HTTP client config |
+| `batch` | Scheduled jobs, `@Scheduled`, batch processors |
+| `mobile` | Android/iOS source structure |
+| `frontend` | React/Vue/Angular component trees |
+
+### Step 3: Detect Dependency Rules and Violations
+
+Based on the layer classification, derive the allowed dependency direction (Clean Architecture / Onion):
+
+```
+Allowed:  api → service → domain
+          api → service → persistence
+          any → shared
+Forbidden: domain → service (inward pointing)
+           persistence → service (inward pointing)
+           shared → domain (shared must be layer-agnostic)
+```
+
+Flag any detected violations as `"violations"` in the map.
+
+### Step 4: Identify High-Risk and Critical Path Modules
+
+- **High-risk modules**: Modules with the most dependents (high `inDegree` in the graph) — changing them has the widest blast radius
+- **Isolated modules**: Modules with no dependents — safe to change independently
+- **Critical paths**: Chains of 3+ modules that form key business flows (e.g., `api → orders → payments → external-gateway`)
+
+### Step 5: Write `.github/module-dependency-map.json`
+
+```json
+{
+  "$schema": "https://copilot-bootstrap.dev/dependency-map.schema.json",
+  "generatedAt": "<ISO 8601 UTC>",
+  "toolkitVersion": "<version>",
+  "project": {
+    "name": "<project name>",
+    "classification": "<Small|Standard|Enterprise>",
+    "buildSystem": "<maven|gradle|npm|dotnet|poetry>"
+  },
+  "modules": [
+    {
+      "id": "<kebab-case-id>",
+      "name": "<display name>",
+      "type": "<domain|service|api|persistence|shared|integration|batch|mobile|frontend>",
+      "layer": "<domain|service|presentation|infrastructure|shared>",
+      "path": "<relative path from repo root>",
+      "buildFile": "<relative path to pom.xml / build.gradle / package.json>",
+      "dependencies": ["<module-id>"],
+      "dependents": ["<module-id>"],
+      "externalDeps": [
+        { "id": "<groupId:artifactId or package@version>", "scope": "<compile|runtime|test>" }
+      ],
+      "keyClasses": ["<ClassName>"],
+      "publicApi": ["<ClassName.methodName()>"],
+      "inDegree": 0,
+      "outDegree": 0,
+      "riskLevel": "<low|medium|high>"
+    }
+  ],
+  "dependencyEdges": [
+    {
+      "from": "<module-id>",
+      "to": "<module-id>",
+      "type": "<compile|runtime|optional|test>",
+      "via": "<import statement or build declaration>",
+      "keyCallSites": ["<ClassName.method() at File:Line>"]
+    }
+  ],
+  "dependencyRules": [
+    { "fromLayer": "presentation", "toLayer": "service", "allowed": true },
+    { "fromLayer": "service", "toLayer": "domain", "allowed": true },
+    { "fromLayer": "domain", "toLayer": "service", "allowed": false, "reason": "Clean Architecture inward dependency" },
+    { "fromLayer": "persistence", "toLayer": "service", "allowed": false, "reason": "Inversion of control violation" },
+    { "fromLayer": "*", "toLayer": "shared", "allowed": true }
+  ],
+  "violations": [
+    {
+      "type": "<circular|layer-violation|internal-class-access>",
+      "from": "<module-id>",
+      "to": "<module-id>",
+      "description": "<what the violation is>",
+      "severity": "<high|medium|low>"
+    }
+  ],
+  "circularDependencies": [
+    { "cycle": ["<module-id>", "<module-id>", "..."], "description": "<how they depend on each other>" }
+  ],
+  "graphMetadata": {
+    "highRiskModules": ["<module-id>"],
+    "isolatedModules": ["<module-id>"],
+    "criticalPaths": [
+      {
+        "name": "<path name, e.g. Order Payment Flow>",
+        "path": ["<module-id>", "..."],
+        "description": "<what this path implements>"
+      }
+    ],
+    "totalModules": 0,
+    "totalEdges": 0
+  }
+}
+```
+
+**Rules:**
+- `dependencies` = modules this module depends ON (outbound edges)
+- `dependents` = modules that depend ON this module (inbound edges) — derive by inverting `dependencies`
+- `inDegree` = count of `dependents` — high inDegree = high blast radius risk
+- `riskLevel`: `high` if inDegree ≥ 5, `medium` if 2–4, `low` if 0–1
+- List only **inter-module** dependencies — exclude external library deps from the graph edges
+
+### Step 6: Write `.github/MODULE-ARCHITECTURE.md`
+
+Human-readable companion to the JSON map. Include a Mermaid dependency graph.
+
+```markdown
+# Module Architecture
+
+> Auto-generated by copilot-bootstrap v[version] on [date].
+> Source of truth: `.github/module-dependency-map.json`
+> Regenerate: run `/bootstrap-copilot` or `dependency-extractor` skill.
+
+## Dependency Graph
+
+```mermaid
+graph TD
+    %% Layer colors
+    classDef presentation fill:#dbeafe,stroke:#3b82f6
+    classDef service fill:#dcfce7,stroke:#22c55e
+    classDef domain fill:#fef9c3,stroke:#eab308
+    classDef persistence fill:#fce7f3,stroke:#ec4899
+    classDef shared fill:#f3f4f6,stroke:#6b7280
+
+    %% Modules (one node per module with type label)
+    [ID]["[Name]\n([type])"]
+
+    %% Edges (dependencies)
+    [FROM] --> [TO]
+
+    %% Apply styles
+    class [ID] [layerClass]
+```
+
+## Module Inventory
+
+| Module | Type | Layer | Depends On | Used By | Risk |
+|--------|------|-------|-----------|---------|------|
+| [name] | [type] | [layer] | [comma-separated] | [comma-separated] | 🔴/🟡/🟢 |
+
+## Dependency Rules
+
+| Rule | Allowed | Reason |
+|------|---------|--------|
+| presentation → service | ✅ | Standard layered architecture |
+| service → domain | ✅ | Business logic uses entities |
+| domain → service | ❌ | Would create circular dependency |
+| * → shared | ✅ | Shared utilities are layer-agnostic |
+
+## Violations (if any)
+
+| Type | From | To | Severity | Description |
+|------|------|----|----------|-------------|
+
+## High-Risk Modules
+
+Modules with the most dependents — changes here have the widest blast radius:
+
+| Module | Dependents | Risk | Why |
+|--------|-----------|------|-----|
+
+## Critical Paths
+
+Key feature chains crossing multiple modules:
+
+| Path Name | Chain | Description |
+|-----------|-------|-------------|
+
+## Impact Quick Reference
+
+> Use this table when investigating PBIs or planning changes.
+
+| If you change... | Direct impact | Transitive impact | Blast radius |
+|-----------------|--------------|-------------------|--------------|
+| [module] | [direct dependents] | [transitive] | 🔴/🟡/🟢 |
+```
+
+**Rules for generation:**
+- Generate the Mermaid diagram from `dependencyEdges` in the JSON map
+- `riskLevel: high` → 🔴, `medium` → 🟡, `low` → 🟢
+- Keep the file ≤ 8 KB — if too large, truncate `keyCallSites` and `externalDeps` details
+
 ## Phase 4: GEN copilot-instructions.md
 
 Create `.github/copilot-instructions.md` (≤ 4 KB):
@@ -468,6 +699,14 @@ If triggered, generate `.github/copilot/` workflow files:
 - [ ] All `.prompt.md` have valid frontmatter
 - [ ] No files with empty or placeholder content
 
+### Tier 1b: Dependency Map Validation (Standard/Enterprise only)
+- [ ] `.github/module-dependency-map.json` exists and is valid JSON
+- [ ] Every module listed in Phase 1 SCAN appears in `modules[]`
+- [ ] `dependents` arrays are consistent with `dependencies` (if A depends on B, then B's `dependents` includes A)
+- [ ] No module references a non-existent module ID in `dependencies` or `dependents`
+- [ ] `.github/MODULE-ARCHITECTURE.md` exists and contains a Mermaid diagram
+- [ ] Mermaid diagram node count matches `graphMetadata.totalModules`
+
 ### Tier 2: Functional Validation
 - [ ] Each agent `description` mentions the actual tech stack detected in Phase 1
 - [ ] Each instruction `applyTo` pattern matches ≥ 1 real file in the project
@@ -575,7 +814,9 @@ Read the toolkit version from the `VERSION` file at the repository root of the *
     "hooks": [".github/hooks/<name>.json"],
     "templates": [".github/templates/<name>.md"],
     "domains": [".github/domains/domain-registry.json", ".github/domains/<name>.instructions.md"],
-    "devcontainer": [".devcontainer/devcontainer.json"]
+    "devcontainer": [".devcontainer/devcontainer.json"],
+    "dependencyMap": ".github/module-dependency-map.json",
+    "moduleArchitecture": ".github/MODULE-ARCHITECTURE.md"
   },
   "contextBudget": {
     "worstCaseKB": <number>,
@@ -698,10 +939,19 @@ docs/enterprise-guide.md
 docs/context-budget-guide.md
 ```
 
+Also add `dependency-extractor` to the bootstrap template skills delete list:
+```
+.github/skills/dependency-extractor/
+```
+
 ### Step 2: Verify Only Project-Specific Files Remain
 
 After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
 - `.bootstrap-manifest.json` — generated in Phase 14 Step 0
+- `.bootstrap-state.json` — generated in Phase 14 Step 0a
+- `.phase3-checkpoint.md` — generated in Phase 3
+- `module-dependency-map.json` — generated in Phase 3b (**do NOT delete**)
+- `MODULE-ARCHITECTURE.md` — generated in Phase 3b (**do NOT delete**)
 - `copilot-instructions.md` — generated in Phase 4, project-specific
 - `agents/` — generated in Phase 7, project-specific
 - `skills/` — generated in Phase 8, project-specific
