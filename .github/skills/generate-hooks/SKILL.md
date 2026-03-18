@@ -17,16 +17,42 @@ Generate `.github/hooks/*.json` files that automate shell commands at key moment
 
 ## Hook Events Reference
 
+> **Official GitHub Copilot hook events** — only these 6 events are supported. `agentStop` and `subagentStop` do NOT exist for GitHub Copilot hooks.
+
 | Event | When it Fires | Common Use |
 |-------|---------------|------------|
 | `sessionStart` | Agent session begins | Initialize environments, validate project state |
-| `sessionEnd` | Agent session completes | Clean up temp files, send notifications |
-| `userPromptSubmitted` | User submits a prompt | Audit prompts for compliance |
-| `preToolUse` | Before agent uses a tool | Block dangerous commands, enforce security |
-| `postToolUse` | After tool completes | Format code after edits, log tool usage |
-| `agentStop` | Main agent finishes responding | Run linters/formatters, validate changes |
-| `subagentStop` | Subagent completes | Audit subagent outputs |
+| `sessionEnd` | Agent session completes | Final checks, cleanup, audit trail |
+| `userPromptSubmitted` | User submits a prompt | Audit prompts, rate-limit, compliance logging |
+| `preToolUse` | Before each tool execution | Block dangerous commands, enforce security policies |
+| `postToolUse` | After each tool execution | Format code after file edits, log tool usage |
 | `errorOccurred` | Error during execution | Log errors, send alerts |
+
+### Choosing the Right Event for Quality Checks
+
+There is no "agentStop" equivalent in GitHub Copilot hooks. Use this mapping instead:
+
+| Quality Check Goal | Recommended Event | Rationale |
+|-------------------|-----------------|-----------|
+| Auto-format after file edit | `postToolUse` | Fires immediately after each edit |
+| Lint check | `postToolUse` (filter by tool) | Run only when file-editing tools are used |
+| Compile check | `postToolUse` (filter by tool) | Run after file writes |
+| Security gate | `preToolUse` | Block before execution, not after |
+| Session audit log | `sessionStart` + `sessionEnd` | Bracket the full session |
+| Error monitoring | `errorOccurred` | Catch failures as they happen |
+
+**Filtering by tool in `postToolUse`** — the hook receives `toolName` in its stdin JSON. Use a script that reads stdin and skips non-edit tools:
+
+```bash
+#!/bin/bash
+# Only run quality check when a file was edited
+TOOL=$(echo "$STDIN_JSON" | jq -r '.toolName // empty')
+case "$TOOL" in
+  "str_replace_editor"|"create_file"|"write_file"|*"edit"*|*"write"*) ;;
+  *) exit 0 ;;  # skip — not a file-editing tool
+esac
+# run your quality check here
+```
 
 ## Hook File Format
 
@@ -149,17 +175,17 @@ If formatter detected, create `postToolUse` hook:
 
 #### Lint Check Hook (lint-check.json)
 
-If linter detected, create `agentStop` hook:
+If linter detected, create `postToolUse` hook (fires after each file edit):
 
 **Java (Checkstyle via Maven)**:
 ```json
 {
   "version": 1,
   "hooks": {
-    "agentStop": [
+    "postToolUse": [
       {
         "type": "command",
-        "bash": "mvn checkstyle:check -q",
+        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) mvn checkstyle:check -q ;; *) exit 0 ;; esac",
         "powershell": "mvn checkstyle:check -q",
         "cwd": ".",
         "timeoutSec": 60
@@ -174,10 +200,10 @@ If linter detected, create `agentStop` hook:
 {
   "version": 1,
   "hooks": {
-    "agentStop": [
+    "postToolUse": [
       {
         "type": "command",
-        "bash": "npx eslint . --max-warnings 0",
+        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) npx eslint . --max-warnings 0 ;; *) exit 0 ;; esac",
         "powershell": "npx eslint . --max-warnings 0",
         "cwd": ".",
         "timeoutSec": 60
@@ -189,17 +215,17 @@ If linter detected, create `agentStop` hook:
 
 #### Compile Check Hook (compile-check.json)
 
-If build tool detected, create `agentStop` hook to verify compilation:
+If build tool detected, create `postToolUse` hook to verify compilation after file edits:
 
 **Java (Maven)**:
 ```json
 {
   "version": 1,
   "hooks": {
-    "agentStop": [
+    "postToolUse": [
       {
         "type": "command",
-        "bash": "mvn compile -q -DskipTests",
+        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) mvn compile -q -DskipTests ;; *) exit 0 ;; esac",
         "powershell": "mvn compile -q -DskipTests",
         "cwd": ".",
         "timeoutSec": 120
@@ -214,10 +240,10 @@ If build tool detected, create `agentStop` hook to verify compilation:
 {
   "version": 1,
   "hooks": {
-    "agentStop": [
+    "postToolUse": [
       {
         "type": "command",
-        "bash": "npx tsc --noEmit",
+        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) npx tsc --noEmit ;; *) exit 0 ;; esac",
         "powershell": "npx tsc --noEmit",
         "cwd": ".",
         "timeoutSec": 60

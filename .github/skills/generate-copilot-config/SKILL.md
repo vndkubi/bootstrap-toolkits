@@ -70,6 +70,27 @@ After determining classification, estimate context risk for the upcoming pipelin
 
 **Record in state**: Save estimate as `"contextRisk": "low" | "medium" | "high"` in `BOOTSTRAP_STATE.json` (see Phase 14).
 
+### Workspace Indexing Limit Warning
+
+GitHub Copilot's **local workspace indexing has a hard limit of 2,500 files**. Beyond this limit, Copilot falls back to basic (non-semantic) indexing, making `#codebase` searches less accurate.
+
+Check total source file count during Phase 1 SCAN. If the project exceeds the threshold:
+
+| File Count | Action |
+|---|---|
+| ≤ 2,000 files | No action needed — well within limit |
+| 2,001–2,500 files | Note in checkpoint: "Near indexing limit — avoid adding many new source files" |
+| > 2,500 files | **Warn** in Phase 3 checkpoint and copilot-instructions.md: "⚠️ This project exceeds Copilot's 2,500-file local indexing limit. Use **remote indexing** (index via github.com) for accurate `#codebase` search. Alternatively, narrow `#file` references when using Copilot in large modules." |
+
+Add to `copilot-instructions.md` (Enterprise projects > 2,500 files):
+```markdown
+## Workspace Context
+⚠️ Project exceeds 2,500-file local index limit. For accurate codebase search:
+- Use `#file path/to/relevant/file` to narrow context rather than `#codebase`
+- Enable remote indexing at github.com/[org]/[repo]/settings for semantic search
+- For large module work, open only that module's folder in VS Code
+```
+
 ## Phase 3: DOMAIN — Business Domain Deep Analysis
 
 **CRITICAL for quality output.** Without this phase, agents produce technically correct but business-unaware code.
@@ -249,10 +270,38 @@ Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
 Use the `generate-skills` prompt as a guide for skill file format and detection logic.
 
 Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each). Each skill MUST:
+- Have `name:` in frontmatter that **exactly matches the parent directory name** (GitHub Copilot rejects mismatches). E.g., directory `implement-feature/` → `name: implement-feature`
 - Reference **actual build commands** (e.g., `mvn clean verify -pl module-name` not `build`)
 - Reference **actual test commands** (e.g., `mvn test -Dtest=OrderServiceTest` not `run tests`)
 - Reference **actual project directory structure** (e.g., `src/main/java/com/company/...`)
 - Reference **actual framework patterns** (e.g., "Entity → DAO → Service → Resource" for Jakarta EE)
+
+### Skill Frontmatter Schema (complete)
+
+```yaml
+---
+name: skill-name          # MUST match parent directory name exactly
+description: '...'        # 10-1024 chars — what it does and when to use
+hint: '[PBI] [module]'    # shown in chat input when user types /skill-name — guides what to type next
+hidden: false             # true = hidden from / menu but still auto-loaded; default false
+---
+```
+
+**`hint` usage guidance** — add `hint` to all generated skills:
+
+| Skill | Recommended `hint` value |
+|-------|--------------------------|
+| `implement-feature` | `[feature description or PBI ID] [module name]` |
+| `investigate-pbi` | `[PBI ID or description]` |
+| `generate-unit-tests` | `[class name or file path]` |
+| `review-code-changes` | `[branch name or file list]` |
+| `generate-sequence-diagram` | `[flow name] [entry-point class]` |
+| `sprint-planning` | `[sprint number] [PBI list]` |
+| `impact-analysis` | `[class or field being changed]` |
+
+**`hidden` usage** — set `hidden: true` for internal/utility skills that should not appear in the slash-command menu but can still be invoked by agents:
+- Skills that are only called by other agents (e.g., `domain-registry`, `context-budget-check`)
+- Skills used internally by the bootstrap pipeline
 
 **Auto-select based on detected capabilities:**
 
@@ -332,15 +381,53 @@ Create `.github/prompts/*.prompt.md` (≤ 3 KB each):
 - If complex codebase: `learn-codebase` (entry point to understand this project)
 - Each prompt is an entry point only — delegates to agents + skills for real work
 
+### Prompt Frontmatter Schema
+
+```yaml
+---
+name: prompt-display-name      # shown after / in chat (defaults to filename)
+description: One-line summary  # for discoverability
+agent: agent                   # mode: ask | edit | agent | <custom-agent-name>
+model: gpt-4o                  # optional — defaults to selected model
+tools: ['codebase', 'github']  # optional — specific tools this prompt requires
+---
+```
+
+### Interactive Variables with `${input:variableName}`
+
+Use `${input:variableName}` to create prompts that ask the user for input before running. When the user invokes the prompt, Copilot displays an input field for each variable.
+
+```markdown
+---
+name: implement-feature
+description: 'Implement a feature end-to-end: investigate → implement → test'
+agent: agent
+---
+
+Implement the following feature in @dev-orchestrator:
+
+**Requirement**: ${input:requirement}
+**Module** (leave blank for auto-detect): ${input:module}
+**Acceptance criteria** (optional): ${input:acceptanceCriteria}
+```
+
+**Rules for generated prompts:**
+- Use `${input:variableName}` for required user context that cannot be inferred from the codebase (PBI ID, feature description, module name)
+- Keep variable names concise and self-explanatory — users see the variable name as the input label
+- Provide inline hints using comments or parenthetical notes: `${input:module} (e.g. orders, payments)`
+- **Do NOT** use `{variableName}` (curly only, no dollar) — that is not valid Copilot prompt syntax
+
 ## Phase 10: GEN Hooks
 
 Create `.github/hooks/*.json` based on detected project tooling:
 
+> **Supported hook events** (GitHub Copilot official): `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `errorOccurred`. There is no `agentStop` — use `postToolUse` with tool-name filtering for quality checks.
+
 | Detection | Hook File | Event | Purpose |
 |---|---|---|---|
 | Formatter (Prettier/Spotless/Black/ktlint) | `auto-format.json` | `postToolUse` | Auto-format after file edit |
-| Linter (ESLint/Checkstyle/PMD/detekt) | `lint-check.json` | `agentStop` | Lint when agent finishes |
-| Build tool (Maven/Gradle/tsc/dotnet) | `compile-check.json` | `agentStop` | Verify compilation |
+| Linter (ESLint/Checkstyle/PMD/detekt) | `lint-check.json` | `postToolUse` | Lint after file-editing tools (filtered by toolName) |
+| Build tool (Maven/Gradle/tsc/dotnet) | `compile-check.json` | `postToolUse` | Verify compilation after file-editing tools |
 | Enterprise/security patterns | `security-gate.json` | `preToolUse` | Block dangerous commands |
 
 Hook format:
@@ -374,8 +461,9 @@ If triggered, generate `.github/copilot/` workflow files:
 ## Phase 12: VALIDATE — 3-Tier Validation
 
 ### Tier 1: Structural Validation
-- [ ] All `.agent.md` have valid YAML frontmatter (`name`, `description`; `agents:` list for orchestrators only; NO `tools:` or `mode:` fields)
+- [ ] All `.agent.md` have valid YAML frontmatter (`name`, `description`; `agents:` list for orchestrators only; NO `mode:` field — `tools:` IS valid)
 - [ ] All `SKILL.md` have `name` and `description` (10-1024 chars)
+- [ ] **Skill `name` matches parent directory** — e.g., `skills/implement-feature/SKILL.md` must have `name: implement-feature`. GitHub Copilot rejects skills where name ≠ directory. Check every generated skill.
 - [ ] All `.instructions.md` have `description` and `applyTo` globs
 - [ ] All `.prompt.md` have valid frontmatter
 - [ ] No files with empty or placeholder content

@@ -1,28 +1,29 @@
 ---
-agent: 'agent'
-description: 'Full feature implementation workflow: analyze requirement → investigate codebase → confirm with user → implement code → write unit tests (100% branch coverage) → generate documentation.'
+name: implement-feature
+description: 'Full feature implementation workflow: investigate → confirm → implement → test → document. Delegates to @dev-orchestrator.'
+agent: agent
 ---
 
 # Implement Feature (End-to-End)
 
-You are the `@dev-orchestrator`. Execute the full development lifecycle for the given requirement.
+You are the `@dev-orchestrator`. Execute the full development lifecycle for the requirement below.
+
+## Requirement
+
+**Feature / PBI**: ${input:requirement}
+**Target module** (leave blank to auto-detect): ${input:module}
+**Acceptance criteria** (optional — paste or leave blank): ${input:acceptanceCriteria}
 
 ## Instructions
 
-1. **Parse the requirement** — extract what, why, scope, constraints, acceptance criteria
-2. **Investigate the codebase** — trace current flow (as-is), design proposed solution (to-be), map all scenarios, assess impact and risks
-3. **Present findings** — show structured investigation summary and wait for user confirmation before proceeding
-4. **Implement production code** — follow existing codebase patterns, implement bottom-up across all layers
-5. **Write unit tests** — 100% branch coverage, minimal mocking, test builders, @Nested groups, AssertJ assertions
-6. **Generate documentation** — markdown report with changes overview, API changes, test coverage, scenarios verified
-7. **Present final summary** — list all deliverables with verification command
+1. **Parse** — extract scope, constraints, and acceptance criteria from the requirement above
+2. **Investigate** — trace as-is flow, design to-be solution, map all scenarios and risks
+3. **Confirm** ⏸️ — present investigation summary and wait for explicit user confirmation
+4. **Implement** — follow existing codebase patterns, implement bottom-up across all layers
+5. **Test** — 100% branch coverage, minimal mocking, @Nested groups, AssertJ assertions
+6. **Document** — markdown report: changes, API impact, test coverage, verification command
 
-## Important
-- Do NOT proceed to implementation without user confirmation after the investigation phase
+## Rules
+- Do NOT proceed to implementation without user confirmation after investigation
 - Match existing codebase patterns exactly
-- Cover ALL branches in unit tests (if/else, switch, ternary, try/catch, loops, null checks)
-- Use real objects over mocks wherever possible
-
-## User's Requirement
-
-{requirement}
+- Cover ALL branches: if/else, switch, ternary, try/catch, loops, null checks
