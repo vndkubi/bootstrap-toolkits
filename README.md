@@ -10,9 +10,11 @@ Bootstrap Toolkit solves the problem: **Given any codebase, automatically detect
 
 The toolkit includes:
 - **27 custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
-- **30 reusable skills** — automated workflows from sprint planning to impact analysis
+- **34+ reusable skills** — automated workflows from sprint planning to impact analysis, including spec-driven pipeline
 - **23 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, TypeScript, React, Kotlin, Swift, DevContainer
 - **1 conductor** — master orchestrator that coordinates the entire pipeline
+- **1 project constitution** — 9 immutable Articles + Phase -1 Gates governing all specification-to-code transformation
+- **Spec-driven pipeline** — specify → plan → tasks → implement workflow for vague or large features
 - **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
 
@@ -62,9 +64,18 @@ PBI/Issue ──▶ @investigator ──▶ @mobile-architect ──▶ @mobile-
 
 Full Lifecycle (The "Do Everything" Pipeline):
 PBI/Issue ──▶ @dev-orchestrator ──▶ [auto-detects stack] ──▶ investigate → confirm → implement → test → PR → docs
+
+Spec-Driven Pipeline (For vague/large features):
+Idea/Request ──▶ /specify-feature ──▶ specify → plan → tasks → implement → test → PR
+                       │                  │              │            │
+                       ▼                  ▼              ▼            ▼
+                  Structured Spec    Tech Plan     Task List    Code + Tests
+                  (PRD format)    (with gates)   (ordered)    (verified)
 ```
 
-## 🧱 Core Principles
+## 🧱 Project Constitution & Core Principles
+
+> All 9 principles are codified as immutable Articles in `.github/constitution.md`, which includes **Phase -1 Gates** (Simplicity, Duplication, Business Logic, Impact) that MUST pass before any implementation begins. The constitution is generated into every target project during bootstrap.
 
 ### 1. Understand Before Changing — Read the Current Code Flow First
 
@@ -118,6 +129,7 @@ In multi-module projects, understand module boundaries before making changes:
 ```
 .github/
 ├── copilot-instructions.md                          # 📖 Project-wide context
+├── constitution.md                                  # 📜 Project Constitution (9 Articles + Phase -1 Gates)
 │
 ├── agents/                                          # 🤖 Custom AI Agents (27)
 │   ├── conductor.agent.md                           #   Main orchestrator
@@ -148,11 +160,15 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── dependency-analyzer.agent.md                 #   🔗 Cross-module dependency analysis
 │   └── database-specialist.agent.md                 #   🗄️ Schema review & migration strategy
 │
-├── skills/                                          # 🎯 Reusable Skills (30)
+├── skills/                                          # 🎯 Reusable Skills (34+)
 │   ├── analyze-codebase/SKILL.md                    #   Deep analysis
 │   ├── analyze-requirements/SKILL.md                #   📝 Requirements & PBI writing
 │   ├── investigate-pbi/SKILL.md                     #   PBI investigation
 │   ├── implement-feature/SKILL.md                   #   Implementation guide
+│   ├── specify-feature/SKILL.md                     #   📋 Spec-driven: requirements → structured spec
+│   ├── plan-implementation/SKILL.md                 #   📋 Spec-driven: spec → technical plan + gates
+│   ├── generate-tasks/SKILL.md                      #   📋 Spec-driven: plan → executable task list
+│   ├── review-effectiveness/SKILL.md                #   🔄 Feedback loop: review config effectiveness
 │   ├── generate-unit-tests/SKILL.md                 #   Unit test generation
 │   ├── generate-sequence-diagram/SKILL.md           #   Sequence diagrams
 │   ├── generate-state-diagram/SKILL.md              #   🔄 State machine diagrams
@@ -205,14 +221,15 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── react.instructions.md                        #   ⚛️ React/Next.js component standards
 │   └── module-boundaries.instructions.md            #   🏗️ Cross-module dependency rules
 │
-├── prompts/                                         # 🚀 Reusable Prompts (7)
+├── prompts/                                         # 🚀 Reusable Prompts (8)
 │   ├── bootstrap-copilot.prompt.md                  #   Full bootstrap pipeline
 │   ├── analyze-project.prompt.md                    #   Codebase analysis
 │   ├── learn-codebase.prompt.md                     #   🎓 Learn business & workflows
 │   ├── generate-agents.prompt.md                    #   Generate agents
 │   ├── generate-instructions.prompt.md              #   Generate instructions
 │   ├── generate-skills.prompt.md                    #   Generate skills
-│   └── implement-feature.prompt.md                  #   Full feature implementation
+│   ├── implement-feature.prompt.md                  #   Full feature implementation
+│   └── specify-feature.prompt.md                    #   📋 Spec-driven pipeline entry point
 │
 └── hooks/                                           # 🔗 Lifecycle Hooks (generated per project)
     └── (auto-generated during bootstrap)
@@ -314,6 +331,15 @@ In multi-module projects, understand module boundaries before making changes:
 | `generate-state-diagram` | Mermaid state diagrams from entity lifecycle analysis | "state diagram", "status flow", "lifecycle" |
 | `review-spec` | Spec review with Security + Testability lenses | "review spec", "check spec", "validate requirements" |
 | `update-spec` | Incremental spec updates from Change Requests | "update spec", "change request", "patch spec" |
+
+### Spec-Driven Pipeline Skills 📋
+
+| Skill | Description | Trigger Keywords |
+|-------|--------|-----------------|
+| `specify-feature` | Requirements → structured spec (PRD) with `[NEEDS CLARIFICATION]` markers | "spec", "specify", "write PRD", "define requirements" |
+| `plan-implementation` | Spec → technical plan with Phase -1 Constitutional Gates | "plan", "technical plan", "how to build" |
+| `generate-tasks` | Plan → executable task list with parallelization + checkpoints | "tasks", "task list", "break into tasks" |
+| `review-effectiveness` | Feedback loop: review which agents/skills/instructions are working | "review config", "effectiveness", "what's working" |
 
 ### Mobile Skills 📱
 
@@ -423,7 +449,8 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 | `/generate-agents` | Generate agents from detected tech stack | Create agents for a project |
 | `/generate-instructions` | Generate coding standards from conventions | Create instruction files |
 | `/generate-skills` | Generate skills from detected workflows | Create workflow skills |
-| `/implement-feature` | Full implementation: analyze → confirm → code → tests → docs | Implement a feature end-to-end |
+| `/implement-feature` | Full implementation: investigate → confirm → code → tests → docs | Well-defined PBIs — implement end-to-end |
+| `/specify-feature` | Spec-driven pipeline: specify → plan → tasks → implement | Vague ideas or large features — spec first, then implement |
 
 ## 🚀 Usage
 
@@ -488,10 +515,12 @@ Open the project in VS Code, then in Copilot Chat:
 The conductor will:
 1. **Detect your tech stack** — languages, frameworks, build tools, databases
 2. **Analyze architecture** — module structure, layers, patterns, conventions
-3. **Generate tailored `copilot-instructions.md`** — project-specific context, build commands, domain knowledge
-4. **Create domain-specific instructions** — coding standards matched to your detected stack
-5. **Suggest agent configuration** — which agents are most relevant for your project
-6. **Generate hooks** — auto-format, lint, compile checks matched to your tooling
+3. **Generate project constitution** — 9 Articles + Phase -1 Gates customized for your stack
+4. **Generate tailored `copilot-instructions.md`** — project-specific context, build commands, domain knowledge
+5. **Create domain-specific instructions** — coding standards matched to your detected stack
+6. **Generate agents with enforcement** — implementors include Phase -1 Gates, orchestrator routes to spec pipeline
+7. **Generate spec-driven pipeline** — `specify-feature`, `plan-implementation`, `generate-tasks` skills
+8. **Generate hooks** — auto-format, lint, compile checks matched to your tooling
 
 > **Tip**: Even if your project only has a `pom.xml` and one Java class, the analyzer will detect Java/Maven and generate the appropriate configuration. The more code you have, the more tailored the output.
 
@@ -647,7 +676,29 @@ The dev-orchestrator will:
 7. Generate PR description
 8. Generate conventional commit message
 
-#### Use Case 5: Sprint Planning & Estimation
+#### Use Case 5: Spec-Driven Feature Development
+
+**Scenario**: You have a vague feature idea or a large requirement that needs clarification before implementation.
+
+```
+# Start the spec-driven pipeline
+/specify-feature
+
+# Or invoke directly:
+@dev-orchestrator Spec: Add a loyalty points system where customers earn
+points on purchases and can redeem them for discounts
+```
+
+The pipeline will:
+1. **Specify** — transform the vague idea into a structured spec (PRD format), marking uncertainties with `[NEEDS CLARIFICATION]`
+2. **Resolve** — present open questions, wait for your answers
+3. **Plan** — create a technical plan, run Phase -1 Constitutional Gates (Simplicity, Duplication, Business Logic, Impact)
+4. **Tasks** — generate an ordered task list with parallelization flags and verification checkpoints
+5. **Implement** — execute tasks with incremental verification
+
+> **When to use `/specify-feature` vs `/implement-feature`**: Use `/specify-feature` when requirements are unclear, the feature spans multiple modules, or you want explicit planning. Use `/implement-feature` when the PBI is already well-defined with clear acceptance criteria.
+
+#### Use Case 6: Sprint Planning & Estimation
 
 **Scenario**: You need to break down a large PBI into tasks and estimate effort.
 
@@ -662,7 +713,7 @@ with Stripe for credit card processing
 
 Output: story points, task breakdown, dependencies, risks, and a sprint backlog table you can copy to Jira/Azure DevOps.
 
-#### Use Case 6: Refactoring & Tech Debt
+#### Use Case 7: Refactoring & Tech Debt
 
 **Scenario**: A service class is 800 lines and growing. You want to refactor safely.
 
@@ -677,7 +728,7 @@ and discount logic into DiscountService
 
 Output: before/after metrics, new extracted classes, updated tests, behavior-preserving changes.
 
-#### Use Case 7: Multi-Stack Project
+#### Use Case 8: Multi-Stack Project
 
 **Scenario**: Your project has a Java backend, .NET microservice, and Android/iOS apps.
 
@@ -696,7 +747,7 @@ cp -r copilot-bootstrap/.github/ my-project/.github/
 @mobile-implementor Implement order list screen (Android + iOS)
 ```
 
-#### Use Case 8: DevContainer Setup
+#### Use Case 9: DevContainer Setup
 
 **Scenario**: You want to set up a dev container for local development.
 
@@ -708,7 +759,7 @@ cp -r copilot-bootstrap/.github/ my-project/.github/
 @devcontainer-reviewer Generate a devcontainer config for our Java/Maven/Oracle project
 ```
 
-#### Use Case 9: Onboarding a New Team Member
+#### Use Case 10: Onboarding a New Team Member
 
 **Scenario**: A new developer joins the team and needs to understand the codebase quickly.
 
@@ -725,7 +776,7 @@ domains, tech stack, and how everything connects
 # → e.g., opening a .java file activates java.instructions.md + jakartaee.instructions.md
 ```
 
-#### Use Case 10: Automated Quality Workflows (Agentic Workflows)
+#### Use Case 11: Automated Quality Workflows (Agentic Workflows)
 
 **Scenario**: You want Copilot to automatically triage issues or run compliance checks.
 
@@ -747,6 +798,7 @@ Output: `.github/copilot/` workflow files that run as GitHub Actions with Copilo
 |---------------|---------|
 | Bootstrap Copilot for a new project | `@conductor Analyze this codebase and generate config` |
 | Bootstrap with a specific stack hint | `@conductor This is a [stack] project. Generate config.` |
+| Specify a feature (spec-driven) | `/specify-feature` or `@dev-orchestrator Spec: [description]` |
 | Investigate a PBI / bug / feature | `@investigator Investigate: [description]` |
 | Implement a feature (auto-detect stack) | `@dev-orchestrator Implement: [description]` |
 | Implement (Java) | `@implementor [description]` |
@@ -764,6 +816,8 @@ Output: `.github/copilot/` workflow files that run as GitHub Actions with Copilo
 | Create WireMock stubs | `@mock-data-specialist Create stubs for [service]` |
 | Review devcontainer | `@devcontainer-reviewer Review devcontainer config` |
 | Full lifecycle (everything) | `@dev-orchestrator Implement [PBI]` |
+| Spec-driven (vague/large features) | `/specify-feature` |
+| Review config effectiveness | `@dev-orchestrator Review effectiveness` |
 
 ### Developer Daily Workflows
 
@@ -1122,10 +1176,12 @@ Available events: `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolU
 
 | Concept | Purpose | When Active | How to Invoke |
 |---------|---------|-------------|---------------|
+| **Constitution** | Immutable engineering principles + enforcement gates | Always — all agents must comply | Referenced by agents/skills |
 | **Agent** | Specialized AI persona with expertise | User calls `@agent-name` | `@conductor ...` |
 | **Skill** | Automated task workflow | Auto-discovered via description keywords | Auto-discovery |
 | **Instruction** | Coding standards for a language/framework | Auto-applied when file matches `applyTo` pattern | Automatic |
 | **Hook** | Lifecycle automation (shell commands) | Runs at agent session events (format, lint, compile) | Automatic |
+| **Prompt** | Entry point for common workflows | User types `/prompt-name` | `/implement-feature`, `/specify-feature` |
 | **Agentic Workflow** | Autonomous AI automation via Actions | Schedule, event trigger, or slash command | `gh aw compile` → GitHub Actions |
 
 ### Supported Tech Stacks

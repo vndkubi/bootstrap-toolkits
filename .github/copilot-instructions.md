@@ -10,15 +10,20 @@ Java/Jakarta EE | .NET/C# | Python | PHP | Android/Kotlin | iOS/Swift | TypeScri
 
 Conductor agent orchestrates a pipeline: `Analyze → Generate Instructions → Generate Agents → Generate Skills → Generate Hooks → Validate → Cleanup`
 
+## Project Constitution
+
+All agents, skills, and workflows MUST comply with the [Project Constitution](constitution.md) — 9 immutable Articles with Phase -1 Gates that enforce quality before implementation begins.
+
 ## Golden Rules
 
 1. **Read code flow first** — trace Controller → Service → Repository → DB before changing anything
 2. **No duplicate validation** — each layer validates only what it owns (REST: format, Service: business, DB: integrity)
 3. **Match existing patterns** — follow the codebase conventions, don't introduce new patterns
 4. **Explain decisions** — state WHY before each significant change, provide structured summary after
-5. **Ask when unclear** — ask 3-5 targeted questions, provide defaults, skip obvious ones
+5. **Ask when unclear** — use `[NEEDS CLARIFICATION]` markers for uncertainties, ask 3-5 targeted questions
+6. **Pass gates before coding** — Phase -1 Gates (Simplicity, Duplication, Business Logic, Impact) must pass before implementation
 
-For full detail on all 7 principles, see the `core-principles` skill.
+For full detail on all 9 Articles, see the `constitution.md`. For engineering principles, see the `core-principles` skill.
 
 ## Available Agents
 
@@ -73,10 +78,12 @@ For full detail on all 7 principles, see the `core-principles` skill.
 
 - **Implement a feature**: `@dev-orchestrator Implement [description]`
 - **Investigate a PBI**: `@investigator Investigate [description]`
+- **Spec-driven pipeline**: `@dev-orchestrator Spec [description]` → specify → plan → tasks → implement
 - **Review a spec**: `@spec-reviewer Review spec at docs/requirements/[name].md`
 - **Write tests**: `@test-specialist Write tests for [class]`
 - **Code review**: `@code-reviewer Review changes in [branch]` (runs Functional → Technical pipeline)
 - **Sprint planning**: `@sprint-planner Break down PBI-123`
+- **Review config effectiveness**: `@dev-orchestrator Review effectiveness after 2 sprints`
 
 ## Prompts
 
@@ -85,7 +92,8 @@ For full detail on all 7 principles, see the `core-principles` skill.
 | `/bootstrap-copilot` | Full bootstrap pipeline for a new project |
 | `/analyze-project` | Deep codebase analysis report |
 | `/learn-codebase` | Interactive business domain onboarding |
-| `/implement-feature` | End-to-end feature implementation |
+| `/implement-feature` | End-to-end feature implementation (for well-defined PBIs) |
+| `/specify-feature` | Spec-driven pipeline: specify → plan → tasks → implement (for vague or large features) |
 
 ## Domain Context
 

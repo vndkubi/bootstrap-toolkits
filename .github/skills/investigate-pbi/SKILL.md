@@ -39,6 +39,20 @@ Trace the current flow through the codebase:
 8. **In multi-module projects**, map module boundaries and which module owns which responsibility
 9. **Document which layer handles which validation** — to prevent duplication in the to-be design
 
+### Step 2.5: Mark Uncertainties
+
+**Before designing the to-be state**, explicitly mark anything that is unclear or assumed:
+
+- Use `[NEEDS CLARIFICATION: <what is missing>]` for information gaps
+- Do NOT fill in plausible-sounding assumptions — mark them instead
+- Group markers by category: Business Rules, Technical Constraints, Data, Integration
+
+Example:
+> - `[NEEDS CLARIFICATION: Does discount apply before or after tax calculation? — impacts service layer logic]`
+> - `[NEEDS CLARIFICATION: Max concurrent users for this endpoint? — impacts caching strategy]`
+
+**If more than 3 critical `[NEEDS CLARIFICATION]` markers exist, STOP and ask the user to resolve them before proceeding to to-be design.**
+
 ### Step 3: To-Be Design
 
 Design the target state:
@@ -81,6 +95,16 @@ Assess:
 
 Output a markdown file with all findings, following the format defined in the `@investigator` agent.
 
+## Constitutional Compliance
+
+This skill enforces [Project Constitution](../../constitution.md) Articles I, II, III, IV, V.
+
+Before proceeding to implementation, verify Phase -1 Gates:
+- [ ] **Simplicity Gate** — solution uses minimum necessary complexity
+- [ ] **Duplication Gate** — no cross-layer or cross-module duplication
+- [ ] **Business Logic Gate** — rules traced and confirmed
+- [ ] **Impact Gate** — all affected areas mapped
+
 ## Validation
 
 - [ ] Current flow was traced from actual code (not assumed)
@@ -88,6 +112,7 @@ Output a markdown file with all findings, following the format defined in the `@
 - [ ] **Layer responsibilities documented** — which layer validates what
 - [ ] **No duplicate validation in to-be design** across layers
 - [ ] **Multi-module boundaries respected** — no cross-module duplication
+- [ ] **All `[NEEDS CLARIFICATION]` markers resolved** or escalated to user
 - [ ] All affected files are listed with their paths
 - [ ] All scenarios include expected results
 - [ ] Impact covers both direct and indirect dependencies

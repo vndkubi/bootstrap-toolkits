@@ -15,10 +15,13 @@
 
 [2-3 sentences: What is being built, for whom, and why it matters to the business.]
 
+> **Uncertainty Rule**: For any section where information is incomplete or ambiguous, use `[NEEDS CLARIFICATION: <what is missing and why it matters>]` markers instead of making assumptions. These markers MUST be resolved before implementation begins.
+
 ## 2. Problem Statement
 
 ### Current State
 [Describe the current situation, pain points, and limitations.]
+<!-- If current metrics are unavailable, mark as: [NEEDS CLARIFICATION: current baseline metrics for X] -->
 
 ### Desired State
 [Describe what success looks like after this feature is delivered.]
@@ -101,8 +104,13 @@
 - [Deferred to future iterations]
 
 ### Assumptions
-- [Assumption 1]
+- [Assumption 1] <!-- Mark with [NEEDS CLARIFICATION] if not validated -->
 - [Assumption 2]
+
+### Open Questions
+<!-- List all unresolved questions that emerged during spec creation -->
+- [ ] [NEEDS CLARIFICATION: question 1 — who can answer, impact if wrong]
+- [ ] [NEEDS CLARIFICATION: question 2 — who can answer, impact if wrong]
 
 ### Constraints
 - [Technical constraint]
@@ -129,6 +137,20 @@
 | Development complete | [date] | Spec approved |
 | QA sign-off | [date] | Dev complete |
 | Production release | [date] | QA sign-off |
+
+## Self-Review Checklist
+
+Before submitting this PRD for review:
+
+- [ ] Every section is filled in or marked with `[NEEDS CLARIFICATION]`
+- [ ] No assumptions are stated as facts — uncertain items are clearly marked
+- [ ] All user stories have acceptance criteria in Given/When/Then format
+- [ ] Every functional requirement traces to at least one user story
+- [ ] Non-functional requirements have measurable targets
+- [ ] Scope boundaries (in/out) are explicit
+- [ ] All `[NEEDS CLARIFICATION]` items list who can answer and impact if wrong
+- [ ] No implementation details in the spec — focus on WHAT and WHY, not HOW
+- [ ] Compliant with [Project Constitution](../../constitution.md) Articles
 
 ## Changelog
 

@@ -5,6 +5,10 @@ description: 'Core engineering principles that all agents follow: understand bef
 
 # Core Engineering Principles
 
+> **These principles are codified as immutable Articles in the [Project Constitution](../../constitution.md).**
+> The constitution includes Phase -1 Gates that MUST pass before any implementation begins.
+> All agents MUST reference the constitution for enforcement rules.
+
 These principles apply to ALL agents, skills, and workflows in this project. They are the foundation of high-quality, business-aware code generation.
 
 ## Principle 1: Understand Before Changing — Read the Current Code Flow First

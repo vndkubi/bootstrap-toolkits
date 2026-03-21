@@ -25,6 +25,20 @@ Automatically detect and adapt to the project's tech stack:
 - `build.gradle.kts` + Android → Android/Kotlin
 - `Package.swift` / `*.xcodeproj` → iOS/Swift
 
+## Constitutional Compliance
+
+> All orchestration MUST comply with the [Project Constitution](../../constitution.md).
+> Phase -1 Gates are enforced before implementation (Step 4).
+
+## Spec-Driven Pipeline (Optional)
+
+For non-trivial features (3+ files, unclear requirements), consider running the Spec → Plan → Tasks pipeline first:
+1. `specify-feature` — structured specification from requirements
+2. `plan-implementation` — technical plan with constitutional gates
+3. `generate-tasks` — executable task list with checkpoints
+
+This pipeline is optional for well-defined PBIs but recommended for vague or large features.
+
 ## Workflow
 
 ### Step 1: Parse Requirement & Detect Mode

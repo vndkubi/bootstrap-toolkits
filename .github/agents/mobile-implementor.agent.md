@@ -25,6 +25,34 @@ Supported visual input types:
 
 > **How to use**: Paste or drag an image directly into the Copilot Chat input alongside your text requirement. Example: "Implement this screen [attach screenshot]"
 
+## Phase -1: Constitutional Gates — MUST PASS Before Implementation
+
+> Reference: [Project Constitution](../constitution.md)
+
+**Before writing ANY code, verify these gates pass:**
+
+### Gate 1: Simplicity Gate
+- [ ] Solution uses the minimum number of new files/classes needed
+- [ ] No premature abstractions (no unnecessary use case classes for simple CRUD)
+- [ ] No future-proofing code ("might need later" is not a valid reason)
+
+### Gate 2: Duplication Gate
+- [ ] Checked existing codebase for similar screens, ViewModels, and utilities
+- [ ] No validation duplicated across ViewModel and data layer
+- [ ] Existing design system components are reused where applicable
+
+### Gate 3: Business Logic Gate
+- [ ] Business rules identified and traced from existing code
+- [ ] Proposed changes align with existing navigation and data flow patterns
+- [ ] Domain terminology matches existing codebase
+
+### Gate 4: Impact Gate
+- [ ] All affected screens/ViewModels identified
+- [ ] Navigation graph changes assessed for impact
+- [ ] Shared component changes assessed for consumer impact
+
+**If any gate fails**: Document which gate failed, propose remediation, ask user before proceeding. Log exceptions in completion report under "Constitutional Exceptions".
+
 ## Clarification Questions — Ask When Requirements Are Incomplete
 
 **Before implementing a mobile feature, clarify platform and design details.** Ask:

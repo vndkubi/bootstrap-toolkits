@@ -429,9 +429,26 @@ Generate `.github/instructions/*.instructions.md` with correct `applyTo` globs:
 
 **Each file MUST**: reference conventions discovered in Phase 1, not generic placeholder text.
 
-## Phase 6b: GEN Standardized Templates
+## Phase 6b: GEN Standardized Templates & Constitution
 
-Generate `.github/templates/` with output format templates for spec generation agents.
+Generate `.github/templates/` with output format templates and `.github/constitution.md` as the architectural governance document.
+
+### Constitution (ALWAYS generate)
+
+Generate `.github/constitution.md` (≤ 6 KB) — the immutable architectural governance document for the target project. This is the **single source of truth** for engineering principles and enforcement gates.
+
+**The constitution MUST include:**
+1. **Articles** (9 total): Understand Before Changing, Confirm Business Logic, No Duplicate Validation, Multi-Module Boundaries, Clarify Before Acting, Test-First Verification, Simplicity, Anti-Abstraction, Explain Decisions
+2. **Phase -1 Gates** (4 gates): Simplicity Gate, Duplication Gate, Business Logic Gate, Impact Gate — with checklist format
+3. **Gate Failure Protocol**: Document → Propose remediation → Ask user → Log exception
+4. **Amendment Process**: Propose → Impact → Review → Document
+
+**Customization**: Articles must reference the target project's actual:
+- Tech stack (e.g., "trace Controller → Service → Repository → Database" for Java, or "trace Router → Dependency → Service → Model" for FastAPI)
+- Validation layers (match actual framework patterns)
+- Module structure (if multi-module)
+
+### Templates (ALWAYS generate)
 
 **Always generate these templates:**
 
@@ -446,6 +463,7 @@ Generate `.github/templates/` with output format templates for spec generation a
 - Templates MUST be customized with project-specific examples (actual entity names, actual enum values) from Phase 3
 - `@business-analyst` and `@spec-reviewer` agents MUST reference these templates in their output instructions
 - Templates should be ≤ 8 KB each
+- **PRD template MUST include**: `[NEEDS CLARIFICATION]` marker convention, Open Questions section, Self-Review Checklist — so users mark uncertainties instead of guessing
 
 ## Phase 7: GEN Agents
 
@@ -465,9 +483,11 @@ agents: ["Sub Agent 1", "Sub Agent 2"]  # only for orchestrator agents that dele
 > **⚠️ Do NOT include `tools:` or `mode:` fields in generated agent frontmatter.** These are not needed in generated output. Only `name`, `description`, and `agents` (for orchestrators) are valid fields.
 
 Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
+- Reference the **Project Constitution** (`constitution.md`) — all generated agents must include a constitutional compliance note
 - Reference the **actual tech stack** detected in Phase 1 (e.g., "Java 11, Jakarta EE 8, Maven" not "Java")
 - Include **actual coding patterns** from Phase 1 (e.g., real package names, real class naming patterns)
 - Include **actual business domain context** from Phase 3 (e.g., domain glossary terms, entity names)
+- **Implementor agents** MUST include Phase -1 Gates section (4 gates as checklist) referencing `constitution.md`
 
 **Always generate these core agents:**
 - `dev-orchestrator` — single entry point with `agents:` field listing ALL generated agents
@@ -539,6 +559,8 @@ hidden: false             # true = hidden from / menu but still auto-loaded; def
 | Detection | Skills to Generate |
 |---|---|
 | Any project | `implement-feature`, `generate-unit-tests`, `review-code-changes` |
+| Any project (spec-driven pipeline) | `specify-feature`, `plan-implementation`, `generate-tasks` |
+| Any project (feedback loop) | `review-effectiveness` |
 | CI/CD pipeline exists | `generate-pr-description`, `conventional-commit` |
 | 3+ modules | `orchestrate-development`, `investigate-pbi`, `estimate-effort` |
 | Sprint/agile references | `sprint-planning` |
@@ -553,10 +575,12 @@ hidden: false             # true = hidden from / menu but still auto-loaded; def
 
 Every generated `implement-feature` and `orchestrate-development` skill MUST include:
 
-1. **Verify-Fix Loop**: Build → Test → Lint cycle with max 3 retries per step, using the project's actual commands
-2. **Incremental Implementation**: For features touching 5+ files, verify each layer group before proceeding
-3. **Self-Review Checklist**: Re-read all changes, check pattern consistency, verify cross-file integrity
-4. **Stack-specific verify commands table**: Actual build/test/lint commands detected from the project
+1. **Phase -1 Constitutional Gates**: Simplicity Gate, Duplication Gate, Business Logic Gate, Impact Gate — as checklist that MUST pass before writing code. Reference `constitution.md` for gate definitions
+2. **Verify-Fix Loop**: Build → Test → Lint cycle with max 3 retries per step, using the project's actual commands
+3. **Incremental Implementation**: For features touching 5+ files, verify each layer group before proceeding
+4. **Self-Review Checklist**: Re-read all changes, check pattern consistency, verify cross-file integrity
+5. **Stack-specific verify commands table**: Actual build/test/lint commands detected from the project
+6. **`[NEEDS CLARIFICATION]` stop condition**: If investigation reveals >3 critical unknowns, STOP and ask user before proceeding to implementation
 
 ### Stack-Specific Skill Customization (CRITICAL)
 
@@ -608,9 +632,14 @@ Skills MUST contain stack-specific content. The same skill name produces DIFFERE
 > **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/prompts/*.prompt.md` files first. Create NEW prompts for this project.
 
 Create `.github/prompts/*.prompt.md` (≤ 3 KB each):
-- Always: `implement-feature` (entry point to dev-orchestrator)
+- Always: `implement-feature` (entry point to dev-orchestrator — direct implementation)
+- Always: `specify-feature` (entry point to spec-driven pipeline — specify → plan → tasks → implement)
 - If complex codebase: `learn-codebase` (entry point to understand this project)
 - Each prompt is an entry point only — delegates to agents + skills for real work
+
+**Two entry points, two mindsets:**
+- `/implement-feature` — for well-defined PBIs where requirements are clear → goes straight to investigate → implement
+- `/specify-feature` — for vague ideas or large features → runs spec-driven pipeline first (specify → plan → tasks) before implementation
 
 ### Prompt Frontmatter Schema
 
@@ -716,6 +745,16 @@ If triggered, generate `.github/copilot/` workflow files:
 - [ ] Hooks reference commands that exist in the project (e.g., `mvn` if maven hook)
 - [ ] No two instruction files have overlapping `applyTo` patterns covering the same rules
 
+### Tier 2b: Constitutional Compliance Validation
+- [ ] `constitution.md` exists in `.github/` with all 9 Articles and Phase -1 Gates
+- [ ] All implementor agents reference `constitution.md` and include Phase -1 Gates section
+- [ ] `implement-feature` skill includes Phase -1 Gates + `[NEEDS CLARIFICATION]` stop condition
+- [ ] `orchestrate-development` skill (if generated) references constitution and includes gates
+- [ ] `specify-feature`, `plan-implementation`, `generate-tasks` skills are generated (spec-driven pipeline)
+- [ ] `review-effectiveness` skill is generated (feedback loop)
+- [ ] `PRD-template.md` includes `[NEEDS CLARIFICATION]` marker convention and Self-Review Checklist
+- [ ] `dev-orchestrator` routing table includes spec-driven pipeline entry points
+
 ### Tier 3: Context Budget Validation
 - [ ] `copilot-instructions.md` ≤ 4 KB
 - [ ] Each `.instructions.md` ≤ 6 KB
@@ -812,6 +851,7 @@ Read the toolkit version from the `VERSION` file at the repository root of the *
     "instructions": [".github/instructions/<name>.instructions.md"],
     "prompts": [".github/prompts/<name>.prompt.md"],
     "hooks": [".github/hooks/<name>.json"],
+    "constitution": ".github/constitution.md",
     "templates": [".github/templates/<name>.md"],
     "domains": [".github/domains/domain-registry.json", ".github/domains/<name>.instructions.md"],
     "devcontainer": [".devcontainer/devcontainer.json"],
@@ -925,6 +965,7 @@ Read the toolkit version from the `VERSION` file at the repository root of the *
 .github/prompts/generate-instructions.prompt.md
 .github/prompts/analyze-project.prompt.md
 .github/prompts/implement-feature.prompt.md
+.github/prompts/specify-feature.prompt.md
 .github/prompts/learn-codebase.prompt.md
 ```
 
@@ -952,10 +993,12 @@ After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
 - `.phase3-checkpoint.md` — generated in Phase 3
 - `module-dependency-map.json` — generated in Phase 3b (**do NOT delete**)
 - `MODULE-ARCHITECTURE.md` — generated in Phase 3b (**do NOT delete**)
+- `constitution.md` — generated in Phase 6b, project-specific governance (**do NOT delete**)
 - `copilot-instructions.md` — generated in Phase 4, project-specific
 - `agents/` — generated in Phase 7, project-specific
 - `skills/` — generated in Phase 8, project-specific
 - `instructions/` — generated in Phase 6, project-specific
+- `templates/` — generated in Phase 6b, project-specific
 - `prompts/` — generated in Phase 9, project-specific
 - `hooks/` — generated in Phase 10, project-specific
 - `domains/` — generated in Phase 5, Enterprise only
@@ -968,10 +1011,12 @@ After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
 ✅ Bootstrap Complete!
 📁 .github/
 ├── .bootstrap-manifest.json  ← toolkit version + generated file inventory
+├── constitution.md           ← architectural governance (9 Articles + Phase -1 Gates)
 ├── copilot-instructions.md   ← [project name] index card
 ├── agents/ ([count] project-specific agents)
 ├── skills/ ([count] project-specific skills)
 ├── instructions/ ([count] instruction files)
+├── templates/ ([count] templates — PRD, API contract, DB schema)
 ├── prompts/ ([count] prompts)
 └── hooks/ ([count] hooks)
 
