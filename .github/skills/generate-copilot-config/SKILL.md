@@ -516,18 +516,27 @@ Generate only the agents the target repo can support safely.
 - stack-specific implementor(s)
 - `test-specialist`
 - `code-reviewer`
+- `investigator`
+- `business-analyst`
+
+### Implicit dependencies
+
+Some agents delegate to sub-agents that must also be generated:
+
+- `code-reviewer` requires `functional-reviewer` and `technical-reviewer`
+- `code-reviewer` requires `mobile-reviewer` when mobile code is detected
+
+If a parent agent is in the core set, its required sub-agents are also in the core set.
 
 ### Conditional agents
 
 Generate additional agents only when evidence supports them:
 
-- `investigator`
-- `business-analyst`
 - `spec-reviewer`
 - `sequence-diagrammer`
 - `dependency-analyzer`
 - `database-specialist`
-- mobile specialists
+- mobile specialists (beyond `mobile-reviewer`)
 - workflow specialists
 
 For mixed-stack repos, keep specialist positioning stack-neutral unless evidence justifies a stack-specific bias.
@@ -569,11 +578,23 @@ For large repos, make skills prefer domain-scoped execution by default.
 
 Generate prompts as compact entry points, not miniature policy documents.
 
-Always include:
+### Always include
 
-- `/bootstrap-copilot`
 - `/implement-feature`
-- `/specify-feature` when spec-first work is supported
+- `/investigate`
+- `/review-code`
+
+### Include when spec-first work is supported
+
+- `/specify-feature`
+- `/plan-implementation`
+
+### Post-bootstrap retention rule
+
+- `/bootstrap-copilot` should be **retained** in the generated repo so users can re-bootstrap after major codebase changes. Mark it in the manifest as a retained runtime asset, not a toolkit-only file.
+- Bootstrap-only prompts (e.g., `/generate-agents`, `/generate-instructions`, `/generate-skills`) should be **removed** during cleanup unless the repo is the toolkit source itself.
+
+### Prompt design rules
 
 Prompts should point users toward:
 
@@ -695,12 +716,31 @@ After generation and validation:
    - required runtime assets for the generated repo
    - manifest/state/checkpoint artifacts explicitly declared in the manifest
 
-Cleanup should remove stale or irrelevant toolkit assets, especially:
+### Bootstrap-only assets
+
+The following agents, prompts, and docs exist only to support the bootstrap pipeline and must be removed during cleanup (unless the repo is the toolkit source itself):
+
+**Bootstrap-only agents:**
+- `conductor` — bootstrap orchestrator, replaced by `dev-orchestrator` post-bootstrap
+- `agent-generator` — meta-agent for generating Copilot configs
+- `codebase-analyzer` — deep scan agent used only during bootstrap Phase 1
+
+**Bootstrap-only prompts:**
+- `generate-agents`
+- `generate-instructions`
+- `generate-skills`
+- `analyze-project` (unless the generated repo explicitly retains it)
+
+**Bootstrap-only docs:**
+- `.github/docs/` files that describe the toolkit rather than the target repo
+
+### General cleanup targets
+
+Cleanup should also remove stale or irrelevant toolkit assets, especially:
 
 - unused stack instruction templates
 - unused specialist agents and skills
 - prompts that are not supported in the generated repo
-- bootstrap-only operator docs that describe the toolkit rather than the target repo
 - placeholder docs for module/workflow/integration/ADR layers that were not justified by scan results
 
 Do not delete files blindly. Delete only when the manifest or repo-size strategy says they are out of scope.
