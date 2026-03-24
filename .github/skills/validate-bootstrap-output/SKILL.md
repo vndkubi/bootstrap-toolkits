@@ -1,129 +1,122 @@
 ---
 name: validate-bootstrap-output
-description: 'Validate the quality of a bootstrapped Copilot configuration beyond structural checks. Tests that generated agents, skills, and instructions actually reference the target project — not generic placeholder content. Use after bootstrapping or upgrading a project. Keywords: validate bootstrap, quality check, bootstrap validation, config quality.'
+description: "Validate the quality of a bootstrapped Copilot configuration beyond structural checks. Tests that generated agents, skills, instructions, and cleanup decisions actually match the target project rather than leaving generic bootstrap residue."
 ---
 
 # Validate Bootstrap Output
 
-This skill runs deep quality validation on a bootstrapped `.github/` configuration, beyond the structural Phase 12 checks. It catches the most common failure: generated files that look valid but contain generic placeholder content instead of project-specific information.
+This skill runs deep quality validation on a bootstrapped `.github/` configuration, beyond the structural Phase 12 checks. It catches the most common failure: generated files that look valid but still contain generic placeholder or bootstrap-bundle content instead of project-specific guidance.
 
 ## When to Use
 
 - After running `/bootstrap-copilot` to verify output quality
 - After running `upgrade-config` to verify new files are project-specific
-- When agents or skills seem to give generic responses that don't match the project
-- Keywords: "validate bootstrap", "check quality", "is the config good?"
+- When agents or skills seem to give generic responses that do not match the project
+- When cleanup may have retained copied toolkit files that should have been deleted
 
 ## Validation Checklist
 
-### Tier 1: Structural (fast — run first)
+### Tier 1: Structural
 
 Re-run Phase 12 checks from `generate-copilot-config`:
-- [ ] All `.agent.md` have valid `name` and `description` frontmatter
-- [ ] No `tools:` or `mode:` fields in agent frontmatter
-- [ ] All `SKILL.md` have `name` and `description` (10-1024 chars)
-- [ ] All `.instructions.md` have `applyTo` patterns
-- [ ] No empty or stub files (< 200 bytes)
-- [ ] Context budget compliant (use `context-budget-check` skill)
 
-### Tier 2: Project-Specificity (critical — the most common failure)
+- [ ] All `.agent.md` files have valid `name` and `description` frontmatter
+- [ ] No `tools:` or `mode:` fields appear in agent frontmatter
+- [ ] All `SKILL.md` files have `name` and `description` (10-1024 chars)
+- [ ] All `.instructions.md` files have `applyTo` patterns
+- [ ] No empty or stub files remain
+- [ ] Context budget is compliant
 
-For each generated file, verify it contains **project-specific content** — not generic phrases.
+### Tier 2: Project-Specificity
 
-**Red flags** (fail immediately if found):
-- Any agent description containing: "your project", "the codebase", "detected tech stack", "[tech stack]", "[framework]"
-- Any instruction `applyTo` set to `**/*` (too broad — not stack-specific)
-- Any skill referring to `mvn clean install` when the project uses Gradle (or vice versa)
-- Any agent referencing entity names like `Order`, `Customer` when those don't exist in the project
-- Any instruction file that is byte-for-byte identical to a toolkit template
+For each generated file, verify it contains project-specific content, not generic bundle language.
 
-**Project-specificity checks:**
+Fail immediately if any of these red flags appear:
+
+- Any agent description contains `your project`, `the codebase`, `detected tech stack`, `[tech stack]`, or `[framework]`
+- Any instruction `applyTo` is `**/*`
+- Any skill refers to `mvn clean install` when the project uses Gradle, npm, pnpm, etc.
+- Any agent references entities such as `Order` or `Customer` that do not exist in the target project
+- Any generated instruction file is byte-for-byte identical to a toolkit template
+- `copilot-instructions.md` still identifies the target repo as the bootstrap toolkit or treats copied bundle inventory as the repo's normal final state
+
+Project-specificity checks:
 
 | File | What to Verify |
-|------|---------------|
-| `copilot-instructions.md` | Contains actual project name, actual build commands, actual module names |
-| `dev-orchestrator.agent.md` | `agents:` list matches ALL other generated agent names (no missing, no extra) |
-| `implementor.agent.md` | References actual package names from Phase 1 scan (e.g., `com.company.project`) |
-| `java.instructions.md` | If Java 17 project — contains Records / sealed classes section |
-| `testing.instructions.md` | References actual test framework detected (JUnit5 / pytest / xUnit) |
-| Domain instructions | `applyTo` patterns match actual file paths in the project |
-| Skill files | Build commands match project's actual build tool and module names |
+|---|---|
+| `copilot-instructions.md` | Contains the actual project name, actual build commands, actual module names, and no toolkit-self identity mistake |
+| `dev-orchestrator.agent.md` | `agents:` list matches all generated agents that remain after cleanup |
+| Stack-specific implementor | References the actual stack, paths, and conventions from Phase 1 scan |
+| `testing.instructions.md` | References the actual test framework detected |
+| Domain instructions | `applyTo` patterns match real project paths |
+| Skill files | Build, test, lint, and verification commands match the real project |
 
 ### Tier 3: Cross-Reference Integrity
 
-- [ ] Every agent name listed in `dev-orchestrator.agent.md` `agents:` field has a corresponding `.agent.md` file
-- [ ] Every skill referenced by an agent (`follow the X skill`) exists as a `SKILL.md` in `.github/skills/X/`
-- [ ] Every `applyTo` pattern in instructions matches ≥ 1 real file in the project (run a glob check)
-- [ ] Domain instruction `applyTo` patterns don't overlap (two instructions shouldn't apply to the same file for the same rules)
+- [ ] Every agent listed in `dev-orchestrator.agent.md` exists as a file
+- [ ] Every skill referenced by an agent exists in `.github/skills/<name>/SKILL.md`
+- [ ] Every `applyTo` pattern matches at least one real file when the instruction is kept
+- [ ] Domain instruction patterns do not overlap for the same rules
 
-### Tier 4: Manifest Integrity
+### Tier 4: Manifest And Cleanup Integrity
 
 - [ ] `.github/.bootstrap-manifest.json` exists and is valid JSON
-- [ ] `generatedFiles` in manifest lists all files currently present
-- [ ] No files in `.github/` that are NOT in the manifest (indicates leftover bootstrap templates)
+- [ ] Manifest keep entries match all files intentionally retained after cleanup
+- [ ] Files outside the manifest keep set were deleted
 - [ ] `contextBudget.passed` is `true`
+- [ ] The full copied toolkit inventory was not retained unless non-bundle evidence proves the repo truly is the toolkit source repository
 
 ## Output Format
 
-```markdown
+```md
 ## Bootstrap Output Validation Report
 
 **Project**: [project name from copilot-instructions.md]
 **Toolkit version**: [from manifest]
-**Classification**: [Small | Standard | Enterprise]
+**Classification**: [Small | Standard | Enterprise | Framework / Library]
 **Validated at**: [timestamp]
 
 ### Tier 1: Structural
 | Check | Status | Notes |
-|-------|--------|-------|
-| Frontmatter validity | ✅ | All files valid |
-| No obsolete fields | ✅ | |
-| No empty files | ✅ | |
-| Context budget | ✅ | 38 KB / 45 KB max |
+|---|---|---|
+| Frontmatter validity | PASS | All files valid |
+| Empty files | PASS | None found |
+| Context budget | PASS | 38 KB / 45 KB |
 
 ### Tier 2: Project-Specificity
-| File | Status | Issue |
-|------|--------|-------|
-| copilot-instructions.md | ✅ | References "OrderService", "com.acme.orders" |
-| dev-orchestrator.agent.md | ✅ | 9 agents listed, all files present |
-| implementor.agent.md | ⚠️ | Package name is generic "com.company.project" — update with actual package |
-| java.instructions.md | ✅ | Java 17+ sections present (project uses Java 17) |
+| File | Status | Notes |
+|---|---|---|
+| copilot-instructions.md | PASS | Names actual stack and repo commands |
+| dev-orchestrator.agent.md | WARN | One retained agent missing from agents list |
+| testing.instructions.md | PASS | Matches Vitest conventions |
 
 ### Tier 3: Cross-Reference
 | Check | Status | Notes |
-|-------|--------|-------|
-| All orchestrator agents exist | ✅ | |
-| All skill references resolve | ✅ | |
-| applyTo patterns match files | ⚠️ | `**/domain/payment/**/*.java` matches 0 files — payment module may be named differently |
+|---|---|---|
+| Agent references resolve | PASS | |
+| Skill references resolve | PASS | |
+| applyTo patterns match | WARN | One retained instruction matches 0 files |
 
-### Tier 4: Manifest
+### Tier 4: Manifest And Cleanup
 | Check | Status | Notes |
-|-------|--------|-------|
-| Manifest exists | ✅ | |
-| generatedFiles complete | ⚠️ | 2 files in .github/ not in manifest (leftover bootstrap templates?) |
-| contextBudget.passed | ✅ | |
-
----
-
-### Summary
-- ✅ Passed: 14 checks
-- ⚠️ Warnings: 3 checks (non-blocking)
-- ❌ Failures: 0
+|---|---|---|
+| Manifest exists | PASS | |
+| Keep set complete | WARN | 2 files retained but missing from manifest |
+| Toolkit residue removed | FAIL | 14 copied toolkit files remain without justification |
 
 ### Recommendations
-1. `implementor.agent.md` L12 — replace `com.company.project` with `com.acme.orders`
-2. `java.instructions.md` `applyTo` — verify `**/domain/payment/**/*.java` matches actual path
-3. Check for leftover bootstrap templates: [file list]
+1. Rewrite `copilot-instructions.md` if it still describes the target repo as the toolkit.
+2. Regenerate manifest keep entries for all files intentionally retained.
+3. Delete copied bundle files that are out of scope, then rerun validation.
 ```
 
 ## Fix Guidance
 
-For each warning/failure:
-
 | Issue | Fix |
-|-------|-----|
-| Generic package name in agent | Edit agent file — replace placeholder with actual package from Phase 1 scan |
-| `applyTo` matches 0 files | Run glob against project to find correct path pattern, update instruction |
-| Missing agent in orchestrator `agents:` list | Add agent name to `dev-orchestrator.agent.md` agents field |
-| Leftover bootstrap template | Delete the file — it was not cleaned up in Phase 14 |
-| Generic build command | Edit skill — replace `mvn clean install` with project's actual command from manifest |
+|---|---|
+| Generic package or module names | Replace with names from Phase 1 scan |
+| `applyTo` matches 0 files | Update the pattern or remove the instruction from the keep set |
+| Missing agent in `dev-orchestrator.agent.md` | Add the agent or delete the file if it should not remain |
+| Leftover bootstrap template | Delete it and remove it from any cross references |
+| Target repo misidentified as toolkit | Rewrite `copilot-instructions.md`, rerun classification, regenerate manifest keep set, and rerun cleanup |
+| Manifest missing retained files | Update the manifest so the keep set matches the final tree |

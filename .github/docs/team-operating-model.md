@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Describe how a team should evolve this bundle and a bootstrapped repository over time so Copilot gets better through repo memory instead of repeated hand-prompting.
+Describe how a team should evolve this bundle and a bootstrapped repository over time so Copilot improves through durable repo memory instead of repeated prompting.
 
 ## Source of Truth
 
@@ -15,111 +15,151 @@ Describe how a team should evolve this bundle and a bootstrapped repository over
 
 1. Repeated conventions move into repo-level instructions.
 2. Repeated workflows move into skills and prompts.
-3. Repeated clarification gaps become common docs or templates.
+3. Repeated clarification gaps move into shared docs or templates.
 4. Generated target-project output is reviewed and refined as project-specific repo memory.
 
 ## Maturity Model
 
-Teams typically progress through these levels:
-
 | Level | Description | What changes |
 |---|---|---|
-| L1 — Ad-hoc prompts | Team chats manually each time | Results vary by who prompts best |
-| L2 — Repo instructions | `copilot-instructions.md` + scoped `.instructions.md` in place | Consistency improves; less repetition |
-| L3 — Docs + runbooks | Architecture docs, setup guides, test runbooks, ADRs | Agent researches faster, fewer hallucinations |
-| L4 — Skills + agents + prompts | Encoded workflows for review, investigate, implement, test | Agent becomes a reusable workflow executor |
-| L5 — Verification-first | Tests, screenshots, CI/CD automation, reproducible checks | Agent leverages its try-verify-refine loop at full strength |
+| L1 - Ad-hoc prompts | Team re-explains context in chat | Results vary by prompting skill |
+| L2 - Repo instructions | `copilot-instructions.md` plus scoped `.instructions.md` exist | Consistency improves |
+| L3 - Common docs | Overview, glossary, architecture map, runbook, failure modes exist | Investigation gets faster and safer |
+| L4 - Skills and agents | Repeated workflows are encoded | Copilot becomes reusable across tasks |
+| L5 - Verification-first | Reproducible checks and CI-backed validation exist | Try-verify-refine loops become reliable |
 
 ## Four-Tier Documentation Strategy
 
-An agent-friendly repo organizes docs in four layers:
+Use four documentation layers:
 
-1. **Global rules** — `copilot-instructions.md`: style, architecture invariants, validation expectations.
-2. **Scoped instructions** — `.instructions.md` per language/domain: rules tied to specific file patterns.
-3. **Workflow docs** — `docs/`: architecture, release process, testing runbook, source-of-truth design info.
-4. **Ephemeral task docs** — Plan documents, investigation notes, ADR drafts used for a single task/feature.
+1. **Global rules**: `.github/copilot-instructions.md`
+2. **Scoped instructions**: `.instructions.md` files for language, stack, or domain-specific rules
+3. **Repo memory docs**: `docs/` for overview, glossary, architecture, runbooks, modules, workflows, ADRs
+4. **Task truth**: temporary plans, investigations, reviews, and feature-specific artifacts
 
-Rules: each rule has one canonical place. Other locations link or summarize, never duplicate.
+Rules:
+
+- each durable rule has one canonical home
+- other places should link or summarize, not duplicate
+- prompts stay thin and point to source-of-truth files
+
+## Progressive Disclosure Strategy
+
+Use the same documentation shape across repo sizes, but expand it only as needed.
+
+### Global Truth
+
+Always keep a short repo-wide layer:
+
+- `.github/copilot-instructions.md`
+- `docs/00-repo-overview.md`
+- `docs/03-verification-runbook.md`
+
+### Module / Domain Truth
+
+Add these when the repo has enough domain or boundary complexity:
+
+- `docs/01-business-glossary.md`
+- `docs/02-architecture-map.md`
+- `docs/04-engineering-rules.md`
+- `docs/05-common-failure-modes.md`
+- `docs/modules/*.md`
+
+### Task Truth
+
+Add these when work depends on business-flow or historical-decision context:
+
+- `docs/workflows/*.md`
+- `docs/decisions/*.md`
+- task-specific plans, investigations, and reviews
+
+### Scale Rules
+
+- Small repos: merge aggressively and avoid doc sprawl.
+- Medium repos: keep the 6 common docs.
+- Large repos: split by module and workflow.
+- Enterprise repos: add owners, cadence, dependency direction, integration boundaries, and per-domain verification notes.
 
 ## When to Create a Common Doc
 
-Create a new common doc when any of these triggers appear:
+Create or refine a common doc when:
 
-- The agent keeps misunderstanding the same subsystem
-- Multiple engineers re-explain the same flow
-- Many prompts repeat the same conventions
-- Code review catches the same category of issue repeatedly
-- Onboarding is slow because source-of-truth locations are unclear
+- the same subsystem keeps being misunderstood
+- multiple engineers keep re-explaining the same flow
+- prompts repeat the same conventions
+- code review keeps catching the same category of issue
+- onboarding is slow because source-of-truth locations are unclear
 
-Priority order for first docs: architecture overview → module/source-of-truth map → testing & verification runbook → coding conventions → common debugging playbooks.
+Priority order:
 
-## Common Doc Template
+1. repo overview
+2. verification runbook
+3. glossary
+4. architecture map
+5. engineering rules
+6. common failure modes
 
-When creating a doc for both people and agents, use this structure:
+## Common Doc Skeleton
+
+Use a consistent structure when possible:
 
 ```md
-# <Topic>
+# <Title>
 
 ## Purpose
-What this doc covers and when to use it.
+
+## When To Use
 
 ## Source of Truth
-- Files and modules that own this area.
 
-## Request / Data Flow
-1. Step one
-2. Step two
-3. Step three
+## Key Facts
 
-## Key Constraints
-- Do: ...
-- Don't: ...
+## Constraints
 
 ## Verification
-- Test commands
-- Manual checks
-
-## Common Failure Modes
-- ...
 
 ## Related Files
-- ...
+
+## Unknowns / Assumptions
 ```
+
+Do not remove `Unknowns / Assumptions` from durable docs unless the file is intentionally tiny.
 
 ## Agent-Friendly Repo Checklist
 
-A repo optimized for agent work should have:
+An agent-friendly repo should have:
 
-1. A concise, non-contradictory `copilot-instructions.md`.
-2. Architecture docs organized by subsystem.
-3. A source-of-truth map (which file/module owns what).
-4. Verification and test command docs.
-5. Common debugging playbooks for frequent issues.
-6. Skills and prompts for repeated workflows.
-7. Consistent naming and directory structure.
+1. A concise `copilot-instructions.md`
+2. A clear repo overview
+3. A verification runbook
+4. A source-of-truth map for architecture and boundaries
+5. A glossary for business-heavy repos
+6. Common failure-mode guidance for repeated regressions
+7. Skills and prompts for repeated workflows
+8. Consistent naming and directory structure
 
 ## Key Constraints
 
 - Do not keep solving the same misunderstanding with longer prompts.
-- Keep threads grouped by feature, subsystem, or investigation line.
-- Use common docs for architecture, source-of-truth maps, verification runbooks, and failure modes.
-- Keep prompts thin, skills procedural, and agents role-based.
-- Separate rules from references in docs: rules are short and actionable, references explain background.
+- Prefer progressive disclosure over giant docs.
+- Use docs for durable truth, `.instructions.md` for scoped coding rules, and chat for current-task details.
+- Keep important claims tied to sources of truth.
+- If something is uncertain, write that uncertainty down.
 
 ## Verification
 
-- If a team repeats the same prompt guidance many times, promote it into `.github/`.
-- If contributors keep getting lost in the same subsystem, add or refine a common doc.
+- If the team repeats the same prompt guidance many times, promote it into `.github/` or `docs/`.
+- If contributors keep getting lost in the same subsystem, add or refine the relevant common doc.
 - If bundle claims change, sync the skill, prompts, agents, and docs together.
 
 ## Common Failure Modes
 
-- Letting README, prompts, and skills drift apart.
-- Treating every task as a one-off prompt instead of building repo memory.
-- Opening too many unrelated threads and losing summary quality.
-- Storing durable team rules only in chat history.
-- Duplicating the same rule in multiple locations and letting them diverge.
-- Writing docs as narrative prose when agents work better with structured sections, bullets, and tables.
+- Letting README, prompts, skills, and docs drift apart
+- Treating every task as one-off prompting instead of building repo memory
+- Creating too many docs for a small repo
+- Keeping a large repo on a single giant overview file
+- Storing durable rules only in chat history
+- Writing docs without source-of-truth or unknowns sections
 
 ## Related Files
 

@@ -1,43 +1,36 @@
-# Copilot Bootstrap Toolkit
+# Bootstrap Copilot Bundle
 
-This repository is the bootstrap toolkit itself. Most files under `.github/agents/`, `.github/skills/`, `.github/instructions/`, `.github/prompts/`, and `.github/templates/` are template or generation assets for downstream projects, not project-specific outputs for this repository.
+This `.github/` folder is a bootstrap bundle copied into the current repository so `/bootstrap-copilot` can analyze the real codebase and replace these templates with project-specific output.
 
-## Read This Repository In Layers
+Until bootstrap rewrites this file, treat it as temporary operator guidance, not as final repo memory.
 
-- `.github/README.md`: portable bundle overview for copy-and-bootstrap usage.
-- `.github/prompts/bootstrap-copilot.prompt.md`: main entry point after the bundle is copied.
-- `.github/skills/generate-copilot-config/SKILL.md`: canonical bootstrap pipeline and validation source of truth.
-- `.github/agents/conductor.agent.md`: orchestration behavior for bootstrap and multi-step delegation.
-- `.github/docs/runtime-overview.md`: request, prompt, and tool-loop mental model.
-- `.github/docs/tool-runtime.md`: tool exposure, round-trips, and hook-aligned automation guidance.
-- `.github/docs/prompt-and-context.md`: context layering, prompt-shape, and signal-vs-noise rules.
-- `.github/docs/github-resource-conventions.md`: which `.github/` files are prompt resources versus governance or generated output.
-- `.github/docs/user-playbook.md`: practical user guidance for prompts, threads, and verification.
-- `.github/docs/team-operating-model.md`: how to convert repeated prompt pain into durable repo memory.
-- `.github/constitution.md`: immutable governance referenced by agents, skills, prompts, and templates.
-- `README.md`: broader product overview in the source repository.
+## Read This Repo In Layers
 
-## Working Rules For This Repo
+- Root `README.md`, build files, source code, tests, and existing docs: primary evidence for what this repository actually is
+- `.github/README.md`: bootstrap bundle overview and lifecycle
+- `.github/prompts/bootstrap-copilot.prompt.md`: entry point for generation
+- `.github/skills/generate-copilot-config/SKILL.md`: canonical pipeline and cleanup rules
+- `.github/agents/conductor.agent.md`: orchestration behavior
+- `.github/docs/*.md`: runtime, context, prompting, and operating-model guidance for the copied bundle
+- `.github/constitution.md`: governance that generated agents and skills should inherit
 
-- Optimize for maintaining the toolkit, not for treating generated template files as if they were already tailored to this repository.
-- Keep the portable bootstrap bundle self-contained inside `.github/` so users can copy this folder alone into a target repository and run `/bootstrap-copilot`.
-- Keep the system aligned across surfaces. If a pipeline step, naming rule, validation rule, supported stack, or generated artifact changes, update the relevant skill, agents, prompts, README, and docs together.
-- Prefer repo-specific operational guidance over brochure-style text. Copilot works better when instructions explain how to maintain this toolkit.
-- Treat missing generated-project artifacts as expected unless the task is explicitly about generation outputs. In this repository, the absence of `.github/hooks/`, `.github/domains/`, `.github/.bootstrap-manifest.json`, `.github/.bootstrap-state.json`, `.github/module-dependency-map.json`, and `.github/MODULE-ARCHITECTURE.md` is normal.
-- Most language `.instructions.md` files are template outputs. They usually do not describe this repository's own implementation conventions.
+## Identity Guardrail
 
-## Sync Expectations
+- Do not assume the current repository is the `copilot-bootstrap` source repo just because this copied bundle mentions toolkit assets.
+- Infer repo identity from files outside the copied bootstrap bundle whenever possible.
+- Treat copied agents, skills, prompts, instructions, and templates as bootstrap inputs first, not as proof that they belong in the final generated `.github/`.
+- Only conclude that the current repository is the toolkit source repository when root-level evidence outside the copied bundle clearly proves it.
 
-- Pipeline logic lives primarily in `.github/skills/generate-copilot-config/SKILL.md`. Do not redefine the same workflow differently in prompts or agents.
-- If you rename an agent or skill, keep file names, frontmatter names, directory names, README references, prompt references, and orchestrator `agents:` lists in sync.
-- If you change a spec-driven flow, review the related agents, prompts, templates, and skills as one unit.
-- When auditing `.github/`, distinguish between template inventory, source-of-truth files, and generated runtime artifacts.
+## Working Rules During Bootstrap
 
-## Preferred Verification
+- Scan the target repo before trusting any template wording.
+- Rewrite this file with project-specific purpose, stack, verification, and source-of-truth guidance during Phase 4.
+- Generate only the docs, agents, skills, prompts, instructions, hooks, and templates justified by the detected repo.
+- After validation, remove copied bootstrap files that are not listed in the manifest keep set.
+- If business context is weak, mark assumptions explicitly instead of filling gaps with toolkit defaults.
 
-- Check frontmatter completeness and cross-reference consistency.
-- Check that skill `name` matches the skill directory.
-- Check that prompts stay lightweight entry points and skills keep the detailed workflow.
-- Check that repo docs and `.github/` guidance describe the same behavior.
-- Check that `.github/docs/` still explains runtime flow, context strategy, `.github` conventions, and practical prompting.
-- Check that `.github/docs/` still covers tool runtime and team operating model guidance.
+## Expected Before Generation
+
+- Many copied files are still generic templates.
+- Generated artifacts such as `.github/.bootstrap-manifest.json`, `.github/.bootstrap-state.json`, `.github/.phase3-checkpoint.md`, hooks, domains, and repo-memory docs may not exist yet.
+- That pre-generation state is normal and should not be mistaken for the final project configuration.

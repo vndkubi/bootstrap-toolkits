@@ -1,176 +1,170 @@
 # Project Constitution
 
-> **Immutable principles governing all specification-to-code transformation in this project.**
-> Every agent, skill, and workflow MUST comply with these Articles. Violations MUST be flagged, not silently ignored.
+> Immutable principles governing all specification-to-code transformation in this project.
+> Every agent, skill, and workflow must comply with these articles.
 
 ---
 
 ## Article I: Understand Before Changing
 
-**Every agent MUST thoroughly read and trace the existing code flow before making any change.** Never assume how the code works — always verify by reading the actual implementation.
+Every agent must read and trace the existing code flow before changing it.
 
-- Trace the full call chain from entry point to data store
-- Understand what each layer is responsible for
-- Identify what is already handled before proposing changes
-- In multi-module projects, map module boundaries and responsibilities
+- Trace the real call chain from entry point to data store or external dependency.
+- Understand what each layer and module already owns.
+- Reference concrete files and lines in analysis or implementation notes.
 
-**Enforcement**: Any implementation that does not reference specific file paths and line numbers from the as-is analysis is non-compliant.
+Enforcement: implementations that cannot point to actual as-is evidence are non-compliant.
 
 ---
 
 ## Article II: Confirm Business Logic
 
-**Proposed changes MUST align with existing business rules.** Technically correct code that violates business rules is a critical failure.
+Proposed changes must align with existing business rules.
 
-- Read business rules from service classes, validators, and domain models
-- Understand entity lifecycles and valid state transitions
-- Respect domain terminology — use the same terms the codebase uses
-- When in doubt, present findings and ask the user to confirm
+- Read business rules from service code, validators, state machines, data constraints, and docs.
+- Reuse the repo's actual domain terms.
+- If business intent is inferred rather than proven, label it `[ASSUMPTION]` or `[NEEDS CLARIFICATION]`.
 
-**Enforcement**: Every implementation must list which business rules it touches and how it preserves or extends them.
+Enforcement: every implementation must explain which business rules it preserves, extends, or leaves uncertain.
 
 ---
 
 ## Article III: No Duplicate Validation Across Layers
 
-**Each layer validates ONLY what it owns.** If validation is already handled at one layer, do NOT duplicate it at another.
+Each layer validates only what it owns.
 
-| Layer | Validates |
-|-------|----------|
-| **REST/Controller** | Input format (`@NotNull`, `@Size`, `@Pattern`, Data Annotations) |
-| **Service** | Business rules (e.g., "order total ≤ credit limit") |
-| **Repository/Database** | Data integrity (unique, FK, check constraints) |
+| Layer | Owns |
+|---|---|
+| Controller / API | input shape, transport concerns |
+| Service / Use case | business rules and orchestration |
+| Repository / Database | persistence integrity and constraints |
 
-**Enforcement**: Pre-implementation gate must document which layer handles which validation. Reviewers must flag any cross-layer duplication as 🔴 Critical.
+Enforcement: pre-implementation notes must document validation ownership. Cross-layer duplication is a critical finding.
 
 ---
 
-## Article IV: Multi-Module Boundaries
+## Article IV: Respect Module Boundaries
 
-**In multi-module projects, respect module boundaries absolutely.**
+In multi-module systems, do not duplicate logic across module boundaries or bypass a module's public interface.
 
-- Each module owns its responsibilities — do not duplicate logic across modules
-- Never bypass a module's public interface
-- Cross-module duplication is a 🔴 Critical issue
-- New cross-module dependencies require explicit justification
+- Identify module ownership before changing shared code.
+- Document cross-module impact for any multi-module change.
+- Treat high-dependency modules as high-risk surfaces.
 
-**Enforcement**: Any change touching multiple modules must include a module impact matrix.
+Enforcement: multi-module changes require an impact matrix.
 
 ---
 
 ## Article V: Clarify Before Acting
 
-**Ask clarifying questions when the request lacks sufficient detail. Do NOT guess.**
+Ask clarifying questions when the request is underspecified.
 
-- Mark uncertain areas with `[NEEDS CLARIFICATION]` markers instead of assuming
-- Batch related questions (max 3-5 at a time)
-- Provide sensible defaults when possible
-- Skip questions the codebase already answers
+- Do not guess hidden business rules or compatibility constraints.
+- Batch related questions.
+- Skip questions the codebase already answers.
 
-**Enforcement**: Specifications and investigation reports containing assumptions without `[NEEDS CLARIFICATION]` markers or explicit user confirmation are non-compliant.
-
----
-
-## Article VI: Test-First Verification
-
-**Every agent that writes code MUST verify it works before presenting results.** Writing code without running it is incomplete work.
-
-1. **BUILD**: Run build command → if fails, fix (max 3 retries)
-2. **TEST**: Run tests → if fails, fix (max 3 retries)
-3. **LINT**: Run linter → if fails, fix
-
-Only report completion after all 3 pass. If still failing after 3 retries: STOP, report the issue, ask user for guidance.
-
-**Enforcement**: Completion reports without build/test/lint evidence are non-compliant.
+Enforcement: unresolved assumptions must be labeled explicitly.
 
 ---
 
-## Article VII: Simplicity — No Over-Engineering
+## Article VI: Verify Before Claiming Completion
 
-**Prefer the simplest solution that satisfies the requirement.** Do not build for hypothetical future needs.
+Every agent that writes code must verify it before claiming completion when runnable commands exist and the environment supports execution.
 
-- Do not add abstraction layers unless there are 3+ concrete consumers today
-- Do not wrap framework features — use them directly
-- Do not add feature flags or backwards-compatibility shims when you can just change the code
-- Three similar lines of code is better than a premature abstraction
+1. **Build**: run the project's build command when it exists and is runnable.
+2. **Test**: run the project's tests when they exist and are runnable.
+3. **Lint**: run the project's lint or static-analysis command when it exists and is runnable.
 
-**Enforcement**: Simplicity Gate (see Phase -1 Gates below) must pass before implementation begins.
+If verification fails, fix and retry up to 3 times per step.
 
----
+If commands are missing, require unavailable infrastructure, or cannot run in the current environment, say that explicitly in the completion report.
 
-## Article VIII: Anti-Abstraction
-
-**Use framework and library features directly.** Do not create wrappers, adapters, or helper utilities for one-time operations.
-
-- Use framework's DI, ORM, routing, validation directly
-- One model representation per entity boundary (Entity ↔ DTO, not Entity ↔ DomainModel ↔ DTO ↔ ViewModel)
-- No "just in case" interfaces — add interfaces when you have 2+ implementations
-
-**Enforcement**: Anti-Abstraction Gate (see Phase -1 Gates below) must confirm direct framework usage.
+Enforcement: completion reports without verification evidence, or without an explicit explanation for missing verification, are non-compliant.
 
 ---
 
-## Article IX: Explain Decisions & Report Outcomes
+## Article VII: Prefer Simplicity
 
-**Every agent MUST explain its decisions during execution AND produce a structured completion report.**
+Prefer the simplest solution that satisfies the requirement.
 
-- Before each major action, state what you're doing and why
-- When choosing between alternatives, explain the trade-off
-- Completion report MUST list every file created/modified/deleted with business justification
-- Investigation-only tasks must list analyzed files + findings
+- Avoid abstractions without multiple real consumers.
+- Do not add future-proofing code by default.
+- Favor small, obvious changes over speculative architecture.
 
-**Enforcement**: Any deliverable without a completion report is incomplete.
+Enforcement: the Simplicity Gate must pass before implementation.
 
 ---
 
-## Phase -1 Gates — Constitutional Compliance Checks
+## Article VIII: Avoid Unnecessary Abstraction
 
-**Before ANY implementation begins, these gates MUST pass.** Gates are checked by the implementor agent or orchestrator.
+Use framework and library features directly unless there is a real, present need for indirection.
 
-### Gate 1: Simplicity Gate
-- [ ] Solution uses the minimum number of new files/classes needed
-- [ ] No premature abstractions (no interfaces with single implementation, no unnecessary factories)
-- [ ] No future-proofing code ("might need later" is not a valid reason)
-- [ ] Justified if adding more than 5 new files for a single feature
+- Do not wrap one-off framework features.
+- Do not create interfaces for single implementations without a real seam.
+- Keep representations minimal across boundaries.
 
-### Gate 2: Duplication Gate
-- [ ] Checked existing codebase for similar functionality before creating new code
-- [ ] No validation duplicated across layers (documented which layer handles what)
-- [ ] No business logic duplicated across modules
-- [ ] Existing utilities and base classes are reused where applicable
+Enforcement: deviations require explicit justification.
 
-### Gate 3: Business Logic Gate
-- [ ] Business rules identified and traced from existing code
-- [ ] Proposed changes confirmed to align with (not contradict) existing business rules
-- [ ] Entity lifecycle and valid state transitions documented
-- [ ] Domain terminology matches existing codebase
+---
 
-### Gate 4: Impact Gate
-- [ ] All affected modules/files identified
-- [ ] API contract changes assessed for backward compatibility
-- [ ] Database changes have migration + rollback plan
-- [ ] Cross-module dependencies mapped
+## Article IX: Explain Decisions and Report Outcomes
+
+Every agent must explain meaningful decisions and provide a completion report.
+
+- State what you are doing and why before major actions.
+- Explain trade-offs when choosing between alternatives.
+- Report files changed, business reasoning, verification results, and open risks.
+
+Enforcement: deliverables without a completion report are incomplete.
+
+---
+
+## Phase -1 Gates
+
+These gates must pass before implementation begins.
+
+### Gate 1: Simplicity
+- [ ] Minimum necessary files/classes
+- [ ] No speculative abstractions
+- [ ] No "might need later" code
+
+### Gate 2: Duplication
+- [ ] Existing similar logic checked first
+- [ ] No duplicate validation across layers
+- [ ] No duplicated business logic across modules
+
+### Gate 3: Business Logic
+- [ ] Existing rules traced from code or docs
+- [ ] Proposed changes align with discovered rules
+- [ ] Unknowns labeled explicitly
+
+### Gate 4: Impact
+- [ ] Affected files/modules identified
+- [ ] API compatibility checked
+- [ ] Database changes include migration and rollback thinking
+- [ ] Verification approach identified
 
 ### Gate Failure Protocol
+
 If any gate fails:
-1. Document which gate failed and why
-2. Propose remediation
-3. Ask user for confirmation before proceeding with a justified exception
-4. Log the exception in the completion report under "Constitutional Exceptions"
+
+1. Document the failed gate and why.
+2. Propose remediation.
+3. Ask for confirmation before proceeding with an exception.
+4. Log the exception in the completion report.
 
 ---
 
-## Constitutional Amendment Process
+## Amendment Process
 
-These Articles are designed to be stable, but they can evolve:
+1. Propose the change and rationale.
+2. Assess which agents, skills, prompts, or docs are affected.
+3. Update all affected files together.
+4. Record the change in the changelog.
 
-1. **Propose**: Document the proposed change with rationale
-2. **Impact**: Assess which agents, skills, and workflows are affected
-3. **Review**: All affected agents must be updated to reflect the change
-4. **Document**: Update this constitution and the changelog below
-
-### Changelog
+## Changelog
 
 | Date | Article | Change | Rationale |
-|------|---------|--------|-----------|
-| 2026-03-21 | All | Initial constitution formalized from core-principles | Apply spec-driven development methodology |
+|---|---|---|---|
+| 2026-03-21 | All | Initial constitution formalized | Apply spec-driven engineering principles |
+| 2026-03-24 | II, VI | Added evidence/assumption guardrails and conditional verification rules | Reduce overclaim risk for enterprise repos |

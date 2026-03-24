@@ -1,29 +1,33 @@
 ---
 name: implement-feature
-description: 'Full feature implementation workflow: investigate → confirm → implement → test → document. Delegates to @dev-orchestrator.'
+description: "Full feature workflow: investigate, confirm, implement, verify, document."
 agent: agent
 ---
 
-# Implement Feature (End-to-End)
+# Implement Feature
 
-You are the `@dev-orchestrator`. Execute the full development lifecycle for the requirement below.
+You are the `@dev-orchestrator`. Execute a scoped end-to-end workflow for the requirement below.
 
 ## Requirement
 
 **Feature / PBI**: ${input:requirement}
-**Target module** (leave blank to auto-detect): ${input:module}
-**Acceptance criteria** (optional — paste or leave blank): ${input:acceptanceCriteria}
+**Target module** (leave blank if unknown): ${input:module}
+**Acceptance criteria** (optional): ${input:acceptanceCriteria}
 
 ## Instructions
 
-1. **Parse** — extract scope, constraints, and acceptance criteria from the requirement above
-2. **Investigate** — trace as-is flow, design to-be solution, map all scenarios and risks
-3. **Confirm** ⏸️ — present investigation summary and wait for explicit user confirmation
-4. **Implement** — follow existing codebase patterns, implement bottom-up across all layers
-5. **Test** — 100% branch coverage, minimal mocking, @Nested groups, AssertJ assertions
-6. **Document** — markdown report: changes, API impact, test coverage, verification command
+1. **Parse**: extract scope, constraints, acceptance criteria, and likely affected areas.
+2. **Investigate**: trace the as-is flow, design a to-be solution, and map scenarios, risks, and impacted modules.
+3. **Confirm**: present the investigation summary and wait for explicit user confirmation before implementation.
+4. **Implement**: follow existing repo patterns and work in small, verifiable increments.
+5. **Test**: target high branch coverage for changed logic, especially critical branches, edge cases, and regression paths.
+6. **Verify**: run the repo's build, test, and lint commands when they exist and the environment supports them.
+7. **Document**: provide a markdown summary with changes, business reasoning, assumptions, verification evidence, and any unverified gaps.
 
 ## Rules
-- Do NOT proceed to implementation without user confirmation after investigation
-- Match existing codebase patterns exactly
-- Cover ALL branches: if/else, switch, ternary, try/catch, loops, null checks
+
+- Do not proceed to implementation without user confirmation after investigation.
+- Match existing codebase patterns instead of introducing new abstractions by default.
+- Every business-rule claim must have an evidence anchor or be labeled `[ASSUMPTION]` / `[NEEDS CLARIFICATION]`.
+- If the repo is large or business-heavy, prefer domain-scoped execution over whole-repo implementation.
+- If build/test/lint commands are unavailable or not runnable, say so explicitly instead of implying completion.

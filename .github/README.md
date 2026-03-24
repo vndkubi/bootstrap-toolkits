@@ -2,12 +2,14 @@
 
 This `.github/` folder is designed to be copied into another repository and used directly with `/bootstrap-copilot`.
 
+If this bundle has been copied into a target repo, do not treat bundle wording by itself as proof that the target repo is the `copilot-bootstrap` source repository. Determine repo identity from the target repo's own files.
+
 ## Quick Start
 
 1. Copy this `.github/` folder into the target repository.
 2. Open the target repository in GitHub Copilot Chat.
 3. Run `/bootstrap-copilot`.
-4. Let the bootstrap pipeline analyze the target codebase and replace template content with project-specific output.
+4. Let the bootstrap pipeline analyze the target codebase, replace template content with project-specific output, and clean up copied toolkit files that are not needed afterward.
 
 ## Read This Bundle In Order
 
@@ -35,7 +37,9 @@ After bootstrap runs in the target repository, the generated `.github/` should b
 - prompts
 - instructions
 - templates
-- optional hooks, domains, workflows, manifests, and dependency maps
+- optional hooks, domains, workflows, manifests, dependency maps, and `docs/` repo-memory files
+
+Files that remain generic or out of scope for the detected repo should be removed during cleanup instead of staying in the final bundle.
 
 So if you inspect the copied bundle before generation:
 
@@ -73,6 +77,18 @@ These may not exist until the bootstrap pipeline generates them for the target r
 - `.github/MODULE-ARCHITECTURE.md`
 
 Their absence before generation is normal.
+
+## Progressive Disclosure
+
+Generated target repositories should not get the same doc volume by default.
+
+- Small repos should usually get a short global layer: `copilot-instructions.md`, `docs/00-repo-overview.md`, `docs/03-verification-runbook.md`.
+- Medium repos should add the common doc set: glossary, architecture map, engineering rules, and failure modes.
+- Large and enterprise repos should then add `docs/modules/`, `docs/workflows/`, and `docs/decisions/` incrementally based on blast radius and business importance.
+
+This keeps Copilot context layered as global truth, module truth, and task truth instead of forcing one giant knowledge dump.
+
+It also means the generated repo should keep only the layers it actually needs. Anything outside the selected stack, repo size, or runtime keep set should be deleted in the cleanup phase.
 
 ## Practical Rule For Maintainers
 

@@ -1,193 +1,141 @@
 ---
 name: orchestrate-development
-description: 'Full lifecycle development orchestration skill for agile teams. Receives a requirement or PBI then executes the complete workflow: investigate as-is/to-be, estimate effort, confirm analysis with user, multi-stack implementation (Java/.NET/Python/PHP), unit tests with 100% branch coverage, PR description, conventional commits, and markdown documentation. Supports sprint-aware estimation and architectural decision-making. Use when asked to implement a feature end-to-end, take a PBI from analysis to completion, or do full-stack implementation with tests and docs.'
+description: "Scoped end-to-end development workflow: investigate, confirm, implement, test, verify, and document with evidence-backed reasoning. For larger or requirement-heavy work, hand off into the spec-kit workflow instead of forcing ad hoc implementation."
 ---
 
 # Orchestrate Development
 
-Full lifecycle development workflow from requirement to delivery, supporting multiple tech stacks.
+Use this skill when the user wants one workflow to carry a requirement from analysis through delivery.
 
 ## When to Use
 
-- User provides a PBI, user story, or requirement and wants end-to-end implementation
-- User asks to "implement and test" or "take this from start to finish"
-- User wants investigation + implementation + tests + PR + documentation in one flow
-- Keywords: "implement end-to-end", "full implementation", "analyze and implement", "requirement to delivery"
+- a well-bounded feature or bug fix
+- a PBI that needs investigation plus implementation
+- a request to implement, test, and document in one thread
 
-## Tech Stack Detection
+For vague, high-risk, or multi-module features, prefer the spec-driven workflow before implementation:
 
-Automatically detect and adapt to the project's tech stack:
-- `pom.xml` / `build.gradle` → Java/Jakarta EE/Spring Boot
-- `*.csproj` / `*.sln` → .NET/C#/ASP.NET Core
-- `pyproject.toml` / `manage.py` → Python/Django/FastAPI
-- `composer.json` / `artisan` → PHP/Laravel/Symfony
-- `package.json` + React/Vue/Angular, `*.ts`, `*.tsx` → TypeScript/React/Frontend
-- `build.gradle.kts` + Android → Android/Kotlin
-- `Package.swift` / `*.xcodeproj` → iOS/Swift
+- `specify-feature`
+- `plan-implementation`
+- `generate-tasks`
+- `implement-feature`
 
-## Constitutional Compliance
+## Core Principles
 
-> All orchestration MUST comply with the [Project Constitution](../../constitution.md).
-> Phase -1 Gates are enforced before implementation (Step 4).
-
-## Spec-Driven Pipeline (Optional)
-
-For non-trivial features (3+ files, unclear requirements), consider running the Spec → Plan → Tasks pipeline first:
-1. `specify-feature` — structured specification from requirements
-2. `plan-implementation` — technical plan with constitutional gates
-3. `generate-tasks` — executable task list with checkpoints
-
-This pipeline is optional for well-defined PBIs but recommended for vague or large features.
+- Follow the [Project Constitution](../../constitution.md).
+- Discovery comes before implementation.
+- Business claims need evidence anchors or assumption labels.
+- Verification is required when runnable commands exist.
+- Large repos should be handled by domain or module, not all at once.
+- Non-trivial work should use durable spec artifacts instead of chat-only intent.
 
 ## Workflow
 
-### Step 1: Parse Requirement & Detect Mode
-- Extract what, why, scope, constraints, acceptance criteria
-- Detect tech stack from project files
-- Ask clarifying questions if ambiguous
-- **Detect implementation mode**:
-  - **Standard** (default): Investigate → Implement → Test → Verify → Review
-  - **TDD**: If user says "TDD" or "test first" → Write failing tests → Implement to pass → Refactor → Verify
-  - **Bug Fix**: If user provides error/stack trace → Reproduce → Locate → Fix → Verify → Regression check
+### Step 1: Parse And Scope
+
+- extract requirement, constraints, and acceptance criteria
+- detect the stack from repo evidence
+- identify affected modules
+- decide whether the scope is small enough for a single workflow
+
+Escalate to the spec-kit workflow when:
+
+- business rules are still forming
+- multiple modules or contracts are involved
+- the change needs durable traceability
+- more than 3 critical unknowns remain
 
 ### Step 2: Investigate
-- **Trace current code flow (as-is)** — follow the full call chain, understand what each layer handles
-- **Identify layer responsibilities** — document which layer handles which validation to prevent duplication
-- **Confirm business logic alignment** — verify proposed changes match existing business rules
-- Design proposed solution (to-be) with change table: Component | Change Type | File | Business Reason
-- Map all scenarios (happy path, errors, edge cases, concurrency)
-- Assess impact on existing code and database — produce impact matrix: Area | Impact Level (🔴🟡🟢) | Details
-- In multi-module projects, map module boundaries and responsibilities
-- Identify risks with mitigation plans
-- **Generate sequence diagrams** — MUST produce both:
-  - **As-Is diagram** — current flow traced from actual code
-  - **To-Be diagram** — proposed flow with change markers: 🆕 New (green box), ✏️ Modified (yellow box), ❌ Removed (red box)
-- **Estimate effort** — story points with task breakdown by layer
 
-### Step 3: Confirm with User ⏸️
-- Present structured investigation summary with effort estimate
-- List all files to create and modify
-- Show scenarios, risks, and architecture decisions
-- **Wait for explicit user confirmation before proceeding**
+Trace the as-is flow and produce:
 
-### Step 4: Implement (Stack-Adaptive)
+- current behavior
+- business rules already enforced
+- likely change points
+- impact map
+- risks and assumptions
 
-**Code Reasoning Rule**: For every file created or modified, explain the business reasoning BEFORE writing code:
-- "Adding `XxxService` because [business rule] needs a dedicated service"
-- "Using [pattern] because the codebase uses this approach (see `ExistingClass:L45`)"
-- "Not adding validation here — already handled by `@Valid` in `XxxController`"
+Use file or doc anchors wherever possible.
 
-**Java/Jakarta EE**: Migration → Entity → DTO → Mapper → Repository → Service → Resource
-**Java/Spring Boot**: Migration → Entity → DTO → Mapper → Repository → Service → Controller
-**.NET/C#**: Entity + EF Config → Migration → DTO → Validator → Repository → Service/Handler → Controller → DI
-**Python (FastAPI)**: SQLAlchemy Model → Alembic Migration → Pydantic Schema → Repository → Service → Dependencies → Router
-**Python (Django)**: Model → Migration → Serializer → Service/Selector → View/ViewSet → URL
-**PHP (Laravel)**: Model → Migration → FormRequest → API Resource → Service → Controller → Route
-**PHP (Symfony)**: Entity → Migration → DTO → Repository → Service → Controller → Validator
-**TypeScript (React/Next.js)**: Types/Interfaces → API Service → Custom Hook → Component → Tests → Page Route
-**TypeScript (Node/Express)**: Types → Prisma/Drizzle Schema → Repository → Service → Controller → Route → Middleware
+### Step 3: Confirm
 
-Universal rules:
-- Follow existing codebase patterns exactly
-- No duplicate validation across layers
-- Add proper documentation
-- Respect module boundaries
+Before implementation, confirm:
 
-#### Incremental Implementation (for features touching 5+ files)
+- planned files or areas to change
+- architectural direction
+- assumptions
+- verification approach
+- whether the work stays in fast-path orchestration or should move into `specs/`
 
-Break work into verifiable chunks — each chunk MUST pass build+test before proceeding:
+Wait for explicit confirmation.
 
-1. **Data layer**: DB migration + entity/model → BUILD → verify schema
-2. **Business layer**: Repository + service → BUILD + unit tests → RUN tests
-3. **API layer**: Controller/resource + integration → BUILD + API tests → RUN tests
-4. **Final**: Full test suite → lint → PR
+### Step 4: Phase -1 Gates
 
-Do NOT write all files then test at the end — verify incrementally.
+Do not write code until these gates pass:
 
-### Step 5: Write Unit Tests
-- Analyze ALL branches in implemented code
-- Create test builders/factories for entities/DTOs
-- Use the stack's preferred testing framework:
-  - Java: JUnit 5 + AssertJ + @Nested/@DisplayName
-  - .NET: xUnit + FluentAssertions + nested classes
-  - Python: pytest + pytest-asyncio + factory_boy
-  - PHP: PHPUnit/Pest + Model Factories
-- Use real objects wherever possible, minimize mocks
-- Target 100% branch coverage
-- Ensure all tests execute fast (<100ms each)
+- Simplicity
+- Duplication
+- Business Logic
+- Impact
 
-### Step 5.5: Verify-Fix & Self-Review (MANDATORY)
+### Step 5: Implement
 
-**After writing code + tests, MUST execute:**
+Implement incrementally and explain key decisions:
 
-1. **Build**: Run build command → if fails, read error, fix, rebuild (max 3 retries)
-2. **Test**: Run test suite → if fails, analyze output, fix code or test, re-run (max 3 retries)
-3. **Lint**: Run linter → if fails, fix violations, re-run
-4. **Self-Review**: Re-read ALL files created/modified and check:
-   - Does each file follow existing codebase patterns?
-   - Is there duplicate validation across layers?
-   - Are all acceptance criteria covered?
-   - Do test names reflect business scenarios (not method names)?
-   - Is every new field in Entity reflected in DTO, mapper, and tests?
+- why a new file is needed
+- why a pattern matches the repo
+- why a validation belongs in a given layer
+- why a shared-component change is safe
 
-If any issue found → fix BEFORE presenting to user.
-If still failing after 3 retries → STOP, report status with error output, ask user.
+For changes touching 5+ files, verify in chunks instead of waiting until the end.
 
-### Step 6: Generate PR Description & Commits
-- Generate conventional commit messages for each logical change
-- Generate structured PR description with:
-  - Summary, changes, testing notes, impact analysis, review checklist
+If the work was approved through a feature workspace, follow the approved `spec.md`, `plan.md`, and `tasks.md` rather than improvising.
 
-### Step 7: Final Report — Mandatory Output
+### Step 6: Test
 
-ALWAYS produce this structured markdown report:
+Testing goals:
 
-```markdown
-## Summary of Changes
+- strong branch coverage on changed logic
+- edge cases and regressions covered
+- minimal mocking when real objects are practical
+- business-scenario naming
 
-### What Was Done
-| # | Action | File | Business Reason |
-|---|--------|------|----------------|
-| 1 | Created | [path] | [why this was needed] |
+Aim for 100% branch coverage on changed critical logic when practical. Do not promise 100% across the whole surface by default.
 
-### Business Rules Implemented
-- ✅ [Rule — enforced at which layer]
+### Step 7: Verify
 
-### Sequence Diagram (Updated)
-[To-Be Mermaid diagram with 🆕✏️❌ markers and colored boxes]
+Run the repo's build, test, and lint/static-analysis commands when they:
 
-### Design Decisions
-| Decision | Alternatives | Rationale |
-|----------|-------------|----------|
-| [choice] | [options] | [why] |
+- exist
+- are relevant to the change
+- are runnable in the current environment
 
-### What Was NOT Done (and why)
-- [item] — [reason]
+If a command cannot run, report:
 
-### Quick Verify
-[build/test command]
-```
+- the missing prerequisite
+- the command that was skipped
+- what risk remains because of that gap
 
-### Step 8: Estimation Accuracy
-- Report all deliverables (code files, test files, docs, migrations, PR description)
-- Compare estimated vs actual effort
-- Provide stack-appropriate verification command
+### Step 8: Deliver
 
-## Validation
-- All production code compiles / passes static analysis
-- All unit tests pass
-- Branch coverage meets 100% target
-- Documentation is complete and accurate
-- Existing tests still pass
-- **Existing code flow was traced before implementation**
-- **No duplicate validation across layers** (Controller/Service/Repository)
-- **No duplicate logic across modules** (multi-module projects)
-- **Business logic confirmed** — changes match existing business rules
-- **PR description generated and review-ready**
-- **Verify-Fix loop passed** — build + test + lint all green
-- **Cross-file consistency verified**:
-  - [ ] Every new Entity field → has DTO field + mapper logic
-  - [ ] Every new endpoint → has corresponding test
-  - [ ] Every new service method → referenced in controller/resource
-  - [ ] Every new validation → has negative test case
-  - [ ] Method signatures consistent across interface ↔ implementation
+Produce a final markdown report with:
+
+- summary of changes
+- files touched
+- business reasoning
+- verification evidence
+- assumptions and open risks
+- suggested next step
+
+## Stack Adaptation
+
+Follow the repo's actual patterns and verification commands. Do not hardcode one stack's defaults when the repo evidence says otherwise.
+
+## Validation Checklist
+
+- existing flow traced before implementation
+- business rules aligned or labeled as assumptions
+- changed modules/files identified
+- verification evidence captured, or missing verification stated explicitly
+- spec-kit handoff was used when the scope justified it
+- no false "done" language when verification is incomplete

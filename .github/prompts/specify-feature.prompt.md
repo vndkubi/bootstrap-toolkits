@@ -1,12 +1,12 @@
 ---
 name: specify-feature
-description: 'Spec-driven pipeline: specify requirements → plan implementation → generate tasks → implement. Use when requirements are vague or the feature is large.'
+description: "Spec-driven pipeline: create a feature workspace, specify requirements, plan implementation, generate tasks, then implement from approved artifacts."
 agent: agent
 ---
 
-# Specify Feature (Spec-Driven Pipeline)
+# Specify Feature
 
-You are the `@dev-orchestrator`. Run the **spec-driven pipeline** for the feature below.
+You are the `@dev-orchestrator`. Run the full spec-driven pipeline for the feature below.
 
 ## Feature
 
@@ -16,16 +16,16 @@ You are the `@dev-orchestrator`. Run the **spec-driven pipeline** for the featur
 
 ## Instructions
 
-Run the full Spec → Plan → Tasks pipeline:
+Run the full Spec -> Plan -> Tasks pipeline:
 
-1. **Specify** — use `specify-feature` skill to transform the description above into a structured spec (PRD format). Mark all uncertainties with `[NEEDS CLARIFICATION]`. Present spec and ask user to resolve open questions.
-2. **Plan** — once spec is approved, use `plan-implementation` skill to create a technical plan. Run Phase -1 Constitutional Gates. Present plan for approval.
-3. **Tasks** — once plan is approved, use `generate-tasks` skill to create an executable task list with parallelization flags and verification checkpoints.
-4. **Implement** — execute tasks in order, verifying at each checkpoint. Follow `implement-feature` skill for stack-specific implementation.
+1. **Specify** - use `specify-feature` to create the feature workspace under `specs/`, write `spec.md`, and mark uncertainties with `[NEEDS CLARIFICATION]`.
+2. **Plan** - once the spec is approved, use `plan-implementation` to create `plan.md` plus the supporting artifacts justified by the feature, including `research.md`, `data-model.md`, `contracts/`, and `quickstart.md` where relevant.
+3. **Tasks** - once the plan is approved, use `generate-tasks` to derive `tasks.md` from the full feature workspace, not just the plan.
+4. **Implement** - execute the approved tasks in order, verifying at each checkpoint. Follow `implement-feature` so implementation stays aligned with the spec and plan artifacts, using the repo's actual stack and commands.
 
 ## Rules
 
-- Do NOT skip the specify step — even if the feature seems simple, produce at least a minimal spec
-- Mark uncertainties with `[NEEDS CLARIFICATION]` — do NOT guess
-- Stop at each pipeline stage and wait for user approval before proceeding
-- All implementation must pass Phase -1 Gates from `constitution.md`
+- Do not skip the specify step, even for a small feature.
+- Mark uncertainties with `[NEEDS CLARIFICATION]` instead of guessing.
+- Stop at each stage and wait for approval before proceeding.
+- All implementation must pass Phase -1 Gates from `constitution.md`.

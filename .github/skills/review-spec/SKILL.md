@@ -1,155 +1,148 @@
 ---
 name: review-spec
-description: 'Review specifications (PRDs, User Stories, API contracts, DB schemas) for completeness, security gaps, testability, ambiguity, and NFR coverage. Applies Security Assessment and QA Testability lenses. Produces severity-rated review report. Use when asked to review a spec, check requirements quality, or validate spec before development.'
+description: "Review a feature specification and its spec-kit artifacts for completeness, ambiguity, security gaps, testability, and traceability. Evaluates the feature workspace as a whole, not just spec.md."
 ---
 
-# Review Spec — Security + Testability Analysis
+# Review Spec
 
-Review specifications through two critical lenses before they reach development. Catch expensive problems at the cheapest point to fix them.
+Review specification artifacts before implementation begins. Catch ambiguity, missing contracts, weak validation scenarios, and traceability gaps while changes are still cheap.
 
 ## When to Use
 
 - Before development starts on a new feature
-- After `@business-analyst` generates a spec
-- When reviewing external vendor specifications
-- When updating existing specs (review changed sections)
-- Keywords: "review spec", "check requirements", "validate spec", "spec quality", "is this spec ready"
+- After `specify-feature` produces `spec.md`
+- After `plan-implementation` adds `plan.md` and supporting artifacts
+- After `update-spec` changes an existing feature workspace
+- When the user asks whether a spec is ready
 
-## Prerequisites
+## Inputs
 
-- A spec document (PRD, User Story, API contract, DB schema, or technical design)
-- Optionally: project domain context from `.github/instructions/` or `domain-registry.json`
-- Optionally: standardized templates from `.github/templates/` for completeness comparison
+Review the feature workspace when available:
+
+- `spec.md`
+- `plan.md`
+- `research.md`
+- `data-model.md`
+- `contracts/`
+- `quickstart.md`
+
+If only part of the workspace exists, review what is present and list what is still missing.
+
+## Review Lenses
+
+### 1. Completeness
+
+Check:
+
+- required PRD sections exist
+- major requirements are traceable
+- out-of-scope boundaries are explicit
+- assumptions and open questions are visible
+- supporting artifacts exist when the feature needs them
+
+### 2. Security And Risk
+
+Check:
+
+- auth and authorization expectations are explicit when needed
+- input validation and error handling expectations are defined
+- sensitive data handling is addressed
+- concurrency, idempotency, or state-guard concerns are surfaced
+- operational or compliance risks are named where relevant
+
+### 3. Testability
+
+Check:
+
+- acceptance criteria are precise enough to verify
+- boundary and failure cases are explicit
+- quickstart scenarios are practical
+- contracts and model changes imply testable downstream behavior
+- prerequisite states and test data are sufficiently defined
+
+### 4. Traceability
+
+Check:
+
+- user stories connect to functional requirements
+- requirements connect to technical decisions in `plan.md`
+- research findings justify major technical choices
+- contracts and models reflect the approved requirements
+- quickstart scenarios cover the most important outcomes
 
 ## Workflow
 
-### Step 1: Parse the Spec
+### Step 1: Read The Workspace
 
-Read the spec and extract structured data:
+Read the available artifacts in this order:
 
-1. **Entities**: All business objects mentioned (Order, Payment, User, etc.)
-2. **APIs**: All endpoints with methods, paths, request/response
-3. **Data flows**: How data moves between components
-4. **User actions**: What users can do
-5. **Business rules**: Validation, calculations, state transitions
-6. **Status fields**: Any entity with lifecycle states
-7. **External dependencies**: Third-party services, APIs, databases
+1. `spec.md`
+2. `plan.md`
+3. `research.md`
+4. `data-model.md`
+5. files under `contracts/`
+6. `quickstart.md`
 
-### Step 2: Apply Security Lens
+### Step 2: Build A Gap Matrix
 
-For each extracted element, run security checks:
+For each important feature concern, record:
 
-**API Endpoints:**
-- [ ] Auth method specified (JWT, OAuth2, API key)?
-- [ ] Authorization rules per endpoint (who can access)?
-- [ ] Rate limits defined?
-- [ ] Input validation constraints for all fields?
-- [ ] Error response format (no stack traces, no sensitive data)?
+- where it is specified
+- whether it is unambiguous
+- whether it is testable
+- whether a downstream artifact is missing
 
-**Data Flows:**
-- [ ] PII identified and protection specified?
-- [ ] Data at rest encryption requirements?
-- [ ] Data in transit encryption (TLS)?
-- [ ] Audit logging for sensitive operations?
+### Step 3: Produce Findings
 
-**Business Logic:**
-- [ ] State transition guards (can't skip states)?
-- [ ] Idempotency for mutating operations?
-- [ ] Race condition handling (concurrent updates)?
-- [ ] Financial precision (decimal, not float)?
+Use severity-based findings:
 
-**Domain-Specific (auto-detect from domain context):**
+- `Critical`: implementation would likely diverge or create bugs/security issues
+- `Warning`: likely rework or inconsistent implementation
+- `Suggestion`: improves maintainability or clarity
 
-| Domain | Auto-Check |
-|--------|-----------|
-| Finance | PCI DSS, SOX audit trail, transaction atomicity, decimal precision |
-| Healthcare | HIPAA, PHI encryption, consent, access logging |
-| E-commerce | Payment security, inventory consistency, cart expiration |
-| Logistics | Geolocation security, real-time SLA, offline sync |
-| Multi-tenant SaaS | Tenant isolation, data segregation, per-tenant limits |
+Every finding must include:
 
-### Step 3: Apply Testability Lens
+- artifact or section reference
+- the problem
+- why it matters
+- a concrete fix direction
 
-For each acceptance criterion and business rule:
+### Step 4: Save Review Report
 
-**Clarity:**
-- [ ] Is it in Given/When/Then format (or equally precise)?
-- [ ] Are success conditions measurable (specific values)?
-- [ ] Are error scenarios explicit (which error code, which message)?
-- [ ] Are boundary values defined (min, max, empty)?
+Save as `specs/<feature-id>-<slug>/review.md` when a feature workspace exists.
 
-**Edge Cases — check each is addressed:**
-- [ ] Empty/null inputs
-- [ ] Boundary values (at exact limits)
-- [ ] Concurrent access (two users, same resource)
-- [ ] Partial failure (external service down mid-flow)
-- [ ] Duplicate submission (user double-clicks)
-- [ ] Large data sets (pagination at scale)
-- [ ] Timezone/locale handling
-- [ ] Unicode/special characters
+If the review targets a standalone spec outside a workspace, save next to that spec or use `docs/reviews/`.
 
-**Test Prerequisites:**
-- [ ] Test data requirements specified?
-- [ ] Prerequisite entity states defined?
-- [ ] External service mock requirements clear?
+## Output Format
 
-### Step 4: Completeness Check
+```md
+# <Feature Name> - Spec Review
 
-Compare spec against template structure (`.github/templates/PRD-template.md`):
+## Readiness Summary
 
-| Section | Required For |
-|---------|-------------|
-| Problem statement | All specs |
-| User personas | PRD |
-| User stories + ACs | PRD, User Stories |
-| Functional requirements | PRD |
-| Non-functional requirements | PRD, API Contract |
-| API contract (OpenAPI) | API features |
-| DB schema (DBML) | Data model features |
-| State diagram | Entities with status/lifecycle |
-| Error handling | API features |
-| Out of scope | All specs |
-| Risk assessment | Complex features |
-| Dependencies | Multi-system features |
+## Findings
+1. [Severity] ...
 
-Flag missing sections as findings.
+## Artifact Coverage
+| Artifact | Status | Notes |
+|---|---|---|
+| spec.md | PASS/WARN/FAIL | ... |
 
-### Step 5: Generate Review Report
+## Recommended Next Step
+```
 
-Produce the report following the output format defined in `@spec-reviewer` agent.
+## Integration With Other Skills
 
-**Severity classification:**
-- **🔴 Critical**: Will cause bugs, security vulnerabilities, or ambiguous implementation
-- **🟡 Warning**: May cause rework, inconsistency, or missed edge cases
-- **🔵 Suggestion**: Would improve spec quality but not blocking
-
-**Quality scoring:**
-Rate each dimension 1-5:
-- **Completeness**: Are all required sections present and filled?
-- **Security Coverage**: Are auth, input validation, rate limiting, data protection addressed?
-- **Testability**: Can automated tests be written from the ACs as-is?
-- **Clarity**: Is there zero ambiguity? Would two developers implement it the same way?
-
-### Step 6: Save Review Report
-
-**Save to**: `docs/reviews/[spec-name]-review.md`
-
-## Integration with Other Skills
-
-| After Review | Invoke |
-|-------------|--------|
-| Missing state diagram | `generate-state-diagram` skill |
-| Missing API contract | Reference `.github/templates/API-contract-template.md` |
-| Missing DB schema | Reference `.github/templates/DB-schema-template.md` |
-| Missing NFRs | `extract-nfrs` skill (if available) or flag as finding |
-| Spec needs update | `update-spec` skill for incremental patching |
+| Need | Next action |
+|---|---|
+| Spec ambiguity remains | `update-spec` |
+| Missing technical artifacts | `plan-implementation` |
+| Missing tasks after approved plan | `generate-tasks` |
+| Ready for execution | `implement-feature` or orchestrated implementation |
 
 ## Validation
 
-- [ ] Every finding has a concrete recommendation (not just "fix this")
-- [ ] Security lens covered: auth, rate-limiting, input validation, data exposure
-- [ ] Testability lens covered: clarity, edge cases, measurability
-- [ ] Completeness compared against template structure
-- [ ] Domain-specific NFRs checked
-- [ ] Quality score assigned (1-5 per dimension)
-- [ ] Report saved as markdown file
+- [ ] Findings cover completeness, risk, testability, and traceability
+- [ ] Review considered the whole feature workspace when available
+- [ ] Missing artifacts are called out explicitly
+- [ ] Every finding includes a concrete fix direction

@@ -1,105 +1,133 @@
 ---
 name: specify-feature
-description: 'Transforms a feature description, PBI, or user request into a structured specification using the PRD template. Refines requirements through clarifying questions, marks uncertainties with [NEEDS CLARIFICATION] markers, and produces a reviewable spec document. First step in the Spec → Plan → Tasks pipeline.'
+description: "Transforms a feature description, PBI, or user request into a structured specification using the PRD template. Creates a feature workspace under specs/, marks uncertainties with [NEEDS CLARIFICATION], and prepares the repo for the Spec -> Plan -> Tasks pipeline."
 ---
 
 # Specify Feature
 
-Transforms raw requirements into structured, reviewable specifications. This is the **first step** in the Spec → Plan → Tasks pipeline.
+Transforms raw requirements into structured, reviewable specifications. This is the first step in the Spec -> Plan -> Tasks pipeline.
 
 ## When to Use
 
 - User provides a feature idea, PBI, or vague requirement
 - Starting a new feature that needs formal specification before implementation
-- User asks to "spec this out", "write a PRD", "define requirements"
-- `@dev-orchestrator` routes to this skill for the Requirements → Planning flow
+- User asks to "spec this out", "write a PRD", or "define requirements"
+- `@dev-orchestrator` routes here for requirement-heavy or multi-module work
 
 ## Prerequisites
 
 - Feature description or PBI from the user
-- Access to codebase for context (existing patterns, domain terminology)
+- Access to the codebase for context, terminology, and existing patterns
 
 ## Workflow
 
-### Step 1: Parse Initial Input
+### Step 1: Establish Feature Workspace
 
-Extract from the user's request:
-- **What**: Core feature or capability being requested
-- **Who**: Target users/personas
-- **Why**: Business motivation, pain point being solved
-- **Scope signals**: Any hints about what's in/out of scope
+Create a consistent feature workspace before writing the spec:
 
-### Step 2: Codebase Context Scan
+1. Scan existing `specs/` folders to determine the next feature number when the repo uses numbered features.
+2. Generate a semantic feature slug from the request.
+3. Use `specs/<feature-id>-<slug>/` as the default workspace.
+4. If the repo and workflow support git branching, recommend the same feature slug for branch naming.
 
-Before writing the spec, understand the landscape:
-1. Identify related existing features in the codebase
-2. Detect tech stack and architectural patterns
-3. Find domain terminology and entity names
-4. Check for existing specs/docs that this feature relates to
+The goal is a stable feature home for:
 
-### Step 3: Clarifying Questions
+- `spec.md`
+- `plan.md`
+- `research.md`
+- `data-model.md`
+- `contracts/`
+- `quickstart.md`
+- `tasks.md`
+
+### Step 2: Parse Initial Input
+
+Extract from the request:
+
+- what capability is needed
+- who the target users or personas are
+- why it matters
+- scope signals
+- constraints and risks already known
+
+### Step 3: Codebase And Context Scan
+
+Before writing the spec:
+
+1. Identify related existing features in the codebase.
+2. Detect stack, architecture patterns, and module ownership.
+3. Find domain terminology and entity names already used by the team.
+4. Check for existing specs, ADRs, runbooks, and docs that this feature should align with.
+5. Note research topics that planning must answer later, such as library choices, security constraints, or performance questions.
+
+### Step 4: Clarifying Questions
 
 Ask targeted questions to fill gaps. Follow [Constitution Article V](../../constitution.md):
 
-- **Batch questions** (max 3-5 at a time)
-- **Provide defaults**: "I'll assume PostgreSQL unless you prefer another DB?"
-- **Skip what the codebase answers**: Don't ask about patterns you can detect
-- **Prioritize**: Business rules > Scope > Technical constraints > Nice-to-haves
+- Ask in small batches.
+- Prefer questions the repo cannot already answer.
+- Prioritize business rules, scope boundaries, and measurable outcomes.
+- Use `[NEEDS CLARIFICATION: ...]` markers instead of guessing when answers are still missing.
 
-### Step 4: Generate Specification
+### Step 5: Generate Specification
 
 Use the [PRD template](../../templates/PRD-template.md) to produce a structured spec:
 
-1. Fill in all sections from the template
-2. **Mark uncertainties**: Use `[NEEDS CLARIFICATION: <what is missing — who can answer — impact if wrong>]` for any gaps
-3. **No assumptions as facts**: If you're not sure, mark it
-4. **Focus on WHAT and WHY**, not HOW — no implementation details in the spec
-5. **Trace every requirement**: Each functional requirement must link to a user story
+1. Fill every section or mark it with `[NEEDS CLARIFICATION]`.
+2. Keep the spec at WHAT and WHY, not HOW.
+3. Trace each functional requirement to one or more user stories.
+4. Make non-functional requirements measurable.
+5. Record open questions, assumptions, and out-of-scope items explicitly.
 
-### Step 5: Self-Review Checklist
+### Step 6: Self-Review
 
-Before presenting to user, verify:
+Before presenting to the user, verify:
 
-- [ ] Every section filled or marked with `[NEEDS CLARIFICATION]`
-- [ ] No assumptions stated as facts
-- [ ] All user stories have Given/When/Then acceptance criteria
-- [ ] Every functional requirement traces to a user story
-- [ ] Non-functional requirements have measurable targets
-- [ ] Scope boundaries (in/out) are explicit
-- [ ] No implementation details — WHAT and WHY only
-- [ ] Domain terminology matches existing codebase
-- [ ] Compliant with [Project Constitution](../../constitution.md) Articles
+- [ ] Every section is filled or marked with `[NEEDS CLARIFICATION]`
+- [ ] No assumptions are stated as facts
+- [ ] User stories have precise acceptance criteria
+- [ ] Functional requirements trace to user stories
+- [ ] Non-functional requirements are measurable
+- [ ] Scope boundaries are explicit
+- [ ] No implementation details leaked into the spec
+- [ ] Domain terminology matches the repo
+- [ ] The feature workspace path is clear
 
-### Step 6: Present & Iterate
+### Step 7: Present And Pause
 
-Present the spec to the user with:
-1. Summary of what was specified
-2. Count of `[NEEDS CLARIFICATION]` markers that need resolution
-3. Explicit ask: "Please review and resolve the open questions before I proceed to planning."
+Present:
+
+1. The feature workspace path
+2. A concise summary of the spec
+3. The count of open `[NEEDS CLARIFICATION]` items
+4. The explicit next step: review and resolve open questions before planning
 
 ## Output Format
 
-Save as `specs/[feature-name]/spec.md` (or user-specified location).
+Save as `specs/<feature-id>-<slug>/spec.md`.
 
-```markdown
-# [Feature Name] — Specification
+Example header:
 
-> Generated by: specify-feature skill
-> Status: Draft — [N] open questions
-> Date: [YYYY-MM-DD]
+```md
+# <Feature Name> - Specification
 
-[PRD template content with all sections filled or marked]
+> Generated by: specify-feature
+> Workspace: specs/<feature-id>-<slug>/
+> Status: Draft
+> Open questions: <N>
+> Date: <YYYY-MM-DD>
 ```
 
 ## Next Step
 
-Once the spec is reviewed and all `[NEEDS CLARIFICATION]` markers resolved:
-→ Proceed to `plan-implementation` skill
+Once the spec is reviewed and all blocking `[NEEDS CLARIFICATION]` markers are resolved:
+
+- proceed to `plan-implementation`
 
 ## Validation
 
-- [ ] Spec follows PRD template structure completely
-- [ ] All `[NEEDS CLARIFICATION]` markers include who can answer + impact
-- [ ] No implementation details leaked into spec
-- [ ] Self-review checklist passed
-- [ ] User has been asked to review and resolve open questions
+- [ ] Spec follows the PRD template structure
+- [ ] `[NEEDS CLARIFICATION]` markers include who can answer and why it matters
+- [ ] Feature workspace is consistent and ready for downstream artifacts
+- [ ] No implementation details leaked into the spec
+- [ ] User was asked to review before planning

@@ -1,101 +1,100 @@
 ---
 name: implement-feature
-description: 'Guided feature implementation across all layers of a Java/Jakarta EE application. Creates or modifies entities, DTOs, mappers, repositories, services, REST resources, and database migration scripts following existing codebase patterns. Use when asked to implement a feature, fix a bug, add an API endpoint, or make code changes based on an investigation report.'
+description: "Executes an approved spec-driven implementation using the feature workspace artifacts and the repo's actual stack. Uses the reviewed spec, plan, tasks, contracts, and verification commands to drive safe implementation instead of relying on stack-specific defaults."
 ---
 
 # Implement Feature
 
-Step-by-step implementation guidance for Java/Jakarta EE projects.
+Use this skill after specification, planning, and task generation are complete enough to begin coding.
 
 ## When to Use
 
-- Implementing a new feature or PBI
-- Fixing a bug with code changes
-- Adding a new API endpoint
-- Modifying existing business logic
-- Creating database migrations
+- A feature workspace already exists under `specs/`
+- `spec.md`, `plan.md`, and `tasks.md` are reviewed enough to execute
+- The user wants implementation to follow approved tasks rather than ad hoc coding
 
 ## Prerequisites
 
-- Investigation report or clear PBI requirements
-- Understanding of affected domains/modules
+- `spec.md`
+- `plan.md`
+- `tasks.md`
+- supporting artifacts when present:
+  - `research.md`
+  - `data-model.md`
+  - `contracts/`
+  - `quickstart.md`
+- repo verification commands from docs or project files
+
+## Core Rule
+
+Implementation must serve the approved specification and implementation plan.
+
+- Do not invent behavior outside the approved scope.
+- Do not override the spec with convenience shortcuts.
+- If code reality conflicts with the approved spec, stop and surface the mismatch.
 
 ## Workflow
 
-### Step 1: Review Requirements
+### Step 1: Re-read The Feature Workspace
 
-Read the investigation report or PBI:
-- What files need to be created or modified?
-- What layers are affected?
-- What database changes are needed?
-- What tests need to be written?
+Before editing code:
 
-### Step 1.5: Trace Existing Code Flow & Confirm Business Logic
+- read `spec.md`
+- read `plan.md`
+- read `tasks.md`
+- load supporting artifacts relevant to the current task
 
-**MANDATORY before writing any code:**
-- Trace the full call chain: Controller/Resource → Service → Repository → Database
-- Identify what each layer already handles (validation, business logic, data access)
-- Confirm proposed changes align with existing business rules
-- In multi-module projects, understand module boundaries and responsibilities
-- Document which layer handles which validation to prevent duplication
+### Step 2: Re-run Phase -1 Gates
 
-### Step 2: Analyze Existing Patterns
+Check the current change slice against [Project Constitution](../../constitution.md):
 
-Before writing code, examine:
-- How similar features are implemented in the codebase
-- Base classes, interfaces, utilities available
-- Naming conventions, package structure
-- Exception handling approach
-- Validation approach (Bean Validation, custom)
+- simplicity
+- duplication
+- business logic
+- impact
 
-### Step 3: Implement (bottom-up)
+If the approved plan no longer passes these gates because of newly discovered code reality, stop and update the plan first.
 
-1. **Database migration** — SQL scripts for schema changes
-2. **Entity classes** — JPA entities with mappings
-3. **DTOs** — Request/Response objects with validation
-4. **Mappers** — Entity ↔ DTO conversion
-5. **Repository/DAO** — Data access with JPQL/Criteria/Native queries
-6. **Service** — Business logic, transaction management
-7. **REST Resource** — Endpoint with validation, documentation
-8. **Configuration** — Properties, CDI producers if needed
+### Step 3: Execute Tasks In Order
 
-**Incremental verification (for 5+ files):** After completing each layer group (data → business → API), run `mvn compile` to verify before proceeding. Do NOT write all layers then compile at the end.
+Implement the current task set according to:
 
-### Step 4: Write Unit Tests
+- task dependencies
+- stack conventions already used in the repo
+- contracts and data model definitions from the feature workspace
+- verification checkpoints from the plan
 
-For each new/modified class:
-- Use real objects whenever possible (minimize mocks)
-- Create test builders for new entities/DTOs
-- Cover all business logic branches
-- Follow existing test patterns in the project
+Prefer stack-specific implementor agents or repo patterns for the actual code changes. Do not hardcode Maven, Java, or any other stack default unless the repo evidence requires it.
 
-### Step 5: Verify (MANDATORY)
+### Step 4: Test And Verify
 
-Execute the Verify-Fix Loop — do NOT skip:
-1. `mvn compile` — compilation check → if fails, fix and retry (max 3)
-2. `mvn test` — unit tests → if fails, analyze output, fix, retry (max 3)
-3. `mvn verify` — integration tests (if applicable)
-4. Check for any new linting/checkstyle warnings
+Use the repo's actual verification commands from:
 
-Only proceed to report/PR after all checks pass.
-If still failing after 3 retries: STOP, report the error, ask user.
+- `docs/03-verification-runbook.md`
+- package/build files
+- CI configs
+- the approved plan
+
+At each checkpoint:
+
+- run the scoped verification that the plan requires
+- stop if verification fails
+- fix before moving to dependent tasks
+
+### Step 5: Report Drift
+
+If implementation reveals a mismatch between spec, plan, and code:
+
+- label it as drift
+- name the affected requirement, task, or contract
+- decide whether to patch the spec, patch the plan, or narrow the implementation
+
+Do not quietly change behavior without updating the spec artifacts.
 
 ## Validation
 
-- [ ] **Existing code flow was traced before implementation**
-- [ ] **Business logic confirmed** — changes match existing business rules
-- [ ] **No duplicate validation across layers** (REST/Service/Repository)
-- [ ] **No duplicate logic across modules** (multi-module projects)
-- [ ] All layers follow existing codebase patterns
-- [ ] Database migration is reversible
-- [ ] Unit tests cover all new business branches
-- [ ] No compilation errors
-- [ ] No test failures
-- [ ] JavaDoc added for public APIs
-- [ ] **Verify-Fix loop passed** — build + test + lint all green
-- [ ] **Cross-file consistency**:
-  - [ ] Every new Entity field → has DTO field + mapper logic
-  - [ ] Every new endpoint → has corresponding test
-  - [ ] Every new service method → referenced in resource
-  - [ ] Every new validation → has negative test case
-  - [ ] Method signatures consistent across interface ↔ implementation
+- [ ] Code changes align with approved tasks
+- [ ] Verification commands match the real repo, not stack defaults
+- [ ] Contracts and model artifacts were respected
+- [ ] Phase -1 gates still pass for the implemented slice
+- [ ] Drift between spec and code was surfaced explicitly

@@ -1,134 +1,114 @@
 ---
 name: generate-tasks
-description: 'Analyzes an implementation plan and generates an executable, ordered task list. Marks independent tasks for parallelization, includes verification checkpoints, and produces a tasks.md ready for agent execution. Third and final step in the Spec → Plan → Tasks pipeline.'
+description: "Analyzes an implementation plan and supporting spec-kit artifacts to generate an executable task list. Converts contracts, data models, research, and verification scenarios into ordered tasks with dependencies, parallel groups, and checkpoints."
 ---
 
 # Generate Tasks
 
-Transforms an implementation plan into an executable, ordered task list. This is the **third step** in the Spec → Plan → Tasks pipeline.
+Transforms an implementation plan into an executable task list. This is the third step in the Spec -> Plan -> Tasks pipeline.
 
 ## When to Use
 
-- An implementation plan (from `plan-implementation`) is reviewed and approved
-- User asks to "generate tasks", "break this into tasks", "create a task list"
-- `@dev-orchestrator` needs an actionable work breakdown before executing
+- An implementation plan is reviewed and approved
+- Supporting artifacts such as `research.md`, `data-model.md`, `contracts/`, or `quickstart.md` exist
+- `@dev-orchestrator` needs an execution-ready work breakdown
 
 ## Prerequisites
 
-- Reviewed implementation plan with constitutional gates passed
-- Optionally: API contract docs, DB schema docs, test scenarios
+- Reviewed `plan.md`
+- Supporting artifacts when present:
+  - `research.md`
+  - `data-model.md`
+  - `contracts/`
+  - `quickstart.md`
 
 ## Workflow
 
-### Step 1: Read Plan & Supporting Documents
+### Step 1: Read Plan And Supporting Documents
 
-1. Read `plan.md` — extract components, implementation order, dependencies
-2. Read supporting docs if available:
-   - API contract (OpenAPI spec)
-   - DB schema changes (DBML/DDL)
-   - Test scenarios from spec
+Read:
 
-### Step 2: Derive Tasks from Plan
+1. `plan.md`
+2. `research.md` if present
+3. `data-model.md` if present
+4. all files under `contracts/` if present
+5. `quickstart.md` if present
 
-For each component in the plan, derive specific tasks:
+### Step 2: Derive Tasks
 
-**Rules:**
-- Each task must be independently verifiable (build passes, tests pass)
-- Each task should take 1-4 hours of agent work (not too granular, not too large)
-- Tasks must follow the implementation order from the plan
-- Group tasks by layer/phase for clarity
+Convert each input into executable work:
 
-**Task derivation sources:**
-| Source | Task Type |
-|--------|----------|
-| Data model changes | Migration script, entity/model creation |
-| API contracts | DTO/schema, controller/resource, request validation |
-| Business logic | Service methods, business rule implementation |
-| Integration points | Client setup, event handlers, message consumers |
-| Test scenarios | Unit tests per service, integration tests per endpoint |
-| Documentation | API docs, ADR if architectural decision was made |
+| Source | Typical task output |
+|---|---|
+| `data-model.md` | migrations, entities, schema changes, state logic |
+| `contracts/` | DTOs, validators, handlers, clients, contract tests |
+| `research.md` | decision tasks, configuration tasks, guardrail tasks |
+| `quickstart.md` | smoke tests, manual checks, setup tasks |
+| `plan.md` | orchestration, sequencing, risk mitigation, final verification |
 
-### Step 3: Mark Dependencies & Parallelization
+Rules:
 
-For each task:
-- **depends_on**: List task IDs that must complete first
-- **parallel**: `true` if this task can run in parallel with other tasks at the same level
-- **verify_after**: `true` if a build/test checkpoint is needed after this task
+- each task must be independently understandable
+- tasks must follow the plan's order
+- tasks should be small enough to execute safely
+- every requirement-critical artifact should map to at least one task
 
-### Step 4: Add Verification Checkpoints
+### Step 3: Dependencies And Parallelization
 
-Insert verification tasks at natural boundaries:
-- After data layer tasks → verify schema/build
-- After business layer tasks → verify unit tests pass
-- After API layer tasks → verify integration tests pass
-- After all tasks → full build + test + lint
+For each task, include:
+
+- `depends_on`
+- whether it can run in parallel
+- whether it introduces a verification checkpoint
+
+Use `[P]` markers for safe parallel tasks and group them explicitly.
+
+### Step 4: Verification Checkpoints
+
+Insert checkpoints at natural boundaries:
+
+- after contract or schema work
+- after business logic work
+- after integration or API work
+- before final completion
 
 ### Step 5: Generate Task List
 
-## Output Format
+Save as `specs/<feature-id>-<slug>/tasks.md`.
 
-Save as `specs/[feature-name]/tasks.md` (alongside spec and plan).
+Recommended format:
 
-```markdown
-# [Feature Name] — Task List
+```md
+# <Feature Name> - Task List
 
-> Generated by: generate-tasks skill
-> Plan: [link to plan.md]
-> Date: [YYYY-MM-DD]
-> Total tasks: [N] | Estimated: [SP] story points
+> Generated by: generate-tasks
+> Plan: ./plan.md
+> Date: <YYYY-MM-DD>
 
-## Phase 1: Data Layer
-| # | Task | File(s) | Depends On | Parallel | Verify |
-|---|------|---------|-----------|----------|--------|
-| T-1 | Create migration for [table] | `V__xxx.sql` | — | No | — |
-| T-2 | Create [Entity] model | `[path]` | T-1 | No | — |
-| T-3 | Create [Repository] | `[path]` | T-2 | Yes (with T-4) | — |
-| T-4 | Create [DTO/Schema] | `[path]` | T-2 | Yes (with T-3) | — |
-| ✅ | **CHECKPOINT: Build passes, schema verified** | — | T-3, T-4 | — | Yes |
+## Phase 1
+- T-01 ...
+- T-02 [P] ...
 
-## Phase 2: Business Layer
-| # | Task | File(s) | Depends On | Parallel | Verify |
-|---|------|---------|-----------|----------|--------|
-| T-5 | Implement [Service] with [business rule] | `[path]` | T-3 | No | — |
-| T-6 | Write unit tests for [Service] | `[path]` | T-5 | No | — |
-| ✅ | **CHECKPOINT: Unit tests pass** | — | T-6 | — | Yes |
+## Checkpoint
+- Verify ...
 
-## Phase 3: API Layer
-| # | Task | File(s) | Depends On | Parallel | Verify |
-|---|------|---------|-----------|----------|--------|
-| T-7 | Create [Controller/Resource] | `[path]` | T-5 | No | — |
-| T-8 | Add request validation | `[path]` | T-7 | No | — |
-| T-9 | Write integration tests | `[path]` | T-8 | No | — |
-| ✅ | **CHECKPOINT: All tests pass, lint clean** | — | T-9 | — | Yes |
-
-## Phase 4: Finalize
-| # | Task | File(s) | Depends On | Parallel | Verify |
-|---|------|---------|-----------|----------|--------|
-| T-10 | Full build + test + lint verification | — | T-9 | No | Yes |
-| T-11 | Generate PR description | — | T-10 | No | — |
-| T-12 | Completion report | — | T-11 | No | — |
-
-## Execution Summary
-- Total tasks: [N]
-- Parallelizable tasks: [N] (save ~[X]% time)
-- Verification checkpoints: [N]
-- Estimated effort: [SP] story points
+## Parallel Groups
+- Group A: T-02, T-03
 ```
 
-## Task Execution
+## Execution Rule
 
-When `@dev-orchestrator` or an implementor agent picks up this task list:
-1. Execute tasks in order, respecting dependencies
-2. At each `✅ CHECKPOINT`, run build/test and verify before continuing
-3. Mark each task as done when verified
-4. If a task fails, stop and report — do not continue to dependent tasks
+When a worker or orchestrator executes the tasks:
+
+1. follow dependency order
+2. stop at checkpoints and verify
+3. do not continue past a failed checkpoint without resolving it
+4. keep the task list updated when scope changes
 
 ## Validation
 
-- [ ] Every component from the plan has at least one corresponding task
-- [ ] Dependencies form a valid DAG (no circular dependencies)
-- [ ] Parallelizable tasks are correctly identified
-- [ ] Verification checkpoints exist at each layer boundary
-- [ ] Each task is independently verifiable
-- [ ] Task granularity is appropriate (1-4 hours each)
-- [ ] Total effort matches plan estimation
+- [ ] All major plan components have tasks
+- [ ] Supporting artifacts were actually used, not ignored
+- [ ] Dependencies form a valid DAG
+- [ ] Parallel tasks are safe and explicit
+- [ ] Verification checkpoints exist at meaningful boundaries

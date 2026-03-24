@@ -1,1054 +1,719 @@
 ---
 name: generate-copilot-config
-description: 'Complete GitHub Copilot configuration generator. Runs the full 14-phase bootstrap pipeline: deep codebase scan, project classification, business domain analysis, then generates copilot-instructions.md, domain-scoped instructions, language instructions, agents, skills, prompts, hooks, agentic workflows — with 3-tier validation. This is the SINGLE SOURCE OF TRUTH for the bootstrap pipeline. Use when asked to bootstrap Copilot, generate Copilot configuration, or set up Copilot for a new project.'
+description: "Generate a project-specific GitHub Copilot configuration through a scan, classification, domain analysis, repo-truth-pack generation, artifact generation, and validation pipeline."
 ---
 
-# Generate Complete Copilot Configuration — 14-Phase Pipeline
+# Generate Complete Copilot Configuration
 
-> **This file is the SINGLE SOURCE OF TRUTH for the bootstrap pipeline.**
-> All other files (`bootstrap-copilot.prompt.md`, `conductor.agent.md`) reference this skill — they do NOT define their own pipeline.
+This skill is the **single source of truth** for the bootstrap pipeline. Prompts and orchestrator agents should reference this file instead of redefining the process.
 
 ## Portable Bundle Rule
 
-The copied `.github/` folder must be usable as a self-contained bootstrap bundle.
+The copied `.github/` folder must work as a self-contained bootstrap bundle.
 
-- Any guidance required to run `/bootstrap-copilot` after copying the folder should live inside `.github/`.
-- Do not depend on bootstrap-repo-only documents outside `.github/` for core operation.
-- It is still valid to analyze the target repository's own `README.md`, build files, source code, and docs during the scan.
-- Keep portable runtime/context/conventions/playbook docs in `.github/docs/` so the copied bundle remains self-explanatory.
-- Keep `.github/docs/` broad enough to cover runtime overview, tool runtime, prompt/context rules, `.github` conventions, user playbook, and team operating model.
+- Anything required to run `/bootstrap-copilot` after copying must live inside `.github/`.
+- Runtime help and operator guidance belong in `.github/docs/`.
+- The target repo's own `README.md`, source code, tests, build files, and docs remain valid scan inputs.
+
+## Repo Identity Guardrail
+
+Determine what the current repository actually is from target-repo evidence, not from the copied bootstrap bundle alone.
+
+- Do not classify the repo as the `copilot-bootstrap` source repository just because `.github/` contains toolkit assets.
+- Treat copied bundle files as bootstrap inputs that must be rewritten, narrowed, or deleted later.
+- Use root-level `README.md`, package/build files, source folders, tests, CI, and existing docs as the primary identity evidence.
+- Only apply a toolkit-source-repo exception when evidence outside the copied bundle clearly proves the repo truly is that source repo.
+
+## Progressive Disclosure Model
+
+Generated repository memory should follow three layers:
+
+1. **Global truth**: short, durable repo-wide context
+2. **Module / domain truth**: scoped ownership, rules, and boundaries
+3. **Task truth**: workflow docs, ADRs, temporary plans, and investigation artifacts
+
+The point is not to generate the largest doc set possible. The point is to generate the smallest doc set that gives Copilot Chat reliable anchors for the current repo size.
 
 ## Pipeline Overview
 
-```
-Phase 1:  SCAN — Deep multi-stack codebase analysis
-Phase 2:  CLASSIFY — Project size → Small / Standard / Enterprise
-Phase 3:  DOMAIN — Business domain deep analysis (rules, glossary, workflows)
-Phase 4:  GEN copilot-instructions.md (≤ 4 KB index card)
-Phase 5:  GEN domain-scoped .instructions.md per domain (Enterprise only)
-Phase 6:  GEN language/framework .instructions.md
-Phase 6b: GEN templates (.github/templates/ — PRD, API contract, DB schema)
-Phase 7:  GEN agents (stack-specific + conditional + enterprise)
-Phase 8:  GEN skills (auto-selected based on detected capabilities)
-Phase 9:  GEN prompts (entry points, ≤ 3 KB each)
-Phase 10: GEN hooks (format/lint/compile automation)
-Phase 11: GEN agentic workflows (if CI/CD detected)
-Phase 12: VALIDATE — structural + functional + context budget
-Phase 13: DEVCONTAINER — review existing or generate new
-Phase 14: MANIFEST & CLEANUP — generate manifest, delete bootstrap files, final summary
-```
+1. **Scan**: deep codebase analysis
+2. **Classify**: repo size, complexity, and context risk
+3. **Domain**: repo truth pack generation
+4. **Generate core instructions**
+5. **Generate domain instructions**
+6. **Generate language/framework instructions**
+7. **Generate templates**
+8. **Generate agents**
+9. **Generate skills**
+10. **Generate prompts**
+11. **Generate hooks and optional workflows**
+12. **Validate**
+13. **Review or generate devcontainer**
+14. **Write manifest, cleanup, and summarize**
 
 ---
 
-## Phase 1: SCAN — Deep Codebase Analysis
+## Phase 1: Scan
 
-Delegate to `@codebase-analyzer` or use the `analyze-codebase` skill. This phase MUST be thorough.
+Build an evidence-backed picture of the target repo.
 
-**Minimum scan requirements:**
-- [ ] Read ALL build config files (not just root — every module's pom.xml, every csproj, etc.)
-- [ ] Sample ≥ 10 source files per detected domain (not 5 total)
-- [ ] Read ALL entity/model classes
-- [ ] Read ≥ 3 service classes per domain
-- [ ] Read ≥ 3 test classes to detect test patterns
-- [ ] Check for CI/CD, Docker, devcontainer configurations
-- [ ] Scan for external service integrations (HTTP clients, message queues, event buses)
-- [ ] **Detect language/runtime version** — Java: check `<java.version>` in pom.xml or `sourceCompatibility` in Gradle; .NET: check `<TargetFramework>` in csproj; Node: check `engines.node` in package.json; Python: check `python_requires` in pyproject.toml or `.python-version` file; Kotlin: check `kotlinOptions.jvmTarget`; Swift: check `SWIFT_VERSION` or `Package.swift` tools version. Record exact versions in scan output.
+### Minimum scan requirements
 
-**Output**: Structured analysis report with: tech stack + **exact versions**, architecture pattern, module list, domain map, coding conventions, test patterns, infrastructure.
+- Establish repo identity from root-level project evidence before using copied bundle text as context.
+- Read all relevant build files, not just the root.
+- Detect exact runtime/tooling versions where possible.
+- Sample enough real source files per domain or module.
+- Read representative service/use-case files.
+- Read representative test files.
+- Identify external integrations, queues, schedulers, and background jobs.
+- Check CI/CD, container, and devcontainer files.
 
-## Phase 2: CLASSIFY — Project Size
+### Required output
 
-| Classification | Criteria | Strategy |
+Produce a structured scan summary with:
+
+- repo identity and why
+- languages and framework versions
+- build/test/lint commands discovered
+- module inventory
+- domain or bounded-context map
+- coding and test conventions
+- infrastructure dependencies
+
+If evidence is weak, say so. Do not fill gaps with generic stack assumptions.
+Do not let copied bootstrap text override stronger evidence from the target repo.
+
+---
+
+## Phase 2: Classify
+
+### Project class
+
+| Class | Typical shape | Generation strategy |
 |---|---|---|
-| **Small** | ≤ 5 source files, 1 module | Minimal: merged `copilot-instructions.md` + 1 implementor + 1 test agent |
-| **Standard** | ≤ 100 files, 1-3 modules | Standard: + investigator, code-reviewer, dev-orchestrator |
-| **Enterprise** | 5+ domains OR 10+ modules | Full suite + domain-scoped instructions + enterprise agents |
-| **Framework/Library** | Published as library/framework, not deployed as application | Treat as Enterprise for instruction generation; focus on API design, backward compat, contributor guidelines |
+| Small | tiny codebase, 1 module | keep docs merged and minimal |
+| Standard | moderate size, limited modules | generate core doc set plus orchestration assets |
+| Enterprise | many modules, domains, or shared components | generate full doc layers plus scoped guidance |
+| Framework / Library | reusable package or platform | emphasize API stability, compatibility, contributor guidance |
 
-> This classification determines what gets generated in Phases 4-11. It MUST happen before generation.
-> **Note**: Framework/Library projects with 3+ modules should generate domain-scoped instructions (Phase 5) regardless of domain count.
+Classification must happen before generation.
+Classification must use target-repo evidence, not copied toolkit inventory.
 
-### Context Pressure Estimate (run immediately after classification)
+### Context risk
 
-After determining classification, estimate context risk for the upcoming pipeline:
+Estimate context risk immediately after classification:
 
-| Estimate | Threshold | Action |
-|---|---|---|
-| **Low** | ≤ 5 modules, ≤ 50 domain files | Proceed normally |
-| **Medium** | 6–10 modules OR 51–150 domain files | Warn user: "This project is large — Phase 3 will summarize findings to preserve context. May need 2 sessions for Phases 4-11." |
-| **High** | 10+ modules OR 150+ domain files | **HARD STOP** — output: "⚠️ Context Risk: Enterprise project with [N] modules. Running Phases 1-3 in this session. Start a new session for Phases 4-14 using the saved checkpoint. Proceed? (yes/no)" — wait for confirmation before continuing |
+- **Low**: few modules, low domain spread
+- **Medium**: multiple modules or broad domain spread
+- **High**: many modules, many domains, or likely context overflow
 
-**Record in state**: Save estimate as `"contextRisk": "low" | "medium" | "high"` in `BOOTSTRAP_STATE.json` (see Phase 14).
+For high context risk, stop after discovery and ask whether to continue in a new session using the saved checkpoint.
 
-### Workspace Indexing Limit Warning
+### Local indexing guardrail
 
-GitHub Copilot's **local workspace indexing has a hard limit of 2,500 files**. Beyond this limit, Copilot falls back to basic (non-semantic) indexing, making `#codebase` searches less accurate.
+GitHub Copilot local workspace indexing has a practical limit around **2,500 files**.
 
-Check total source file count during Phase 1 SCAN. If the project exceeds the threshold:
+- `<= 2,000 files`: normal workflow
+- `2,001-2,500 files`: warn that indexing is near the limit
+- `> 2,500 files`: warn that `#codebase` may degrade and recommend remote indexing plus narrower `#file` usage
 
-| File Count | Action |
-|---|---|
-| ≤ 2,000 files | No action needed — well within limit |
-| 2,001–2,500 files | Note in checkpoint: "Near indexing limit — avoid adding many new source files" |
-| > 2,500 files | **Warn** in Phase 3 checkpoint and copilot-instructions.md: "⚠️ This project exceeds Copilot's 2,500-file local indexing limit. Use **remote indexing** (index via github.com) for accurate `#codebase` search. Alternatively, narrow `#file` references when using Copilot in large modules." |
+### Large-repo default strategy
 
-Add to `copilot-instructions.md` (Enterprise projects > 2,500 files):
-```markdown
-## Workspace Context
-⚠️ Project exceeds 2,500-file local index limit. For accurate codebase search:
-- Use `#file path/to/relevant/file` to narrow context rather than `#codebase`
-- Enable remote indexing at github.com/[org]/[repo]/settings for semantic search
-- For large module work, open only that module's folder in VS Code
-```
+For repos above the indexing limit or with very high context risk, default to:
 
-## Phase 3: DOMAIN — Business Domain Deep Analysis
+1. **Discovery first**: stack map, module map, glossary, workflows, verification commands
+2. **Minimal repo memory next**: generate only the truth-pack artifacts first
+3. **Scoped execution after that**: work per domain or module instead of whole-repo-first generation
 
-**CRITICAL for quality output.** Without this phase, agents produce technically correct but business-unaware code.
+Do not market large-repo bootstrap as full automation. Position it as progressive discovery plus verified repo memory.
 
-Extract from the codebase:
-- **Domain Glossary**: Key business terms from entity names, enums, constants, service methods, documentation
-- **Business Rules Summary**: Core rules from service/validator classes — what they enforce and where
-- **Entity Relationship Map**: How entities relate with business-meaningful descriptions
-- **Business Workflows**: Key processes and state transitions (e.g., DRAFT → SUBMITTED → APPROVED → SHIPPED)
-- **Business Invariants**: Data consistency rules with justification (e.g., "sum of line items must equal order total")
+### Progressive disclosure by repo size
 
-### Phase 3 Checkpoint — MANDATORY OUTPUT
+Generate docs based on actual repo scale:
 
-After completing domain analysis, produce a **checkpoint summary** before proceeding. This preserves findings if context is compacted during Phases 4-11.
+#### Small
 
-Write `.github/.phase3-checkpoint.md` (≤ 3 KB) with:
+Generate only:
 
-```markdown
-# Bootstrap Checkpoint — Phase 3 Complete
+- `.github/copilot-instructions.md`
+- `docs/00-repo-overview.md`
+- `docs/03-verification-runbook.md`
 
-## Project Summary
-- **Classification**: [Small | Standard | Enterprise]
-- **Tech Stack**: [language version, framework, build tool]
-- **Modules**: [count and list]
-- **Domains**: [count and list with brief description]
-- **Context Risk**: [low | medium | high]
+For small repos, it is acceptable to fold glossary and architecture notes into `00-repo-overview.md`.
+Do not keep unused module, workflow, integration, ADR, or stack-specific template files in the final generated bundle.
 
-## Domain Glossary (top 15 terms)
-| Term | Definition |
-|------|-----------|
-| ... | ... |
+#### Standard / Medium
 
-## Key Business Rules (top 10)
-1. [rule — enforced at: Service/DB/Validator]
-...
+Generate the core common docs:
 
-## Entity Relationship Summary
-[3-5 lines describing key entities and how they relate]
+- `docs/00-repo-overview.md`
+- `docs/01-business-glossary.md`
+- `docs/02-architecture-map.md`
+- `docs/03-verification-runbook.md`
+- `docs/04-engineering-rules.md`
+- `docs/05-common-failure-modes.md`
 
-## Key Workflows
-1. [workflow name]: [brief state transition, e.g., DRAFT → SUBMITTED → APPROVED]
-...
+Delete copied bootstrap assets for repo sizes or stacks that were not selected.
 
-## Tech Stack Details
-- Language version: [exact version detected]
-- Framework: [name + version]
-- Test framework: [name + version]
-- Build commands: [build / test / lint commands]
-```
+#### Large / Enterprise
 
-> **Why**: If context is compacted between sessions, agents in Phases 4-11 can load this ≤3 KB checkpoint instead of re-reading all source files.
+Generate the core common docs plus scoped layers:
 
-## Phase 3b: GEN Module Dependency Map
+- `docs/modules/README.md`
+- `docs/workflows/README.md`
+- `docs/integrations/README.md`
+- `docs/decisions/README.md`
+- `docs/modules/<module>.md` for the highest-value modules first
+- `docs/workflows/<workflow>.md` for the highest-value workflows first
+- `docs/integrations/<integration>.md` for the highest-risk external systems first
+- `docs/decisions/ADR-xxxx-<title>.md` when architecture decisions are discoverable
 
-**Trigger**: Standard or Enterprise classification (skip for Small — single module has no inter-module graph).
+For enterprise repos, add ownership, review cadence, dependency direction, integration boundaries, and per-domain verification notes where evidence exists.
+Keep the generated output incremental. Do not preserve generic toolkit files for modules, stacks, or prompts that the target repo does not use.
 
-Build a pre-computed dependency graph from the codebase so that `@dependency-analyzer`, `@investigator`, and `@dev-orchestrator` can instantly answer "what is affected if X changes?" without re-scanning source files each time.
-
-### Step 1: Extract Module Dependencies (read-only — no tools needed)
-
-For each module detected in Phase 1, extract its dependencies by reading build files:
-
-| Build System | Where to Read | What to Extract |
-|---|---|---|
-| Maven multi-module | Each `pom.xml` → `<dependencies>`, `<parent>`, `<modules>` | Inter-module `artifactId` references |
-| Gradle multi-project | `settings.gradle` → `include`, each `build.gradle` → `dependencies {}` | `project(':module-name')` references |
-| npm workspaces | `package.json` → `workspaces`, each workspace `package.json` → `dependencies` | Local package references (`"@scope/module": "*"`) |
-| .NET solution | `*.sln` + each `*.csproj` → `<ProjectReference>` | `.csproj` path references |
-| Python (monorepo) | Each `pyproject.toml` or `setup.py` → `[tool.poetry.dependencies]` | Local package names |
-
-Then verify with **import scanning** — grep source files for cross-module imports to catch undeclared runtime dependencies:
-
-```
-# Java: find cross-module package imports
-grep -r "^import com\.company\." src/main/java/ --include="*.java"
-
-# TypeScript: find workspace imports
-grep -r "from '@scope/" src/ --include="*.ts"
-
-# Python: find local module imports
-grep -r "^from \." src/ --include="*.py"
-```
-
-### Step 2: Identify Module Layers and Types
-
-Classify each module by its architectural role:
-
-| Type | Indicators |
-|---|---|
-| `domain` | Contains only entities, value objects, enums — no framework annotations |
-| `service` | `@Service`, `@Stateless`, business logic classes, use cases |
-| `api` / `presentation` | `@Controller`, `@Path`, `@RestController`, HTTP handlers |
-| `persistence` | `@Repository`, DAO classes, migration files |
-| `shared` | `common`, `shared`, `core`, `utils` in name; no domain logic |
-| `integration` | External API clients, Feign, `@FeignClient`, HTTP client config |
-| `batch` | Scheduled jobs, `@Scheduled`, batch processors |
-| `mobile` | Android/iOS source structure |
-| `frontend` | React/Vue/Angular component trees |
-
-### Step 3: Detect Dependency Rules and Violations
-
-Based on the layer classification, derive the allowed dependency direction (Clean Architecture / Onion):
-
-```
-Allowed:  api → service → domain
-          api → service → persistence
-          any → shared
-Forbidden: domain → service (inward pointing)
-           persistence → service (inward pointing)
-           shared → domain (shared must be layer-agnostic)
-```
-
-Flag any detected violations as `"violations"` in the map.
-
-### Step 4: Identify High-Risk and Critical Path Modules
-
-- **High-risk modules**: Modules with the most dependents (high `inDegree` in the graph) — changing them has the widest blast radius
-- **Isolated modules**: Modules with no dependents — safe to change independently
-- **Critical paths**: Chains of 3+ modules that form key business flows (e.g., `api → orders → payments → external-gateway`)
-
-### Step 5: Write `.github/module-dependency-map.json`
-
-```json
-{
-  "$schema": "https://copilot-bootstrap.dev/dependency-map.schema.json",
-  "generatedAt": "<ISO 8601 UTC>",
-  "toolkitVersion": "<version>",
-  "project": {
-    "name": "<project name>",
-    "classification": "<Small|Standard|Enterprise>",
-    "buildSystem": "<maven|gradle|npm|dotnet|poetry>"
-  },
-  "modules": [
-    {
-      "id": "<kebab-case-id>",
-      "name": "<display name>",
-      "type": "<domain|service|api|persistence|shared|integration|batch|mobile|frontend>",
-      "layer": "<domain|service|presentation|infrastructure|shared>",
-      "path": "<relative path from repo root>",
-      "buildFile": "<relative path to pom.xml / build.gradle / package.json>",
-      "dependencies": ["<module-id>"],
-      "dependents": ["<module-id>"],
-      "externalDeps": [
-        { "id": "<groupId:artifactId or package@version>", "scope": "<compile|runtime|test>" }
-      ],
-      "keyClasses": ["<ClassName>"],
-      "publicApi": ["<ClassName.methodName()>"],
-      "inDegree": 0,
-      "outDegree": 0,
-      "riskLevel": "<low|medium|high>"
-    }
-  ],
-  "dependencyEdges": [
-    {
-      "from": "<module-id>",
-      "to": "<module-id>",
-      "type": "<compile|runtime|optional|test>",
-      "via": "<import statement or build declaration>",
-      "keyCallSites": ["<ClassName.method() at File:Line>"]
-    }
-  ],
-  "dependencyRules": [
-    { "fromLayer": "presentation", "toLayer": "service", "allowed": true },
-    { "fromLayer": "service", "toLayer": "domain", "allowed": true },
-    { "fromLayer": "domain", "toLayer": "service", "allowed": false, "reason": "Clean Architecture inward dependency" },
-    { "fromLayer": "persistence", "toLayer": "service", "allowed": false, "reason": "Inversion of control violation" },
-    { "fromLayer": "*", "toLayer": "shared", "allowed": true }
-  ],
-  "violations": [
-    {
-      "type": "<circular|layer-violation|internal-class-access>",
-      "from": "<module-id>",
-      "to": "<module-id>",
-      "description": "<what the violation is>",
-      "severity": "<high|medium|low>"
-    }
-  ],
-  "circularDependencies": [
-    { "cycle": ["<module-id>", "<module-id>", "..."], "description": "<how they depend on each other>" }
-  ],
-  "graphMetadata": {
-    "highRiskModules": ["<module-id>"],
-    "isolatedModules": ["<module-id>"],
-    "criticalPaths": [
-      {
-        "name": "<path name, e.g. Order Payment Flow>",
-        "path": ["<module-id>", "..."],
-        "description": "<what this path implements>"
-      }
-    ],
-    "totalModules": 0,
-    "totalEdges": 0
-  }
-}
-```
-
-**Rules:**
-- `dependencies` = modules this module depends ON (outbound edges)
-- `dependents` = modules that depend ON this module (inbound edges) — derive by inverting `dependencies`
-- `inDegree` = count of `dependents` — high inDegree = high blast radius risk
-- `riskLevel`: `high` if inDegree ≥ 5, `medium` if 2–4, `low` if 0–1
-- List only **inter-module** dependencies — exclude external library deps from the graph edges
-
-### Step 6: Write `.github/MODULE-ARCHITECTURE.md`
-
-Human-readable companion to the JSON map. Include a Mermaid dependency graph.
-
-```markdown
-# Module Architecture
-
-> Auto-generated by copilot-bootstrap v[version] on [date].
-> Source of truth: `.github/module-dependency-map.json`
-> Regenerate: run `/bootstrap-copilot` or `dependency-extractor` skill.
-
-## Dependency Graph
-
-```mermaid
-graph TD
-    %% Layer colors
-    classDef presentation fill:#dbeafe,stroke:#3b82f6
-    classDef service fill:#dcfce7,stroke:#22c55e
-    classDef domain fill:#fef9c3,stroke:#eab308
-    classDef persistence fill:#fce7f3,stroke:#ec4899
-    classDef shared fill:#f3f4f6,stroke:#6b7280
-
-    %% Modules (one node per module with type label)
-    [ID]["[Name]\n([type])"]
-
-    %% Edges (dependencies)
-    [FROM] --> [TO]
-
-    %% Apply styles
-    class [ID] [layerClass]
-```
-
-## Module Inventory
-
-| Module | Type | Layer | Depends On | Used By | Risk |
-|--------|------|-------|-----------|---------|------|
-| [name] | [type] | [layer] | [comma-separated] | [comma-separated] | 🔴/🟡/🟢 |
-
-## Dependency Rules
-
-| Rule | Allowed | Reason |
-|------|---------|--------|
-| presentation → service | ✅ | Standard layered architecture |
-| service → domain | ✅ | Business logic uses entities |
-| domain → service | ❌ | Would create circular dependency |
-| * → shared | ✅ | Shared utilities are layer-agnostic |
-
-## Violations (if any)
-
-| Type | From | To | Severity | Description |
-|------|------|----|----------|-------------|
-
-## High-Risk Modules
-
-Modules with the most dependents — changes here have the widest blast radius:
-
-| Module | Dependents | Risk | Why |
-|--------|-----------|------|-----|
-
-## Critical Paths
-
-Key feature chains crossing multiple modules:
-
-| Path Name | Chain | Description |
-|-----------|-------|-------------|
-
-## Impact Quick Reference
-
-> Use this table when investigating PBIs or planning changes.
-
-| If you change... | Direct impact | Transitive impact | Blast radius |
-|-----------------|--------------|-------------------|--------------|
-| [module] | [direct dependents] | [transitive] | 🔴/🟡/🟢 |
-```
-
-**Rules for generation:**
-- Generate the Mermaid diagram from `dependencyEdges` in the JSON map
-- `riskLevel: high` → 🔴, `medium` → 🟡, `low` → 🟢
-- Keep the file ≤ 8 KB — if too large, truncate `keyCallSites` and `externalDeps` details
-
-## Phase 4: GEN copilot-instructions.md
-
-Create `.github/copilot-instructions.md` (≤ 4 KB):
-- Project name, purpose, architecture overview
-- Build/test/lint commands (extracted from build configs)
-- Core coding standards (from analyzed conventions)
-- Key patterns to follow and anti-patterns to avoid
-- Domain overview with glossary (for Standard/Enterprise)
-- Module map with cross-references (for Enterprise)
-
-## Phase 5: GEN Domain-Scoped Instructions
-
-**Trigger conditions** (generate if ANY are true):
-- Enterprise classification (5+ domains)
-- Multi-module project (3+ modules with distinct module groups)
-- Framework/Library project with module groups (e.g., core, web, data, messaging)
-
-**Skip if**: Small project with ≤ 1 module and ≤ 1 domain.
-
-Use `domain-registry` skill to:
-1. Auto-scan source code → detect domains or module groups
-2. Generate `.github/domains/domain-registry.json`
-3. Generate per-domain `.instructions.md` with narrow `applyTo` patterns
-4. Each ≤ 4 KB with domain rules, entities, patterns, glossary
-
-**For framework/library projects**, generate per-module-group instructions:
-
-| Module Group | Instruction File | applyTo Example |
-|---|---|---|
-| Core modules | `core-domain.instructions.md` | `**/spring-core/**/*.java,**/spring-beans/**/*.java` |
-| Web modules | `web-domain.instructions.md` | `**/spring-web*/**/*.java` |
-| Data modules | `data-domain.instructions.md` | `**/spring-jdbc/**/*.java,**/spring-orm/**/*.java` |
-
-**For application projects**, generate per-business-domain instructions (existing behavior).
-
-## Phase 6: GEN Language/Framework Instructions
-
-Generate `.github/instructions/*.instructions.md` with correct `applyTo` globs:
-
-| Detected Stack | Instruction Files to Generate |
-|---|---|
-| Java/Jakarta EE/Spring | `java.instructions.md`, `jakartaee.instructions.md` or `spring.instructions.md` |
-| .NET/C# | `dotnet.instructions.md` |
-| Python/Django/FastAPI | `python.instructions.md` |
-| PHP/Laravel/Symfony | `php.instructions.md` |
-| TypeScript/React | `typescript.instructions.md`, `react.instructions.md` |
-| Android/Kotlin | `kotlin.instructions.md`, `android.instructions.md` |
-| iOS/Swift | `swift.instructions.md`, `ios.instructions.md` |
-| Maven/Gradle | `maven.instructions.md` or `gradle.instructions.md` |
-| SQL / DB detected | `oracle-sql.instructions.md` or `database-migration.instructions.md` |
-| Test framework detected | `testing.instructions.md` |
-| WireMock detected | `wiremock.instructions.md` |
-
-**Each file MUST**: reference conventions discovered in Phase 1, not generic placeholder text.
-
-## Phase 6b: GEN Standardized Templates & Constitution
-
-Generate `.github/templates/` with output format templates and `.github/constitution.md` as the architectural governance document.
-
-### Constitution (ALWAYS generate)
-
-Generate `.github/constitution.md` (≤ 6 KB) — the immutable architectural governance document for the target project. This is the **single source of truth** for engineering principles and enforcement gates.
-
-**The constitution MUST include:**
-1. **Articles** (9 total): Understand Before Changing, Confirm Business Logic, No Duplicate Validation, Multi-Module Boundaries, Clarify Before Acting, Test-First Verification, Simplicity, Anti-Abstraction, Explain Decisions
-2. **Phase -1 Gates** (4 gates): Simplicity Gate, Duplication Gate, Business Logic Gate, Impact Gate — with checklist format
-3. **Gate Failure Protocol**: Document → Propose remediation → Ask user → Log exception
-4. **Amendment Process**: Propose → Impact → Review → Document
-
-**Customization**: Articles must reference the target project's actual:
-- Tech stack (e.g., "trace Controller → Service → Repository → Database" for Java, or "trace Router → Dependency → Service → Model" for FastAPI)
-- Validation layers (match actual framework patterns)
-- Module structure (if multi-module)
-
-### Templates (ALWAYS generate)
-
-**Always generate these templates:**
-
-| Template | Purpose | Used By |
-|---|---|---|
-| `PRD-template.md` | Product Requirements Document structure | `@business-analyst`, `@spec-reviewer` |
-| `API-contract-template.md` | OpenAPI/Swagger API contract format | `@business-analyst`, `@implementor` |
-| `DB-schema-template.md` | DBML database schema format | `@database-specialist`, `@business-analyst` |
-
-**Rules:**
-- Templates are **output format guides**, not instruction files — they don't have `applyTo` patterns
-- Templates MUST be customized with project-specific examples (actual entity names, actual enum values) from Phase 3
-- `@business-analyst` and `@spec-reviewer` agents MUST reference these templates in their output instructions
-- Templates should be ≤ 8 KB each
-- **PRD template MUST include**: `[NEEDS CLARIFICATION]` marker convention, Open Questions section, Self-Review Checklist — so users mark uncertainties instead of guessing
-
-## Phase 7: GEN Agents
-
-> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/agents/*.agent.md` files first. Then create NEW agent files with content specific to THIS project's tech stack, patterns, and conventions from Phases 1-3. Do NOT copy or reuse content from the bootstrap toolkit templates.
-
-Use the `generate-agents` prompt as a guide for agent file format and detection logic.
-
-**Agent frontmatter format:**
-```yaml
----
-name: agent-name
-description: "What the agent does, including project-specific tech stack keywords"
-agents: ["Sub Agent 1", "Sub Agent 2"]  # only for orchestrator agents that delegate
----
-```
-
-> **⚠️ Do NOT include `tools:` or `mode:` fields in generated agent frontmatter.** These are not needed in generated output. Only `name`, `description`, and `agents` (for orchestrators) are valid fields.
-
-Create `.github/agents/*.agent.md` (≤ 10 KB each). Each agent MUST:
-- Reference the **Project Constitution** (`constitution.md`) — all generated agents must include a constitutional compliance note
-- Reference the **actual tech stack** detected in Phase 1 (e.g., "Java 11, Jakarta EE 8, Maven" not "Java")
-- Include **actual coding patterns** from Phase 1 (e.g., real package names, real class naming patterns)
-- Include **actual business domain context** from Phase 3 (e.g., domain glossary terms, entity names)
-- **Implementor agents** MUST include Phase -1 Gates section (4 gates as checklist) referencing `constitution.md`
-
-**Always generate these core agents:**
-- `dev-orchestrator` — single entry point with `agents:` field listing ALL generated agents
-- `implementor` — stack-specific, referencing actual framework patterns
-- `test-specialist` — using project's actual test framework and patterns
-- `code-reviewer` — with project-specific review checklist
-
-**Conditionally generate based on Phase 1 detection:**
-
-| Detection | Agent | Must Include |
-|---|---|---|
-| Complex domains (5+ entities) | `investigator` | Actual domain entities and relationships |
-| Complex domains (5+ entities) | `business-analyst` | Actual domain entities, personas, workflows |
-| Spec/requirements workflow | `spec-reviewer` | Domain-specific NFR checks, template references |
-| Multi-layer architecture | `sequence-diagrammer` | Actual layer structure |
-| Entities with status/lifecycle | `sequence-diagrammer` + state diagrams | Status enums, transition logic |
-| Database / migrations | `database-specialist` | Actual DB type and migration tool |
-| WireMock / external APIs | `mock-data-specialist` | Actual API endpoints to mock |
-| 10+ modules / Enterprise | `dependency-analyzer` | Actual module list and dependencies |
-| Mobile platform | `mobile-implementor` | Platform-specific patterns |
-| Mobile platform | `mobile-reviewer` | Mobile-specific review: memory leaks, UI thread, Compose recomposition, actor isolation, accessibility |
-| Any project with code review | `functional-reviewer` | AC traceability, cross-domain data integrity, adversarial edge cases |
-| Any project with code review | `technical-reviewer` | Migration safety, domain boundary guardian, NFR compliance |
-
-**Dev Orchestrator wiring (CRITICAL):** The `dev-orchestrator.agent.md` `agents:` field MUST list ALL other generated agent names.
-
-## Phase 8: GEN Skills
-
-> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/skills/*/SKILL.md` directories first. Then create NEW skill directories with content specific to THIS project. Do NOT copy bootstrap toolkit skills.
-
-Use the `generate-skills` prompt as a guide for skill file format and detection logic.
-
-Create `.github/skills/[name]/SKILL.md` (≤ 15 KB each). Each skill MUST:
-- Have `name:` in frontmatter that **exactly matches the parent directory name** (GitHub Copilot rejects mismatches). E.g., directory `implement-feature/` → `name: implement-feature`
-- Reference **actual build commands** (e.g., `mvn clean verify -pl module-name` not `build`)
-- Reference **actual test commands** (e.g., `mvn test -Dtest=OrderServiceTest` not `run tests`)
-- Reference **actual project directory structure** (e.g., `src/main/java/com/company/...`)
-- Reference **actual framework patterns** (e.g., "Entity → DAO → Service → Resource" for Jakarta EE)
-
-### Skill Frontmatter Schema (complete)
-
-```yaml
----
-name: skill-name          # MUST match parent directory name exactly
-description: '...'        # 10-1024 chars — what it does and when to use
-hint: '[PBI] [module]'    # shown in chat input when user types /skill-name — guides what to type next
-hidden: false             # true = hidden from / menu but still auto-loaded; default false
----
-```
-
-**`hint` usage guidance** — add `hint` to all generated skills:
-
-| Skill | Recommended `hint` value |
-|-------|--------------------------|
-| `implement-feature` | `[feature description or PBI ID] [module name]` |
-| `investigate-pbi` | `[PBI ID or description]` |
-| `generate-unit-tests` | `[class name or file path]` |
-| `review-code-changes` | `[branch name or file list]` |
-| `generate-sequence-diagram` | `[flow name] [entry-point class]` |
-| `sprint-planning` | `[sprint number] [PBI list]` |
-| `impact-analysis` | `[class or field being changed]` |
-
-**`hidden` usage** — set `hidden: true` for internal/utility skills that should not appear in the slash-command menu but can still be invoked by agents:
-- Skills that are only called by other agents (e.g., `domain-registry`, `context-budget-check`)
-- Skills used internally by the bootstrap pipeline
-
-**Auto-select based on detected capabilities:**
-
-| Detection | Skills to Generate |
-|---|---|
-| Any project | `implement-feature`, `generate-unit-tests`, `review-code-changes` |
-| Any project (spec-driven pipeline) | `specify-feature`, `plan-implementation`, `generate-tasks` |
-| Any project (feedback loop) | `review-effectiveness` |
-| CI/CD pipeline exists | `generate-pr-description`, `conventional-commit` |
-| 3+ modules | `orchestrate-development`, `investigate-pbi`, `estimate-effort` |
-| Sprint/agile references | `sprint-planning` |
-| Complex domain (5+ entities) | `generate-sequence-diagram`, `generate-state-diagram` |
-| Entities with status/lifecycle enums | `generate-state-diagram` |
-| Spec/requirements workflow | `review-spec`, `update-spec` |
-| WireMock / mock dependencies | `generate-wiremock` |
-| Enterprise classification | `impact-analysis` |
-| Tech debt indicators | `technical-debt-analysis` |
-
-### Mandatory Agentic Patterns in Generated Skills
-
-Every generated `implement-feature` and `orchestrate-development` skill MUST include:
-
-1. **Phase -1 Constitutional Gates**: Simplicity Gate, Duplication Gate, Business Logic Gate, Impact Gate — as checklist that MUST pass before writing code. Reference `constitution.md` for gate definitions
-2. **Verify-Fix Loop**: Build → Test → Lint cycle with max 3 retries per step, using the project's actual commands
-3. **Incremental Implementation**: For features touching 5+ files, verify each layer group before proceeding
-4. **Self-Review Checklist**: Re-read all changes, check pattern consistency, verify cross-file integrity
-5. **Stack-specific verify commands table**: Actual build/test/lint commands detected from the project
-6. **`[NEEDS CLARIFICATION]` stop condition**: If investigation reveals >3 critical unknowns, STOP and ask user before proceeding to implementation
-
-### Stack-Specific Skill Customization (CRITICAL)
-
-Skills MUST contain stack-specific content. The same skill name produces DIFFERENT content depending on the detected tech stack.
-
-**`implement-feature` — Implementation order per stack:**
-
-| Stack | Implementation Order in Skill |
-|---|---|
-| Java / Jakarta EE | DB Migration → `@Entity` + JPA annotations → DAO (`@Stateless`) → Service (`@Inject`) → `@Path` Resource → CDI event |
-| Java / Spring Boot | Migration → Entity → DTO + MapStruct → Repository → Service (`@Transactional`) → Controller → Config |
-| .NET / ASP.NET Core | Entity + EF Config → Migration → DTO → FluentValidation → Repository → Service/MediatR Handler → Controller → DI registration |
-| Python / Django | Model → Migration → Serializer → Service/Selector → View/ViewSet → URL config → Admin registration |
-| Python / FastAPI | SQLAlchemy Model → Alembic Migration → Pydantic Schema → Repository → Service → Dependencies → Router |
-| TypeScript / React | Types/Interfaces → API service → Custom Hook → Component → Storybook → Page route |
-| TypeScript / Next.js | Types → Server Action or Route Handler → Data fetching → Component → Page → Layout |
-| PHP / Laravel | Model + fillable/casts → Migration → FormRequest → API Resource → Service → Controller → Route |
-| PHP / Symfony | Entity + ORM mapping → Migration → DTO → Validator → Repository → Service → Controller → Route annotation |
-| Android / Kotlin | Room Entity + DAO → Repository → UseCase → ViewModel → Compose UI → Navigation → Hilt module |
-| iOS / Swift | SwiftData Model → Repository → Service → ViewModel (`@Observable`) → SwiftUI View → Navigation |
-| Kotlin Multiplatform | Shared: expect/actual → Repository → UseCase → Android ViewModel + iOS ObservableObject |
-
-**`generate-unit-tests` — Test framework per stack:**
-
-| Stack | Test Config in Skill |
-|---|---|
-| Java | JUnit 5 + `@Nested` + `@DisplayName` + AssertJ + Mockito (`@ExtendWith`) + `@ParameterizedTest` |
-| .NET | xUnit + `[Fact]`/`[Theory]` + FluentAssertions + Moq + nested classes |
-| Python | pytest + `@pytest.fixture` + `factory_boy` + `pytest-asyncio` + parametrize |
-| TypeScript / React | Vitest or Jest + React Testing Library + `render()`/`screen`/`userEvent` + MSW for API mocks |
-| PHP | PHPUnit or Pest + Model Factories + `RefreshDatabase` + mock facades |
-| Android / Kotlin | JUnit 5 + Turbine (Flow testing) + MockK + Hilt test + Compose testing (`createComposeRule`) |
-| iOS / Swift | XCTest + Swift Testing (`@Test`) + async/await testing + ViewInspector for SwiftUI |
-
-**`review-code-changes` — Review focus per stack:**
-
-| Stack | Review Focus Areas in Skill |
-|---|---|
-| Java / Jakarta EE | CDI scope correctness, JPA lazy/eager loading, transaction boundaries, JNDI naming |
-| .NET | EF query performance (N+1), DI lifetime (Scoped/Transient/Singleton), async/await patterns |
-| Python | Type hint completeness, async context managers, SQLAlchemy session handling, Pydantic validation |
-| TypeScript / React | Hook dependency arrays, re-render optimization, proper error boundaries, accessibility |
-| PHP | Eloquent N+1 (eager loading), mass assignment guards, middleware ordering |
-| Android / Kotlin | Compose recomposition, coroutine scope lifecycle, state hoisting, memory leaks |
-| iOS / Swift | Actor isolation, Sendable conformance, memory ownership (@Observable vs @State), accessibility |
-
-## Phase 9: GEN Prompts
-
-> **⚠️ ANTI-COPY RULE**: DELETE all existing `.github/prompts/*.prompt.md` files first. Create NEW prompts for this project.
-
-Create `.github/prompts/*.prompt.md` (≤ 3 KB each):
-- Always: `implement-feature` (entry point to dev-orchestrator — direct implementation)
-- Always: `specify-feature` (entry point to spec-driven pipeline — specify → plan → tasks → implement)
-- If complex codebase: `learn-codebase` (entry point to understand this project)
-- Each prompt is an entry point only — delegates to agents + skills for real work
-
-**Two entry points, two mindsets:**
-- `/implement-feature` — for well-defined PBIs where requirements are clear → goes straight to investigate → implement
-- `/specify-feature` — for vague ideas or large features → runs spec-driven pipeline first (specify → plan → tasks) before implementation
-
-### Prompt Frontmatter Schema
-
-```yaml
----
-name: prompt-display-name      # shown after / in chat (defaults to filename)
-description: One-line summary  # for discoverability
-agent: agent                   # mode: ask | edit | agent | <custom-agent-name>
-model: gpt-4o                  # optional — defaults to selected model
-tools: ['codebase', 'github']  # optional — specific tools this prompt requires
----
-```
-
-### Interactive Variables with `${input:variableName}`
-
-Use `${input:variableName}` to create prompts that ask the user for input before running. When the user invokes the prompt, Copilot displays an input field for each variable.
-
-```markdown
----
-name: implement-feature
-description: 'Implement a feature end-to-end: investigate → implement → test'
-agent: agent
 ---
 
-Implement the following feature in @dev-orchestrator:
+## Phase 3: Domain and Repo Truth Pack
 
-**Requirement**: ${input:requirement}
-**Module** (leave blank for auto-detect): ${input:module}
-**Acceptance criteria** (optional): ${input:acceptanceCriteria}
+This phase determines whether later agents can make safe business-aware decisions.
+
+Without this phase, agents can still infer technical patterns, but they cannot safely claim business truth.
+
+### Evidence rule
+
+Every generated business rule, workflow, invariant, ownership note, or domain claim must have one of:
+
+- a code anchor
+- a document anchor
+- direct user confirmation
+- `[ASSUMPTION]`
+- `[NEEDS CLARIFICATION]`
+
+Do not present inferred domain behavior as confirmed fact.
+
+### Repo truth pack outputs
+
+Generate these artifacts:
+
+1. `.github/.phase3-checkpoint.md`
+2. `docs/00-repo-overview.md`
+3. `docs/03-verification-runbook.md`
+
+For Standard and Enterprise repos, also generate:
+
+4. `docs/01-business-glossary.md`
+5. `docs/02-architecture-map.md`
+6. `docs/04-engineering-rules.md`
+7. `docs/05-common-failure-modes.md`
+
+For multi-module repos, also generate:
+
+8. `.github/module-dependency-map.json`
+9. `.github/MODULE-ARCHITECTURE.md`
+
+For Large and Enterprise repos, also generate:
+
+10. `docs/modules/README.md`
+11. `docs/workflows/README.md`
+12. `docs/integrations/README.md` when external systems matter
+13. `docs/decisions/README.md`
+
+Then expand to the highest-priority module and workflow docs first, not the entire universe at once.
+
+### `.github/.phase3-checkpoint.md`
+
+Keep this compact. It should include:
+
+- classification
+- stack and versions
+- module list
+- domain list
+- context risk
+- top glossary terms
+- key business rules
+- key workflows
+- verification commands
+
+This file is the recovery point for later sessions.
+
+### `docs/00-repo-overview.md`
+
+This is the primary human-and-agent entry point.
+
+Include:
+
+- repo purpose
+- top-level stack summary
+- top-level module map
+- source-of-truth map
+- what to read first before changing code
+- current context pressure or repo-scale warnings
+- unknowns / assumptions
+
+For small repos, it may absorb glossary and architecture notes.
+
+### `docs/01-business-glossary.md`
+
+Include:
+
+- domain terms and definitions
+- key workflows and states
+- business invariants
+- ownership boundaries
+- open questions and assumptions
+- evidence anchors for each significant claim
+
+### `docs/02-architecture-map.md`
+
+Include:
+
+- module and layer map
+- ownership boundaries
+- dependency direction
+- shared libraries and cross-cutting components
+- entry points
+- integration or external-system touchpoints where known
+- unknowns / assumptions
+
+Use `.github/module-dependency-map.json` and `.github/MODULE-ARCHITECTURE.md` as supporting machine/human references when the repo is multi-module.
+
+### `docs/03-verification-runbook.md`
+
+Include:
+
+- actual build commands
+- actual test commands
+- actual lint/format/static-analysis commands
+- environment prerequisites
+- non-runnable or flaky surfaces
+- suggested changed-scope verification paths
+
+This runbook prevents downstream agents from promising verification the repo cannot actually support.
+
+### `docs/04-engineering-rules.md`
+
+Include durable rules that many tasks need:
+
+- layering rules
+- API compatibility rules
+- migration rules
+- logging and security conventions
+- testing conventions
+- naming or packaging conventions
+- assumption/unknown handling rules
+
+Keep this file focused on stable repo rules, not one-off task details.
+
+### `docs/05-common-failure-modes.md`
+
+Include:
+
+- recurring bug classes
+- fragile areas
+- common regression patterns
+- how to recognize them
+- how to verify fixes
+
+This file should make investigation and review better, not become a postmortem archive.
+
+### `docs/modules/<module>.md`
+
+Generate module docs for the highest-value modules first. Use this shape:
+
+- purpose
+- owns
+- does not own
+- entry points
+- main flow
+- business rules
+- invariants
+- dependencies
+- verification
+- common risks
+- unknowns / assumptions
+
+### `docs/workflows/<workflow>.md`
+
+Generate workflow docs for the highest-value business flows first. Use this shape:
+
+- business goal
+- trigger
+- preconditions
+- steps
+- state transitions
+- rules
+- failure cases
+- systems touched
+- verification
+- unknowns / assumptions
+
+### `docs/integrations/<integration>.md`
+
+Generate integration docs when the repo depends on external systems that meaningfully affect implementation or verification.
+
+Include:
+
+- business purpose
+- upstream/downstream relationship
+- contracts or payload shape references
+- authentication or environment requirements
+- failure modes and retry behavior
+- verification or smoke-check approach
+- unknowns / assumptions
+
+### `docs/decisions/ADR-xxxx-<title>.md`
+
+Generate ADRs when the repo has discoverable architectural decisions that later agents might accidentally "undo".
+
+Prefer adding ADRs for:
+
+- unusual boundaries
+- legacy constraints
+- explicit trade-offs
+- integration or migration choices
+- verification limitations
+
+### Module dependency artifacts
+
+For multi-module repos:
+
+- build `.github/module-dependency-map.json`
+- build `.github/MODULE-ARCHITECTURE.md`
+
+Capture:
+
+- module names and paths
+- dependency edges
+- high-risk shared modules
+- critical paths
+- obvious dependency-rule violations
+
+Also make sure `docs/02-architecture-map.md` summarizes the same boundaries in a lighter-weight narrative form.
+
+### Common doc skeleton
+
+Generated common docs should use a consistent skeleton whenever practical:
+
+```md
+# <Title>
+
+## Purpose
+
+## When To Use
+
+## Source of Truth
+
+## Key Facts
+
+## Constraints
+
+## Verification
+
+## Related Files
+
+## Unknowns / Assumptions
 ```
 
-**Rules for generated prompts:**
-- Use `${input:variableName}` for required user context that cannot be inferred from the codebase (PBI ID, feature description, module name)
-- Keep variable names concise and self-explanatory — users see the variable name as the input label
-- Provide inline hints using comments or parenthetical notes: `${input:module} (e.g. orders, payments)`
-- **Do NOT** use `{variableName}` (curly only, no dollar) — that is not valid Copilot prompt syntax
+Do not omit the `Unknowns / Assumptions` section unless the file is intentionally tiny.
 
-## Phase 10: GEN Hooks
+---
 
-Create `.github/hooks/*.json` based on detected project tooling:
+## Phase 4: Generate Core Instructions
 
-> **Supported hook events** (GitHub Copilot official): `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `errorOccurred`. There is no `agentStop` — use `postToolUse` with tool-name filtering for quality checks.
+Create `.github/copilot-instructions.md` as a compact operating card:
 
-| Detection | Hook File | Event | Purpose |
-|---|---|---|---|
-| Formatter (Prettier/Spotless/Black/ktlint) | `auto-format.json` | `postToolUse` | Auto-format after file edit |
-| Linter (ESLint/Checkstyle/PMD/detekt) | `lint-check.json` | `postToolUse` | Lint after file-editing tools (filtered by toolName) |
-| Build tool (Maven/Gradle/tsc/dotnet) | `compile-check.json` | `postToolUse` | Verify compilation after file-editing tools |
-| Enterprise/security patterns | `security-gate.json` | `preToolUse` | Block dangerous commands |
+- project purpose
+- source-of-truth map
+- key modules/domains
+- actual build/test/lint commands
+- repo-specific patterns to follow
+- anti-patterns to avoid
+- indexing or large-repo warnings
+- explicit unknowns if business context is incomplete
 
-Hook format:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "<event>": [{
-      "type": "command",
-      "bash": "<unix command>",
-      "powershell": "<windows command>",
-      "cwd": ".",
-      "timeoutSec": 30
-    }]
-  }
-}
-```
+Keep it concise enough to be cheap context.
 
-Rules: Both `bash` and `powershell` for cross-platform. `postToolUse` hooks < 30s. Non-zero exit blocks action.
+Do not dump the full architecture or glossary into this file. Instead, point to:
 
-## Phase 11: GEN Agentic Workflows
+- `docs/00-repo-overview.md`
+- `docs/01-business-glossary.md`
+- `docs/02-architecture-map.md`
+- `docs/03-verification-runbook.md`
+- module/workflow docs when they exist
 
-**Trigger**: `.github/workflows/` directory exists (GitHub Actions available).
+---
 
-If triggered, generate `.github/copilot/` workflow files:
-- Issue triage workflow (label bugs, assign priority, suggest affected modules)
-- Dependency audit workflow (weekly check for outdated/vulnerable deps)
+## Phase 5: Generate Domain Instructions
 
-**Skip** if no CI/CD directory is detected.
+Generate per-domain or per-module instructions when the repo is large enough to benefit from scoped guidance.
 
-## Phase 12: VALIDATE — 3-Tier Validation
+Use narrow `applyTo` patterns.
 
-### Tier 1: Structural Validation
-- [ ] All `.agent.md` have valid YAML frontmatter (`name`, `description`; `agents:` list for orchestrators only; NO `mode:` field — `tools:` IS valid)
-- [ ] All `SKILL.md` have `name` and `description` (10-1024 chars)
-- [ ] **Skill `name` matches parent directory** — e.g., `skills/implement-feature/SKILL.md` must have `name: implement-feature`. GitHub Copilot rejects skills where name ≠ directory. Check every generated skill.
-- [ ] All `.instructions.md` have `description` and `applyTo` globs
-- [ ] All `.prompt.md` have valid frontmatter
-- [ ] No files with empty or placeholder content
+Each domain instruction should include:
 
-### Tier 1b: Dependency Map Validation (Standard/Enterprise only)
-- [ ] `.github/module-dependency-map.json` exists and is valid JSON
-- [ ] Every module listed in Phase 1 SCAN appears in `modules[]`
-- [ ] `dependents` arrays are consistent with `dependencies` (if A depends on B, then B's `dependents` includes A)
-- [ ] No module references a non-existent module ID in `dependencies` or `dependents`
-- [ ] `.github/MODULE-ARCHITECTURE.md` exists and contains a Mermaid diagram
-- [ ] Mermaid diagram node count matches `graphMetadata.totalModules`
+- ownership and responsibilities
+- key entities or concepts
+- local patterns and pitfalls
+- relevant glossary terms
+- evidence-backed rules only
 
-### Tier 2: Functional Validation
-- [ ] Each agent `description` mentions the actual tech stack detected in Phase 1
-- [ ] Each instruction `applyTo` pattern matches ≥ 1 real file in the project
-- [ ] `dev-orchestrator.agent.md` `agents:` field lists ALL generated agent names
-- [ ] Each skill is referenced by at least one agent or prompt
-- [ ] No agent references a sub-agent that wasn't generated
-- [ ] Hooks reference commands that exist in the project (e.g., `mvn` if maven hook)
-- [ ] No two instruction files have overlapping `applyTo` patterns covering the same rules
-- [ ] The bootstrap bundle remains operable from `.github/` alone without requiring bootstrap-repo-only docs outside `.github/`
-- [ ] `.github/docs/` includes runtime overview, prompt/context guidance, `.github` conventions, and a user playbook
-- [ ] `.github/docs/` also covers tool runtime and team operating model guidance
+Skip domain files for genuinely tiny repos.
 
-### Tier 2b: Constitutional Compliance Validation
-- [ ] `constitution.md` exists in `.github/` with all 9 Articles and Phase -1 Gates
-- [ ] All implementor agents reference `constitution.md` and include Phase -1 Gates section
-- [ ] `implement-feature` skill includes Phase -1 Gates + `[NEEDS CLARIFICATION]` stop condition
-- [ ] `orchestrate-development` skill (if generated) references constitution and includes gates
-- [ ] `specify-feature`, `plan-implementation`, `generate-tasks` skills are generated (spec-driven pipeline)
-- [ ] `review-effectiveness` skill is generated (feedback loop)
-- [ ] `PRD-template.md` includes `[NEEDS CLARIFICATION]` marker convention and Self-Review Checklist
-- [ ] `dev-orchestrator` routing table includes spec-driven pipeline entry points
+These `.instructions.md` files complement `docs/`, they do not replace it:
 
-### Tier 3: Context Budget Validation
-- [ ] `copilot-instructions.md` ≤ 4 KB
-- [ ] Each `.instructions.md` ≤ 6 KB
-- [ ] Each `.agent.md` ≤ 10 KB
-- [ ] Each `.prompt.md` ≤ 3 KB
-- [ ] Simulate worst-case co-loading: instructions + agent + skill ≤ 45 KB
+- `.github/copilot-instructions.md` = global truth card
+- `docs/*.md` = repo memory and source-of-truth references
+- `.instructions.md` = stack or file-pattern rules
+- prompts / chat = task-specific truth
 
-**If any check fails**: fix immediately before proceeding. Report which checks failed and how they were resolved.
+---
 
-## Phase 13: DevContainer Setup
+## Phase 6: Generate Language and Framework Instructions
 
-Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still available.
+Generate instructions only for stacks actually present in the target repo.
 
-**If `.devcontainer/` exists**: Delegate to `@devcontainer-reviewer` to optimize.
+Examples:
 
-**If no `.devcontainer/`**: Ask user if they want one generated. If yes:
-1. Requirements interview (databases, services, tools, shell, extensions)
-2. Resource estimation (RAM/CPU/disk)
-3. Wait for user confirmation
-4. Generate: `devcontainer.json`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+- Java / Spring / Jakarta
+- .NET
+- Python
+- PHP
+- TypeScript / React
+- mobile
+- database / migration
+- testing
 
-**If user declines**: Skip, report "DevContainer: skipped"
+Every generated instruction must reference real repo conventions, not generic boilerplate.
 
-## Phase 14: Manifest, Cleanup & Final Report
+---
 
-> **This phase is CRITICAL.** First, generate the bootstrap manifest to record what was generated and by which toolkit version. Then delete all bootstrap template files. Generated project files should remain, along with the portable `.github/README.md` and `.github/docs/` guidance docs.
+## Phase 7: Generate Templates
 
-### Step 0a: Generate `.github/.bootstrap-state.json` (Pipeline State Tracker)
+Always generate reusable templates tailored to the target repo:
 
-Write this file at the **START of Phase 1** and **update it after each phase completes**. This enables the `resume-bootstrap` skill to resume from any interrupted phase.
+- PRD template
+- API contract template
+- DB schema template
 
-```json
-{
-  "toolkitVersion": "<version from VERSION file>",
-  "startedAt": "<ISO 8601 UTC timestamp>",
-  "lastUpdatedAt": "<ISO 8601 UTC timestamp>",
-  "classification": "<Small | Standard | Enterprise | null>",
-  "contextRisk": "<low | medium | high | null>",
-  "phases": {
-    "1":  { "status": "completed | in_progress | pending | skipped", "completedAt": "<timestamp>", "summary": "<1-line result>" },
-    "2":  { "status": "...", "completedAt": "...", "summary": "<classification result>" },
-    "3":  { "status": "...", "completedAt": "...", "summary": "<N domains extracted, checkpoint written>" },
-    "4":  { "status": "...", "completedAt": "...", "summary": "<copilot-instructions.md written, N KB>" },
-    "5":  { "status": "...", "completedAt": "...", "summary": "<N domain instruction files | skipped: reason>" },
-    "6":  { "status": "...", "completedAt": "...", "summary": "<N instruction files written>" },
-    "6b": { "status": "...", "completedAt": "...", "summary": "<N templates written>" },
-    "7":  { "status": "...", "completedAt": "...", "summary": "<N agents written>" },
-    "8":  { "status": "...", "completedAt": "...", "summary": "<N skills written>" },
-    "9":  { "status": "...", "completedAt": "...", "summary": "<N prompts written>" },
-    "10": { "status": "...", "completedAt": "...", "summary": "<N hooks written | skipped>" },
-    "11": { "status": "...", "completedAt": "...", "summary": "<N workflows written | skipped: no CI/CD>" },
-    "12": { "status": "...", "completedAt": "...", "summary": "<validation passed | N issues fixed>" },
-    "13": { "status": "...", "completedAt": "...", "summary": "<devcontainer generated | optimized | skipped>" },
-    "14": { "status": "...", "completedAt": "...", "summary": "<manifest written, N files cleaned up>" }
-  },
-  "generatedFiles": ["<list of .github/ files generated so far — append after each phase>"],
-  "errors": ["<any errors encountered — helps diagnose resume>"]
-}
-```
+Templates should include assumption markers and examples based on the target domain when possible.
 
-**Rules:**
-- Create this file before Phase 1 starts, with all phases set to `"pending"`
-- Update `status` → `"in_progress"` when a phase begins
-- Update `status` → `"completed"` + `completedAt` + `summary` immediately after each phase
-- For skipped phases: set `status` → `"skipped"` + `summary` → reason
-- Append newly generated file paths to `generatedFiles` after each generation phase
-- If pipeline is interrupted, the last `in_progress` phase is the resume point
+---
 
-### Step 0b: Generate `.bootstrap-manifest.json`
+## Phase 8: Generate Agents
 
-**MUST run BEFORE cleanup** — this step collects all generated file paths while they still exist.
+Generate only the agents the target repo can support safely.
 
-Read the toolkit version from the `VERSION` file at the repository root of the **bootstrap toolkit** (not the target project). Generate `.github/.bootstrap-manifest.json` in the **target project**:
+### Mandatory rules
 
-```json
-{
-  "$schema": "https://copilot-bootstrap.dev/manifest.schema.json",
-  "generatedBy": "copilot-bootstrap",
-  "toolkitVersion": "<version from VERSION file>",
-  "generatedAt": "<ISO 8601 UTC timestamp>",
-  "classification": "<Small | Standard | Enterprise>",
-  "domainsDetected": <number>,
-  "techStack": {
-    "languages": ["<lang> <version>"],
-    "frameworks": ["<framework> <version>"],
-    "buildTools": ["<tool> <version>"],
-    "databases": ["<db> <version>"],
-    "testFrameworks": ["<framework> <version>"]
-  },
-  "generatedFiles": {
-    "copilotInstructions": ".github/copilot-instructions.md",
-    "agents": [".github/agents/<name>.agent.md"],
-    "skills": [".github/skills/<name>/SKILL.md"],
-    "instructions": [".github/instructions/<name>.instructions.md"],
-    "prompts": [".github/prompts/<name>.prompt.md"],
-    "hooks": [".github/hooks/<name>.json"],
-    "constitution": ".github/constitution.md",
-    "templates": [".github/templates/<name>.md"],
-    "domains": [".github/domains/domain-registry.json", ".github/domains/<name>.instructions.md"],
-    "devcontainer": [".devcontainer/devcontainer.json"],
-    "dependencyMap": ".github/module-dependency-map.json",
-    "moduleArchitecture": ".github/MODULE-ARCHITECTURE.md"
-  },
-  "contextBudget": {
-    "worstCaseKB": <number>,
-    "maxKB": 45,
-    "passed": <boolean>
-  },
-  "pipelineConfig": {
-    "phasesExecuted": [1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
-    "phasesSkipped": {
-      "5": "Not Enterprise classification",
-      "11": "No CI/CD detected",
-      "13": "User declined"
-    }
-  }
-}
-```
+- Every agent must reference the constitution.
+- Every agent must reference the actual target stack, not toolkit defaults.
+- Every business-aware claim must be backed by repo truth pack evidence or labeled as uncertain.
+- `dev-orchestrator` is the **default orchestration entry point**, not a promise that users never need explicit scope.
 
-**Rules:**
-- `generatedFiles` lists ONLY files actually generated (not skipped phases)
-- `techStack` values come from Phase 1 scan results
-- `pipelineConfig.phasesSkipped` records WHY each phase was skipped — this helps future migration agents
-- The manifest itself is NOT listed in `generatedFiles` (it's meta)
-- File MUST be valid JSON — validate before writing
+### Minimum core set
 
-### Step 1: Delete ALL Bootstrap Toolkit Template Files
+- `dev-orchestrator`
+- stack-specific implementor(s)
+- `test-specialist`
+- `code-reviewer`
 
-**Delete these bootstrap template agents** (ALL of them — they are toolkit templates, NOT project agents):
-```
-.github/agents/agent-generator.agent.md
-.github/agents/codebase-analyzer.agent.md
-.github/agents/conductor.agent.md
-.github/agents/devcontainer-reviewer.agent.md
-.github/agents/dotnet-implementor.agent.md
-.github/agents/frontend-implementor.agent.md
-.github/agents/mobile-architect.agent.md
-.github/agents/mobile-implementor.agent.md
-.github/agents/mobile-test-specialist.agent.md
-.github/agents/mock-data-specialist.agent.md
-.github/agents/php-implementor.agent.md
-.github/agents/pr-manager.agent.md
-.github/agents/python-implementor.agent.md
-.github/agents/refactoring-specialist.agent.md
-.github/agents/sequence-diagrammer.agent.md
-.github/agents/sprint-planner.agent.md
-.github/agents/dependency-analyzer.agent.md
-.github/agents/database-specialist.agent.md
-.github/agents/spec-reviewer.agent.md
-.github/agents/functional-reviewer.agent.md
-.github/agents/technical-reviewer.agent.md
-.github/agents/mobile-reviewer.agent.md
-```
+### Conditional agents
 
-**Delete these bootstrap template skills** (ALL skill directories):
-```
-.github/skills/analyze-codebase/
-.github/skills/context-budget-check/
-.github/skills/conventional-commit/
-.github/skills/core-principles/
-.github/skills/domain-registry/
-.github/skills/estimate-effort/
-.github/skills/generate-adr/
-.github/skills/generate-agentic-workflow/
-.github/skills/generate-copilot-config/
-.github/skills/generate-domain-instructions/
-.github/skills/generate-hooks/
-.github/skills/generate-mobile-tests/
-.github/skills/generate-pr-description/
-.github/skills/generate-sequence-diagram/
-.github/skills/generate-unit-tests/
-.github/skills/generate-wiremock/
-.github/skills/impact-analysis/
-.github/skills/implement-feature/
-.github/skills/implement-mobile-feature/
-.github/skills/investigate-pbi/
-.github/skills/learn-codebase/
-.github/skills/optimize-devcontainer/
-.github/skills/orchestrate-development/
-.github/skills/review-code-changes/
-.github/skills/sprint-planning/
-.github/skills/technical-debt-analysis/
-.github/skills/generate-state-diagram/
-.github/skills/review-spec/
-.github/skills/update-spec/
-.github/skills/resume-bootstrap/
-.github/skills/upgrade-config/
-.github/skills/validate-bootstrap-output/
-```
+Generate additional agents only when evidence supports them:
 
-**Delete these bootstrap template instructions** (ALL of them):
-```
-.github/instructions/*.instructions.md  (all 23 files)
-```
+- `investigator`
+- `business-analyst`
+- `spec-reviewer`
+- `sequence-diagrammer`
+- `dependency-analyzer`
+- `database-specialist`
+- mobile specialists
+- workflow specialists
 
-**Delete these bootstrap template templates** (ALL of them):
-```
-.github/templates/PRD-template.md
-.github/templates/API-contract-template.md
-.github/templates/DB-schema-template.md
-```
+For mixed-stack repos, keep specialist positioning stack-neutral unless evidence justifies a stack-specific bias.
 
-**Delete these bootstrap template prompts** (ALL of them):
-```
-.github/prompts/bootstrap-copilot.prompt.md
-.github/prompts/generate-agents.prompt.md
-.github/prompts/generate-skills.prompt.md
-.github/prompts/generate-instructions.prompt.md
-.github/prompts/analyze-project.prompt.md
-.github/prompts/implement-feature.prompt.md
-.github/prompts/specify-feature.prompt.md
-.github/prompts/learn-codebase.prompt.md
-```
+---
 
-**Delete the bootstrap copilot-instructions.md** (replaced by project-specific version in Phase 4):
-```
-.github/copilot-instructions.md  (the template version)
-```
+## Phase 9: Generate Skills
 
-**Delete bootstrap documentation:**
-```
-docs/enterprise-guide.md
-docs/context-budget-guide.md
-```
+Generate skills that match the target repo's actual workflows.
 
-Also add `dependency-extractor` to the bootstrap template skills delete list:
-```
-.github/skills/dependency-extractor/
-```
+### Mandatory rules
 
-### Step 2: Verify Expected Files Remain
+- skill name must match its directory name
+- use actual repo commands, paths, and patterns
+- add evidence and assumption rules to analysis-heavy skills
+- use conditional verification language, not universal promises
 
-After cleanup, `.github/` should contain generated project files plus the portable bundle docs that intentionally remain:
-- `.bootstrap-manifest.json` — generated in Phase 14 Step 0
-- `.bootstrap-state.json` — generated in Phase 14 Step 0a
-- `.phase3-checkpoint.md` — generated in Phase 3
-- `module-dependency-map.json` — generated in Phase 3b (**do NOT delete**)
-- `MODULE-ARCHITECTURE.md` — generated in Phase 3b (**do NOT delete**)
-- `README.md` — portable bundle overview (**keep**)
-- `docs/` — portable runtime/context/conventions/playbook docs (**keep**)
-- `constitution.md` — generated in Phase 6b, project-specific governance (**do NOT delete**)
-- `copilot-instructions.md` — generated in Phase 4, project-specific
-- `agents/` — generated in Phase 7, project-specific
-- `skills/` — generated in Phase 8, project-specific
-- `instructions/` — generated in Phase 6, project-specific
-- `templates/` — generated in Phase 6b, project-specific
-- `prompts/` — generated in Phase 9, project-specific
-- `hooks/` — generated in Phase 10, project-specific
-- `domains/` — generated in Phase 5, Enterprise only
+### Recommended core skills
 
-**Verification**: List all remaining files. Generated project files should be project-specific. The only intentionally generic survivors are `.github/README.md` and `.github/docs/`.
+- `implement-feature`
+- `generate-unit-tests`
+- `review-code-changes`
+- `orchestrate-development`
 
-### Step 3: Final Report
+### Conditional skills
 
-```
-✅ Bootstrap Complete!
-📁 .github/
-├── .bootstrap-manifest.json  ← toolkit version + generated file inventory
-├── constitution.md           ← architectural governance (9 Articles + Phase -1 Gates)
-├── copilot-instructions.md   ← [project name] index card
-├── agents/ ([count] project-specific agents)
-├── skills/ ([count] project-specific skills)
-├── instructions/ ([count] instruction files)
-├── templates/ ([count] templates — PRD, API contract, DB schema)
-├── prompts/ ([count] prompts)
-└── hooks/ ([count] hooks)
+- spec pipeline skills
+- sprint planning
+- sequence/state diagram generation
+- impact analysis
+- wiremock or integration helpers
+- devcontainer or infra helpers
 
-🐳 .devcontainer/ (if generated)
+For large repos, make skills prefer domain-scoped execution by default.
 
-Toolkit version: [version from VERSION file]
-Classification: [Small/Standard/Enterprise]
-Domains detected: [count]
-Context budget: [worst-case KB] / 45 KB max
-Validation: [passed/N issues fixed]
-Manifest: .github/.bootstrap-manifest.json ✅
+---
 
-🧹 Cleanup:
-- Deleted [N] bootstrap template agents
-- Deleted [N] bootstrap template skills
-- Deleted [N] bootstrap template instructions
-- Deleted [N] bootstrap template prompts
-- Deleted bootstrap copilot-instructions.md + external docs/
-- Remaining: [N] generated files + portable `.github` guidance docs
-```
+## Phase 10: Generate Prompts
+
+Generate prompts as compact entry points, not miniature policy documents.
+
+Always include:
+
+- `/bootstrap-copilot`
+- `/implement-feature`
+- `/specify-feature` when spec-first work is supported
+
+Prompts should point users toward:
+
+- repo truth pack artifacts
+- scoped workflows
+- explicit confirmation before risky implementation
+
+---
+
+## Phase 11: Hooks and Optional Workflows
+
+Generate hooks only when the target repo has a practical command surface for them.
+
+Examples:
+
+- post-edit format checks
+- lint checks
+- compile checks
+- security gates for dangerous commands
+
+Generate agentic workflows only when CI/CD evidence exists and the repo would benefit from them.
+
+Avoid creating hooks that will fail constantly in normal local development.
+
+---
+
+## Phase 12: Validate
+
+Validation is mandatory.
+
+### Structural validation
+
+- frontmatter is valid
+- required files exist
+- no placeholder content
+- names and paths are consistent
+
+### Functional validation
+
+- instructions match real files
+- generated agents reference real stacks and repo truth
+- skills reference actual commands
+- no agent references a specialist that was not generated
+- repo truth pack exists for Standard/Enterprise repos
+- generated docs match the repo-size strategy instead of over-generating or under-generating
+- `docs/00-repo-overview.md` and `docs/03-verification-runbook.md` always exist
+- `docs/01-business-glossary.md` and `docs/02-architecture-map.md` exist for Standard/Enterprise repos
+- module/workflow/decision docs appear only when the repo size and evidence justify them
+- important docs include an `Unknowns` or `Assumptions` section when appropriate
+
+### Context validation
+
+- `copilot-instructions.md` stays compact
+- domain instructions remain scoped
+- prompts stay lightweight
+- large repos favor scoped memory over dumping everything into one file
+
+### Truthfulness validation
+
+Reject generated output that:
+
+- promises 100% branch coverage everywhere by default
+- claims full autonomy without scope caveats
+- claims business awareness without evidence
+- implies verification happened when it did not
+
+---
+
+## Phase 13: Devcontainer
+
+If the target repo already has a devcontainer, review it.
+
+If it does not:
+
+- ask whether the user wants one
+- generate only if there is clear value
+
+Do not force devcontainer output on every repo.
+
+---
+
+## Phase 14: Manifest, Cleanup, and Summary
+
+Write a manifest describing what was generated and why.
+
+Recommended artifacts:
+
+- `.github/.bootstrap-manifest.json`
+- `.github/.bootstrap-state.json`
+
+The manifest is the authoritative keep list for the final generated `.github/` tree.
+
+At minimum, record:
+
+- project classification and context risk
+- toolkit version
+- generated files to keep
+- skipped file groups and why they were skipped
+- optional files intentionally retained for runtime use
+- major assumptions and unresolved gaps
+
+The final summary should include:
+
+- classification and context risk
+- truth-pack status
+- generated files
+- skipped files and why
+- major assumptions
+- recommended next step
+
+Cleanup is mandatory, not optional.
+
+After generation and validation:
+
+1. Compare the copied bootstrap bundle with `.github/.bootstrap-manifest.json`.
+2. Delete files and folders that are not listed in the manifest keep list.
+3. Keep only files that are:
+   - generated specifically for the target repo
+   - required runtime assets for the generated repo
+   - manifest/state/checkpoint artifacts explicitly declared in the manifest
+
+Cleanup should remove stale or irrelevant toolkit assets, especially:
+
+- unused stack instruction templates
+- unused specialist agents and skills
+- prompts that are not supported in the generated repo
+- bootstrap-only operator docs that describe the toolkit rather than the target repo
+- placeholder docs for module/workflow/integration/ADR layers that were not justified by scan results
+
+Do not delete files blindly. Delete only when the manifest or repo-size strategy says they are out of scope.
+Do not keep the full copied toolkit inventory unless the repo was proven, from non-bundle evidence, to be the toolkit source repository itself.
+
+Success means the final `.github/` folder looks like a tailored project configuration, not a copied toolkit source tree.
+
+## Final Standard
+
+Bootstrap is successful only when:
+
+- the generated `.github/` bundle is usable on its own
+- repo truth exists for later agents
+- docs scale progressively with repo size
+- claims are evidence-backed
+- large repos are treated with progressive discovery, not overconfident automation

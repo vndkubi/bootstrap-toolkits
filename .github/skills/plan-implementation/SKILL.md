@@ -1,142 +1,142 @@
 ---
 name: plan-implementation
-description: 'Creates a comprehensive implementation plan from a reviewed specification. Maps requirements to technical architecture, validates against the Project Constitution phase gates, identifies file changes, estimates effort, and produces a structured plan document. Second step in the Spec → Plan → Tasks pipeline.'
+description: "Creates a comprehensive implementation plan from a reviewed specification. Runs constitutional gates, maps requirements to technical decisions, and generates the supporting spec-kit artifacts needed for execution: plan.md, research.md, data-model.md, contracts/, and quickstart.md."
 ---
 
 # Plan Implementation
 
-Transforms a reviewed specification into a detailed, actionable implementation plan. This is the **second step** in the Spec → Plan → Tasks pipeline.
+Transforms a reviewed specification into a detailed, actionable implementation plan. This is the second step in the Spec -> Plan -> Tasks pipeline.
 
 ## When to Use
 
-- A specification (from `specify-feature` or user-provided) is ready and reviewed
-- User asks to "plan the implementation", "create a technical plan", "how should we build this"
+- A specification from `specify-feature` or an equivalent user-approved spec is ready
+- User asks to plan implementation or translate requirements into technical design
 - `@dev-orchestrator` routes here after spec review
-- Before any non-trivial feature implementation (3+ files affected)
+- The feature is non-trivial or crosses multiple layers
 
 ## Prerequisites
 
-- Reviewed specification with all `[NEEDS CLARIFICATION]` markers resolved
-- Access to codebase for architectural analysis
+- Reviewed specification with blocking `[NEEDS CLARIFICATION]` markers resolved
+- Access to the codebase for architectural analysis
+- A feature workspace such as `specs/<feature-id>-<slug>/`
+
+## Required Outputs
+
+Planning must generate or update these artifacts inside the feature workspace:
+
+- `plan.md`
+- `research.md`
+- `data-model.md` when entities or state change matter
+- `contracts/` when API, event, or schema contracts matter
+- `quickstart.md`
+
+These artifacts are part of the implementation input, not optional decoration.
 
 ## Workflow
 
-### Step 1: Read & Validate Specification
+### Step 1: Read And Validate The Spec
 
-1. Read the spec document
-2. Verify all `[NEEDS CLARIFICATION]` markers are resolved — if not, STOP and ask user
-3. Extract: user stories, functional requirements, non-functional requirements, constraints
+1. Read `spec.md`.
+2. Verify blocking `[NEEDS CLARIFICATION]` markers are resolved.
+3. Extract user stories, requirements, constraints, success criteria, and non-functional requirements.
+
+If critical ambiguity remains, stop and ask the user before planning.
 
 ### Step 2: Constitutional Pre-Flight
 
 Run [Phase -1 Gates](../../constitution.md) against the proposed feature:
 
-#### Gate 1: Simplicity Gate
-- Can this be done with fewer new files/abstractions?
-- Is there a simpler approach that meets all requirements?
-- Document justification if complexity is needed
+- Simplicity
+- Duplication
+- Business Logic
+- Impact
 
-#### Gate 2: Duplication Gate
-- What existing code can be reused?
-- Which layers will handle which validation?
-- Are there existing utilities, base classes, or shared components?
+Document the result of each gate and note any justified exceptions.
 
-#### Gate 3: Business Logic Gate
-- What existing business rules does this interact with?
-- What state transitions are affected?
-- What domain entities are involved?
+### Step 3: Research-Driven Context
 
-#### Gate 4: Impact Gate
-- Which modules/services are affected?
-- Are there API contract changes?
-- Are there database schema changes?
-- What are the cross-module dependencies?
+Create `research.md` for questions that affect technical choices. Capture:
 
-**Document gate results in the plan. If any gate fails, propose remediation.**
+- library or framework options
+- compatibility constraints
+- performance implications
+- security or compliance implications
+- organizational constraints
 
-### Step 3: Architectural Design
+Every important technology choice in the plan should trace back to a requirement or research note.
 
-Map requirements to technical architecture:
+### Step 4: Technical Translation
 
-1. **Component Design**: List each component to create/modify
-   | Component | Type | Action | Layer | Responsibility |
-   |-----------|------|--------|-------|---------------|
-   | [name] | Entity/DTO/Service/Controller/... | Create/Modify | Data/Business/API | [what it does] |
+Map requirements to architecture in `plan.md`:
 
-2. **Data Model Changes**: New/modified entities, relationships, migrations
-3. **API Contract Changes**: New/modified endpoints, request/response shapes
-4. **Integration Points**: External services, messaging, events affected
-5. **Sequence Diagrams**: As-is and to-be flows with change markers (🆕 ✏️ ❌)
+- components to create or modify
+- affected layers and modules
+- integration points
+- rollback concerns
+- implementation ordering
+- verification checkpoints
 
-### Step 4: Implementation Strategy
+Keep `plan.md` readable and decision-focused. Push bulky details into supporting artifacts instead of turning the plan into a code dump.
 
-Define HOW to build it:
+### Step 5: Supporting Artifacts
 
-1. **Implementation Order**: Layer-by-layer sequence following stack conventions
-   - Reference `orchestrate-development` skill for stack-specific ordering
-2. **Incremental Verification Points**: Where to stop and verify (build/test) before proceeding
-3. **Risk Mitigation**: How to handle each identified risk
-4. **Rollback Plan**: How to safely revert if something goes wrong
+Generate supporting spec-kit files when relevant:
 
-### Step 5: Effort Estimation
+- `data-model.md`: entities, relationships, state transitions, invariants
+- `contracts/`: API contracts, event schemas, queue/topic payloads, CLI or file contracts
+- `quickstart.md`: key validation scenarios, setup notes, and happy-path checks
 
-| Task | Layer | Story Points | Dependencies | Parallelizable? |
-|------|-------|-------------|-------------|-----------------|
-| [task] | [layer] | [SP] | [depends on] | Yes/No |
+If an artifact is not needed, say why in `plan.md`.
 
-**Total**: [N] story points
-**Recommended split**: [how to divide across sprints if needed]
+### Step 6: Traceability Check
 
-### Step 6: Validation Criteria
+Verify:
 
-Define what "done" looks like:
-
-- [ ] All acceptance criteria from spec are covered
-- [ ] Unit test coverage target: 100% branch
-- [ ] Integration test scenarios defined
-- [ ] Performance targets met (from NFRs)
-- [ ] Constitutional gates passed
-- [ ] Build + Test + Lint green
+- every major technical choice traces to one or more requirements
+- every risky requirement has mitigation or verification notes
+- every new contract or model change is represented in the supporting artifacts
 
 ## Output Format
 
-Save as `specs/[feature-name]/plan.md` (alongside the spec).
+Save the main plan as `specs/<feature-id>-<slug>/plan.md`.
 
-```markdown
-# [Feature Name] — Implementation Plan
+Recommended sections:
 
-> Generated by: plan-implementation skill
-> Spec: [link to spec.md]
-> Date: [YYYY-MM-DD]
-> Constitutional Gates: ✅ All passed / ⚠️ Exceptions documented
+```md
+# <Feature Name> - Implementation Plan
+
+> Generated by: plan-implementation
+> Spec: ./spec.md
+> Workspace: specs/<feature-id>-<slug>/
+> Date: <YYYY-MM-DD>
 
 ## Constitutional Gate Results
-[Gate check results]
+
+## Requirement Traceability
 
 ## Architecture
-[Component design, data model, API contracts, sequence diagrams]
+
+## Supporting Artifacts
 
 ## Implementation Strategy
-[Order, verification points, risks, rollback]
 
-## Effort Estimation
-[Task breakdown with story points]
+## Verification Strategy
 
-## Validation Criteria
-[Definition of done]
+## Risks And Rollback
 ```
 
 ## Next Step
 
-Once the plan is reviewed and approved:
-→ Proceed to `generate-tasks` skill to create executable task list
+Once the plan and supporting artifacts are reviewed:
+
+- proceed to `generate-tasks`
 
 ## Validation
 
-- [ ] All spec requirements are covered in the plan
-- [ ] Constitutional gates documented (passed or exceptions noted)
-- [ ] Implementation order follows stack conventions
-- [ ] Incremental verification points defined
-- [ ] Every component has clear responsibility and layer assignment
-- [ ] Effort estimation includes dependencies and parallelization flags
-- [ ] Rollback plan exists for database and API changes
+- [ ] Blocking `[NEEDS CLARIFICATION]` markers are resolved before planning
+- [ ] Constitutional gates are documented
+- [ ] `research.md` exists when technical choices required investigation
+- [ ] `data-model.md` exists when model or state changes matter
+- [ ] `contracts/` exists when contract changes matter
+- [ ] `quickstart.md` captures key validation scenarios
+- [ ] Technical choices trace back to requirements or research
