@@ -1,100 +1,43 @@
 # Copilot Bootstrap Toolkit
 
-Bootstrap Toolkit — analyzes codebases and generates complete GitHub Copilot configurations (agents, skills, instructions, hooks, agentic workflows).
+This repository is the bootstrap toolkit itself. Most files under `.github/agents/`, `.github/skills/`, `.github/instructions/`, `.github/prompts/`, and `.github/templates/` are template or generation assets for downstream projects, not project-specific outputs for this repository.
 
-## Tech Stack
+## Read This Repository In Layers
 
-Java/Jakarta EE | .NET/C# | Python | PHP | Android/Kotlin | iOS/Swift | TypeScript/React
+- `.github/README.md`: portable bundle overview for copy-and-bootstrap usage.
+- `.github/prompts/bootstrap-copilot.prompt.md`: main entry point after the bundle is copied.
+- `.github/skills/generate-copilot-config/SKILL.md`: canonical bootstrap pipeline and validation source of truth.
+- `.github/agents/conductor.agent.md`: orchestration behavior for bootstrap and multi-step delegation.
+- `.github/docs/runtime-overview.md`: request, prompt, and tool-loop mental model.
+- `.github/docs/tool-runtime.md`: tool exposure, round-trips, and hook-aligned automation guidance.
+- `.github/docs/prompt-and-context.md`: context layering, prompt-shape, and signal-vs-noise rules.
+- `.github/docs/github-resource-conventions.md`: which `.github/` files are prompt resources versus governance or generated output.
+- `.github/docs/user-playbook.md`: practical user guidance for prompts, threads, and verification.
+- `.github/docs/team-operating-model.md`: how to convert repeated prompt pain into durable repo memory.
+- `.github/constitution.md`: immutable governance referenced by agents, skills, prompts, and templates.
+- `README.md`: broader product overview in the source repository.
 
-## Architecture
+## Working Rules For This Repo
 
-Conductor agent orchestrates a pipeline: `Analyze → Generate Instructions → Generate Agents → Generate Skills → Generate Hooks → Validate → Cleanup`
+- Optimize for maintaining the toolkit, not for treating generated template files as if they were already tailored to this repository.
+- Keep the portable bootstrap bundle self-contained inside `.github/` so users can copy this folder alone into a target repository and run `/bootstrap-copilot`.
+- Keep the system aligned across surfaces. If a pipeline step, naming rule, validation rule, supported stack, or generated artifact changes, update the relevant skill, agents, prompts, README, and docs together.
+- Prefer repo-specific operational guidance over brochure-style text. Copilot works better when instructions explain how to maintain this toolkit.
+- Treat missing generated-project artifacts as expected unless the task is explicitly about generation outputs. In this repository, the absence of `.github/hooks/`, `.github/domains/`, `.github/.bootstrap-manifest.json`, `.github/.bootstrap-state.json`, `.github/module-dependency-map.json`, and `.github/MODULE-ARCHITECTURE.md` is normal.
+- Most language `.instructions.md` files are template outputs. They usually do not describe this repository's own implementation conventions.
 
-## Project Constitution
+## Sync Expectations
 
-All agents, skills, and workflows MUST comply with the [Project Constitution](constitution.md) — 9 immutable Articles with Phase -1 Gates that enforce quality before implementation begins.
+- Pipeline logic lives primarily in `.github/skills/generate-copilot-config/SKILL.md`. Do not redefine the same workflow differently in prompts or agents.
+- If you rename an agent or skill, keep file names, frontmatter names, directory names, README references, prompt references, and orchestrator `agents:` lists in sync.
+- If you change a spec-driven flow, review the related agents, prompts, templates, and skills as one unit.
+- When auditing `.github/`, distinguish between template inventory, source-of-truth files, and generated runtime artifacts.
 
-## Golden Rules
+## Preferred Verification
 
-1. **Read code flow first** — trace Controller → Service → Repository → DB before changing anything
-2. **No duplicate validation** — each layer validates only what it owns (REST: format, Service: business, DB: integrity)
-3. **Match existing patterns** — follow the codebase conventions, don't introduce new patterns
-4. **Explain decisions** — state WHY before each significant change, provide structured summary after
-5. **Ask when unclear** — use `[NEEDS CLARIFICATION]` markers for uncertainties, ask 3-5 targeted questions
-6. **Pass gates before coding** — Phase -1 Gates (Simplicity, Duplication, Business Logic, Impact) must pass before implementation
-
-For full detail on all 9 Articles, see the `constitution.md`. For engineering principles, see the `core-principles` skill.
-
-## Available Agents
-
-### Core Development
-
-| Agent | Purpose |
-|-------|---------|
-| `@dev-orchestrator` | **Start here** — auto-routes to correct sub-agent based on intent |
-| `@conductor` | Orchestrates the full bootstrap pipeline |
-| `@codebase-analyzer` | Deep codebase analysis, domain mapping, tech stack detection |
-| `@investigator` | PBI investigation, as-is/to-be analysis, impact assessment |
-| `@implementor` | Java/Jakarta EE implementation |
-| `@dotnet-implementor` | .NET/C# implementation (ASP.NET Core, EF Core) |
-| `@python-implementor` | Python implementation (Django/FastAPI) |
-| `@php-implementor` | PHP implementation (Laravel/Symfony) |
-| `@frontend-implementor` | TypeScript/React/Vue/Angular implementation |
-| `@test-specialist` | Unit tests with 100% branch coverage target |
-| `@code-reviewer` | Code review orchestrator (multi-stage pipeline) |
-| `@functional-reviewer` | Business logic review, AC traceability, data integrity |
-| `@technical-reviewer` | Architecture, migration safety, domain boundaries, NFRs |
-
-### Bootstrap & Analysis
-
-| Agent | Purpose |
-|-------|---------|
-| `@agent-generator` | Meta-agent: generates Copilot agents, skills, instructions from codebase analysis |
-| `@business-analyst` | Requirements analysis, PBI writing, acceptance criteria |
-
-### Specialized
-
-| Agent | Purpose |
-|-------|---------|
-| `@sequence-diagrammer` | Mermaid sequence diagrams |
-| `@spec-reviewer` | Spec review with Security + Testability lenses |
-| `@mock-data-specialist` | WireMock stubs, test fixtures |
-| `@sprint-planner` | Sprint planning, PBI decomposition, estimation |
-| `@refactoring-specialist` | Code smell detection, safe refactoring |
-| `@pr-manager` | PR descriptions, merge strategy |
-| `@dependency-analyzer` | Cross-module impact analysis, dependency graphs |
-| `@database-specialist` | Schema review, migration strategy, query optimization |
-| `@devcontainer-reviewer` | DevContainer optimization and generation |
-
-### Mobile
-
-| Agent | Purpose |
-|-------|---------|
-| `@mobile-implementor` | Android (Kotlin/Compose) and iOS (Swift/SwiftUI) |
-| `@mobile-test-specialist` | Mobile unit and UI tests |
-| `@mobile-architect` | Mobile architecture review |
-
-## Common Workflows
-
-- **Implement a feature**: `@dev-orchestrator Implement [description]`
-- **Investigate a PBI**: `@investigator Investigate [description]`
-- **Spec-driven pipeline**: `@dev-orchestrator Spec [description]` → specify → plan → tasks → implement
-- **Review a spec**: `@spec-reviewer Review spec at docs/requirements/[name].md`
-- **Write tests**: `@test-specialist Write tests for [class]`
-- **Code review**: `@code-reviewer Review changes in [branch]` (runs Functional → Technical pipeline)
-- **Sprint planning**: `@sprint-planner Break down PBI-123`
-- **Review config effectiveness**: `@dev-orchestrator Review effectiveness after 2 sprints`
-
-## Prompts
-
-| Prompt | Purpose |
-|--------|---------|
-| `/bootstrap-copilot` | Full bootstrap pipeline for a new project |
-| `/analyze-project` | Deep codebase analysis report |
-| `/learn-codebase` | Interactive business domain onboarding |
-| `/implement-feature` | End-to-end feature implementation (for well-defined PBIs) |
-| `/specify-feature` | Spec-driven pipeline: specify → plan → tasks → implement (for vague or large features) |
-
-## Domain Context
-
-See domain-scoped `.instructions.md` files for per-domain business rules, entity relationships, and glossary. For enterprise projects (5+ domains), each domain has its own instruction file that auto-loads when editing files in that domain.
+- Check frontmatter completeness and cross-reference consistency.
+- Check that skill `name` matches the skill directory.
+- Check that prompts stay lightweight entry points and skills keep the detailed workflow.
+- Check that repo docs and `.github/` guidance describe the same behavior.
+- Check that `.github/docs/` still explains runtime flow, context strategy, `.github` conventions, and practical prompting.
+- Check that `.github/docs/` still covers tool runtime and team operating model guidance.

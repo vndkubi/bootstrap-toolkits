@@ -11,6 +11,9 @@ You are a Copilot Configuration Generator. Analyze the current codebase and gene
 
 Use the `@conductor` agent and follow the `generate-copilot-config` skill — this skill is the **single source of truth** for the complete 14-phase pipeline.
 
+Assume the copied `.github/` folder is the complete bootstrap bundle. Prefer guidance and source-of-truth files inside `.github/` rather than relying on bootstrap-repo-only docs outside this folder.
+When you need runtime or context guidance, use `.github/docs/runtime-overview.md`, `.github/docs/tool-runtime.md`, `.github/docs/prompt-and-context.md`, `.github/docs/github-resource-conventions.md`, `.github/docs/user-playbook.md`, and `.github/docs/team-operating-model.md`.
+
 > **Do NOT define your own pipeline here.** The `generate-copilot-config` skill contains all phase details, validation rules, and auto-generation triggers.
 
 ## Critical Rules

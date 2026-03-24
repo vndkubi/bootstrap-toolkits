@@ -8,6 +8,16 @@ description: 'Complete GitHub Copilot configuration generator. Runs the full 14-
 > **This file is the SINGLE SOURCE OF TRUTH for the bootstrap pipeline.**
 > All other files (`bootstrap-copilot.prompt.md`, `conductor.agent.md`) reference this skill — they do NOT define their own pipeline.
 
+## Portable Bundle Rule
+
+The copied `.github/` folder must be usable as a self-contained bootstrap bundle.
+
+- Any guidance required to run `/bootstrap-copilot` after copying the folder should live inside `.github/`.
+- Do not depend on bootstrap-repo-only documents outside `.github/` for core operation.
+- It is still valid to analyze the target repository's own `README.md`, build files, source code, and docs during the scan.
+- Keep portable runtime/context/conventions/playbook docs in `.github/docs/` so the copied bundle remains self-explanatory.
+- Keep `.github/docs/` broad enough to cover runtime overview, tool runtime, prompt/context rules, `.github` conventions, user playbook, and team operating model.
+
 ## Pipeline Overview
 
 ```
@@ -744,6 +754,9 @@ If triggered, generate `.github/copilot/` workflow files:
 - [ ] No agent references a sub-agent that wasn't generated
 - [ ] Hooks reference commands that exist in the project (e.g., `mvn` if maven hook)
 - [ ] No two instruction files have overlapping `applyTo` patterns covering the same rules
+- [ ] The bootstrap bundle remains operable from `.github/` alone without requiring bootstrap-repo-only docs outside `.github/`
+- [ ] `.github/docs/` includes runtime overview, prompt/context guidance, `.github` conventions, and a user playbook
+- [ ] `.github/docs/` also covers tool runtime and team operating model guidance
 
 ### Tier 2b: Constitutional Compliance Validation
 - [ ] `constitution.md` exists in `.github/` with all 9 Articles and Phase -1 Gates
@@ -780,7 +793,7 @@ Runs BEFORE cleanup so bootstrap agents (`@devcontainer-reviewer`) are still ava
 
 ## Phase 14: Manifest, Cleanup & Final Report
 
-> **This phase is CRITICAL.** First, generate the bootstrap manifest to record what was generated and by which toolkit version. Then delete all bootstrap template files. Only project-specific generated files remain.
+> **This phase is CRITICAL.** First, generate the bootstrap manifest to record what was generated and by which toolkit version. Then delete all bootstrap template files. Generated project files should remain, along with the portable `.github/README.md` and `.github/docs/` guidance docs.
 
 ### Step 0a: Generate `.github/.bootstrap-state.json` (Pipeline State Tracker)
 
@@ -985,14 +998,16 @@ Also add `dependency-extractor` to the bootstrap template skills delete list:
 .github/skills/dependency-extractor/
 ```
 
-### Step 2: Verify Only Project-Specific Files Remain
+### Step 2: Verify Expected Files Remain
 
-After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
+After cleanup, `.github/` should contain generated project files plus the portable bundle docs that intentionally remain:
 - `.bootstrap-manifest.json` — generated in Phase 14 Step 0
 - `.bootstrap-state.json` — generated in Phase 14 Step 0a
 - `.phase3-checkpoint.md` — generated in Phase 3
 - `module-dependency-map.json` — generated in Phase 3b (**do NOT delete**)
 - `MODULE-ARCHITECTURE.md` — generated in Phase 3b (**do NOT delete**)
+- `README.md` — portable bundle overview (**keep**)
+- `docs/` — portable runtime/context/conventions/playbook docs (**keep**)
 - `constitution.md` — generated in Phase 6b, project-specific governance (**do NOT delete**)
 - `copilot-instructions.md` — generated in Phase 4, project-specific
 - `agents/` — generated in Phase 7, project-specific
@@ -1003,7 +1018,7 @@ After cleanup, `.github/` should contain ONLY files generated in Phases 4-14:
 - `hooks/` — generated in Phase 10, project-specific
 - `domains/` — generated in Phase 5, Enterprise only
 
-**Verification**: List all remaining files. If ANY file contains generic/template content (not referencing this project's actual tech stack, entities, or patterns), it was not properly generated — delete and regenerate.
+**Verification**: List all remaining files. Generated project files should be project-specific. The only intentionally generic survivors are `.github/README.md` and `.github/docs/`.
 
 ### Step 3: Final Report
 
@@ -1034,6 +1049,6 @@ Manifest: .github/.bootstrap-manifest.json ✅
 - Deleted [N] bootstrap template skills
 - Deleted [N] bootstrap template instructions
 - Deleted [N] bootstrap template prompts
-- Deleted bootstrap copilot-instructions.md + docs/
-- Remaining: [N] project-specific generated files
+- Deleted bootstrap copilot-instructions.md + external docs/
+- Remaining: [N] generated files + portable `.github` guidance docs
 ```

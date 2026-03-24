@@ -135,11 +135,11 @@ Create `.github/hooks/*.json` files for automated quality enforcement during age
 | Prettier | `auto-format.json` | `postToolUse` | `npx prettier --write .` |
 | Black (Python) | `auto-format.json` | `postToolUse` | `python -m black .` |
 | ktlint (Kotlin) | `auto-format.json` | `postToolUse` | `./gradlew ktlintFormat -q` |
-| ESLint | `lint-check.json` | `agentStop` | `npx eslint . --max-warnings 0` |
-| Checkstyle | `lint-check.json` | `agentStop` | `mvn checkstyle:check -q` |
-| Maven | `compile-check.json` | `agentStop` | `mvn compile -q -DskipTests` |
-| Gradle | `compile-check.json` | `agentStop` | `./gradlew compileJava -q` |
-| TypeScript | `compile-check.json` | `agentStop` | `npx tsc --noEmit` |
+| ESLint | `lint-check.json` | `postToolUse` | `npx eslint . --max-warnings 0` |
+| Checkstyle | `lint-check.json` | `postToolUse` | `mvn checkstyle:check -q` |
+| Maven | `compile-check.json` | `postToolUse` | `mvn compile -q -DskipTests` |
+| Gradle | `compile-check.json` | `postToolUse` | `./gradlew compileJava -q` |
+| TypeScript | `compile-check.json` | `postToolUse` | `npx tsc --noEmit` |
 
 **Hook file format:**
 ```json
@@ -164,7 +164,7 @@ Create `.github/hooks/*.json` files for automated quality enforcement during age
 - Keep `postToolUse` hooks fast (< 30s) — they run after every tool call
 - Keep `preToolUse` hooks very fast (< 10s) — they block tool execution
 - Non-zero exit code blocks the action
-- Use `agentStop` for heavier checks (lint, compile) that only run once when agent finishes
+- Use `postToolUse` with tool-name filtering for heavier checks (lint, compile); GitHub Copilot does not support `agentStop`
 
 ### Phase 7: Validate
 

@@ -1,57 +1,76 @@
 ---
 name: generate-hooks
-description: 'Generate GitHub Copilot hooks (.github/hooks/*.json) for automating lifecycle events during agent sessions. Creates hook configurations for auto-formatting after file edits, lint checks on agent stop, security gating before tool use, and governance audit. Detects project formatters and linters to generate tailored hooks. Use when bootstrapping Copilot config, setting up quality automation, or adding lifecycle hooks.'
+description: 'Generate GitHub Copilot hooks (.github/hooks/*.json) for formatter, lint, compile, security, and audit automation. Uses only official hook events and prefers postToolUse with tool filtering for quality checks. Use when bootstrapping Copilot config, setting up quality automation, or adding lifecycle hooks.'
 ---
 
 # Generate Copilot Hooks
 
-Generate `.github/hooks/*.json` files that automate shell commands at key moments during Copilot agent sessions.
+Generate `.github/hooks/*.json` files that automate shell commands at useful points during GitHub Copilot sessions.
 
 ## When to Use
 
-- Bootstrapping a new Copilot configuration (as part of the pipeline)
-- User wants auto-formatting after Copilot edits files
-- User wants lint checks to run when agent finishes
-- User wants security gates before shell commands execute
-- Keywords: "hooks", "auto-format", "auto-lint", "quality gates", "lifecycle automation"
+- Bootstrapping a new Copilot configuration
+- Adding formatter, lint, compile, or security automation
+- Standardizing quality checks across repositories
+- Keywords: "hooks", "auto-format", "lint automation", "compile checks", "security gate"
 
-## Hook Events Reference
+## Source of Truth
 
-> **Official GitHub Copilot hook events** — only these 6 events are supported. `agentStop` and `subagentStop` do NOT exist for GitHub Copilot hooks.
+- `.github/skills/generate-copilot-config/SKILL.md`
+- `.github/constitution.md`
+- `.github/docs/runtime-overview.md`
+- `.github/docs/github-resource-conventions.md`
 
-| Event | When it Fires | Common Use |
-|-------|---------------|------------|
-| `sessionStart` | Agent session begins | Initialize environments, validate project state |
-| `sessionEnd` | Agent session completes | Final checks, cleanup, audit trail |
-| `userPromptSubmitted` | User submits a prompt | Audit prompts, rate-limit, compliance logging |
-| `preToolUse` | Before each tool execution | Block dangerous commands, enforce security policies |
-| `postToolUse` | After each tool execution | Format code after file edits, log tool usage |
-| `errorOccurred` | Error during execution | Log errors, send alerts |
+## Official Hook Events
 
-### Choosing the Right Event for Quality Checks
+Only these GitHub Copilot hook events are supported:
 
-There is no "agentStop" equivalent in GitHub Copilot hooks. Use this mapping instead:
+- `sessionStart`
+- `sessionEnd`
+- `userPromptSubmitted`
+- `preToolUse`
+- `postToolUse`
+- `errorOccurred`
 
-| Quality Check Goal | Recommended Event | Rationale |
-|-------------------|-----------------|-----------|
-| Auto-format after file edit | `postToolUse` | Fires immediately after each edit |
-| Lint check | `postToolUse` (filter by tool) | Run only when file-editing tools are used |
-| Compile check | `postToolUse` (filter by tool) | Run after file writes |
-| Security gate | `preToolUse` | Block before execution, not after |
-| Session audit log | `sessionStart` + `sessionEnd` | Bracket the full session |
-| Error monitoring | `errorOccurred` | Catch failures as they happen |
+`agentStop` and `subagentStop` are not valid GitHub Copilot hook events.
 
-**Filtering by tool in `postToolUse`** — the hook receives `toolName` in its stdin JSON. Use a script that reads stdin and skips non-edit tools:
+## Event Selection Rules
 
-```bash
-#!/bin/bash
-# Only run quality check when a file was edited
-TOOL=$(echo "$STDIN_JSON" | jq -r '.toolName // empty')
-case "$TOOL" in
-  "str_replace_editor"|"create_file"|"write_file"|*"edit"*|*"write"*) ;;
-  *) exit 0 ;;  # skip — not a file-editing tool
-esac
-# run your quality check here
+| Goal | Recommended Event | Reason |
+|---|---|---|
+| Auto-format after file edits | `postToolUse` | Runs after edit/write tools |
+| Lint checks | `postToolUse` with tool filtering | Run only after file-changing tools |
+| Compile checks | `postToolUse` with tool filtering | Run after writes, not every prompt |
+| Security guardrails | `preToolUse` | Block risky commands before execution |
+| Prompt/session audit | `userPromptSubmitted`, `sessionStart`, `sessionEnd` | Good for logging and governance |
+| Error logging | `errorOccurred` | Capture failures as they happen |
+
+## Detection Matrix
+
+| Detection | Hook File | Event | Command |
+|---|---|---|---|
+| Maven + Spotless | `auto-format.json` | `postToolUse` | `mvn spotless:apply -q` |
+| Prettier | `auto-format.json` | `postToolUse` | `npx prettier --write .` |
+| Black | `auto-format.json` | `postToolUse` | `python -m black .` |
+| ktlint | `auto-format.json` | `postToolUse` | `./gradlew ktlintFormat -q` |
+| ESLint | `lint-check.json` | `postToolUse` | `npx eslint . --max-warnings 0` |
+| Checkstyle | `lint-check.json` | `postToolUse` | `mvn checkstyle:check -q` |
+| PMD / detekt | `lint-check.json` | `postToolUse` | project-specific lint command |
+| Maven / Gradle compile | `compile-check.json` | `postToolUse` | project-specific compile command |
+| TypeScript | `compile-check.json` | `postToolUse` | `npx tsc --noEmit` |
+| Security command restrictions | `security-gate.json` | `preToolUse` | policy command or script |
+
+## Tool Filtering Pattern
+
+For lint and compile checks, use `postToolUse` with filtering so expensive commands run only after file-changing tools.
+
+Example logic:
+
+```text
+If toolName indicates file edit/write/create/replace/patch:
+  run formatter/lint/compile
+Else:
+  exit successfully without doing anything
 ```
 
 ## Hook File Format
@@ -62,273 +81,82 @@ Location: `.github/hooks/<hook-name>.json`
 {
   "version": 1,
   "hooks": {
-    "<event>": [
+    "postToolUse": [
       {
         "type": "command",
-        "bash": "<unix command>",
-        "powershell": "<windows command>",
+        "bash": "./scripts/run-quality-check.sh",
+        "powershell": ".\\scripts\\run-quality-check.ps1",
         "cwd": ".",
-        "timeoutSec": 30,
-        "env": {
-          "CUSTOM_VAR": "value"
-        }
+        "timeoutSec": 30
       }
     ]
   }
 }
 ```
 
-**Key rules:**
-- `type` is always `"command"`
-- Either `bash` or `powershell` (or both) must be provided
-- Non-zero exit code **blocks** the triggering action (especially for `preToolUse`)
-- `timeoutSec` default is 30 — keep hooks fast
-
-## Workflow
+## Generation Workflow
 
 ### Step 1: Detect Project Tooling
 
-Search the project for:
-- **Formatters**: Prettier, Black, gofmt, google-java-format, spotless, ktlint
-- **Linters**: ESLint, Checkstyle, PMD, SpotBugs, pylint, SwiftLint, detekt
-- **Type checkers**: TypeScript `tsc`, mypy
-- **Build tools**: Maven, Gradle, npm, cargo
-- **Test runners**: JUnit, pytest, jest, XCTest
+- Formatters: Prettier, Spotless, Black, ktlint
+- Linters: ESLint, Checkstyle, PMD, detekt
+- Build tools: Maven, Gradle, npm/pnpm/yarn, dotnet, Python toolchain
+- Security needs: restricted shell/terminal actions, secret exposure, destructive commands
 
-### Step 2: Generate Hooks Based on Detection
+### Step 2: Choose The Smallest Useful Hook Set
 
-#### Auto-Format Hook (auto-format.json)
+Prefer a minimal starting set:
 
-If formatter detected, create `postToolUse` hook:
+1. `auto-format.json`
+2. `lint-check.json`
+3. `compile-check.json`
+4. `security-gate.json` only if the repository needs it
 
-**Java (Maven + Spotless)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "mvn spotless:apply -q",
-        "powershell": "mvn spotless:apply -q",
-        "cwd": ".",
-        "timeoutSec": 30
-      }
-    ]
-  }
-}
-```
+Do not generate many hooks unless the project clearly benefits from them.
 
-**JavaScript/TypeScript (Prettier)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "npx prettier --write .",
-        "powershell": "npx prettier --write .",
-        "cwd": ".",
-        "timeoutSec": 30
-      }
-    ]
-  }
-}
-```
+### Step 3: Keep Commands Project-Specific
 
-**Python (Black)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "python -m black .",
-        "powershell": "python -m black .",
-        "cwd": ".",
-        "timeoutSec": 30
-      }
-    ]
-  }
-}
-```
+- Use commands that exist in the target repository
+- Provide both `bash` and `powershell`
+- Keep hooks idempotent
+- Keep blocking hooks fast
 
-**Kotlin (ktlint)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "./gradlew ktlintFormat -q",
-        "powershell": ".\\gradlew ktlintFormat -q",
-        "cwd": ".",
-        "timeoutSec": 30
-      }
-    ]
-  }
-}
-```
+### Step 4: Respect Performance
 
-#### Lint Check Hook (lint-check.json)
+- `preToolUse` should usually finish in under 10 seconds
+- `postToolUse` should usually finish in under 30 seconds
+- Avoid heavyweight commands after every non-edit tool call
 
-If linter detected, create `postToolUse` hook (fires after each file edit):
+## Verification
 
-**Java (Checkstyle via Maven)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) mvn checkstyle:check -q ;; *) exit 0 ;; esac",
-        "powershell": "mvn checkstyle:check -q",
-        "cwd": ".",
-        "timeoutSec": 60
-      }
-    ]
-  }
-}
-```
+- Every hook file is valid JSON with `"version": 1`
+- Commands exist and are appropriate for the target project
+- Hook events are official GitHub Copilot events only
+- Lint/compile hooks use `postToolUse`, not fictional events
+- Expensive checks are filtered to relevant tool usage
+- Both `bash` and `powershell` are present for cross-platform support
 
-**JavaScript/TypeScript (ESLint)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) npx eslint . --max-warnings 0 ;; *) exit 0 ;; esac",
-        "powershell": "npx eslint . --max-warnings 0",
-        "cwd": ".",
-        "timeoutSec": 60
-      }
-    ]
-  }
-}
-```
+## Common Failure Modes
 
-#### Compile Check Hook (compile-check.json)
-
-If build tool detected, create `postToolUse` hook to verify compilation after file edits:
-
-**Java (Maven)**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) mvn compile -q -DskipTests ;; *) exit 0 ;; esac",
-        "powershell": "mvn compile -q -DskipTests",
-        "cwd": ".",
-        "timeoutSec": 120
-      }
-    ]
-  }
-}
-```
-
-**TypeScript**:
-```json
-{
-  "version": 1,
-  "hooks": {
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "TOOL=$(echo \"$STDIN_JSON\" | jq -r '.toolName // empty'); case \"$TOOL\" in *edit*|*write*|*create*) npx tsc --noEmit ;; *) exit 0 ;; esac",
-        "powershell": "npx tsc --noEmit",
-        "cwd": ".",
-        "timeoutSec": 60
-      }
-    ]
-  }
-}
-```
-
-### Step 3: Optional Enterprise Hooks
-
-If enterprise/security patterns detected, additionally generate:
-
-#### Security Gate Hook (security-gate.json)
-
-For `preToolUse` — block dangerous terminal commands:
-
-```json
-{
-  "version": 1,
-  "hooks": {
-    "preToolUse": [
-      {
-        "type": "command",
-        "bash": ".github/hooks/scripts/security-check.sh",
-        "powershell": ".github/hooks/scripts/security-check.ps1",
-        "cwd": ".",
-        "timeoutSec": 10
-      }
-    ]
-  }
-}
-```
-
-#### Governance Audit Hook (governance-audit.json)
-
-For compliance logging:
-
-```json
-{
-  "version": 1,
-  "hooks": {
-    "sessionStart": [
-      {
-        "type": "command",
-        "bash": "echo \"[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session started\" >> .github/hooks/logs/audit.log",
-        "cwd": ".",
-        "timeoutSec": 5
-      }
-    ],
-    "sessionEnd": [
-      {
-        "type": "command",
-        "bash": "echo \"[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session ended\" >> .github/hooks/logs/audit.log",
-        "cwd": ".",
-        "timeoutSec": 5
-      }
-    ]
-  }
-}
-```
-
-### Step 4: Validate
-
-- All hook files are valid JSON with `"version": 1`
-- All commands are tested and available in the project
-- Timeouts are reasonable for the project size
-- `preToolUse` hooks are fast (< 10s) to avoid blocking the agent
-- `postToolUse` hooks are idempotent (safe to run multiple times)
+- Using unsupported events such as `agentStop`
+- Running lint or compile after every tool call without filtering
+- Generating hooks for commands the target project does not actually use
+- Making `preToolUse` hooks so slow that they block normal work
+- Forgetting Windows-compatible commands
 
 ## Output
 
-```
-📎 Hooks Generated:
-├── .github/hooks/
-│   ├── auto-format.json      ← postToolUse: [formatter command]
-│   ├── lint-check.json        ← agentStop: [linter command]
-│   ├── compile-check.json     ← agentStop: [compile command]
-│   └── (optional enterprise hooks)
+```text
+Hooks Generated:
+.github/hooks/
+- auto-format.json      <- postToolUse: formatter command
+- lint-check.json       <- postToolUse: linter command
+- compile-check.json    <- postToolUse: compile command
+- security-gate.json    <- preToolUse: optional policy command
 ```
 
-## Best Practices
+## Related Files
 
-- **Keep hooks fast** — they run synchronously and block the agent
-- **Use non-zero exit codes** to block bad actions (especially in `preToolUse`)
-- **Provide both `bash` and `powershell`** for cross-platform teams
-- **Layer hooks** — use separate files for independent concerns
-- **Test manually first** — run hook commands by hand before relying on automation
+- `.github/skills/generate-copilot-config/SKILL.md`
+- `.github/agents/agent-generator.agent.md`
+- `.github/docs/github-resource-conventions.md`
