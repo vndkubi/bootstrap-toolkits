@@ -654,6 +654,7 @@ Validation is mandatory.
 - optionally run `context-assembly-simulator` to verify per-agent context budget for key scenarios
 - optionally run `instruction-conflict-detector` to verify no overlapping instructions contradict each other
 - optionally run `tool-permission-auditor` to verify agent tool access matches declared roles
+- optionally run `repo-memory-promoter` to identify instruction bloat or underdocumented subsystems surfaced during generation
 
 ### Truthfulness validation
 

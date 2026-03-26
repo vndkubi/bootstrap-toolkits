@@ -59,6 +59,7 @@ Project-specificity checks:
 - [ ] Domain instruction patterns do not overlap for the same rules
 - [ ] Run `instruction-conflict-detector` to verify no overlapping instruction files contain contradicting rules
 - [ ] Run `tool-permission-auditor` to verify agents do not hold tool access beyond their declared role
+- [ ] Run `repo-memory-promoter` to detect underdocumented subsystems; use `common-doc-generator` for any H-3/H-5 candidates
 
 ### Tier 4: Manifest And Cleanup Integrity
 
