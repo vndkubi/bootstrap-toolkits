@@ -34,3 +34,14 @@ When you need runtime or context guidance, use:
 8. **Dev Orchestrator wiring**: generated `dev-orchestrator` must list all generated agents for default routing.
 9. **Phase 12 (Validate) is mandatory**: structural, functional, and context-budget checks must pass before completion.
 10. **Phase 14 (Cleanup) is mandatory**: after validation, remove copied toolkit files that are out of scope for this repo so the final `.github/` matches the manifest and repo classification.
+
+## Post-Bootstrap Maintenance
+
+After initial generation completes, use these skills to audit and maintain config quality:
+
+- `source-of-truth-map` — map `.github/` domains to canonical files; generates `SOURCE-OF-TRUTH.md`
+- `context-assembly-simulator` — simulate per-agent context load and flag budget overflows
+- `instruction-conflict-detector` — detect overlapping `.instructions.md` files with contradicting rules
+- `tool-permission-auditor` — verify agent × tool access matches declared roles
+- `repo-memory-promoter` — find information worth promoting from chat habits into persistent memory layers
+- `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component

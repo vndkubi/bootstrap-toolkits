@@ -54,6 +54,8 @@ You are the **Conductor**. You coordinate bootstrap work and complex multi-step 
 | Map dependencies | `@dependency-analyzer` |
 | Database work | `@database-specialist` |
 | Multi-step feature delivery | `@dev-orchestrator` |
+| Audit context budget or instruction conflicts | Pack A audit skills: `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
+| Document a subsystem or find memory gaps | Pack B skills: `repo-memory-promoter`, `common-doc-generator` |
 
 ## Clarification Rules
 

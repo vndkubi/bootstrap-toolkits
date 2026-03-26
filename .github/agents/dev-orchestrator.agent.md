@@ -55,6 +55,8 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "spec", "PRD", "clarify large feature" | spec pipeline | Default for vague, high-risk, or multi-module work |
 | "migration", "schema", "query" | `@database-specialist` | High-risk data changes |
 | "dependency", "which modules" | `@dependency-analyzer` | Blast-radius analysis |
+| "audit context", "simulate context", "check instructions", "tool permissions" | Pack A audit skills | `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
+| "memory gaps", "promote memory", "document subsystem", "underdocumented" | Pack B skills | `repo-memory-promoter`, `common-doc-generator` |
 
 If a request mixes several intents, sequence them instead of pretending one agent can skip the others.
 
