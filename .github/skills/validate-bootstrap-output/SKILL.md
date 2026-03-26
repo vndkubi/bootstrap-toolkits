@@ -57,6 +57,8 @@ Project-specificity checks:
 - [ ] Every skill referenced by an agent exists in `.github/skills/<name>/SKILL.md`
 - [ ] Every `applyTo` pattern matches at least one real file when the instruction is kept
 - [ ] Domain instruction patterns do not overlap for the same rules
+- [ ] Run `instruction-conflict-detector` to verify no overlapping instruction files contain contradicting rules
+- [ ] Run `tool-permission-auditor` to verify agents do not hold tool access beyond their declared role
 
 ### Tier 4: Manifest And Cleanup Integrity
 

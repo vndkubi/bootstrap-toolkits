@@ -651,6 +651,9 @@ Validation is mandatory.
 - domain instructions remain scoped
 - prompts stay lightweight
 - large repos favor scoped memory over dumping everything into one file
+- optionally run `context-assembly-simulator` to verify per-agent context budget for key scenarios
+- optionally run `instruction-conflict-detector` to verify no overlapping instructions contradict each other
+- optionally run `tool-permission-auditor` to verify agent tool access matches declared roles
 
 ### Truthfulness validation
 
