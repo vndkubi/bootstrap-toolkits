@@ -53,35 +53,245 @@ The point is not to generate the largest doc set possible. The point is to gener
 
 ---
 
+## Incremental State Management
+
+Write or update `.github/.bootstrap-state.json` after **every phase** completes, not just at the end. This makes the pipeline resumable from any point.
+
+Initial state file (create at the start of Phase 1):
+
+```json
+{
+  "toolkitVersion": "<from .github/VERSION>",
+  "startedAt": "<ISO 8601>",
+  "classification": null,
+  "contextRisk": null,
+  "phases": {
+    "1-scan": "pending",
+    "2-classify": "pending",
+    "3-domain": "pending",
+    "4-core-instructions": "pending",
+    "5-domain-instructions": "pending",
+    "6-language-instructions": "pending",
+    "7-templates": "pending",
+    "8-agents": "pending",
+    "9-skills": "pending",
+    "10-prompts": "pending",
+    "11-hooks": "pending",
+    "12-validate": "pending",
+    "13-devcontainer": "pending",
+    "14-manifest": "pending"
+  },
+  "generatedFiles": [],
+  "errors": []
+}
+```
+
+Phase status values: `pending`, `in_progress`, `completed`, `skipped`, `failed`.
+
+After each phase:
+- Set that phase to `completed` (or `failed` / `skipped`).
+- Update `classification` and `contextRisk` when Phase 2 completes.
+- Append to `generatedFiles` as each file is created.
+- Append to `errors` if a phase encounters issues.
+
+---
+
 ## Phase 1: Scan
 
-Build an evidence-backed picture of the target repo.
+Build an evidence-backed picture of the target repo using a structured scan protocol. This protocol minimizes tool-call rounds while maximizing information density. Results are persisted as a file so they survive context compaction.
 
-### Minimum scan requirements
+### Scan Protocol
+
+#### Round 1 — Project Fingerprint (2 parallel tool calls)
+
+Run two tool calls simultaneously:
+
+**Call A — Directory tree** (terminal):
+
+```bash
+find . -maxdepth 3 -type f \
+  -not -path './.git/*' -not -path '*/node_modules/*' \
+  -not -path '*/vendor/*' -not -path '*/target/*' \
+  -not -path '*/build/*' -not -path '*/dist/*' \
+  -not -path '*/obj/*' -not -path '*/.gradle/*' \
+  | head -500 | sort
+```
+
+**Call B — Bulk data extraction** (single compound terminal command):
+
+```bash
+{
+echo "##FILE_COUNT"
+find . -type f \
+  -not -path './.git/*' -not -path '*/node_modules/*' \
+  -not -path '*/vendor/*' -not -path '*/target/*' \
+  -not -path '*/build/*' -not -path '*/dist/*' \
+  -not -path '*/obj/*' -not -path '*/.gradle/*' \
+  -not -path '*/__pycache__/*' | wc -l
+
+echo "##EXTENSIONS"
+find . -type f \
+  -not -path './.git/*' -not -path '*/node_modules/*' \
+  -not -path '*/vendor/*' -not -path '*/target/*' \
+  | sed 's/.*\.//' | sort | uniq -c | sort -rn | head -25
+
+echo "##BUILD_FILES"
+find . -maxdepth 3 \( \
+  -name "package.json" -o -name "pom.xml" \
+  -o -name "build.gradle" -o -name "build.gradle.kts" \
+  -o -name "settings.gradle" -o -name "settings.gradle.kts" \
+  -o -name "*.csproj" -o -name "*.sln" \
+  -o -name "go.mod" -o -name "Cargo.toml" \
+  -o -name "pyproject.toml" -o -name "requirements.txt" \
+  -o -name "composer.json" -o -name "Gemfile" \
+  -o -name "Makefile" -o -name "Package.swift" \
+  \) -not -path '*/node_modules/*' \
+  -exec sh -c 'echo "--- {} ---" && head -80 "{}"' \;
+
+echo "##CI_CD"
+find . -maxdepth 4 \( \
+  -path "*/.github/workflows/*.yml" -o -path "*/.github/workflows/*.yaml" \
+  -o -name ".gitlab-ci.yml" -o -name "Jenkinsfile" \
+  -o -name "azure-pipelines.yml" \
+  \) -exec sh -c 'echo "--- {} ---" && head -50 "{}"' \;
+
+echo "##DOCKER"
+find . -maxdepth 2 \( -name "Dockerfile*" -o -name "docker-compose*" \) \
+  -exec sh -c 'echo "--- {} ---" && head -50 "{}"' \;
+
+echo "##CONFIG"
+find . -maxdepth 3 \( \
+  -name "application*.yml" -o -name "application*.yaml" \
+  -o -name "application*.properties" -o -name "appsettings*.json" \
+  -o -name ".env.example" -o -name "tsconfig*.json" \
+  -o -name "vite.config*" -o -name "next.config*" \
+  -o -name "nuxt.config*" -o -name "angular.json" \
+  \) -not -path '*/node_modules/*' \
+  -exec sh -c 'echo "--- {} ---" && head -50 "{}"' \;
+
+echo "##README"
+head -120 README.md 2>/dev/null
+
+echo "##GITIGNORE"
+cat .gitignore 2>/dev/null
+} 2>/dev/null
+```
+
+After Round 1, extract from the results:
+
+- **Directory layout**: modules, source roots, test roots
+- **File count and language distribution**: from extension counts
+- **Framework, dependency, and version data**: from build file contents
+- **Build, test, and lint commands**: from build file scripts and CI/CD configs
+- **Infrastructure**: Docker, devcontainer, database
+- **Project identity**: README content + build file metadata
+
+For small projects (fewer than 500 files, single module), Round 1 is often sufficient. Skip Round 2 when you have enough evidence to write the scan report.
+
+#### Round 2 — Smart Sampling (2-4 parallel file reads, conditional)
+
+When Round 1 leaves gaps in convention or domain understanding, read targeted files:
+
+- 1 representative source file per major module (pick from known paths in the directory tree)
+- 1 representative test file
+- 1 application config file if not already captured
+
+Use `#codebase` semantic search to find representative files when paths are not obvious from the tree. Example queries: "main service entry point", "business entity model", "test setup".
+
+Skip this round for small projects where Round 1 already provides enough evidence.
+
+#### Round 3 — Persist Scan Report (1 file write)
+
+Write `.github/.scan-report.md` using the format below. This file is the persistent artifact that all subsequent phases read. It survives context compaction and enables pipeline resumption.
+
+After writing the scan report, update `.github/.bootstrap-state.json`: set phase `1-scan` to `completed`.
+
+### Scan Report Format
+
+```md
+---
+scanned_at: "<ISO 8601>"
+toolkit_version: "<from .github/VERSION>"
+file_count: <total non-ignored files>
+---
+
+# Scan Report
+
+## Identity
+- **Name**: <from build file or README>
+- **Purpose**: <1-2 sentences>
+- **Evidence**: <files that prove identity>
+
+## Tech Stack
+| Layer | Technology | Version | Evidence |
+|-------|-----------|---------|----------|
+| Language | <detected> | <version> | <file> |
+| Framework | <detected> | <version> | <file> |
+| Build Tool | <detected> | <version> | <file> |
+| Database | <detected> | <version or unknown> | <file> |
+| Test Framework | <detected> | <version> | <file> |
+
+## Build Commands
+| Command | Purpose | Source |
+|---------|---------|-------|
+| <cmd> | build | <file> |
+| <cmd> | test | <file> |
+| <cmd> | lint | <file> |
+
+## Modules
+| Module | Path | Type | Key Entities |
+|--------|------|------|-------------|
+| <name> | <path> | domain / infra / shared | <top entities> |
+
+## Conventions
+- **Naming**: <class, method, file patterns detected>
+- **File structure**: <feature-based / layer-based / hybrid>
+- **Testing pattern**: <co-located / mirror / separate>
+- **Import style**: <grouped / alphabetical / path aliases>
+
+## External Integrations
+| Service | Library | Purpose |
+|---------|---------|---------|
+| <service> | <lib> | <purpose> |
+
+## Infrastructure
+- **CI/CD**: <tool and config path>
+- **Container**: <Docker / none>
+- **Database migration**: <tool or none detected>
+- **Config management**: <profiles / env files / none>
+
+## Unknowns
+- [ ] <anything uncertain or unverifiable>
+```
+
+### Stack Detection Reference
+
+Use this matrix to identify stacks from build files found in Round 1:
+
+| Build File | Stack | Key Data to Extract |
+|-----------|-------|---------------------|
+| `package.json` | Node / JS / TS | `dependencies`, `devDependencies`, `scripts`, `engines` |
+| `tsconfig.json` | TypeScript | `compilerOptions.target`, `paths`, `strict` |
+| `pom.xml` | Java / Maven | `java.version`, `<dependencies>`, `<modules>`, `<plugins>` |
+| `build.gradle(.kts)` | Java / Gradle | `sourceCompatibility`, `plugins`, `dependencies` |
+| `*.csproj` | .NET | `TargetFramework`, `PackageReference` |
+| `*.sln` | .NET multi-project | Project list and references |
+| `go.mod` | Go | `module`, `go` version, `require` |
+| `Cargo.toml` | Rust | `edition`, `dependencies` |
+| `pyproject.toml` | Python | `project.dependencies`, `tool.*` configs |
+| `requirements.txt` | Python | Package list with versions |
+| `composer.json` | PHP | `require`, framework detection |
+| `Gemfile` | Ruby | `gem` list, Rails detection |
+| `Package.swift` | Swift / iOS | Dependencies, platforms |
+| `build.gradle.kts` + Android plugin | Android / Kotlin | `minSdk`, `targetSdk`, Compose version |
+
+### Quality Rules
 
 - Establish repo identity from root-level project evidence before using copied bundle text as context.
-- Read all relevant build files, not just the root.
-- Detect exact runtime/tooling versions where possible.
-- Sample enough real source files per domain or module.
-- Read representative service/use-case files.
-- Read representative test files.
-- Identify external integrations, queues, schedulers, and background jobs.
-- Check CI/CD, container, and devcontainer files.
-
-### Required output
-
-Produce a structured scan summary with:
-
-- repo identity and why
-- languages and framework versions
-- build/test/lint commands discovered
-- module inventory
-- domain or bounded-context map
-- coding and test conventions
-- infrastructure dependencies
-
-If evidence is weak, say so. Do not fill gaps with generic stack assumptions.
-Do not let copied bootstrap text override stronger evidence from the target repo.
+- Do not let copied bootstrap text override stronger evidence from the target repo.
+- If evidence is weak for any section, say so in the Unknowns section. Do not fill gaps with generic stack assumptions.
+- Every tech stack claim must point to a specific file as evidence.
+- The `.github/.scan-report.md` file should be retained in the manifest as a runtime reference asset.
 
 ---
 

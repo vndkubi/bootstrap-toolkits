@@ -16,10 +16,7 @@ Until bootstrap rewrites this file, treat it as temporary operator guidance, not
 
 ## Identity Guardrail
 
-- Do not assume the current repository is the `copilot-bootstrap` source repo just because this copied bundle mentions toolkit assets.
-- Infer repo identity from files outside the copied bootstrap bundle whenever possible.
-- Treat copied agents, skills, prompts, instructions, and templates as bootstrap inputs first, not as proof that they belong in the final generated `.github/`.
-- Only conclude that the current repository is the toolkit source repository when root-level evidence outside the copied bundle clearly proves it.
+Repo identity must come from target-repo evidence (root README, build files, source code, tests), not from copied bundle files. See the `generate-copilot-config` skill for full guardrail details.
 
 ## Working Rules During Bootstrap
 

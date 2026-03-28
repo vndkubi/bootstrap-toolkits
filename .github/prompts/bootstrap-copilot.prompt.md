@@ -1,5 +1,5 @@
 ---
-agent: agent
+agent: Conductor
 description: "Analyze the current codebase and generate a project-specific GitHub Copilot configuration."
 ---
 

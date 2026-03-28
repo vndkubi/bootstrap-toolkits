@@ -1,5 +1,5 @@
 ---
-agent: 'agent'
+agent: Codebase Analyzer
 description: 'Deep analysis of current codebase — detects languages, frameworks, architecture, domain boundaries, coding conventions, testing patterns, and external dependencies. Produces a structured analysis report.'
 ---
 

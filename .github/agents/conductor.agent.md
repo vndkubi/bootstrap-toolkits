@@ -45,7 +45,7 @@ You are the **Conductor**. You coordinate bootstrap work and complex multi-step 
 
 | Need | Route |
 |---|---|
-| Understand the codebase | `@codebase-analyzer` |
+| Understand the codebase | `@codebase-analyzer` (follows Phase 1 scan protocol from `generate-copilot-config` skill) |
 | Investigate a PBI or bug | `@investigator` |
 | Implement code | stack-specific implementor |
 | Write tests | `@test-specialist` or mobile equivalent |

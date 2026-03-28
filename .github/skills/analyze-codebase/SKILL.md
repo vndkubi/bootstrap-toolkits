@@ -1,34 +1,54 @@
 ---
 name: analyze-codebase
-description: 'Deep multi-stack codebase analysis that thoroughly scans project structure, build configs, source code, architecture patterns, domain boundaries, coding conventions, testing approaches, CI/CD pipelines, and external dependencies. Produces a structured analysis report used by all downstream agents and skills. Supports Java/Maven/Gradle, .NET/C#, Python/Django/FastAPI, TypeScript/React, PHP/Laravel/Symfony, Android/Kotlin, iOS/Swift. Use when bootstrapping Copilot config, onboarding to a new project, or understanding codebase structure.'
+description: 'Deep multi-stack codebase analysis with per-stack detection recipes. Scans project structure, build configs, source code, architecture patterns, domain boundaries, coding conventions, testing approaches, CI/CD pipelines, and external dependencies. Produces a structured analysis report. Supports Java/Maven/Gradle, .NET/C#, Python/Django/FastAPI, TypeScript/React, PHP/Laravel/Symfony, Android/Kotlin, iOS/Swift.'
 ---
 
 # Analyze Codebase — Deep Multi-Stack Scan
 
-Perform a **thorough** analysis of the target codebase. This is Phase 1 of the bootstrap pipeline and determines the quality of ALL downstream output.
+Perform a thorough analysis of the target codebase. This skill provides detailed per-stack detection recipes used during bootstrap Phase 1 and standalone analysis.
 
 > **Quality rule**: Read actual files, don't guess. Every claim in the report must be backed by a specific file you read.
+
+## Relationship to Bootstrap
+
+During bootstrap, the `generate-copilot-config` skill Phase 1 defines the **3-Round Scan Protocol** (the execution strategy). This skill provides the **per-stack detection recipes** (what to look for in each stack's build files and source code). Both work together: the scan protocol tells you _how_ to scan efficiently; this skill tells you _what_ to extract per stack.
+
+## Tool Strategy
+
+Use the most efficient tool for each scan task:
+
+| Task | Preferred Approach |
+|------|-------------------|
+| Directory structure | Terminal: `find . -maxdepth 3 -type f` (exclude build artifacts) |
+| File count and language distribution | Terminal: `find` piped to `sed`, `sort`, `uniq -c` |
+| All build file contents at once | Terminal: compound `find -exec` reading all build files |
+| Representative source files | `#codebase` semantic search: "service layer", "entity model" |
+| Specific file verification | Direct file read |
+| Pattern detection across files | Terminal: `grep -r` for annotations, imports |
+
+**Rule**: Run bulk discovery first (directory tree + all build files in one compound command), then targeted reads. Never read files one-by-one when a compound command can get them all at once.
 
 ## Minimum Scan Requirements
 
 Before producing the report, ensure you have:
-- [ ] Read ALL build config files (every module's pom.xml, every csproj, every package.json)
-- [ ] Sampled ≥ 10 source files per detected domain (not 5 total)
-- [ ] Read ALL entity/model classes in the project
-- [ ] Read ≥ 3 service classes per domain to understand business logic patterns
-- [ ] Read ≥ 3 test classes to detect testing patterns and conventions
+- [ ] Read all build config files — use a compound terminal command, not one-by-one reads
+- [ ] Sampled ≥ 3 source files per major domain to detect conventions
+- [ ] Read representative entity/model classes per domain (1-3 per domain)
+- [ ] Read ≥ 2 service classes per domain to understand business logic patterns
+- [ ] Read ≥ 2 test classes to detect testing patterns and conventions
 - [ ] Checked for CI/CD, Docker, devcontainer configurations
-- [ ] Scanned for external service integrations
+- [ ] Scanned for external service integrations (HTTP clients, queues, cloud SDKs)
 
 ## Workflow
 
 ### Step 1: Project Structure Discovery
 
-1. List root directory — identify top-level layout
+Use terminal for efficient bulk discovery:
+
+1. Get directory tree and file distribution in one compound command (see Tool Strategy)
 2. Check for monorepo indicators: multiple build files, `packages/`, workspace configs
-3. Count source files per directory to gauge project size
-4. Identify key directories: `src/`, `lib/`, `config/`, `docs/`, `.github/`, `scripts/`
-5. Check for existing Copilot config: `.github/copilot-instructions.md`, `.github/agents/`
+3. Identify key directories: `src/`, `lib/`, `config/`, `docs/`, `.github/`, `scripts/`
+4. Check for existing Copilot config: `.github/copilot-instructions.md`, `.github/agents/`
 
 ### Step 2: Tech Stack Detection — Per-Stack Recipe
 
@@ -174,9 +194,11 @@ Structured markdown report:
 
 ## Validation Checklist
 
-- [ ] ALL build config files were actually read (not guessed from file extension alone)
-- [ ] At least 10 source files were sampled for conventions (state which files)
-- [ ] Domain map covers ALL major packages/directories
-- [ ] Entity list is COMPLETE (every entity class was found and listed)
+- [ ] All build config files were read via bulk command (not guessed from file extension alone)
+- [ ] At least 3 source files per major domain were sampled for conventions (state which files)
+- [ ] Representative entity/model classes per domain were read
+- [ ] Domain map covers all major packages/directories
 - [ ] Recommendations are justified by specific findings from analysis
 - [ ] No placeholder text like "TBD" or "to be determined" in report
+- [ ] Every tech stack claim points to a specific file as evidence
+- [ ] Uncertain findings are marked with `[ASSUMPTION]` or `[NEEDS CLARIFICATION]`

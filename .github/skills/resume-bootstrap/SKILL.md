@@ -63,11 +63,13 @@ Shall I resume from Phase 7? (yes/no)
 
 Wait for user confirmation before proceeding.
 
-## Step 3: Load Context from Checkpoint
+## Step 3: Load Context from Scan Report and Checkpoint
 
-Before resuming, load the Phase 3 checkpoint for domain context:
-1. Read `.github/.phase3-checkpoint.md` — this has the project summary, domain glossary, tech stack
-2. If checkpoint is missing, warn: "Phase 3 checkpoint not found — domain context may be incomplete. Consider re-running Phase 3 or proceeding with reduced domain awareness."
+Before resuming, load persistent context artifacts:
+1. Read `.github/.scan-report.md` — this has the full Phase 1 scan results (identity, tech stack, modules, conventions, build commands). This is the primary context source for all subsequent phases.
+2. Read `.github/.phase3-checkpoint.md` — this has the domain glossary, business rules, key workflows.
+3. If scan report is missing but Phase 1 completed, warn: "Scan report not found — Phase 1 context may be incomplete. Consider re-running Phase 1."
+4. If checkpoint is missing but Phase 3 completed, warn: "Phase 3 checkpoint not found — domain context may be incomplete. Consider re-running Phase 3 or proceeding with reduced domain awareness."
 
 ## Step 4: Resume from Interrupted Phase
 
