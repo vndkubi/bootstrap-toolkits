@@ -751,6 +751,109 @@ Generate additional agents only when evidence supports them:
 
 For mixed-stack repos, keep specialist positioning stack-neutral unless evidence justifies a stack-specific bias.
 
+### Handoff workflows
+
+Generate `handoffs` in agent frontmatter to create guided workflow transitions. Each handoff appears as a button in the UI, passing context to the next agent.
+
+Handoff format in frontmatter:
+
+```yaml
+handoffs:
+  - agent: "Target Agent Name"
+    label: "Button Label"
+    prompt: "Context passed to the target agent describing what to do next."
+```
+
+#### Recommended handoff chains
+
+Generate these handoff chains for the core agent set:
+
+| Agent | Handoff To | Label | When |
+|---|---|---|---|
+| `investigator` | stack implementor | "Proceed to Implementation" | After investigation report is complete |
+| `investigator` | `spec-reviewer` | "Review Spec First" | When spec needs validation before implementation |
+| `spec-reviewer` | stack implementor | "Approve & Implement" | After spec review passes |
+| `spec-reviewer` | `investigator` | "Investigate Further" | When review surfaces unknowns |
+| stack implementor | `test-specialist` | "Generate Tests" | After implementation is complete |
+| stack implementor | `code-reviewer` | "Review Changes" | When skipping test generation |
+| `test-specialist` | `code-reviewer` | "Review Code" | After tests are written |
+| `test-specialist` | stack implementor | "Fix Implementation" | When tests reveal implementation issues |
+| `code-reviewer` | `pr-manager` | "Create PR" | After review approves |
+| `code-reviewer` | stack implementor | "Request Changes" | After review requests changes |
+
+Rules:
+
+- Handoff prompts must reference the conversation context ("the implementation above", "the review findings above").
+- Every handoff chain must form a DAG — no circular handoffs between the same two agents (A→B and B→A is fine; A→B→A→B infinite loop risk is acceptable because the user must click each handoff).
+- Stack-specific implementors (e.g., `dotnet-implementor`, `python-implementor`) should have the same handoff targets as the generic `implementor`.
+- The `pr-manager` is a terminal agent — no handoffs needed.
+- Only generate handoffs for agents that exist in the generated set.
+
+### AGENTS.md generation (Standard and Enterprise repos)
+
+For Standard and Enterprise repos, generate `.github/AGENTS.md` as a discovery index for all generated agents. VS Code surfaces this file to help users and the model discover available agents.
+
+#### When to generate
+
+| Classification | Generate AGENTS.md? |
+|---|---|
+| Small | No — few agents, discovery is trivial |
+| Standard | Yes — when 6+ agents are generated |
+| Enterprise | Always |
+
+#### Format
+
+```markdown
+# Agents
+
+## Core Workflow
+
+| Agent | Purpose |
+|---|---|
+| @dev-orchestrator | Routes tasks to the right specialist based on intent |
+| @implementor | Implements features across all layers |
+| @test-specialist | Generates comprehensive tests for changed logic |
+| @code-reviewer | Multi-stage code review: functional then technical |
+
+## Investigation & Analysis
+
+| Agent | Purpose |
+|---|---|
+| @investigator | Technical investigation with as-is/to-be analysis |
+| @codebase-analyzer | Deep codebase scanning and architecture detection |
+
+## Requirements & Planning
+
+| Agent | Purpose |
+|---|---|
+| @business-analyst | Turns requests into structured, testable requirements |
+| @sprint-planner | Sprint planning with estimation and dependency mapping |
+```
+
+#### Rules
+
+- Group agents by role category: Core Workflow, Investigation & Analysis, Requirements & Planning, Specialist, Review.
+- One-line purpose per agent — derive from the agent's `description` frontmatter.
+- Only include agents that exist in the generated set (not bootstrap-only agents).
+- Keep the file under 2 KB — this is a discovery index, not documentation.
+- If the repo has nested module structure with domain-specific agents, generate per-module `AGENTS.md` files in the relevant module directories.
+
+#### Nested AGENTS.md for Enterprise repos
+
+Enterprise repos with 3+ domain-specific agents may benefit from nested `AGENTS.md` files:
+
+```
+.github/AGENTS.md              ← top-level index (all agents)
+modules/payments/AGENTS.md     ← domain agents for payments module
+modules/inventory/AGENTS.md    ← domain agents for inventory module
+```
+
+Rules for nested files:
+- Only generate when domain-specific agents exist (e.g., `payments-implementor`, `inventory-specialist`)
+- Each nested file lists only agents relevant to that module
+- Top-level `.github/AGENTS.md` always lists ALL agents regardless of nesting
+- Nested files must not duplicate the full agent catalog — only domain-scoped subset
+
 ---
 
 ## Phase 9: Generate Skills
@@ -818,16 +921,31 @@ Prompts should point users toward:
 
 Generate hooks only when the target repo has a practical command surface for them.
 
-Examples:
+### Quality hooks (conditional on detected tooling)
 
-- post-edit format checks
-- lint checks
-- compile checks
-- security gates for dangerous commands
+- `postToolUse` format checks (Prettier, Spotless, Black, ktlint)
+- `postToolUse` lint checks (ESLint, Checkstyle, PMD, detekt)
+- `postToolUse` compile checks (Maven, Gradle, tsc, dotnet build)
+- `preToolUse` security gates for dangerous commands
+
+### Context preservation hooks (conditional on repo size)
+
+For Standard and Enterprise repos, generate a `preCompact` hook that checkpoints critical session state before context compaction:
+
+- Write to `.github/.session-checkpoint.md`
+- Add the checkpoint path to `.gitignore`
+- Keep the hook fast (< 10 seconds)
+
+This prevents loss of in-progress decisions, constraints, and plan state during long-running feature work.
+
+### Agentic workflows
 
 Generate agentic workflows only when CI/CD evidence exists and the repo would benefit from them.
 
+### Rules
+
 Avoid creating hooks that will fail constantly in normal local development.
+Use official hook events only: `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `preCompact`, `subagentStart`, `subagentStop`, `stop`.
 
 ---
 
@@ -848,6 +966,10 @@ Validation is mandatory.
 - generated agents reference real stacks and repo truth
 - skills reference actual commands
 - no agent references a specialist that was not generated
+- handoff targets reference agents that exist in the generated set
+- handoff prompts provide meaningful context for the target agent
+- `AGENTS.md` (when generated) lists only agents that exist and groups them correctly
+- nested `AGENTS.md` files (when generated) reference only domain-relevant agents
 - repo truth pack exists for Standard/Enterprise repos
 - generated docs match the repo-size strategy instead of over-generating or under-generating
 - `docs/00-repo-overview.md` and `docs/03-verification-runbook.md` always exist

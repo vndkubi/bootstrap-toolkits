@@ -2,6 +2,13 @@
 name: 'PHP Implementor'
 description: 'PHP implementation expert. Writes production code following Laravel/Symfony conventions, PSR standards, Eloquent/Doctrine ORM patterns. Implements features across controllers, services, repositories, models, form requests, API resources, and database migrations. Specializes in modern PHP 8.x patterns and REST API development.'
 model: Claude Sonnet 4
+handoffs:
+  - agent: "Test Specialist"
+    label: "Generate Tests"
+    prompt: "Generate comprehensive tests for the PHP implementation above. Cover all changed business logic, edge cases, and boundary conditions."
+  - agent: "Code Reviewer"
+    label: "Review Changes"
+    prompt: "Review the PHP implementation changes above. Run the full review pipeline: functional review first, then technical review."
 
 ---
 

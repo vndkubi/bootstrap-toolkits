@@ -59,7 +59,10 @@ Project-specificity checks:
 - [ ] Domain instruction patterns do not overlap for the same rules
 - [ ] Run `instruction-conflict-detector` to verify no overlapping instruction files contain contradicting rules
 - [ ] Run `tool-permission-auditor` to verify agents do not hold tool access beyond their declared role
+- [ ] Run `skill-discoverability-audit` to verify all skills are discoverable via descriptions and routing tables
 - [ ] Run `repo-memory-promoter` to detect underdocumented subsystems; use `common-doc-generator` for any H-3/H-5 candidates
+- [ ] If `AGENTS.md` was generated: every agent listed exists as a file, and every generated agent appears in the index
+- [ ] If nested `AGENTS.md` files exist: each lists only agents relevant to that module, not the full catalog
 
 ### Tier 4: Manifest And Cleanup Integrity
 

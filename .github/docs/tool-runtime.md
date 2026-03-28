@@ -51,24 +51,17 @@ These are the supported GitHub Copilot hook events for `.github/hooks/*.json`:
 | Event | When it fires | Typical use |
 |---|---|---|
 | `sessionStart` | Session begins | initialize state, session logging |
-| `sessionEnd` | Session ends | cleanup, audit, final reporting |
 | `userPromptSubmitted` | User submits a prompt | audit, logging, prompt gating |
 | `preToolUse` | Before a tool executes | security gates, confirmation, input checks |
 | `postToolUse` | After a tool executes | formatter, lint, compile, usage logging |
-| `errorOccurred` | An error happens | logging, alerting, diagnostics |
+| `preCompact` | Before context compaction | export decisions, constraints, plan state |
+| `subagentStart` | A subagent is spawned | track nested agent lifecycle |
+| `subagentStop` | A subagent completes | aggregate results, audit trail |
+| `stop` | Session ends | generate reports, send notifications, cleanup |
 
 Use `postToolUse` with tool filtering for expensive quality checks so they run after relevant edit/write tools only.
 
-## Runtime Concepts Mentioned In The Deep Dive
-
-The deep-dive document also discusses broader runtime control points such as `SessionStart`, `UserPromptSubmit`, `Stop`, `SubagentStart`, and `SubagentStop`.
-
-Those are useful for understanding the extension architecture, but they are not official `.github/hooks` configuration events.
-
-Rule of thumb:
-
-- Lowercase event names above are the real `.github/hooks` events.
-- Capitalized runtime hook concepts are architecture concepts, not portable hook-file schema.
+Use `preCompact` to preserve critical session state before the system summarizes conversation context. This is essential for long-running feature work where losing in-progress decisions would cause rework.
 
 ## Key Constraints
 
@@ -90,9 +83,9 @@ Rule of thumb:
 
 - Assuming tool results are visible to the model in the same round they are produced.
 - Assuming the model can call tools that were never exposed.
-- Using fictional hook events such as `agentStop`.
+- Using fictional hook events such as `agentStop`, `sessionEnd`, or `errorOccurred`.
 - Running expensive checks after irrelevant tool calls.
-- Mixing internal runtime concepts like `Stop` or `SubagentStop` with official `.github/hooks` events.
+- Making `preCompact` hooks too slow (> 10s) — they block compaction and degrade responsiveness.
 
 ## Related Files
 

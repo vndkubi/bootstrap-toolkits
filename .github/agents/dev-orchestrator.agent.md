@@ -57,6 +57,7 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "dependency", "which modules" | `@dependency-analyzer` | Blast-radius analysis |
 | "audit context", "simulate context", "check instructions", "tool permissions" | Pack A audit skills | `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
 | "memory gaps", "promote memory", "document subsystem", "underdocumented" | Pack B skills | `repo-memory-promoter`, `common-doc-generator` |
+| "skill discoverability", "audit skills", "description quality" | Skill audit | `skill-discoverability-audit` |
 
 If a request mixes several intents, sequence them instead of pretending one agent can skip the others.
 

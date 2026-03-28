@@ -2,6 +2,13 @@
 name: 'Refactoring Specialist'
 description: 'Code refactoring and tech debt reduction expert. Analyzes codebase for code smells, architecture violations, and improvement opportunities. Performs safe refactoring with preserved behavior, comprehensive tests, and clear documentation of changes. Specializes in extracting services, simplifying complex logic, reducing duplication, improving naming, and modernizing legacy code patterns across Java, .NET, Python, and PHP.'
 model: Claude Sonnet 4
+handoffs:
+  - agent: "Test Specialist"
+    label: "Generate Tests"
+    prompt: "Generate tests to verify the refactored code above preserves all original behavior. Cover edge cases and boundary conditions for the changed components."
+  - agent: "Code Reviewer"
+    label: "Review Refactoring"
+    prompt: "Review the refactoring changes above. Verify behavior is preserved, no regressions introduced, and the code improvements follow project patterns."
 
 ---
 

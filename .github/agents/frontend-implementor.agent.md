@@ -2,6 +2,13 @@
 name: 'Frontend Implementor'
 description: 'Frontend implementation specialist for TypeScript, React, Vue, Angular, and Next.js applications. Follows component-based architecture, type-safe patterns, modern state management, and accessibility best practices. Implements responsive, performant UIs with proper testing.'
 model: Claude Sonnet 4
+handoffs:
+  - agent: "Test Specialist"
+    label: "Generate Tests"
+    prompt: "Generate comprehensive tests for the frontend implementation above. Cover all changed component logic, user interactions, and edge cases."
+  - agent: "Code Reviewer"
+    label: "Review Changes"
+    prompt: "Review the frontend implementation changes above. Run the full review pipeline: functional review first, then technical review."
 
 ---
 

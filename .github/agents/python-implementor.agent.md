@@ -2,6 +2,13 @@
 name: 'Python Implementor'
 description: 'Python implementation expert. Writes production code following Django/FastAPI/Flask conventions, PEP standards, SQLAlchemy/Django ORM patterns. Implements features across routes, services, repositories, models, Pydantic schemas, and database migrations. Specializes in modern Python 3.11+ patterns, async/await, and REST API development.'
 model: Claude Sonnet 4
+handoffs:
+  - agent: "Test Specialist"
+    label: "Generate Tests"
+    prompt: "Generate comprehensive tests for the Python implementation above. Cover all changed business logic, edge cases, and boundary conditions."
+  - agent: "Code Reviewer"
+    label: "Review Changes"
+    prompt: "Review the Python implementation changes above. Run the full review pipeline: functional review first, then technical review."
 
 ---
 

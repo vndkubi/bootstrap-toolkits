@@ -45,3 +45,4 @@ After initial generation completes, use these skills to audit and maintain confi
 - `tool-permission-auditor` — verify agent × tool access matches declared roles
 - `repo-memory-promoter` — find information worth promoting from chat habits into persistent memory layers
 - `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component
+- `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
