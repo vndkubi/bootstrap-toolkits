@@ -869,21 +869,89 @@ Generate skills that match the target repo's actual workflows.
 - add evidence and assumption rules to analysis-heavy skills
 - use conditional verification language, not universal promises
 
-### Recommended core skills
+### Skill Retention Tiers
 
+Skills are classified into four tiers that determine retention during generation and cleanup. This prevents over-pruning of stack-agnostic process skills that are useful regardless of detected technology.
+
+| Tier | Retention Rule | Description |
+|------|---------------|-------------|
+| **Core** | Always retained | Essential workflow skills required by core agents |
+| **Universal** | Always retained (all classifications) | Stack-agnostic process, planning, learning, and diagramming skills |
+| **Conditional** | Retained only when evidence signal matches | Stack-specific or infrastructure-specific skills |
+| **Bootstrap-only** | Always removed post-bootstrap | Skills that exist only to support the bootstrap pipeline |
+
+#### Core skills (always generate)
+
+- `orchestrate-development`
 - `implement-feature`
 - `generate-unit-tests`
 - `review-code-changes`
-- `orchestrate-development`
 
-### Conditional skills
+#### Universal skills (always generate — not tied to any stack)
 
-- spec pipeline skills
-- sprint planning
-- sequence/state diagram generation
-- impact analysis
-- wiremock or integration helpers
-- devcontainer or infra helpers
+These skills support **process, planning, learning, visualization, and analysis** workflows that every project benefits from. They must be retained for all classifications (Small, Standard, Enterprise) because they have no stack detection signal — their value is stack-agnostic.
+
+**Process & Planning:**
+- `learn-codebase` — onboarding and domain understanding
+- `generate-adr` — architecture decision records
+- `sprint-planning` — sprint planning and backlog grooming
+- `estimate-effort` — story point estimation
+- `specify-feature` — PRD-style spec from feature request
+- `plan-implementation` — implementation plan from spec
+- `generate-tasks` — task list from plan
+- `review-spec` — spec review for gaps and risks
+- `update-spec` — incremental spec updates on change requests
+- `technical-debt-analysis` — codebase tech debt analysis
+- `refine-user-input` — restructure vague prompts into actionable requests
+- `analyze-requirements` — turn intent into structured requirements
+- `investigate-pbi` — evidence-backed PBI/bug investigation
+
+**Visualization:**
+- `generate-sequence-diagram` — Mermaid sequence diagrams from code flows
+- `generate-state-diagram` — Mermaid state diagrams from entity lifecycle
+
+**Cross-cutting:**
+- `impact-analysis` — cross-module blast-radius analysis
+- `conventional-commit` — conventional commit message generation
+- `generate-pr-description` — PR description from diff
+- `core-principles` — engineering principles for all agents
+
+#### Conditional skills (generate only when evidence matches)
+
+| Skill | Retention Signal |
+|-------|------------------|
+| `implement-mobile-feature` | Android/iOS source detected |
+| `generate-mobile-tests` | Android/iOS test framework detected |
+| `generate-wiremock` | WireMock stubs or MockServer detected |
+| `optimize-devcontainer` | `.devcontainer/` directory exists |
+| `generate-hooks` | Build/lint/format tooling detected |
+| `generate-agentic-workflow` | CI/CD evidence + team wants automation |
+| `generate-domain-instructions` | Enterprise classification or 5+ domains |
+| `dependency-extractor` | Multi-module repo detected |
+| `domain-registry` | Enterprise classification or 5+ domains |
+
+#### Meta/toolkit skills (retain selectively for re-bootstrapping)
+
+| Skill | Default |
+|-------|---------|
+| `generate-copilot-config` | Retained for re-bootstrapping |
+| `analyze-codebase` | Retained for re-analysis |
+| `drift-detector` | Retained for config freshness checks |
+| `context-assembly-simulator` | Retained for debug/optimization |
+| `context-budget-check` | Retained for validation |
+| `instruction-conflict-detector` | Retained for validation |
+| `tool-permission-auditor` | Retained for validation |
+| `skill-discoverability-audit` | Retained for validation |
+
+#### Bootstrap-only skills (always remove post-bootstrap)
+
+- `resume-bootstrap`
+- `validate-bootstrap-output`
+- `upgrade-config`
+- `source-of-truth-map`
+- `common-doc-generator`
+- `repo-memory-promoter`
+- `review-effectiveness`
 
 For large repos, make skills prefer domain-scoped execution by default.
 
@@ -898,9 +966,6 @@ Generate prompts as compact entry points, not miniature policy documents.
 - `/implement-feature`
 - `/investigate`
 - `/review-code`
-
-### Include when spec-first work is supported
-
 - `/specify-feature`
 - `/plan-implementation`
 
@@ -1245,12 +1310,24 @@ The following agents, prompts, and docs exist only to support the bootstrap pipe
 **Bootstrap-only docs:**
 - `.github/docs/` files that describe the toolkit rather than the target repo
 
+### Skill cleanup rules
+
+During cleanup, respect the skill retention tiers defined in Phase 9:
+
+- **Core skills**: never remove
+- **Universal skills**: never remove — these are stack-agnostic process skills useful to every project
+- **Conditional skills**: remove when the target stack or evidence signal was not detected
+- **Meta/toolkit skills**: retain `generate-copilot-config`, `analyze-codebase`, and `drift-detector` by default; others based on classification
+- **Bootstrap-only skills**: always remove (unless the repo is the toolkit source)
+
+The most common cleanup mistake is treating Universal skills as Conditional. Skills like `learn-codebase`, `generate-adr`, `sprint-planning`, `specify-feature`, `generate-sequence-diagram`, `refine-user-input`, etc. have no codebase detection signal because they are process skills — they must survive cleanup regardless of detected stack.
+
 ### General cleanup targets
 
 Cleanup should also remove stale or irrelevant toolkit assets, especially:
 
 - unused stack instruction templates
-- unused specialist agents and skills
+- unused specialist agents (but not Universal skills — see skill cleanup rules above)
 - prompts that are not supported in the generated repo
 - placeholder docs for module/workflow/integration/ADR layers that were not justified by scan results
 

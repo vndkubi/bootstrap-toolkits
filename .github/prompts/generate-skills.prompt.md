@@ -7,32 +7,67 @@ description: 'Generate reusable workflow skills from current codebase patterns. 
 
 Create `.github/skills/[name]/SKILL.md` files based on developer workflows detected in the current codebase.
 
-## Step 1: Detect Developer Workflows
+## Step 1: Classify Skills by Retention Tier
 
-Analyze the project to identify common workflows:
+Before detecting workflows, understand the four skill retention tiers:
 
-### Always-Present Workflows
-| Workflow | Detection Signal | Skill to Create |
-|----------|-----------------|----------------|
-| Feature implementation | Source code exists | `implement-feature` |
-| Unit testing | Test framework in dependencies | `generate-unit-tests` |
-| Code review | Any collaborative project | `review-code-changes` |
+| Tier | Retention Rule | Description |
+|------|---------------|-------------|
+| **Core** | Always retained | Essential workflow skills required by core agents |
+| **Universal** | Always retained | Stack-agnostic process, planning, learning, and diagramming skills |
+| **Conditional** | Evidence-gated | Stack-specific or infrastructure-specific skills |
+| **Bootstrap-only** | Always removed | Skills used only during bootstrap pipeline |
 
-### Conditional Workflows
+### Core Skills (always generate)
+| Skill | Rationale |
+|-------|-----------|
+| `orchestrate-development` | Required by dev-orchestrator |
+| `implement-feature` | Required by implementor agent |
+| `generate-unit-tests` | Required by test-specialist |
+| `review-code-changes` | Required by code-reviewer |
+
+### Universal Skills (always generate — not tied to any stack)
+
+These have no codebase detection signal because they are process skills. Always retain them.
+
+| Skill | Category |
+|-------|----------|
+| `learn-codebase` | Onboarding |
+| `generate-adr` | Documentation |
+| `sprint-planning` | Planning |
+| `estimate-effort` | Planning |
+| `specify-feature` | Spec pipeline |
+| `plan-implementation` | Spec pipeline |
+| `generate-tasks` | Spec pipeline |
+| `review-spec` | Spec pipeline |
+| `update-spec` | Spec pipeline |
+| `technical-debt-analysis` | Analysis |
+| `refine-user-input` | Meta |
+| `analyze-requirements` | Requirements |
+| `investigate-pbi` | Investigation |
+| `generate-sequence-diagram` | Visualization |
+| `generate-state-diagram` | Visualization |
+| `impact-analysis` | Analysis |
+| `conventional-commit` | Utilities |
+| `generate-pr-description` | Utilities |
+| `core-principles` | Utilities |
+
+## Step 2: Detect Conditional Workflows
+
+Analyze the project to identify **stack-specific** workflows that warrant additional skills:
+
+### Conditional Workflows (generate only when detected)
 | Detection Signal | Skill to Create |
 |-----------------|----------------|
-| Multi-layer architecture (3+ layers) | `investigate-pbi` |
-| REST/API endpoints | `create-api-endpoint` |
-| Database entities/migrations | `database-migration` |
-| WireMock/MockServer stubs detected | `generate-wiremock` |
-| Complex request flows | `generate-sequence-diagram` |
 | Android/iOS source code | `implement-mobile-feature`, `generate-mobile-tests` |
-| CI/CD pipelines | `prepare-deployment` |
-| OpenAPI/Swagger specs | `generate-api-client` |
-| Docker/container files | `setup-local-env` |
-| Multiple environments | `manage-config` |
+| WireMock/MockServer stubs detected | `generate-wiremock` |
+| `.devcontainer/` directory exists | `optimize-devcontainer` |
+| Build/lint/format tooling detected | `generate-hooks` |
+| CI/CD pipelines + automation need | `generate-agentic-workflow` |
+| Enterprise classification or 5+ domains | `generate-domain-instructions`, `domain-registry` |
+| Multi-module repo | `dependency-extractor` |
 
-## Step 2: Analyze Existing Patterns
+## Step 3: Analyze Existing Patterns
 
 For each workflow to create:
 1. Find existing examples in the codebase (how is this workflow done today?)
@@ -40,7 +75,7 @@ For each workflow to create:
 3. Read build files for build/deploy commands
 4. Read README and docs for documented procedures
 
-## Step 3: Create Skill Files
+## Step 4: Create Skill Files
 
 ### Skill File Format
 
@@ -112,7 +147,7 @@ The `description` is used for **agent skill discovery** — it determines when t
 'Generate comprehensive unit tests for Java classes with minimal mocking. Analyzes all code branches, creates test builders, and outputs JUnit 5 tests with full coverage. Use when asked to write tests, improve coverage, or generate tests for existing code.'
 ```
 
-## Step 4: Customize to Project Patterns
+## Step 5: Customize to Project Patterns
 
 For each skill, read the actual codebase and include:
 - Real package names and class naming patterns
@@ -121,7 +156,7 @@ For each skill, read the actual codebase and include:
 - Real architecture layers and their responsibilities
 - Real directory structure and conventions
 
-## Step 5: Validate
+## Step 6: Validate
 
 For each skill file:
 - [ ] `name` is kebab-case, max 64 characters
