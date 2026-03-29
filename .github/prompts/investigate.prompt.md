@@ -1,5 +1,5 @@
 ---
-agent: dev-orchestrator
+agent: Dev Orchestrator
 description: "Investigate a PBI, bug, performance issue, or codebase behavior. Produces an evidence-backed analysis with as-is flow, impact map, and risk notes."
 ---
 

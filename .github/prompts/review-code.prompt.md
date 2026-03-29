@@ -1,5 +1,5 @@
 ---
-agent: dev-orchestrator
+agent: Dev Orchestrator
 description: "Run a multi-stage code review pipeline: functional review, technical review, and optional mobile review. Produces a combined review report with severity-rated findings."
 ---
 

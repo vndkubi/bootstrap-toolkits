@@ -1,7 +1,7 @@
 ---
 name: learn-codebase
 description: 'Interactive codebase onboarding: understand business domains, workflows, rules, and data flows. For new team members or exploring unfamiliar modules.'
-agent: agent
+agent: Dev Orchestrator
 ---
 
 # Learn This Codebase

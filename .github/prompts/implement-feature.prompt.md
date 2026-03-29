@@ -1,7 +1,7 @@
 ---
 name: implement-feature
 description: "Full feature workflow: investigate, confirm, implement, verify, document."
-agent: agent
+agent: Dev Orchestrator
 ---
 
 # Implement Feature

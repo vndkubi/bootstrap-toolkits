@@ -1,7 +1,7 @@
 ---
 name: specify-feature
 description: "Spec-driven pipeline: create a feature workspace, specify requirements, plan implementation, generate tasks, then implement from approved artifacts."
-agent: agent
+agent: Dev Orchestrator
 ---
 
 # Specify Feature

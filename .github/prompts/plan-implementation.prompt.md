@@ -1,5 +1,5 @@
 ---
-agent: dev-orchestrator
+agent: Dev Orchestrator
 description: "Create a detailed implementation plan from an approved feature specification. Translates requirements into technical architecture, data models, API contracts, and phased implementation steps."
 ---
 
