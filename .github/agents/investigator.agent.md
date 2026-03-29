@@ -42,6 +42,13 @@ Every claim in the report must be one of:
 
 Do not present likely behavior as certain behavior.
 
+## Skills
+
+| Skill | When to invoke |
+|---|---|
+| `investigate-pbi` | Use as the primary investigation workflow for PBIs, bugs, and performance issues |
+| `impact-analysis` | Invoke during Step 5 to assess cross-module blast radius of proposed changes |
+
 ## Workflow
 
 ### Step 1: Parse the Request

@@ -32,6 +32,12 @@ When the user attaches a visual:
 If the user provides a clear feature name, **trace the code and generate** without asking:
 > "I'll diagram the 'order creation' flow starting from OrderResource.createOrder(). Tracing through the codebase now."
 
+## Skills
+
+| Skill | When to invoke |
+|---|---|
+| `generate-state-diagram` | Use when the traced flow involves entities with state machines or status transitions — generate a state diagram alongside the sequence diagram |
+
 ## Diagram Creation Process
 
 ### Step 1: Trace the Flow

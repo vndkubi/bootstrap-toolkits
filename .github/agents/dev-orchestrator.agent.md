@@ -51,8 +51,9 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "review", "check changes" | `@code-reviewer` | Functional then technical review |
 | "diagram", "sequence" | `@sequence-diagrammer` | Use after tracing real flow |
 | "story", "PBI", "requirements" | `@business-analyst` + spec pipeline | Produce PRD-aligned spec artifacts, not loose requirement notes |
-| "plan", "estimate", "sprint" | `@sprint-planner` | Use repo-aware estimates |
+| "plan", "estimate", "sprint" | `@sprint-planner` | Use repo-aware estimates; invoke `estimate-effort` and `sprint-planning` skills |
 | "spec", "PRD", "clarify large feature" | spec pipeline | Default for vague, high-risk, or multi-module work |
+| "ADR", "architecture decision", "why did we choose" | `generate-adr` skill | Document architectural decisions with context and consequences |
 | "migration", "schema", "query" | `@database-specialist` | High-risk data changes |
 | "dependency", "which modules" | `@dependency-analyzer` | Blast-radius analysis |
 | "audit context", "simulate context", "check instructions", "tool permissions" | Pack A audit skills | `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
@@ -86,6 +87,10 @@ Ask only what the codebase and request do not already answer:
 If more than 3 critical unknowns remain after investigation, stop and ask for clarification before implementation.
 
 ## Workflow
+
+### Phase 0: Refine Input (when needed)
+
+If the request is vague, underspecified, or missing scope and acceptance criteria, invoke the `refine-user-input` skill to restructure it into a Goal/Anchor/Constraints/Verify shape before routing. Skip this step when the request is already clear and actionable.
 
 ### Phase 1: Parse and Scope
 
