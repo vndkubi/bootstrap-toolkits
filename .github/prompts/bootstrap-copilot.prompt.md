@@ -32,8 +32,9 @@ When you need runtime or context guidance, use:
 6. **Context budget matters**: keep generated files compact and purpose-built.
 7. **Agent and skill separation**: agents define routing/responsibility; skills define workflow details.
 8. **Dev Orchestrator wiring**: generated `dev-orchestrator` must list all generated agents for default routing.
-9. **Phase 12 (Validate) is mandatory**: structural, functional, and context-budget checks must pass before completion.
-10. **Phase 14 (Cleanup) is mandatory**: after validation, remove copied toolkit files that are out of scope for this repo so the final `.github/` matches the manifest and repo classification.
+9. **Phase 13 (Validate) is mandatory**: structural, functional, and context-budget checks must pass before completion.
+10. **Phase 12 (Runtime Compilation) is mandatory**: compile runtime fidelity manifest and skill index after generation phases complete.
+11. **Phase 15 (Cleanup) is mandatory**: after validation, remove copied toolkit files that are out of scope for this repo so the final `.github/` matches the manifest and repo classification.
 
 ## Post-Bootstrap Maintenance
 
@@ -46,3 +47,4 @@ After initial generation completes, use these skills to audit and maintain confi
 - `repo-memory-promoter` — find information worth promoting from chat habits into persistent memory layers
 - `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component
 - `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
+- `drift-detector` — detect configuration drift since last bootstrap; recommends patch, incremental, or full rebootstrap

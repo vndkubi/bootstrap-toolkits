@@ -78,6 +78,19 @@ Map requirements to architecture in `plan.md`:
 
 Keep `plan.md` readable and decision-focused. Push bulky details into supporting artifacts instead of turning the plan into a code dump.
 
+### Step 4.5: Self-Evaluation Checkpoint
+
+Before generating supporting artifacts, evaluate the plan:
+
+- **Completeness** (1-10): Does every spec requirement have a plan element?
+- **Evidence quality** (1-10): Does every technical choice trace to a requirement or research note?
+- **Risk coverage** (1-10): Are rollback, integration, and dependency risks addressed?
+
+If any score < 7: identify the gap and address it before continuing to Step 5.
+If 3+ scores < 7: STOP and present gaps to the user for guidance.
+
+Cross-check: verify Phase -1 Gate results from Step 2 still hold given decisions in Steps 3-4.
+
 ### Step 5: Supporting Artifacts
 
 Generate supporting spec-kit files when relevant:

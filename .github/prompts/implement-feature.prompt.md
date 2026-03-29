@@ -11,8 +11,21 @@ You are the `@dev-orchestrator`. Execute a scoped end-to-end workflow for the re
 ## Requirement
 
 **Feature / PBI**: ${input:requirement}
+<!-- Format: "As a [role], I want [capability] so that [benefit]" OR plain description -->
+
 **Target module** (leave blank if unknown): ${input:module}
-**Acceptance criteria** (optional): ${input:acceptanceCriteria}
+<!-- Examples: "OrderService", "src/api/auth/", "unknown" -->
+
+**Done when**: ${input:acceptanceCriteria}
+<!-- Format: numbered testable conditions — e.g., "1. Returns 200 2. Invalid → 400" -->
+
+## Input Examples
+
+**Good**: "Add retry with exponential backoff to payment gateway calls on transient HTTP 5xx errors. Module: PaymentService. Done when: 1. Retries up to 3 times 2. Circuit breaker opens after 5 failures"
+
+**Good**: "As an admin, I want to bulk-disable users inactive >90 days. Affects UserManagement module"
+
+**Avoid**: "Fix user stuff" — no scope, no done condition, agent must guess everything
 
 ## Instructions
 

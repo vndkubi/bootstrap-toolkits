@@ -11,8 +11,21 @@ You are the `@dev-orchestrator`. Run the full spec-driven pipeline for the featu
 ## Feature
 
 **Description**: ${input:featureDescription}
+<!-- Format: "Enable [users] to [capability] so that [outcome]" OR plain description with problem it solves -->
+
 **Target users / personas** (optional): ${input:targetUsers}
+<!-- Examples: "admin users", "API consumers", "warehouse staff" -->
+
 **Known constraints** (optional): ${input:constraints}
+<!-- Examples: "no new dependencies", "must not change public API", "must support mobile" -->
+
+## Input Examples
+
+**Good**: "Enable warehouse staff to scan barcodes on mobile to update inventory in real-time, replacing the manual spreadsheet process"
+
+**Good**: "Add multi-currency support to checkout flow for EU expansion. Constraints: existing orders unaffected"
+
+**Avoid**: "New feature for users" — no capability, no outcome, no context
 
 ## Instructions
 

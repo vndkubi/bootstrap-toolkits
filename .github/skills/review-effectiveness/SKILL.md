@@ -46,7 +46,9 @@ Red flags:
 
 ### 3. Drift
 
-Look for drift between:
+If `.github/.bootstrap-snapshot.json` exists, run `drift-detector` first and include its composite score and per-dimension breakdown in the effectiveness report. This provides quantitative drift data rather than relying on manual inspection alone.
+
+Additionally, look for drift between:
 
 - repo reality and generated instructions
 - active workflows and available skills

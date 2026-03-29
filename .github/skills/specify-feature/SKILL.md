@@ -52,6 +52,12 @@ Extract from the request:
 
 ### Step 3: Codebase And Context Scan
 
+**Prewarm with repo truth pack** before scanning feature-specific code:
+- Read `docs/00-repo-overview.md` for project scope and domain summary
+- Read `docs/02-architecture-map.md` for module boundaries
+- Read `docs/04-engineering-rules.md` for team conventions
+If any doc is missing, proceed without it.
+
 Before writing the spec:
 
 1. Identify related existing features in the codebase.

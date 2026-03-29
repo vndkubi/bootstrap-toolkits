@@ -17,6 +17,16 @@ Structured PBI/technical investigation that produces a comprehensive analysis re
 
 ## Workflow
 
+### Step 0: Context Prewarming
+
+Before parsing the request, load available repo context:
+
+1. Read `docs/00-repo-overview.md` for project scope, stack, and domain summary.
+2. Read `docs/02-architecture-map.md` for module boundaries and integration points.
+3. Read `docs/04-engineering-rules.md` for team conventions and constraints.
+4. If any doc is missing, note it and proceed — these are target-repo docs that may not exist yet.
+5. Extract domain terminology, module ownership, and architectural constraints to inform the investigation.
+
 ### Step 1: Parse the Request
 
 Extract from the PBI/issue:
@@ -52,6 +62,17 @@ Example:
 > - `[NEEDS CLARIFICATION: Max concurrent users for this endpoint? — impacts caching strategy]`
 
 **If more than 3 critical `[NEEDS CLARIFICATION]` markers exist, STOP and ask the user to resolve them before proceeding to to-be design.**
+
+### Step 2.7: Self-Evaluation Checkpoint
+
+Before designing the to-be state, evaluate the as-is analysis:
+
+- **Completeness** (1-10): Are all entry points, layers, and data flows traced?
+- **Evidence quality** (1-10): Is every claim anchored to a file path or doc reference?
+- **Risk coverage** (1-10): Are non-obvious risks and cross-module impacts identified?
+
+If any score < 7: identify the gap and address it before continuing to Step 3.
+If 3+ scores < 7: STOP and present gaps to the user for guidance.
 
 ### Step 3: To-Be Design
 

@@ -57,6 +57,7 @@ You are the **Conductor**. You coordinate bootstrap work and complex multi-step 
 | Audit context budget or instruction conflicts | Pack A audit skills: `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
 | Document a subsystem or find memory gaps | Pack B skills: `repo-memory-promoter`, `common-doc-generator` |
 | Audit skill discoverability or descriptions | `skill-discoverability-audit` |
+| Detect config drift or check bootstrap freshness | `drift-detector` |
 
 ## Clarification Rules
 

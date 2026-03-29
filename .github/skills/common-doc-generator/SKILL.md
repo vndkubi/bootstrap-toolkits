@@ -128,7 +128,7 @@ Fill this template with evidence gathered. For each section, use real file/line 
 
 ---
 
-### Step 5 — Mark gaps
+### Step 5 — Mark gaps and enforce evidence contract
 
 For any section where evidence is insufficient after tracing, insert:
 
@@ -141,6 +141,15 @@ Aim for at most 2-3 `[NEEDS CONTENT]` markers. If more than 4 sections need mark
 ```
 > ⚠️ Low evidence: most sections need manual completion. Consider reading the source more deeply before generating.
 ```
+
+#### Evidence Contract
+
+Every generated doc must satisfy these rules:
+
+1. **Source of Truth required**: the `Source of Truth` section must list at least one specific file path. Never leave it as a generic placeholder.
+2. **Traceable claims**: every assertion about behavior, architecture, or business rules must link back to a file/line discovered during tracing. If no evidence supports a claim, use `[NEEDS CONTENT]` instead.
+3. **No unsupported certainty**: do not write "this module handles X" unless the trace found code or tests that confirm it. Prefer "appears to handle X based on [file]" when evidence is indirect.
+4. **Scan-anchored architecture**: if `.github/.runtime-fidelity.json` or `.github/.scan-report.md` exists, cross-reference architecture claims against them. Flag contradictions as warnings in the doc.
 
 ---
 

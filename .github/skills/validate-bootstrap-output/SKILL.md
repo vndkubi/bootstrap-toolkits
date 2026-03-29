@@ -5,7 +5,7 @@ description: "Validate the quality of a bootstrapped Copilot configuration beyon
 
 # Validate Bootstrap Output
 
-This skill runs deep quality validation on a bootstrapped `.github/` configuration, beyond the structural Phase 12 checks. It catches the most common failure: generated files that look valid but still contain generic placeholder or bootstrap-bundle content instead of project-specific guidance.
+This skill runs deep quality validation on a bootstrapped `.github/` configuration, beyond the structural Phase 13 checks. It catches the most common failure: generated files that look valid but still contain generic placeholder or bootstrap-bundle content instead of project-specific guidance.
 
 ## When to Use
 
@@ -18,7 +18,7 @@ This skill runs deep quality validation on a bootstrapped `.github/` configurati
 
 ### Tier 1: Structural
 
-Re-run Phase 12 checks from `generate-copilot-config`:
+Re-run Phase 13 checks from `generate-copilot-config`:
 
 - [ ] All `.agent.md` files have valid `name` and `description` frontmatter
 - [ ] No `tools:` or `mode:` fields appear in agent frontmatter
@@ -64,7 +64,30 @@ Project-specificity checks:
 - [ ] If `AGENTS.md` was generated: every agent listed exists as a file, and every generated agent appears in the index
 - [ ] If nested `AGENTS.md` files exist: each lists only agents relevant to that module, not the full catalog
 
-### Tier 4: Manifest And Cleanup Integrity
+### Tier 4: Runtime Fidelity
+
+- [ ] `.github/.runtime-fidelity.json` exists and is valid JSON
+- [ ] Every retained artifact after cleanup has a `runtimeRole` entry in the manifest
+- [ ] No artifact with `runtimeRole: bootstrap_only` survives cleanup
+- [ ] Token cost estimates use the `ceil(char_count / 4)` heuristic consistently
+- [ ] `consumers` field is populated for all `auto_injected` and `discoverable` artifacts
+- [ ] `.github/.skill-index.json` exists and includes all retained skills
+- [ ] All skills in `.skill-index.json` have an `invocationMode` classification
+- [ ] `relations` capture cross-references between generated files (no orphan references)
+- [ ] `auto_injected` artifacts total stays within context budget targets from `context-budget-check`
+
+### Tier 5: Evidence-Based Documentation
+
+For all generated documentation files, verify:
+
+- [ ] Each doc has a `Source of Truth` section identifying the canonical code or config file
+- [ ] Claims about the codebase are traceable to specific files, directories, or scan results
+- [ ] No doc asserts business rules that were not found in code, tests, or existing docs
+- [ ] Sections marked `[NEEDS CONTENT]` are used when evidence is insufficient, not fabricated claims
+- [ ] Domain glossary terms map to actual entities in the codebase
+- [ ] Architecture claims match actual module structure from Phase 1 scan
+
+### Tier 6: Manifest And Cleanup Integrity
 
 - [ ] `.github/.bootstrap-manifest.json` exists and is valid JSON
 - [ ] Manifest keep entries match all files intentionally retained after cleanup
@@ -103,7 +126,24 @@ Project-specificity checks:
 | Skill references resolve | PASS | |
 | applyTo patterns match | WARN | One retained instruction matches 0 files |
 
-### Tier 4: Manifest And Cleanup
+### Tier 4: Runtime Fidelity
+| Check | Status | Notes |
+|---|---|---|
+| .runtime-fidelity.json exists | PASS | |
+| All retained artifacts have runtimeRole | PASS | |
+| No bootstrap_only survived cleanup | PASS | |
+| .skill-index.json exists | PASS | |
+| Token budget within limits | WARN | auto_injected total 42 KB exceeds 40 KB target |
+
+### Tier 5: Evidence-Based Documentation
+| Check | Status | Notes |
+|---|---|---|
+| Source of Truth sections present | PASS | All 5 docs have SoT |
+| Claims traceable | WARN | 1 architecture claim not anchored to scan |
+| No fabricated business rules | PASS | |
+| [NEEDS CONTENT] used appropriately | PASS | 2 sections correctly deferred |
+
+### Tier 6: Manifest And Cleanup
 | Check | Status | Notes |
 |---|---|---|
 | Manifest exists | PASS | |

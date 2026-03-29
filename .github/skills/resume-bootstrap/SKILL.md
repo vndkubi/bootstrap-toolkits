@@ -5,7 +5,7 @@ description: 'Resume an interrupted Copilot bootstrap pipeline from the last com
 
 # Resume Bootstrap Pipeline
 
-Use this skill when the 14-phase bootstrap pipeline was interrupted before completing Phase 14.
+Use this skill when the 15-phase bootstrap pipeline was interrupted before completing Phase 15.
 
 ## When to Use
 
@@ -54,6 +54,7 @@ Context risk: [low | medium | high]
 ⏳ Phase 12 — Pending
 ⏳ Phase 13 — Pending
 ⏳ Phase 14 — Pending
+⏳ Phase 15 — Pending
 
 **Resume point**: Phase 7 (agent generation)
 **Already generated**: [list files from generatedFiles]
@@ -68,8 +69,10 @@ Wait for user confirmation before proceeding.
 Before resuming, load persistent context artifacts:
 1. Read `.github/.scan-report.md` — this has the full Phase 1 scan results (identity, tech stack, modules, conventions, build commands). This is the primary context source for all subsequent phases.
 2. Read `.github/.phase3-checkpoint.md` — this has the domain glossary, business rules, key workflows.
-3. If scan report is missing but Phase 1 completed, warn: "Scan report not found — Phase 1 context may be incomplete. Consider re-running Phase 1."
-4. If checkpoint is missing but Phase 3 completed, warn: "Phase 3 checkpoint not found — domain context may be incomplete. Consider re-running Phase 3 or proceeding with reduced domain awareness."
+3. Read `.github/.session-checkpoint.md` — if present, this has in-progress decisions and plan state saved before context compaction. Restore any relevant constraints or decisions from it.
+4. Read `.github/.runtime-fidelity.json` — if present from a prior Phase 12 run, this classifies generated artifacts by runtime role and maps relationships. Use it to avoid regenerating already-classified files.
+5. If scan report is missing but Phase 1 completed, warn: "Scan report not found — Phase 1 context may be incomplete. Consider re-running Phase 1."
+6. If checkpoint is missing but Phase 3 completed, warn: "Phase 3 checkpoint not found — domain context may be incomplete. Consider re-running Phase 3 or proceeding with reduced domain awareness."
 
 ## Step 4: Resume from Interrupted Phase
 
@@ -95,11 +98,11 @@ Before resuming, load persistent context artifacts:
 - **Update `.bootstrap-state.json`** after each phase completes (same as original pipeline)
 - Phases marked `skipped` should remain skipped unless the skip condition has changed
 
-## Step 5: Continue Normally to Phase 14
+## Step 5: Continue Normally to Phase 15
 
 After the interrupted phase is re-completed, continue with all pending phases in order. Follow the `generate-copilot-config` skill for each phase's instructions.
 
-At Phase 14: complete as normal (manifest + cleanup + final report).
+At Phase 15: complete as normal (manifest + snapshot + cleanup + final report).
 
 ## Error Handling
 

@@ -11,7 +11,7 @@ Verify all Copilot config files stay within context budget targets to ensure opt
 
 - After bootstrap pipeline generates all config files
 - After modifying any agent, instruction, skill, or prompt file
-- As Phase 12 in the bootstrap pipeline
+- As Phase 13 in the bootstrap pipeline
 - Keywords: "check context budget", "validate sizes", "context audit"
 
 ## Target Sizes

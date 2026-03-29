@@ -53,8 +53,19 @@ Check for NEW toolkit features introduced after `toolkitVersion`:
 | `resume-bootstrap` skill | Always add if missing |
 | `upgrade-config` skill | Already running — add to manifest |
 | `validate-bootstrap-output` skill | Add if missing |
+| `drift-detector` skill | Always add if missing — enables config freshness checks |
 | Java version-conditional instructions | Re-generate `java.instructions.md` if Java project |
 | Phase 3 checkpoint | Generate `.github/.phase3-checkpoint.md` from existing agent/instruction content |
+| Runtime fidelity manifest | Generate `.github/.runtime-fidelity.json` if Phase 12 was not run |
+| Bootstrap snapshot | Generate `.github/.bootstrap-snapshot.json` for drift baseline |
+
+### Drift-Informed Upgrade Decision
+
+If `.github/.bootstrap-snapshot.json` exists, run `drift-detector` before planning the upgrade:
+
+- **Drift score 0–44**: proceed with upgrade (additive changes)
+- **Drift score 45–69**: upgrade + selective regeneration of drifted areas
+- **Drift score 70+**: recommend full rebootstrap instead of upgrade
 
 ## Step 3: Present Migration Plan
 

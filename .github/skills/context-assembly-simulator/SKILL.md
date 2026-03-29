@@ -28,7 +28,21 @@ Simulate the `.github/` layer of context that will be loaded for a specific agen
 
 ---
 
-## Step 1: Load SOURCE-OF-TRUTH.md (if present)
+## Step 1: Load Runtime Fidelity Manifest (if present)
+
+Check for `.github/.runtime-fidelity.json`. If present:
+
+1. Parse the manifest to get pre-computed `runtimeRole`, `estimatedTokenCost`, `consumers`, and `relations` for all generated artifacts
+2. Use `runtimeRole` to quickly classify which files are `auto_injected` (always loaded), `discoverable` (on-demand), `reference_only`, or `human_only`
+3. Use `estimatedTokenCost` values directly instead of re-measuring file sizes
+4. Use `consumers` to determine which agents load which files
+5. Use `relations` to trace dependency chains
+
+If `.runtime-fidelity.json` is absent, fall back to the heuristic-based approach in subsequent steps.
+
+---
+
+## Step 1b: Load SOURCE-OF-TRUTH.md (if present)
 
 Check for `.github/SOURCE-OF-TRUTH.md`. If present, use it as a navigation aid to identify canonical files per domain.  
 If absent, proceed with direct directory scan.

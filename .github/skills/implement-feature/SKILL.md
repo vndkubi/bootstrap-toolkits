@@ -35,6 +35,18 @@ Implementation must serve the approved specification and implementation plan.
 
 ## Workflow
 
+### Step 0: Context Prewarming
+
+Before reading the feature workspace, load available repo context:
+
+1. Read `docs/00-repo-overview.md` for project scope and stack summary.
+2. Read `docs/02-architecture-map.md` for module boundaries and layering conventions.
+3. Read `docs/04-engineering-rules.md` for coding standards and constraints.
+4. If any doc is missing, note it and proceed.
+5. Extract patterns and conventions relevant to this feature's module(s).
+
+Use this context to validate implementation choices against actual repo conventions.
+
 ### Step 1: Re-read The Feature Workspace
 
 Before editing code:
@@ -65,6 +77,17 @@ Implement the current task set according to:
 - verification checkpoints from the plan
 
 Prefer stack-specific implementor agents or repo patterns for the actual code changes. Do not hardcode Maven, Java, or any other stack default unless the repo evidence requires it.
+
+### Step 3.5: Self-Evaluation Checkpoint
+
+Before running tests, evaluate the implementation:
+
+- **Completeness** (1-10): Are all tasks in the current slice implemented?
+- **Evidence quality** (1-10): Does every change trace to an approved task or spec requirement?
+- **Risk coverage** (1-10): Are edge cases, error paths, and cross-module impacts handled?
+
+If any score < 7: identify the gap and address it before continuing to Step 4.
+If 3+ scores < 7: STOP and present gaps to the user for guidance.
 
 ### Step 4: Test And Verify
 

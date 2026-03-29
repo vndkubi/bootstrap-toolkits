@@ -47,9 +47,10 @@ The point is not to generate the largest doc set possible. The point is to gener
 9. **Generate skills**
 10. **Generate prompts**
 11. **Generate hooks and optional workflows**
-12. **Validate**
-13. **Review or generate devcontainer**
-14. **Write manifest, cleanup, and summarize**
+12. **Compile runtime fidelity**
+13. **Validate**
+14. **Review or generate devcontainer**
+15. **Write manifest, snapshot, cleanup, and summarize**
 
 ---
 
@@ -77,9 +78,10 @@ Initial state file (create at the start of Phase 1):
     "9-skills": "pending",
     "10-prompts": "pending",
     "11-hooks": "pending",
-    "12-validate": "pending",
-    "13-devcontainer": "pending",
-    "14-manifest": "pending"
+    "12-runtime-compilation": "pending",
+    "13-validate": "pending",
+    "14-devcontainer": "pending",
+    "15-manifest-snapshot": "pending"
   },
   "generatedFiles": [],
   "errors": []
@@ -949,7 +951,131 @@ Use official hook events only: `sessionStart`, `userPromptSubmitted`, `preToolUs
 
 ---
 
-## Phase 12: Validate
+## Phase 12: Runtime Compilation
+
+After all artifacts are generated (Phases 4–11), compile a runtime fidelity manifest that classifies every generated artifact by its runtime role and maps relationships between them.
+
+This phase produces two files:
+
+- `.github/.runtime-fidelity.json` — classifies every generated artifact by runtime role, estimated token cost, and inter-file relationships
+- `.github/.skill-index.json` — skill discoverability metadata for routing and context-assembly consumers
+
+### Runtime Fidelity Manifest
+
+For every file generated in Phases 4–11, record:
+
+```json
+{
+  "version": "1.0",
+  "generatedAt": "<ISO 8601>",
+  "tokenCostHeuristic": "ceil(char_count / 4)",
+  "artifacts": {
+    ".github/copilot-instructions.md": {
+      "runtimeRole": "auto_injected",
+      "estimatedTokenCost": 820,
+      "phase": 4,
+      "consumers": ["all agents"],
+      "relations": [
+        { "target": ".github/instructions/java.instructions.md", "reason": "references" }
+      ]
+    }
+  }
+}
+```
+
+#### Runtime Role Classification
+
+| Role | Definition | Cleanup rule |
+|------|-----------|--------------|
+| `auto_injected` | Loaded on every request (copilot-instructions.md) | Must survive cleanup |
+| `discoverable` | Loaded on demand by model matching (skills, instructions, agents) | Must survive cleanup |
+| `reference_only` | Read by skills/agents but never auto-loaded (docs, truth packs) | Keep if referenced |
+| `human_only` | For human readers only (README, AGENTS.md) | Keep always |
+| `bootstrap_only` | Used only during bootstrap pipeline | Must be removed at cleanup |
+
+#### Classification Rules
+
+1. `copilot-instructions.md` → `auto_injected`
+2. `.instructions.md` files → `auto_injected` (loaded when `applyTo` matches)
+3. `.agent.md` files → `discoverable`
+4. `SKILL.md` files → `discoverable`
+5. `.prompt.md` files → `discoverable`
+6. `docs/` files → `reference_only`
+7. `.scan-report.md`, `.phase3-checkpoint.md` → `bootstrap_only`
+8. `.bootstrap-state.json` → `bootstrap_only`
+9. `hooks/*.json` → `auto_injected` (event-triggered)
+10. `AGENTS.md` → `human_only`
+
+#### Token Cost Estimation
+
+Use the v1 heuristic: `estimatedTokenCost = ceil(char_count / 4)`.
+
+Read each generated file, count characters, and apply the formula. No tokenizer library is needed.
+
+#### Consumer Detection
+
+For each artifact, determine which agents or workflows consume it:
+
+- `auto_injected` files → `["all agents"]`
+- `.instructions.md` → agents whose typical file paths match the `applyTo` pattern
+- Skills → agents that reference the skill by name in their body or routing tables
+- Docs → skills or agents that reference the doc path
+
+#### Relation Building
+
+Scan file contents for cross-references to other generated files:
+
+| Relation reason | When to emit |
+|-----------------|-------------|
+| `loads` | File is auto-loaded with another (e.g., copilot-instructions loads with all agents) |
+| `references` | File body mentions another generated file by path or name |
+| `routes_to` | Agent routing table directs to a skill |
+| `validates` | Validation phase checks this file |
+| `depends_on` | File requires another to function (e.g., skill depends on instruction context) |
+
+### Skill Index
+
+Build `.github/.skill-index.json` with discoverability metadata for each skill:
+
+```json
+{
+  "version": "1.0",
+  "generatedAt": "<ISO 8601>",
+  "skills": {
+    "generate-unit-tests": {
+      "descriptionLength": 245,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": ["test", "unit test", "coverage", "JUnit"],
+      "routedBy": ["conductor", "dev-orchestrator"],
+      "referencedByAgents": ["test-specialist"],
+      "invocationMode": "model_routed",
+      "estimatedTokenCost": 3200
+    }
+  }
+}
+```
+
+#### Invocation Mode Classification
+
+| Mode | Definition |
+|------|-----------|
+| `model_routed` | Discovered and invoked via description matching |
+| `agent_delegated` | Invoked by an agent as part of its workflow |
+| `explicit_only` | Requires explicit user mention (name or keyword) |
+| `pipeline_only` | Used only during bootstrap, not at runtime |
+
+### Phase 12 Rules
+
+- Run this phase AFTER all generation phases (4–11) but BEFORE validation (Phase 13)
+- Phase 13 (Validate) should READ `.runtime-fidelity.json` to verify cleanup decisions
+- If a retained artifact has no `runtimeRole` entry, Phase 13 should flag it as a validation error
+- If a `bootstrap_only` artifact survives cleanup, Phase 13 should flag it as a cleanup error
+- Update `.bootstrap-state.json` with phase `12-runtime-compilation` status after completion
+
+---
+
+## Phase 13: Validate
 
 Validation is mandatory.
 
@@ -999,7 +1125,7 @@ Reject generated output that:
 
 ---
 
-## Phase 13: Devcontainer
+## Phase 14: Devcontainer
 
 If the target repo already has a devcontainer, review it.
 
@@ -1012,7 +1138,7 @@ Do not force devcontainer output on every repo.
 
 ---
 
-## Phase 14: Manifest, Cleanup, and Summary
+## Phase 15: Manifest, Snapshot, Cleanup, and Summary
 
 Write a manifest describing what was generated and why.
 
@@ -1020,6 +1146,7 @@ Recommended artifacts:
 
 - `.github/.bootstrap-manifest.json`
 - `.github/.bootstrap-state.json`
+- `.github/.bootstrap-snapshot.json`
 
 The manifest is the authoritative keep list for the final generated `.github/` tree.
 
@@ -1031,6 +1158,54 @@ At minimum, record:
 - skipped file groups and why they were skipped
 - optional files intentionally retained for runtime use
 - major assumptions and unresolved gaps
+
+### Bootstrap Snapshot
+
+Generate `.github/.bootstrap-snapshot.json` as a baseline for drift detection. This captures the repo state at the moment bootstrap completes so that future drift analysis can compare against it.
+
+```json
+{
+  "version": "1.0",
+  "generatedAt": "<ISO 8601>",
+  "toolkitVersion": "<from .github/VERSION>",
+  "classification": "Standard",
+  "dimensions": {
+    "moduleTopology": {
+      "modules": ["core", "api", "web"],
+      "moduleCount": 3,
+      "buildTool": "maven"
+    },
+    "frameworkFingerprint": {
+      "frameworks": ["spring-boot:3.2", "junit:5.10"],
+      "dependencyCount": 42
+    },
+    "instructionCoverage": {
+      "totalInstructions": 8,
+      "coveredGlobs": ["**/*.java", "**/*.ts", "**/pom.xml"],
+      "estimatedCoveragePercent": 85
+    },
+    "referenceIntegrity": {
+      "totalReferences": 120,
+      "brokenReferences": 0
+    },
+    "sourceOfTruth": {
+      "canonicalFiles": 15,
+      "domains": ["order", "payment", "auth"]
+    }
+  },
+  "fileHashes": {
+    ".github/copilot-instructions.md": "<sha256-first-8>",
+    ".github/agents/dev-orchestrator.agent.md": "<sha256-first-8>"
+  }
+}
+```
+
+The snapshot should:
+
+1. Capture the 5 drift dimensions (module topology, framework fingerprint, instruction coverage, reference integrity, source of truth)
+2. Record SHA-256 hashes (first 8 chars) of all generated files for file-level drift detection
+3. Be listed in the manifest keep set as a retained runtime artifact
+4. Be added to `.gitignore` if the team prefers not to commit it (ask during Phase 15)
 
 The final summary should include:
 
