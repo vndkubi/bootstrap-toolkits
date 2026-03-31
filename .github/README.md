@@ -11,6 +11,29 @@ If this bundle has been copied into a target repo, do not treat bundle wording b
 3. Run `/bootstrap-copilot`.
 4. Let the bootstrap pipeline analyze the target codebase, replace template content with project-specific output, and clean up copied toolkit files that are not needed afterward.
 
+If slash prompts are not available in your current chat surface, use the equivalent direct request:
+
+```
+@conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+```
+
+## When To Copy This Bundle
+
+Copy this `.github/` folder into a repository when you want bootstrap to generate a project-specific Copilot setup from the actual codebase.
+
+- New or early-stage repositories that need a starting Copilot operating model
+- Existing repositories that have no structured Copilot instructions, agents, prompts, or skills yet
+- Multi-stack or multi-module repositories that need scoped instructions and routing
+- Team-wide standardization where multiple repositories should start from the same bootstrap process
+
+## How To Apply It Safely
+
+1. Copy the bundle into the target repository without editing it first.
+2. Treat the copied files as temporary bootstrap assets until `/bootstrap-copilot` rewrites them.
+3. Let the target repository itself define identity. Root `README.md`, build files, source code, tests, and docs outweigh copied bundle wording.
+4. Review the generated output after bootstrap and keep only the assets that match the detected stack, repo size, and workflow needs.
+5. Expect some generated outputs to appear outside `.github/`, such as repo-truth docs in `docs/`, when the target repository is large enough to justify them.
+
 ## Read This Bundle In Order
 
 - `.github/prompts/bootstrap-copilot.prompt.md`: main entry point.
@@ -75,6 +98,8 @@ These may not exist until the bootstrap pipeline generates them for the target r
 - `.github/.phase3-checkpoint.md`
 - `.github/module-dependency-map.json`
 - `.github/MODULE-ARCHITECTURE.md`
+- `docs/00-repo-overview.md`
+- `docs/02-architecture-map.md`
 
 Their absence before generation is normal.
 

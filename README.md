@@ -463,12 +463,37 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 
 2. **Open the project in VS Code** with GitHub Copilot Chat
 
-3. **Bootstrap**:
+3. **Bootstrap** with the canonical entry point:
    ```
-   @conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+   /bootstrap-copilot
    ```
 
 4. **Review the output** and adjust as needed
+
+If you prefer direct agent invocation, this is the equivalent bootstrap request:
+
+```
+@conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+```
+
+### When To Copy The `.github/` Folder
+
+Use the copied `.github/` bundle when you want Copilot behavior to be generated from the real repository instead of relying on one-off prompts.
+
+- **Greenfield or newly created repository**: start with a portable baseline, then let bootstrap generate stack-specific agents, skills, prompts, and instructions.
+- **Existing codebase with no curated Copilot setup**: analyze the real modules, conventions, and tooling, then rewrite the copied bundle into project-specific output.
+- **Multi-stack or multi-module repository**: keep one bootstrap entry point while generating scoped instructions and routing for each stack or domain.
+- **Team standardization**: give contributors the same investigation, implementation, review, and planning workflow across repositories.
+- **Enterprise or high-governance projects**: encode architecture rules, verification guidance, and cleanup rules into the generated `.github/` output instead of documenting them manually in every prompt.
+
+### How To Apply It To A Target Project
+
+1. **Copy the bundle as-is** into the target repository.
+2. **Treat the copied files as bootstrap templates** until the pipeline rewrites them. The target repository's `README.md`, build files, source code, tests, and docs remain the source of truth for repo identity.
+3. **Run `/bootstrap-copilot` first**. Use `@conductor` directly only when you want to provide a more specific chat instruction.
+4. **Let bootstrap generate the right depth of output**. Small repositories may only get a short global truth layer, while larger repositories can also get generated docs such as `docs/00-repo-overview.md` and `docs/02-architecture-map.md`.
+5. **Review the generated result, not the copied template**. Keep the files that match the detected stack and workflow, and let cleanup remove out-of-scope toolkit assets.
+6. **Start day-to-day work from the generated setup** using the relevant prompts, agents, and instructions for investigation, implementation, testing, and review.
 
 ### 📦 Bootstrapping a Brand New Project (From Scratch)
 
@@ -509,7 +534,14 @@ your-new-project/
 Open the project in VS Code, then in Copilot Chat:
 
 ```
-@conductor Analyze this codebase and generate a complete GitHub Copilot configuration
+/bootstrap-copilot
+```
+
+If the repository is still sparse, add a follow-up message with stack hints, for example:
+
+```
+@conductor This is a Jakarta EE project with Maven, JPA, and Oracle DB.
+Generate Copilot config for this stack.
 ```
 
 The conductor will:
@@ -592,6 +624,8 @@ If you literally have zero code (just an empty folder):
    ```
 
 ### 🎯 Use Cases
+
+The first scenarios below explain when copying the `.github/` folder is useful. The later scenarios show how the generated configuration is used after bootstrap.
 
 #### Use Case 1: Greenfield Java Enterprise Project
 
