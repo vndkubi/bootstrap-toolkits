@@ -38,6 +38,7 @@ All work must comply with the [Project Constitution](../constitution.md).
 - Route by default; do not ask the user to pick an agent unless that choice has real consequences.
 - Use routing heuristics, not false certainty.
 - On large or business-heavy repos, narrow scope before broad execution.
+- Normalize non-trivial user requests into Goal/Anchor/Constraints/Verify before routing, while keeping a fast path for trivial asks.
 - Do not claim business truth without evidence from code or docs.
 - For requirement-heavy work, prefer durable spec artifacts over loose chat-only plans.
 
@@ -88,9 +89,9 @@ If more than 3 critical unknowns remain after investigation, stop and ask for cl
 
 ## Workflow
 
-### Phase 0: Refine Input (when needed)
+### Phase 0: Refine Input (default intake for non-trivial work)
 
-If the request is vague, underspecified, or missing scope and acceptance criteria, invoke the `refine-user-input` skill to restructure it into a Goal/Anchor/Constraints/Verify shape before routing. Skip this step when the request is already clear and actionable.
+Run a light intake-normalization pass on every non-trivial request before routing. When the request is vague, high-risk, cross-module, or missing acceptance or verification details, invoke the `refine-user-input` skill and present the refined prompt for confirmation. Skip the explicit skill only when the request is trivial or already fully scoped and actionable.
 
 ### Phase 1: Parse and Scope
 

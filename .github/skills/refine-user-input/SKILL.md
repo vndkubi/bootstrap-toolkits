@@ -1,19 +1,21 @@
 ---
 name: refine-user-input
-description: "Analyze raw freeform user input and restructure it into an actionable prompt following the Goal/Anchor/Constraints/Verify shape. Extracts implicit requirements, enriches with repo context, labels ambiguities as [NEEDS CLARIFICATION], and presents the refined prompt for user confirmation before execution. Use when a user prompt is vague, underspecified, or missing scope and acceptance criteria. Keywords: prompt refinement, clarify request, structure input, vague prompt, enrich prompt, preprocess request."
+description: "Analyze raw freeform user input and restructure it into an actionable prompt following the Goal/Anchor/Constraints/Verify shape. Default intake normalizer for non-trivial requests: use proactively before routing heavy workflows or when prompts are vague, cross-cutting, or missing scope, constraints, or verification details. Skip explicit refinement for trivial, already-clear asks."
 ---
 
 # Refine User Input
 
-Preprocesses raw user input into structured, actionable prompts before routing to execution skills.
+Preprocesses raw user input into structured, actionable prompts before routing to execution skills. In this bundle, treat it as the default intake step for non-trivial work rather than a rescue step only for obviously vague prompts.
 
 ## When to Use
 
+- As the default pre-routing normalization step for non-trivial user requests
 - User gives a vague or short request (e.g., "fix auth", "add logging", "update the API")
+- Request spans multiple modules, multiple skills, or a heavy workflow such as `implement-feature` or `specify-feature`
 - Request is missing scope, acceptance criteria, or constraints
-- Before routing to a heavy skill like `implement-feature` or `specify-feature`
 - When the user explicitly asks to refine, clarify, or structure their request
 - When `@dev-orchestrator` detects ambiguous intent that could route to multiple skills
+- Skip explicit refinement when the request is trivial, already scoped, and immediately verifiable
 - Keywords: refine, clarify, structure, vague, preprocess, improve prompt
 
 ---

@@ -26,6 +26,13 @@ Repo identity must come from target-repo evidence (root README, build files, sou
 - After validation, remove copied bootstrap files that are not listed in the manifest keep set.
 - If business context is weak, mark assumptions explicitly instead of filling gaps with toolkit defaults.
 
+## Prompt Intake Policy
+
+- Treat prompt refinement as the default intake step for non-trivial user requests.
+- Normalize requests into Goal / Anchor / Constraints / Verify before routing or execution.
+- Use the `refine-user-input` skill when the request is vague, cross-cutting, or missing scope, constraints, or verification details.
+- Keep a fast path for trivial, already-scoped asks so the bundle does not over-engineer simple work.
+
 ## Expected Before Generation
 
 - Many copied files are still generic templates.
