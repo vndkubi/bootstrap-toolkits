@@ -17,7 +17,7 @@ Structured multi-stage code review pipeline with short-circuit logic for maximum
 ## Pipeline Overview
 
 ```
-Stage 0: CONTEXT GATHERING → Load changed files + related files (import graph, callers)
+Stage 0: CONTEXT GATHERING → Load changed files + related files + business context + scenario pack
     ↓
 Stage 1: SELF-REVIEW GATE → Author checklist (quick sanity check)
     ↓
@@ -106,12 +106,25 @@ For changed entities/models:
   → Load state machine / status transition logic if entity has status field
 ```
 
-### 0e. Locate Requirement Document
+### 0e. Locate Requirement And Business Context
 
 1. Check PR description for PBI/issue link
 2. Search `docs/requirements/` for related spec
-3. Check commit messages for issue references
-4. If no requirement found → flag it, but continue review with best effort
+3. Search business-facing docs when they exist:
+  - `docs/workflows/`
+  - `docs/modules/`
+  - `docs/01-business-glossary.md`
+  - `docs/05-common-failure-modes.md`
+  - ADRs, runbooks, API docs, or user-facing behavior docs
+4. Check commit messages for issue references
+5. If no requirement or business context is found, derive a provisional business context from the strongest remaining signals in this order:
+  - PR description or linked issue
+  - existing tests, fixtures, and scenario names
+  - public API contracts, DTOs, state machines, database constraints, and user-visible strings
+  - caller behavior and downstream consumers
+  - commit messages as weakest evidence
+6. Record a business-context confidence level: High / Medium / Low
+7. If confidence is Low, continue review with best effort and explicitly mark which scenarios could not be validated against documented business intent
 
 ### 0f. Build Context Summary
 
@@ -125,6 +138,8 @@ Before passing to reviewers, produce a brief context map:
   - Dependencies: [list of files imported by changed files]
   - Cross-service: [list of Feign/HTTP clients referencing changed APIs]
 - **Requirement**: [link or "not found"]
+- **Business docs / workflow docs**: [list or "not found"]
+- **Business context confidence**: High / Medium / Low
 - **Estimated blast radius**: Low (1-3 files) / Medium (4-10) / High (10+)
 ```
 
@@ -160,6 +175,30 @@ In slice mode:
 
 Goal: make very large PRs reviewable without pretending one giant pass will stay reliable.
 
+### 0h. Build Functional Scenario Pack
+
+Before delegating to Functional Review, build a lightweight scenario pack from the requirement, business docs, and changed code flow.
+
+For each affected feature or domain slice, capture at least:
+
+- happy path
+- invalid input / validation error path
+- boundary or empty-data path
+- state-transition path when statuses or workflow steps exist
+- cross-domain side-effect path when another module/service must react
+- regression-sensitive path that existing users already depend on
+
+Use the scenario pack to trace:
+
+- what code path implements the scenario
+- what test covers it
+- what business document or requirement anchors it
+- where business meaning is missing, contradictory, or only implied by code
+
+If no business docs exist, anchor each scenario to the best available fallback evidence and mark the scenario confidence explicitly.
+
+For huge PRs, build one scenario pack per slice instead of forcing one giant matrix.
+
 ## Stage 1: Self-Review Gate (Quick Sanity Check)
 
 **The implementor should verify these before PR submission. The pipeline checks automatically:**
@@ -180,11 +219,15 @@ Goal: make very large PRs reviewable without pretending one giant pass will stay
 
 1. Changed files (business logic + API + tests)
 2. Requirement document / acceptance criteria
-3. Related files from import graph
+3. Business context docs, workflow docs, glossary, and failure-mode docs when available
+4. Functional scenario pack
+5. Related files from import graph
 
 **Functional Reviewer will:**
 - Build AC ↔ Test ↔ Code traceability matrix
+- Trace the business flow through the changed code paths before judging correctness
 - Verify business logic correctness
+- Check whether the implementation contradicts, under-specifies, or omits expected business behavior from available docs
 - Run adversarial edge-case analysis
 - Check cross-domain data integrity
 - Verify business scenario test coverage
@@ -256,6 +299,8 @@ Output:
 - **PR/Branch**: [reference]
 - **Author**: [name]
 - **PBI/Issue**: [reference]
+- **Business Context Used**: [docs / workflows / glossary / "not found"]
+- **Business Context Confidence**: High / Medium / Low
 - **Files Changed**: [count]
 - **Risk Level**: 🔴 High / 🟡 Medium / 🟢 Low
 
@@ -266,6 +311,9 @@ Output:
 
 ## Functional Review Results
 [Full output from @functional-reviewer]
+
+## Scenario Coverage Snapshot
+[Happy path / boundary / state-transition / cross-domain scenarios covered or missing]
 
 ## Technical Review Results
 [Full output from @technical-reviewer]

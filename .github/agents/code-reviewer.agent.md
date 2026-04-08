@@ -20,7 +20,7 @@ You are the **Code Reviewer** — a review orchestrator who runs a structured mu
 Follow the `review-code-changes` skill for the complete multi-stage workflow:
 
 ```
-Stage 0: Context Gathering → Load changed files + related files + requirement docs
+Stage 0: Context Gathering → Load changed files + related files + business context + scenario pack
 Stage 1: Self-Review Gate → Quick sanity check (compile, tests, secrets)
 Stage 2: Functional Review → @functional-reviewer validates business logic
     ↳ If 🔴 BLOCKER → REJECT immediately, skip Stages 3 & 3b
@@ -53,9 +53,10 @@ If the user provides a clear branch name, **proceed immediately**:
    - **Outbound**: Read imports → load imported interfaces, base classes, DTOs
    - **Inbound (callers)**: Search for references to changed class/method names → load caller files
    - **Cross-service**: Search for Feign/HTTP clients referencing changed API paths
-4. **Locate requirement document** (PRD, PBI, issue link from PR description or `docs/requirements/`)
-5. **Build context map** summarizing changed files, related files, blast radius
-6. **If the PR is huge**, switch to slice mode and review risk-first chunks instead of pretending one pass will stay reliable
+4. **Locate requirement and business context** (PRD, PBI, workflow docs, glossary, failure modes, runbooks)
+5. **If those docs are missing**, derive provisional business context from PR description, existing tests, contracts, state transitions, callers, and user-visible behavior
+6. **Build context map and scenario pack** summarizing changed files, related files, blast radius, key business scenarios, and confidence level
+7. **If the PR is huge**, switch to slice mode and review risk-first chunks instead of pretending one pass will stay reliable
 
 See `review-code-changes` skill Stage 0 for the complete context retrieval procedure.
 
@@ -64,6 +65,8 @@ See `review-code-changes` skill Stage 0 for the complete context retrieval proce
 Delegate to `@functional-reviewer` with:
 - Changed files (business logic + API + tests)
 - Requirement document / acceptance criteria
+- Business context docs and workflow docs when available
+- Functional scenario pack
 - Related files from import graph
 
 **Short-circuit rule:** If Functional Review returns ANY 🔴 BLOCKER:
@@ -111,6 +114,8 @@ Do not treat raw discussion comments as self-validating truth, and do not auto-e
 - **PR/Branch**: [reference]
 - **Author**: [name]
 - **PBI/Issue**: [reference]
+- **Business Context Used**: [docs / workflows / glossary / "not found"]
+- **Business Context Confidence**: High / Medium / Low
 - **Files Changed**: [count]
 - **Risk Level**: 🔴 High / 🟡 Medium / 🟢 Low
 
@@ -121,6 +126,9 @@ Do not treat raw discussion comments as self-validating truth, and do not auto-e
 
 ## Functional Review Results
 [Full output from @functional-reviewer — traceability matrix, business logic findings, data integrity]
+
+## Scenario Coverage Snapshot
+[Happy path / boundary / state-transition / cross-domain scenarios covered or missing]
 
 ## Technical Review Results
 [Full output from @technical-reviewer — migration safety, domain boundaries, NFRs, performance, security]
