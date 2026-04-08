@@ -1,6 +1,6 @@
 ---
 name: analyze-requirements
-description: 'Requirements analysis and PBI writing workflow. Transforms user feature requests into structured User Stories with acceptance criteria, PBI breakdowns with story point estimates, impact assessments, and dependency maps. Analyzes actual codebase for feasibility and reuse opportunities. Outputs polished markdown documents saved to docs/requirements/. Use when asked to write a story, create PBIs, analyze requirements, or plan a feature.'
+description: 'Requirements analysis and PBI writing workflow. Transforms user feature requests into structured User Stories with acceptance criteria, PBI breakdowns with story point estimates, impact assessments, and dependency maps. Analyzes actual codebase for feasibility and reuse opportunities. Outputs polished markdown requirements, using specs/<feature-id>-<slug>/spec.md as the canonical home for non-trivial work and docs/requirements/ only for backlog-intake artifacts. Use when asked to write a story, create PBIs, analyze requirements, or plan a feature.'
 ---
 
 # Analyze Requirements — From Idea to Structured PBIs
@@ -69,9 +69,14 @@ Produce:
 - Risk assessment with mitigations
 - Estimation summary
 
-### Step 6: Save as File
+### Step 6: Choose the Canonical Output
 
-**Save output to**: `docs/requirements/[feature-name]-requirements.md`
+Use one canonical home for the result:
+
+- **Non-trivial, multi-module, or requirement-heavy work**: save or promote the output into `specs/<feature-id>-<slug>/spec.md` so downstream review, planning, and implementation use the same artifact.
+- **Backlog intake or pre-spec triage only**: save to `docs/requirements/[feature-name]-requirements.md` when the repo explicitly wants a lightweight intake artifact.
+
+If both files exist, state plainly that `specs/<feature-id>-<slug>/spec.md` is canonical and `docs/requirements/` is only a summary or intake note.
 
 ## Validation
 
@@ -81,4 +86,5 @@ Produce:
 - [ ] Dependencies are clearly mapped
 - [ ] Out-of-scope items are explicitly listed
 - [ ] Technical notes reference actual file paths
+- [ ] Canonical artifact home is identified explicitly
 - [ ] Output is saved as markdown file

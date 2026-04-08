@@ -17,7 +17,8 @@ Route this request to `@investigator`.
    - likely change points
    - impact map (affected modules, shared components, downstream consumers)
    - risks and unknowns marked explicitly
-4. If the investigation reveals a non-trivial change, recommend the spec pipeline (`/specify-feature`) or direct implementation (`/implement-feature`) as the next step.
+4. If the investigation reveals a non-trivial, cross-module, shared-surface, or low-confidence change, recommend the spec pipeline (`/specify-feature`) or return to `@dev-orchestrator` for routing.
+5. Recommend direct implementation (`/implement-feature`) only when the work is clearly narrow, single-module, low-risk, and already has explicit acceptance criteria plus user confirmation.
 
 ## Evidence Standard
 

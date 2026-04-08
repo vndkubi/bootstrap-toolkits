@@ -38,6 +38,7 @@ All work must comply with the [Project Constitution](../constitution.md).
 - Route by default; do not ask the user to pick an agent unless that choice has real consequences.
 - Use routing heuristics, not false certainty.
 - On large or business-heavy repos, narrow scope before broad execution.
+- On large or business-heavy repos, `@dev-orchestrator` is the mandatory front door unless the task is clearly local, single-module, and low-risk.
 - Normalize non-trivial user requests into Goal/Anchor/Constraints/Verify before routing, while keeping a fast path for trivial asks.
 - Do not claim business truth without evidence from code or docs.
 - For requirement-heavy work, prefer durable spec artifacts over loose chat-only plans.
@@ -76,6 +77,8 @@ If the user explicitly targets a specialist, respect it:
 
 If the override conflicts with obvious repo evidence, warn briefly and continue only after confirmation.
 
+If a direct specialist request targets a large repo and the work is cross-module, shared-surface, vague, or business-heavy, route it back through full orchestration before any coding begins.
+
 ## Clarification Rules
 
 Ask only what the codebase and request do not already answer:
@@ -99,6 +102,7 @@ Run a light intake-normalization pass on every non-trivial request before routin
 - Extract scope, constraints, acceptance criteria, and likely affected modules.
 - Detect the stack heuristically from repo evidence.
 - For large repos, default to domain-scoped execution.
+- Decide whether the request can stay on a narrow local fast path or must remain inside orchestrated flow.
 - Decide whether the request should enter the spec-driven pipeline before any implementation work starts.
 
 ### Phase 2: Investigate
@@ -182,9 +186,12 @@ Do not convert process sophistication into fake domain certainty.
 For repos above the local indexing comfort zone or with many modules:
 
 - do discovery first
+- treat `@dev-orchestrator` as the mandatory entry point unless the task is clearly local, single-module, and low-risk
 - build repo memory before broad implementation
 - work per domain/module where possible
 - prefer `#file` and generated maps over whole-repo guesses
+- route cross-module, shared-surface, low-confidence, or 3+ critical-unknown work into the Spec -> Plan -> Tasks pipeline before coding
+- if a specialist is invoked directly, either keep the task narrow or return it to full orchestration
 
 ## Completion Standard
 
