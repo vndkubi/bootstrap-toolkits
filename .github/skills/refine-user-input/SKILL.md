@@ -64,11 +64,9 @@ Track what was found and what is missing. Do not invent information — only ext
 
 Read available repo truth pack to enrich the prompt with project-specific context:
 
-1. Read `docs/00-repo-overview.md` for project scope, stack, and domain summary.
-2. Read `docs/02-architecture-map.md` for module boundaries and integration points.
-3. Read `docs/04-engineering-rules.md` for team conventions and constraints.
-4. If any doc is missing, note it and proceed — these are target-repo generated docs that may not exist yet.
-5. Extract domain terminology, module ownership rules, and architectural constraints relevant to the user's request.
+1. Prefer generated repo truth-pack docs when present: `docs/00-repo-overview.md`, `docs/02-architecture-map.md`, `docs/04-engineering-rules.md`, and relevant module docs.
+2. If those docs do not exist yet, read the target repo's own README, build files, source tree, tests, and relevant `.github/docs/*.md` bundle guidance instead.
+3. Extract domain terminology, module ownership rules, and architectural constraints relevant to the user's request.
 
 Reference: [Constitution Article I](../../constitution.md) — understand before changing.
 

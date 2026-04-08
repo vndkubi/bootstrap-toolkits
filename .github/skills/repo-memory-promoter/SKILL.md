@@ -1,6 +1,6 @@
 ---
 name: repo-memory-promoter
-description: Scan .github/ config to find information worth promoting to a persistent memory layer. Identifies copilot-instructions.md bloat, broad instruction globs, underdocumented subsystems, and workflow gaps. Outputs a prioritised promotion report with concrete actions. Chat output only — does not write files.
+description: Scan .github/ config to find information worth promoting to a persistent memory layer. Identifies copilot-instructions.md bloat, broad instruction globs, underdocumented subsystems, and workflow gaps. Outputs a prioritised promotion report with concrete actions. Chat output only — does not write files or generate approval-ready candidate deltas.
 ---
 
 # Repo Memory Promoter
@@ -17,6 +17,7 @@ Use this skill when:
 - You have just run bootstrap (config is fresh — nothing to promote yet)
 - You want to document a specific subsystem (use `common-doc-generator` instead)
 - You want to simulate context loading (use `context-assembly-simulator` instead)
+- You already have stable review or investigation findings and need approval-ready memory candidates (use `review-memory-promotion` instead)
 
 ## Prerequisites
 
@@ -143,3 +144,4 @@ Otherwise, output the report in this format:
 - Cannot detect patterns from prompt history (no access to conversation logs)
 - H-3 / H-4 / H-5 may produce false positives for very small repos
 - File size thresholds (3 KB, 5 files) are heuristics — adjust judgment based on actual content complexity
+- This skill diagnoses promotion opportunities, but it does not create approval-ready candidate deltas from completed review findings

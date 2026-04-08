@@ -55,7 +55,8 @@ You are the **Conductor**. You coordinate bootstrap work and complex multi-step 
 | Database work | `@database-specialist` |
 | Multi-step feature delivery | `@dev-orchestrator` |
 | Audit context budget or instruction conflicts | Pack A audit skills: `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
-| Document a subsystem or find memory gaps | Pack B skills: `repo-memory-promoter`, `common-doc-generator` |
+| Document a subsystem, promote stable findings, or find memory gaps | Pack B skills: `repo-memory-promoter`, `review-memory-promotion`, `common-doc-generator` |
+| Review config health, adoption, or what is working | `review-effectiveness` |
 | Audit skill discoverability or descriptions | `skill-discoverability-audit` |
 | Detect config drift or check bootstrap freshness | `drift-detector` |
 

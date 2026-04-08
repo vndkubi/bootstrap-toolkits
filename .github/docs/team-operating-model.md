@@ -17,6 +17,7 @@ Describe how a team should evolve this bundle and a bootstrapped repository over
 2. Repeated workflows move into skills and prompts.
 3. Repeated clarification gaps move into shared docs or templates.
 4. Generated target-project output is reviewed and refined as project-specific repo memory.
+5. Repeated accepted review discussion can become approval-ready checklist candidates before it is promoted into durable review knowledge.
 
 ## Maturity Model
 
@@ -35,7 +36,7 @@ Use four documentation layers:
 1. **Global rules**: `.github/copilot-instructions.md`
 2. **Scoped instructions**: `.instructions.md` files for language, stack, or domain-specific rules
 3. **Repo memory docs**: `docs/` for overview, glossary, architecture, runbooks, modules, workflows, ADRs
-4. **Task truth**: temporary plans, investigations, reviews, and feature-specific artifacts
+4. **Task truth**: temporary plans, investigations, reviews, review-memory candidate reports, and feature-specific artifacts
 
 Rules:
 
@@ -72,6 +73,7 @@ Add these when work depends on business-flow or historical-decision context:
 - `docs/workflows/*.md`
 - `docs/decisions/*.md`
 - task-specific plans, investigations, and reviews
+- review-memory promotion reports and checklist candidates awaiting approval
 
 ### Scale Rules
 
@@ -88,6 +90,7 @@ Create or refine a common doc when:
 - multiple engineers keep re-explaining the same flow
 - prompts repeat the same conventions
 - code review keeps catching the same category of issue
+- resolved PR discussion keeps producing the same accepted review rationale
 - onboarding is slow because source-of-truth locations are unclear
 
 Priority order:
@@ -159,6 +162,7 @@ An agent-friendly repo should have:
 - Creating too many docs for a small repo
 - Keeping a large repo on a single giant overview file
 - Storing durable rules only in chat history
+- Leaving repeated accepted review reasoning trapped inside PR discussion instead of promoting it into reusable checklist or memory candidates
 - Writing docs without source-of-truth or unknowns sections
 
 ## Related Files

@@ -93,6 +93,12 @@ If NOT triggered (no mobile files): skip Stage 3b silently.
 
 Merge findings from both stages into the final report.
 
+### 5. Optional Promotion Follow-Up
+
+When the combined review plus later PR discussion reveals stable, trusted reasoning worth reusing, delegate to `review-memory-promotion` with the combined report and discussion summary to propose functional checklist candidates, technical checklist candidates, or other durable memory promotions.
+
+Do not treat raw discussion comments as self-validating truth, and do not auto-edit durable docs from this stage.
+
 ## Output Format
 
 ```markdown

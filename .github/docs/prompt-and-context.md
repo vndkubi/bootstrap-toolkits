@@ -4,6 +4,8 @@
 
 Capture the practical context-optimization rules that make Copilot more accurate and less noisy when using this bundle.
 
+This file is about **context quality**, not tool exposure, hook sequencing, or execution-loop control.
+
 ## Source of Truth
 
 - `.github/copilot-instructions.md`
@@ -76,6 +78,16 @@ If question 5 is "yes, the agent can find it easily" → mention lightly, do not
 | A durable rule or convention | `.instructions.md` or `copilot-instructions.md` |
 | A multi-step reusable workflow | Skill file |
 | Agent keeps misunderstanding a subsystem | Targeted common doc |
+
+## Runtime Doc Boundaries
+
+Keep the runtime docs separated by concern:
+
+- `runtime-overview.md` owns the high-level execution mental model.
+- `tool-runtime.md` owns tool exposure, hooks, and round-trip behavior.
+- `prompt-and-context.md` owns context selection, prompt signal/noise decisions, and placement rules.
+
+If a rule is mainly about which tools can run or why a loop continues, document it in the runtime docs rather than here.
 
 ## Key Constraints
 

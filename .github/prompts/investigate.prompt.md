@@ -10,7 +10,7 @@ Route this request to `@investigator`.
 ## Instructions
 
 1. Parse the user's request to extract the investigation target: PBI, bug report, performance issue, or general "how does this work" question.
-2. Load relevant repo truth pack artifacts (`docs/00-repo-overview.md`, `docs/02-architecture-map.md`, module docs) before tracing code.
+2. Load generated repo truth pack artifacts if they exist (`docs/00-repo-overview.md`, `docs/02-architecture-map.md`, module docs). If they do not exist yet, use the target repo's own README, build files, source tree, tests, and relevant bundle docs under `.github/docs/` before tracing code.
 3. Produce an evidence-backed investigation report with:
    - as-is flow with file/line anchors
    - business rules and invariants discovered

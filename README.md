@@ -9,14 +9,20 @@
 Bootstrap Toolkit solves the problem: **Given any codebase, automatically detect and generate a complete, tailored Copilot configuration.**
 
 The toolkit includes:
-- **27 custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
-- **34+ reusable skills** — automated workflows from sprint planning to impact analysis, including spec-driven pipeline
-- **23 instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, TypeScript, React, Kotlin, Swift, DevContainer
-- **1 conductor** — master orchestrator that coordinates the entire pipeline
-- **1 project constitution** — 9 immutable Articles + Phase -1 Gates governing all specification-to-code transformation
+- **Custom agents** — specialized for every developer role across 7 tech stacks + agile workflows + devcontainer optimization
+- **Reusable skills** — automated workflows from sprint planning to impact analysis, including spec-driven pipeline
+- **Scoped instruction files** — coding standards auto-applied by file type for Java, .NET, Python, PHP, TypeScript, React, Kotlin, Swift, DevContainer
+- **A conductor** — the master orchestrator that coordinates the entire pipeline
+- **A project constitution** — 9 immutable Articles + Phase -1 Gates governing all specification-to-code transformation
 - **Spec-driven pipeline** — specify → plan → tasks → implement workflow for vague or large features
 - **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
+
+Important packaging model:
+
+- This repository is the **source repository** for the portable `.github/` bootstrap bundle.
+- In real use, teams copy **only** `.github/` into a target repository, run `/bootstrap-copilot`, and let the pipeline rewrite and prune the copied templates into project-specific output.
+- Generated target-repo docs such as `docs/00-repo-overview.md` or `docs/02-architecture-map.md` are created **in the target repository when needed**. They are not expected to exist in this source repo before generation.
 
 ## 🏗️ Architecture
 
@@ -131,7 +137,7 @@ In multi-module projects, understand module boundaries before making changes:
 ├── copilot-instructions.md                          # 📖 Project-wide context
 ├── constitution.md                                  # 📜 Project Constitution (9 Articles + Phase -1 Gates)
 │
-├── agents/                                          # 🤖 Custom AI Agents (27)
+├── agents/                                          # 🤖 Custom AI Agents
 │   ├── conductor.agent.md                           #   Main orchestrator
 │   ├── dev-orchestrator.agent.md                    #   Full lifecycle orchestrator (multi-stack)
 │   ├── codebase-analyzer.agent.md                   #   Codebase analysis
@@ -160,7 +166,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── dependency-analyzer.agent.md                 #   🔗 Cross-module dependency analysis
 │   └── database-specialist.agent.md                 #   🗄️ Schema review & migration strategy
 │
-├── skills/                                          # 🎯 Reusable Skills (34+)
+├── skills/                                          # 🎯 Reusable Skills
 │   ├── analyze-codebase/SKILL.md                    #   Deep analysis
 │   ├── analyze-requirements/SKILL.md                #   📝 Requirements & PBI writing
 │   ├── investigate-pbi/SKILL.md                     #   PBI investigation
@@ -169,6 +175,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── plan-implementation/SKILL.md                 #   📋 Spec-driven: spec → technical plan + gates
 │   ├── generate-tasks/SKILL.md                      #   📋 Spec-driven: plan → executable task list
 │   ├── review-effectiveness/SKILL.md                #   🔄 Feedback loop: review config effectiveness
+│   ├── review-memory-promotion/SKILL.md             #   🧠 Promote stable review findings into approval-ready memory candidates
 │   ├── generate-unit-tests/SKILL.md                 #   Unit test generation
 │   ├── generate-sequence-diagram/SKILL.md           #   Sequence diagrams
 │   ├── generate-state-diagram/SKILL.md              #   🔄 State machine diagrams
@@ -196,7 +203,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── impact-analysis/SKILL.md                     #   💥 Cross-module impact analysis
 │   └── generate-domain-instructions/SKILL.md        #   📑 Per-domain instruction generation
 │
-├── instructions/                                    # 📋 Coding Standards (23)
+├── instructions/                                    # 📋 Coding Standards
 │   ├── java.instructions.md                         #   Java conventions
 │   ├── jakartaee.instructions.md                    #   Jakarta EE patterns
 │   ├── maven.instructions.md                        #   Maven POM standards
@@ -221,7 +228,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── react.instructions.md                        #   ⚛️ React/Next.js component standards
 │   └── module-boundaries.instructions.md            #   🏗️ Cross-module dependency rules
 │
-├── prompts/                                         # 🚀 Reusable Prompts (8)
+├── prompts/                                         # 🚀 Reusable Prompts
 │   ├── bootstrap-copilot.prompt.md                  #   Full bootstrap pipeline
 │   ├── analyze-project.prompt.md                    #   Codebase analysis
 │   ├── learn-codebase.prompt.md                     #   🎓 Learn business & workflows
@@ -340,6 +347,7 @@ In multi-module projects, understand module boundaries before making changes:
 | `plan-implementation` | Spec → technical plan with Phase -1 Constitutional Gates | "plan", "technical plan", "how to build" |
 | `generate-tasks` | Plan → executable task list with parallelization + checkpoints | "tasks", "task list", "break into tasks" |
 | `review-effectiveness` | Feedback loop: review which agents/skills/instructions are working | "review config", "effectiveness", "what's working" |
+| `review-memory-promotion` | Turn stable review or investigation findings into approval-ready repo-memory candidates | "promote review findings", "pitfall pack", "memory candidate", "knowledge sync" |
 
 ### Mobile Skills 📱
 
@@ -520,10 +528,10 @@ Your project structure will now look like:
 your-new-project/
 ├── .github/
 │   ├── copilot-instructions.md
-│   ├── agents/          # 27 agents
-│   ├── skills/          # 30 skills
-│   ├── instructions/    # 23 instruction files
-│   └── prompts/         # 7 prompts
+│   ├── agents/          # custom agents
+│   ├── skills/          # reusable skills
+│   ├── instructions/    # scoped instruction files
+│   └── prompts/         # reusable prompts
 ├── src/                 # (your code, even if minimal)
 ├── pom.xml              # (or build.gradle.kts, *.csproj, etc.)
 └── README.md

@@ -42,6 +42,26 @@ The runtime uses a hybrid model:
 - **Prompt biases**: search before edit, prefer large file reads, use subagents for terminal-heavy work.
 - **Model decides**: which tool to call in each round, how many rounds, when the task is done.
 
+## Tool-Calling Gate
+
+Do not assume every chat turn is tool-calling by default.
+
+- Agent and AskAgent-style paths can expose tools when the runtime, model capability, and current mode allow it.
+- A plain panel chat path may stay effectively non-tool-calling if the current intent does not override tool exposure.
+- Mental model: no exposed tools means no tool calls, even if prompt wording asks for them.
+
+So when a workflow depends on tools, check the active mode and exposed-tool path before assuming the model can search, read, or execute anything.
+
+## Why The Loop Keeps Going
+
+The loop can continue for more than one reason:
+
+1. the model emitted tool calls for the next round
+2. a stop or subagent-stop hook blocked stopping and turned its reason into a continuation query
+3. autopilot or task-oriented execution decided the task is not complete yet
+
+Mental model: the loop stops only when the runtime decides it is allowed to stop and the task is considered complete enough.
+
 ## Compaction and Summarization
 
 Long-running threads do not break the system. The runtime manages context budget:
@@ -65,6 +85,16 @@ Raw local data is not sent verbatim. Between local state and the final model req
 
 Each step can drop, summarize, transform, or add context.
 
+## Runtime Doc Boundaries
+
+Use the runtime docs as three distinct layers:
+
+- `runtime-overview.md` explains the high-level execution model, gates, continuation behavior, and what reaches the model.
+- `tool-runtime.md` explains tool exposure, hooks, invocation timing, and tool-result round-trips.
+- `prompt-and-context.md` explains how to choose, trim, and place context so prompts stay high-signal.
+
+Keep these roles separate. Do not restate the same operational rule in prompts, skills, agents, and all runtime docs unless the duplication is intentional and lightweight.
+
 ## Key Constraints
 
 - Do not assume the whole workspace or every `.github/` file goes directly into the model.
@@ -78,14 +108,17 @@ Each step can drop, summarize, transform, or add context.
 - Confirm prompt entry points defer to the canonical skill instead of redefining the pipeline.
 - Confirm bundle guidance distinguishes repo-level instructions, task context, and generated outputs.
 - Confirm tool-related guidance matches official hook and prompt behavior described elsewhere in `.github/`.
+- Confirm the docs still distinguish the tool-calling gate, the execution loop, and context-optimization guidance instead of blending them together.
 
 ## Common Failure Modes
 
 - Treating every `.github/` file as if it is auto-injected into prompt context.
 - Duplicating pipeline logic in prompt, agent, and skill files.
 - Mixing toolkit-template assets with generated target-project output.
+- Assuming every chat surface is equally tool-capable.
 - Assuming raw history or raw tool output is always sent verbatim to the model.
 - Assuming tool results are visible in the same round they are produced (they go into the next round).
+- Forgetting that stop hooks and autopilot can legitimately continue the loop after a non-tool turn.
 - Not realizing compaction happens automatically; restarting threads unnecessarily.
 
 ## Related Files

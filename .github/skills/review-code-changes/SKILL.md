@@ -186,6 +186,33 @@ Before passing to reviewers, produce a brief context map:
 
 **Technical Review runs in full — no short-circuit.**
 
+## Optional Stage 4: Discussion Harvest And Review Memory Promotion
+
+Use this stage only when the combined review or the follow-up PR discussion surfaces **durable** or **recurring** knowledge that should outlive the current pull request.
+
+Delegate to `review-memory-promotion` with:
+
+1. the final combined review report
+2. the Stage 0 context map
+3. a PR discussion summary, resolved-thread artifact, or accepted-fix notes when available
+4. the requirement or investigation artifact when present
+5. existing docs likely to own the promoted knowledge
+
+Rules:
+
+- promote recurring or structural findings only
+- treat raw PR discussion as input evidence, not as self-validating truth
+- promote only trusted signals, such as accepted fixes, resolved discussions, repeated findings, or reviewer-owned concerns
+- reject one-off branch details, style nits, and transient incidents
+- do not auto-edit source-of-truth files directly from the review stage
+- require human approval for business-rule, security, or workflow-policy candidates
+
+Output:
+
+- a reviewable candidate memory report under `docs/reviews/`
+- functional checklist candidates, technical checklist candidates, and any other durable memory promotions kept separate
+- a clear follow-up task for accepted candidates
+
 ## Combined Report Format
 
 ```markdown
@@ -277,3 +304,4 @@ Before passing to reviewers, produce a brief context map:
 - [ ] Short-circuit logic was applied correctly
 - [ ] Combined report has accurate statistics
 - [ ] Verdict matches finding severity rules
+- [ ] If memory promotion was requested, one-off findings were filtered out and approval-required candidates were marked explicitly

@@ -937,6 +937,9 @@ These skills support **process, planning, learning, visualization, and analysis*
 | `generate-copilot-config` | Retained for re-bootstrapping |
 | `analyze-codebase` | Retained for re-analysis |
 | `drift-detector` | Retained for config freshness checks |
+| `repo-memory-promoter` | Retained for repo-memory audits and promotion planning |
+| `review-memory-promotion` | Retained for approval-ready memory candidate generation |
+| `review-effectiveness` | Retained for periodic workflow health checks |
 | `context-assembly-simulator` | Retained for debug/optimization |
 | `context-budget-check` | Retained for validation |
 | `instruction-conflict-detector` | Retained for validation |
@@ -950,8 +953,6 @@ These skills support **process, planning, learning, visualization, and analysis*
 - `upgrade-config`
 - `source-of-truth-map`
 - `common-doc-generator`
-- `repo-memory-promoter`
-- `review-effectiveness`
 
 For large repos, make skills prefer domain-scoped execution by default.
 
@@ -1317,7 +1318,7 @@ During cleanup, respect the skill retention tiers defined in Phase 9:
 - **Core skills**: never remove
 - **Universal skills**: never remove — these are stack-agnostic process skills useful to every project
 - **Conditional skills**: remove when the target stack or evidence signal was not detected
-- **Meta/toolkit skills**: retain `generate-copilot-config`, `analyze-codebase`, and `drift-detector` by default; others based on classification
+- **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, and `review-effectiveness` by default; keep validation/debug helpers based on classification
 - **Bootstrap-only skills**: always remove (unless the repo is the toolkit source)
 
 The most common cleanup mistake is treating Universal skills as Conditional. Skills like `learn-codebase`, `generate-adr`, `sprint-planning`, `specify-feature`, `generate-sequence-diagram`, `refine-user-input`, etc. have no codebase detection signal because they are process skills — they must survive cleanup regardless of detected stack.

@@ -39,11 +39,9 @@ Implementation must serve the approved specification and implementation plan.
 
 Before reading the feature workspace, load available repo context:
 
-1. Read `docs/00-repo-overview.md` for project scope and stack summary.
-2. Read `docs/02-architecture-map.md` for module boundaries and layering conventions.
-3. Read `docs/04-engineering-rules.md` for coding standards and constraints.
-4. If any doc is missing, note it and proceed.
-5. Extract patterns and conventions relevant to this feature's module(s).
+1. Prefer generated repo context docs when present: `docs/00-repo-overview.md`, `docs/02-architecture-map.md`, `docs/04-engineering-rules.md`, and relevant module docs.
+2. If those docs do not exist yet, read the target repo's own README, build files, source tree, tests, CI configs, and relevant `.github/docs/*.md` bundle guidance instead.
+3. Extract patterns and conventions relevant to this feature's module(s).
 
 Use this context to validate implementation choices against actual repo conventions.
 

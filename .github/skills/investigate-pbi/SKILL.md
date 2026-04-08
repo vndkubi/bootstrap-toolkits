@@ -21,11 +21,9 @@ Structured PBI/technical investigation that produces a comprehensive analysis re
 
 Before parsing the request, load available repo context:
 
-1. Read `docs/00-repo-overview.md` for project scope, stack, and domain summary.
-2. Read `docs/02-architecture-map.md` for module boundaries and integration points.
-3. Read `docs/04-engineering-rules.md` for team conventions and constraints.
-4. If any doc is missing, note it and proceed — these are target-repo docs that may not exist yet.
-5. Extract domain terminology, module ownership, and architectural constraints to inform the investigation.
+1. Prefer generated repo truth-pack docs when present: `docs/00-repo-overview.md`, `docs/02-architecture-map.md`, `docs/04-engineering-rules.md`, and relevant module docs.
+2. If those docs do not exist yet, read the target repo's own README, build files, source tree, tests, and relevant `.github/docs/*.md` bundle guidance instead.
+3. Extract domain terminology, module ownership, and architectural constraints to inform the investigation.
 
 ### Step 1: Parse the Request
 

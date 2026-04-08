@@ -58,7 +58,8 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "migration", "schema", "query" | `@database-specialist` | High-risk data changes |
 | "dependency", "which modules" | `@dependency-analyzer` | Blast-radius analysis |
 | "audit context", "simulate context", "check instructions", "tool permissions" | Pack A audit skills | `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
-| "memory gaps", "promote memory", "document subsystem", "underdocumented" | Pack B skills | `repo-memory-promoter`, `common-doc-generator` |
+| "memory gaps", "promote memory", "review findings", "pitfall pack", "knowledge sync", "document subsystem", "underdocumented" | Pack B skills | `repo-memory-promoter`, `review-memory-promotion`, `common-doc-generator` |
+| "effectiveness", "workflow health", "config health", "what's working", "adoption" | Feedback loop | `review-effectiveness` |
 | "skill discoverability", "audit skills", "description quality" | Skill audit | `skill-discoverability-audit` |
 | "drift", "stale config", "rebootstrap", "config freshness" | Drift detection | `drift-detector` |
 

@@ -44,6 +44,14 @@ The model can only choose from tools that pass these filters. It cannot invent n
 
 Critical rule: tool results appear in round N+1, not in the same round that produced them.
 
+Mini mental model:
+
+```text
+Round N:     model emits tool call
+Round N+1:   runtime executes the tool while building the next prompt
+Later round: model sees the tool result and continues reasoning
+```
+
 ## Official `.github/hooks` Events
 
 These are the supported GitHub Copilot hook events for `.github/hooks/*.json`:
@@ -63,6 +71,28 @@ Use `postToolUse` with tool filtering for expensive quality checks so they run a
 
 Use `preCompact` to preserve critical session state before the system summarizes conversation context. This is essential for long-running feature work where losing in-progress decisions would cause rework.
 
+## Why A Tool Flow Does Not Run
+
+If a tool-heavy prompt does not result in tool activity, check these gates in order:
+
+1. the current intent actually exposed tools
+2. the selected model and mode support tool-calling for that path
+3. the workspace state and tool picker did not filter the tool out
+4. a hook or permission gate did not block the action
+
+Do not debug this as a prompt-quality issue first. Often the real cause is that the tool was never exposed.
+
+## Maintainer Debug Recipe
+
+When runtime behavior looks wrong, inspect it in this order:
+
+1. **Prompt profiler** — inspect prompt shape, included context, and whether the right instructions or tool schemas were present.
+2. **Agent debug log** — inspect orchestration, routing, and continuation behavior across turns.
+3. **Chat Debug View** — inspect the concrete prompt, tool calls, and tool results captured for a real session.
+4. **OTEL content capture** — enable only when you need deeper tracing of request and response content.
+
+Use the lightest tool that answers the question. Start with prompt and tool transcript visibility before turning on deeper tracing.
+
 ## Key Constraints
 
 - Code decides which tools are exposed; the model decides whether to call them.
@@ -76,12 +106,14 @@ Use `preCompact` to preserve critical session state before the system summarizes
 - Check that prompts and skills refer to real tools and real hook events.
 - Check that hook guidance is consistent across skills and agents.
 - Check that tool-heavy workflows explain how results come back into later reasoning rounds.
+- Check that the docs explain the tool-calling gate, not just the round-trip after a tool is already selected.
 - Check that `postToolUse` hooks are filtered and do not run unconditionally.
 - Check that docs do not confuse runtime concepts with official `.github/hooks` events.
 
 ## Common Failure Modes
 
 - Assuming tool results are visible to the model in the same round they are produced.
+- Debugging a missing tool flow as a prompt-writing issue when the tool was never exposed.
 - Assuming the model can call tools that were never exposed.
 - Using fictional hook events such as `agentStop`, `sessionEnd`, or `errorOccurred`.
 - Running expensive checks after irrelevant tool calls.
@@ -90,5 +122,6 @@ Use `preCompact` to preserve critical session state before the system summarizes
 ## Related Files
 
 - `.github/docs/runtime-overview.md`
+- `.github/docs/prompt-and-context.md`
 - `.github/docs/github-resource-conventions.md`
 - `.github/skills/generate-hooks/SKILL.md`

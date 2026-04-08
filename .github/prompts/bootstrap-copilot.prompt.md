@@ -44,7 +44,9 @@ After initial generation completes, use these skills to audit and maintain confi
 - `context-assembly-simulator` — simulate per-agent context load and flag budget overflows
 - `instruction-conflict-detector` — detect overlapping `.instructions.md` files with contradicting rules
 - `tool-permission-auditor` — verify agent × tool access matches declared roles
-- `repo-memory-promoter` — find information worth promoting from chat habits into persistent memory layers
+- `repo-memory-promoter` — audit memory gaps, instruction bloat, and underdocumented subsystems
+- `review-memory-promotion` — turn stable review or investigation findings into approval-ready repo-memory candidates
 - `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component
+- `review-effectiveness` — review which agents, skills, instructions, and memory-promotion loops are actually helping after a sprint or two
 - `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
 - `drift-detector` — detect configuration drift since last bootstrap; recommends patch, incremental, or full rebootstrap

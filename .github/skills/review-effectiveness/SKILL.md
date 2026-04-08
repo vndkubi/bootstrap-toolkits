@@ -1,6 +1,6 @@
 ---
 name: review-effectiveness
-description: "Review how well the generated Copilot configuration and spec-kit workflow are working in practice. Evaluates usage, drift, artifact quality, and whether teams are actually following the Spec -> Plan -> Tasks workflow."
+description: "Review how well the generated Copilot configuration and spec-kit workflow are working in practice. Evaluates usage, drift, artifact quality, memory-promotion adoption, and whether teams are actually following the Spec -> Plan -> Tasks workflow."
 ---
 
 # Review Effectiveness
@@ -24,6 +24,7 @@ Collect evidence such as:
 - whether `/specify-feature` or equivalent spec-first flows are used for non-trivial work
 - whether feature workspaces under `specs/` are being created consistently
 - which instructions or prompts are ignored
+- whether `review-memory-promotion` reports are being created and accepted
 
 ### 2. Spec-Kit Adoption
 
@@ -64,6 +65,15 @@ Check:
 - spec-driven workflow is available and discoverable
 - validation and cleanup rules are still being respected
 
+### 5. Knowledge Sync Quality
+
+Check:
+
+- whether recurring review findings are being turned into approval-ready memory candidates
+- accepted versus rejected promotion ratio
+- stale-knowledge incidents where the same issue repeats despite promoted memory
+- whether promoted knowledge is reducing repeated prompting or review churn
+
 ## Workflow
 
 ### Step 1: Gather Evidence
@@ -74,6 +84,7 @@ Use at least two sources:
 - user feedback
 - existing feature workspaces in `specs/`
 - retained agents/skills/instructions
+- `docs/reviews/review-memory-promotion-*.md` or equivalent candidate reports when they exist
 
 ### Step 2: Evaluate Adoption And Gaps
 
@@ -83,6 +94,7 @@ Produce a practical assessment:
 - what is unused or confusing
 - what is missing
 - where the spec-kit workflow breaks down
+- whether memory promotion is adding signal or mostly creating noise
 
 ### Step 3: Recommend Targeted Adjustments
 
@@ -92,6 +104,7 @@ Prefer incremental fixes:
 - improve routing and prompts
 - strengthen spec artifact requirements
 - add or simplify missing workflow support
+- tighten promotion thresholds or approval rules when memory candidates are noisy
 
 ### Step 4: Save Report
 
@@ -108,6 +121,8 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 
 ## Drift Findings
 
+## Knowledge Sync Signals
+
 ## Recommended Adjustments
 1. ...
 ```
@@ -118,3 +133,4 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 - [ ] Spec-kit adoption was evaluated explicitly
 - [ ] Drift between repo reality and Copilot config was checked
 - [ ] Recommended actions are incremental and prioritized
+- [ ] Knowledge-sync or memory-promotion quality was evaluated when those workflows were retained
