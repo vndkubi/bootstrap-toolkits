@@ -45,8 +45,10 @@ After initial generation completes, use these skills to audit and maintain confi
 - `instruction-conflict-detector` — detect overlapping `.instructions.md` files with contradicting rules
 - `tool-permission-auditor` — verify agent × tool access matches declared roles
 - `repo-memory-promoter` — audit memory gaps, instruction bloat, and underdocumented subsystems
-- `review-memory-promotion` — turn stable review or investigation findings into approval-ready repo-memory candidates
+- `review-memory-promotion` — turn stable review or investigation findings into approval-ready repo-memory candidates, including create/update proposals for checklist packs learned from accepted human PR discussion
 - `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component
 - `review-effectiveness` — review which agents, skills, instructions, and memory-promotion loops are actually helping after a sprint or two
 - `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
 - `drift-detector` — detect configuration drift since last bootstrap; recommends patch, incremental, or full rebootstrap
+
+For teams that regularly review very large pull requests, keep a user-facing prompt such as `/promote-review-memory` so accepted human PR discussion can be harvested into functional and technical checklist candidates over time.

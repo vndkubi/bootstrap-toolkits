@@ -130,6 +130,36 @@ Before passing to reviewers, produce a brief context map:
 
 > **Budget rule**: If the PR touches 50+ files, prioritize context loading for 🔴-priority file types first. Load 🟡 and 🟢 types only if context budget allows.
 
+### 0g. Oversized PR Slicing (Required For Huge Reviews)
+
+If the PR is too large for one reliable pass, switch to slice mode before review delegation.
+
+Trigger slice mode when any of these are true:
+
+- changed files exceed 50
+- estimated diff size is > 10k changed LOC
+- one-pass context loading would exceed practical review budget
+- the PR spans multiple domains, services, or shared platforms at once
+
+In slice mode:
+
+1. Split the review into risk-first slices:
+  - contracts and public API changes
+  - migrations, data model, or schema changes
+  - shared libraries or cross-domain logic
+  - per-domain business logic slices
+  - tests and low-risk cleanup churn
+2. Build a short review plan per slice:
+  - scope
+  - risk level
+  - key files
+  - callers / dependents to load
+  - relevant checklist packs to apply when available
+3. Review slices in order of blast radius, not file path order.
+4. Carry forward blockers and repeated findings across slices into the final combined report.
+
+Goal: make very large PRs reviewable without pretending one giant pass will stay reliable.
+
 ## Stage 1: Self-Review Gate (Quick Sanity Check)
 
 **The implementor should verify these before PR submission. The pipeline checks automatically:**
@@ -186,7 +216,7 @@ Before passing to reviewers, produce a brief context map:
 
 **Technical Review runs in full — no short-circuit.**
 
-## Optional Stage 4: Discussion Harvest And Review Memory Promotion
+## Optional Stage 4: Discussion Harvest, Checklist Learning, And Review Memory Promotion
 
 Use this stage only when the combined review or the follow-up PR discussion surfaces **durable** or **recurring** knowledge that should outlive the current pull request.
 
@@ -197,11 +227,14 @@ Delegate to `review-memory-promotion` with:
 3. a PR discussion summary, resolved-thread artifact, or accepted-fix notes when available
 4. the requirement or investigation artifact when present
 5. existing docs likely to own the promoted knowledge
+6. existing checklist packs under `docs/reviews/checklists/` when they exist
 
 Rules:
 
 - promote recurring or structural findings only
 - treat raw PR discussion as input evidence, not as self-validating truth
+- exclude comments from GitHub Copilot, bots, and system accounts unless a human reviewer explicitly accepts or repeats the same reasoning
+- extract the human review rationale, not just the surface wording of the comment
 - promote only trusted signals, such as accepted fixes, resolved discussions, repeated findings, or reviewer-owned concerns
 - reject one-off branch details, style nits, and transient incidents
 - do not auto-edit source-of-truth files directly from the review stage
@@ -211,6 +244,7 @@ Output:
 
 - a reviewable candidate memory report under `docs/reviews/`
 - functional checklist candidates, technical checklist candidates, and any other durable memory promotions kept separate
+- a create-vs-update recommendation for each affected checklist pack
 - a clear follow-up task for accepted candidates
 
 ## Combined Report Format

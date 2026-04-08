@@ -55,6 +55,7 @@ If the user provides a clear branch name, **proceed immediately**:
    - **Cross-service**: Search for Feign/HTTP clients referencing changed API paths
 4. **Locate requirement document** (PRD, PBI, issue link from PR description or `docs/requirements/`)
 5. **Build context map** summarizing changed files, related files, blast radius
+6. **If the PR is huge**, switch to slice mode and review risk-first chunks instead of pretending one pass will stay reliable
 
 See `review-code-changes` skill Stage 0 for the complete context retrieval procedure.
 
@@ -96,6 +97,8 @@ Merge findings from both stages into the final report.
 ### 5. Optional Promotion Follow-Up
 
 When the combined review plus later PR discussion reveals stable, trusted reasoning worth reusing, delegate to `review-memory-promotion` with the combined report and discussion summary to propose functional checklist candidates, technical checklist candidates, or other durable memory promotions.
+
+Prefer human-authored discussion signals. Ignore GitHub Copilot or other bot comments unless a human reviewer explicitly accepts or repeats the same concern.
 
 Do not treat raw discussion comments as self-validating truth, and do not auto-edit durable docs from this stage.
 

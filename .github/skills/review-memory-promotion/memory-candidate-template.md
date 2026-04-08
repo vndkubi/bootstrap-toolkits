@@ -20,6 +20,7 @@
 - **Why this is trusted**: [accepted, resolved, repeated, or reviewer-role rationale]
 - **Suggested target layer**: [copilot-instructions / .instructions / common doc / workflow doc]
 - **Suggested target file**: [path]
+- **Create or update**: [create new checklist pack / update existing checklist pack / merge into existing checklist pack]
 - **Reuse surface**: [functional review checklist]
 - **Evidence anchors**:
   - [file or doc anchor]
@@ -43,6 +44,7 @@
 - **Why this is trusted**:
 - **Suggested target layer**:
 - **Suggested target file**:
+- **Create or update**:
 - **Reuse surface**: [technical review checklist]
 - **Evidence anchors**:
 - **Proposed checklist entry**:

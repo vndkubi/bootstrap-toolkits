@@ -1,6 +1,6 @@
 ---
 name: review-memory-promotion
-description: "Generate approval-ready repo memory and review checklist candidates from completed code reviews, PR discussion artifacts, investigation reports, and recurring findings. Use when promoting review findings, building functional or technical checklist candidates, curating recurring gotchas, or improving local knowledge sync after bootstrap."
+description: "Generate approval-ready repo memory and review checklist candidates from completed code reviews, human-authored PR discussion artifacts, investigation reports, and recurring findings. Use when promoting review findings, learning from PR discussions, creating or updating functional or technical checklist packs, curating recurring gotchas, or improving local knowledge sync after bootstrap."
 ---
 
 # Review Memory Promotion
@@ -10,7 +10,7 @@ Turn stable review or investigation findings into auditable candidate repo-memor
 ## When to Use
 
 - After a completed code review identifies recurring warnings, repeated fixes, or durable pitfalls
-- After PR discussion threads or resolved review summaries reveal stable reasoning worth reusing
+- After PR discussion threads or resolved review summaries reveal stable human reasoning worth reusing
 - After an investigation report surfaces structural gotchas, workflow traps, or verification lessons that should outlive the current task
 - When users ask to "promote review findings", "build a pitfall pack", "create a memory candidate", or "improve knowledge sync"
 - When the same review comment keeps reappearing across pull requests and should become reusable repo knowledge
@@ -48,7 +48,23 @@ Read the best available evidence set:
 - PR discussion summary, resolved-thread export, or accepted-fix notes when available
 - related requirement/spec artifact when present
 - existing source-of-truth docs likely to own the promoted knowledge
+- existing checklist packs under `docs/reviews/checklists/` when present
 - optional drift/effectiveness reports if they explain why the finding keeps recurring
+
+If PR discussion artifacts are present:
+
+1. classify comments by source: human reviewer, PR author, bot/system, or Copilot-generated
+2. ignore bot/system/Copilot comments unless a human reviewer later accepts, repeats, or fixes the same concern
+3. keep the rationale behind the accepted human comment, not only the comment text itself
+
+### Step 1.5: Extract Reviewer Rationale
+
+For each surviving discussion signal, capture:
+
+- what risk, invariant, or review heuristic triggered the comment
+- whether the PR author accepted or fixed it
+- whether the same issue appears elsewhere in the review report
+- whether an existing checklist already covers it
 
 ### Step 2: Filter For Durable Candidates
 
@@ -58,13 +74,14 @@ Promote only findings that meet **all** of these rules:
 2. **Actionable** — can become a rule, checklist item, pitfall note, failure mode, or verification note
 3. **Evidence-backed** — anchored to files, docs, or repeated findings
 4. **Worth reusing** — likely to reduce repeated prompting, review churn, or avoidable regressions
-5. **Trusted** — supported by an accepted fix, a resolved discussion, repeated recurrence, or a reviewer role that owns the concern
+5. **Trusted** — supported by an accepted fix, a resolved human discussion, repeated recurrence, or a reviewer role that owns the concern
 
 Reject findings that are:
 
 - branch-specific implementation details with no reusable lesson
 - formatting/style preferences already handled by tooling
 - temporary outages, flaky CI noise, or personal preferences
+- Copilot-only or bot-only comments with no human acceptance signal
 - sensitive details that should not live in durable repo memory
 - unresolved debates, superseded comments, or review remarks with no acceptance signal
 
@@ -81,6 +98,8 @@ Map each candidate to the smallest durable home that can own it:
 | Repeated review pitfall | `docs/05-common-failure-modes.md` or `docs/modules/<module>.md` |
 | Workflow or verification lesson | `docs/03-verification-runbook.md` or `docs/workflows/<workflow>.md` |
 | Investigation note that is not yet durable | Defer — do not promote yet |
+
+If a matching checklist pack already exists, prefer updating it instead of creating a near-duplicate file.
 
 ### Step 4: Build The Candidate Pack
 
@@ -101,6 +120,7 @@ For each candidate, include:
 - trust rationale
 - reuse surface
 - suggested target file and target layer
+- create-vs-update action for the target file
 - evidence anchors
 - proposed checklist entry or memory delta
 - approval owner
@@ -147,8 +167,10 @@ Never auto-apply durable-memory changes from this skill alone.
 ## Validation
 
 - [ ] At least one stable source artifact was read
+- [ ] Bot/Copilot-only comments were filtered unless a human acceptance signal existed
 - [ ] Every promoted candidate has evidence anchors
 - [ ] Every candidate names a target layer and suggested file
+- [ ] Every checklist candidate states whether it creates a new checklist pack or updates an existing one
 - [ ] Every checklist candidate names its reuse surface and trust rationale
 - [ ] One-off or noisy findings were explicitly rejected or deferred
 - [ ] Business-rule or security-heuristic candidates require explicit approval
