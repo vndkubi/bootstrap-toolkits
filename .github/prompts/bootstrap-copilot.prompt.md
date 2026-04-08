@@ -40,15 +40,16 @@ When you need runtime or context guidance, use:
 
 After initial generation completes, use these skills to audit and maintain config quality:
 
-- `source-of-truth-map` — map `.github/` domains to canonical files; generates `SOURCE-OF-TRUTH.md`
 - `context-assembly-simulator` — simulate per-agent context load and flag budget overflows
+- `context-budget-check` — validate generated Copilot files against context budget targets
 - `instruction-conflict-detector` — detect overlapping `.instructions.md` files with contradicting rules
 - `tool-permission-auditor` — verify agent × tool access matches declared roles
 - `repo-memory-promoter` — audit memory gaps, instruction bloat, and underdocumented subsystems
 - `review-memory-promotion` — turn stable review or investigation findings into approval-ready repo-memory candidates, including create/update proposals for checklist packs learned from accepted human PR discussion
-- `common-doc-generator` — generate a 7-section common doc for any subsystem or `.github/` component
 - `review-effectiveness` — review which agents, skills, instructions, and memory-promotion loops are actually helping after a sprint or two
 - `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
 - `drift-detector` — detect configuration drift since last bootstrap; recommends patch, incremental, or full rebootstrap
+
+Do not advertise bootstrap-only helpers such as `source-of-truth-map` or `common-doc-generator` as ongoing maintenance tools after cleanup unless the canonical bootstrap skill is updated to retain them.
 
 For teams that regularly review very large pull requests, keep a user-facing prompt such as `/promote-review-memory` so accepted human PR discussion can be harvested into functional and technical checklist candidates over time.
