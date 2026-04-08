@@ -41,6 +41,20 @@ Combined Report → Merge all findings with verdict
 If the user provides a clear branch name, **proceed immediately**:
 > "I'll run the full review pipeline on `feature/discount-calc` vs `main`. Starting with context gathering."
 
+## Planning-Only Mode
+
+If the user invokes a planning prompt such as `/plan-review-scope`, run Stage 0 only and return a **Review Scope Plan**.
+
+In planning-only mode:
+
+- classify review complexity and blast radius
+- estimate business-context confidence
+- identify the highest-risk surfaces
+- build the scenario pack and slice plan when needed
+- stop before Functional Review, Technical Review, and verdict generation
+
+Use this mode for small diffs with large impact as well as obviously oversized PRs.
+
 ## Orchestration Steps
 
 ### 1. Context Gathering (Stage 0)

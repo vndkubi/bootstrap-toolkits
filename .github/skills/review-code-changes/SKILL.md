@@ -14,6 +14,34 @@ Structured multi-stage code review pipeline with short-circuit logic for maximum
 - Code review as part of feature delivery pipeline
 - Keywords: "review PR", "review code", "check changes", "code review"
 
+## Planning-Only Mode
+
+Use planning-only mode before the full review when any of these are true:
+
+- the PR may have high blast radius even if the diff is small
+- the change touches shared contracts, state machines, pricing, auth, compliance, or cross-domain writes
+- business context confidence is not obviously High
+- the repo is large enough that loading context in the wrong order would waste review budget
+
+When invoked through a planning prompt such as `/plan-review-scope`, stop after Stage 0 and output a **Review Scope Plan** instead of findings.
+
+Use the canonical `Review Scope Plan Template` from `.github/docs/review-playbook.md`.
+
+The Review Scope Plan must include:
+
+- diff size summary
+- review complexity: Local / Shared-surface / Cross-domain / Business-critical / Low-context high-risk
+- business context confidence: High / Medium / Low
+- highest-risk surfaces
+- files to load first
+- callers, dependents, and downstream consumers to inspect
+- functional scenario pack
+- slice plan when needed
+- checklist packs to apply when available
+- missing anchors or `[NEEDS CLARIFICATION]` items
+
+Do not produce a review verdict in planning-only mode.
+
 ## Pipeline Overview
 
 ```
@@ -174,6 +202,8 @@ In slice mode:
 4. Carry forward blockers and repeated findings across slices into the final combined report.
 
 Goal: make very large PRs reviewable without pretending one giant pass will stay reliable.
+
+Treat this as a blast-radius rule, not only a size rule. A 1-2 file change can still require slice mode if it touches a shared contract, critical state transition, or business-critical flow.
 
 ### 0h. Build Functional Scenario Pack
 

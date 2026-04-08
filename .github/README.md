@@ -44,6 +44,7 @@ Copy this `.github/` folder into a repository when you want bootstrap to generat
 - `.github/docs/runtime-overview.md`: how requests, tools, and generated output flow through the bundle.
 - `.github/docs/tool-runtime.md`: how tool exposure, hook automation, and tool-result round-trips work.
 - `.github/docs/prompt-and-context.md`: context optimization rules for prompting and bundle design.
+- `.github/docs/review-playbook.md`: review planning, blast-radius thinking, and the canonical Review Scope Plan template.
 - `.github/docs/github-resource-conventions.md`: which `.github/` resources matter directly to Copilot.
 - `.github/docs/user-playbook.md`: practical prompting and thread-management guidance.
 - `.github/docs/team-operating-model.md`: how a team should evolve repo memory over time.
@@ -80,6 +81,7 @@ So if you inspect the copied bundle before generation:
 | Global bundle guidance | `.github/copilot-instructions.md` |
 | Governance and gates | `.github/constitution.md` |
 | Runtime and context reference docs | `.github/docs/*.md` |
+| Review planning and scope template | `.github/docs/review-playbook.md` |
 
 ## Portable Bundle Rule
 
