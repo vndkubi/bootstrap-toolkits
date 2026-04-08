@@ -236,6 +236,8 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── generate-instructions.prompt.md              #   Generate instructions
 │   ├── generate-skills.prompt.md                    #   Generate skills
 │   ├── implement-feature.prompt.md                  #   Full feature implementation
+│   ├── plan-review-scope.prompt.md                  #   Review blast-radius planning before deep review
+│   ├── promote-review-memory.prompt.md              #   Learn checklist candidates from accepted human review discussion
 │   └── specify-feature.prompt.md                    #   📋 Spec-driven pipeline entry point
 │
 └── hooks/                                           # 🔗 Lifecycle Hooks (generated per project)
