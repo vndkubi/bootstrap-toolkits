@@ -15,6 +15,8 @@ Review specification artifacts before implementation begins. Catch ambiguity, mi
 - After `update-spec` changes an existing feature workspace
 - When the user asks whether a spec is ready
 
+If the repo is large or business-heavy and there is no concrete spec or feature workspace yet, return to `@dev-orchestrator`, `specify-feature`, or `update-spec` first.
+
 ## Inputs
 
 Review the feature workspace when available:
@@ -27,6 +29,8 @@ Review the feature workspace when available:
 - `quickstart.md`
 
 If only part of the workspace exists, review what is present and list what is still missing.
+
+Do not invent a review scope from a vague feature request on a large repo. Missing artifacts are a routing problem first, not a reason to simulate a complete review.
 
 ## Review Lenses
 
@@ -135,6 +139,7 @@ If the review targets a standalone spec outside a workspace, save next to that s
 
 | Need | Next action |
 |---|---|
+| Scope or artifacts are still missing on a large repo | `@dev-orchestrator`, `specify-feature`, or `update-spec` |
 | Spec ambiguity remains | `update-spec` |
 | Missing technical artifacts | `plan-implementation` |
 | Missing tasks after approved plan | `generate-tasks` |

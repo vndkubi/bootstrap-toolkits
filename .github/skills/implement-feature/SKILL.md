@@ -13,6 +13,8 @@ Use this skill after specification, planning, and task generation are complete e
 - `spec.md`, `plan.md`, and `tasks.md` are reviewed enough to execute
 - The user wants implementation to follow approved tasks rather than ad hoc coding
 
+If those prerequisites are missing on a large or business-heavy repo, do not treat this skill as a substitute for orchestration. Return to `@dev-orchestrator` or the spec pipeline first.
+
 ## Prerequisites
 
 - `spec.md`
@@ -24,6 +26,17 @@ Use this skill after specification, planning, and task generation are complete e
   - `contracts/`
   - `quickstart.md`
 - repo verification commands from docs or project files
+
+## Large-Repo Entry Guard
+
+Before implementation starts, verify:
+
+- [ ] the work is either backed by a reviewed feature workspace or narrow enough to remain local
+- [ ] acceptance criteria are explicit
+- [ ] affected module boundary is known
+- [ ] there are fewer than 3 unresolved critical unknowns
+
+If any check fails, stop and route the work back to `@dev-orchestrator`, `/specify-feature`, or `/plan-implementation` instead of filling the gaps during coding.
 
 ## Core Rule
 

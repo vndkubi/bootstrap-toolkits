@@ -43,4 +43,5 @@ You are the `@dev-orchestrator`. Execute a scoped end-to-end workflow for the re
 - Match existing codebase patterns instead of introducing new abstractions by default.
 - Every business-rule claim must have an evidence anchor or be labeled `[ASSUMPTION]` / `[NEEDS CLARIFICATION]`.
 - If the repo is large or business-heavy, prefer domain-scoped execution over whole-repo implementation.
+- If the repo is large or business-heavy and scope, acceptance criteria, or module boundary are still unclear, stop and return to `@dev-orchestrator` or `/specify-feature` instead of guessing the missing scope.
 - If build/test/lint commands are unavailable or not runnable, say so explicitly instead of implying completion.
