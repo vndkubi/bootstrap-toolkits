@@ -52,6 +52,26 @@ These have no codebase detection signal because they are process skills. Always 
 | `generate-pr-description` | Utilities |
 | `core-principles` | Utilities |
 
+### Meta/Toolkit Skills (retain selectively for re-bootstrapping)
+
+These are ongoing maintenance and quality-audit skills. They are not bootstrap-only unless explicitly classified that way.
+
+| Skill | Default |
+|-------|---------|
+| `generate-copilot-config` | Retained for re-bootstrapping |
+| `analyze-codebase` | Retained for re-analysis |
+| `drift-detector` | Retained for config freshness checks |
+| `repo-memory-promoter` | Retained for repo-memory audits and promotion planning |
+| `review-memory-promotion` | Retained for approval-ready memory candidate generation |
+| `review-effectiveness` | Retained for periodic workflow health checks |
+| `context-assembly-simulator` | Retained for debug and optimization |
+| `context-budget-check` | Retained for validation |
+| `instruction-conflict-detector` | Retained for validation |
+| `tool-permission-auditor` | Retained for validation |
+| `skill-discoverability-audit` | Retained for validation |
+
+Treat the example tables as guidance, not a closed whitelist. If a new runtime maintenance skill is added later, classify it into Core, Universal, Conditional, or Meta/Toolkit and retain it accordingly instead of defaulting it to bootstrap-only.
+
 ## Step 2: Detect Conditional Workflows
 
 Analyze the project to identify **stack-specific** workflows that warrant additional skills:

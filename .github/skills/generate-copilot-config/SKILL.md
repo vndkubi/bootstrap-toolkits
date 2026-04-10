@@ -946,6 +946,8 @@ These skills support **process, planning, learning, visualization, and analysis*
 | `tool-permission-auditor` | Retained for validation |
 | `skill-discoverability-audit` | Retained for validation |
 
+Treat the tables above as retention guidance, not a closed whitelist. If bootstrap generates a new post-bootstrap skill later, classify it into one of the non-bootstrap tiers and keep it. Do not let a newly added runtime skill fall out of the manifest just because an older template did not list it yet.
+
 #### Bootstrap-only skills (always remove post-bootstrap)
 
 - `resume-bootstrap`
@@ -967,6 +969,8 @@ Generate prompts as compact entry points, not miniature policy documents.
 - `/implement-feature`
 - `/investigate`
 - `/review-code`
+- `/plan-review-scope`
+- `/promote-review-memory`
 - `/specify-feature`
 - `/plan-implementation`
 
@@ -974,6 +978,14 @@ Generate prompts as compact entry points, not miniature policy documents.
 
 - `/bootstrap-copilot` should be **retained** in the generated repo so users can re-bootstrap after major codebase changes. Mark it in the manifest as a retained runtime asset, not a toolkit-only file.
 - Bootstrap-only prompts (e.g., `/generate-agents`, `/generate-instructions`, `/generate-skills`) should be **removed** during cleanup unless the repo is the toolkit source itself.
+
+### Workflow-coupled prompt retention
+
+Retain user-facing prompts that activate retained runtime workflows or are referenced by retained docs and agents.
+
+- Keep `/plan-review-scope` whenever `code-reviewer` is retained.
+- Keep `/promote-review-memory` whenever `review-memory-promotion` is retained.
+- Do not treat the short prompt list above as a closed whitelist. If a prompt is generated for post-bootstrap use and `.github/.runtime-fidelity.json` marks it as `discoverable`, include it in the manifest keep set unless it is explicitly classified as `bootstrap_only`.
 
 ### Prompt design rules
 
@@ -1225,6 +1237,14 @@ At minimum, record:
 - optional files intentionally retained for runtime use
 - major assumptions and unresolved gaps
 
+### Manifest construction rule
+
+Build the manifest keep set from `.github/.runtime-fidelity.json` plus the classification outcome, not from a hard-coded prompt or skill name allowlist alone.
+
+- Keep `auto_injected`, `discoverable`, and `human_only` artifacts by default.
+- Keep `reference_only` artifacts when a retained artifact references them.
+- Remove artifacts only when they are explicitly classified as `bootstrap_only` or were intentionally skipped by the generation/classification strategy.
+
 ### Bootstrap Snapshot
 
 Generate `.github/.bootstrap-snapshot.json` as a baseline for drift detection. This captures the repo state at the moment bootstrap completes so that future drift analysis can compare against it.
@@ -1308,6 +1328,8 @@ The following agents, prompts, and docs exist only to support the bootstrap pipe
 - `generate-skills`
 - `analyze-project` (unless the generated repo explicitly retains it)
 
+User-facing review prompts such as `plan-review-scope` and `promote-review-memory` are runtime assets, not bootstrap-only prompts.
+
 **Bootstrap-only docs:**
 - `.github/docs/` files that describe the toolkit rather than the target repo
 
@@ -1321,6 +1343,8 @@ During cleanup, respect the skill retention tiers defined in Phase 9:
 - **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, and `review-effectiveness` by default; keep validation/debug helpers based on classification
 - **Bootstrap-only skills**: always remove (unless the repo is the toolkit source)
 
+New runtime skills created during bootstrap must still be classified by tier and retained according to that tier. Do not delete a generated skill merely because its name is absent from an older example list.
+
 The most common cleanup mistake is treating Universal skills as Conditional. Skills like `learn-codebase`, `generate-adr`, `sprint-planning`, `specify-feature`, `generate-sequence-diagram`, `refine-user-input`, etc. have no codebase detection signal because they are process skills — they must survive cleanup regardless of detected stack.
 
 ### General cleanup targets
@@ -1329,7 +1353,7 @@ Cleanup should also remove stale or irrelevant toolkit assets, especially:
 
 - unused stack instruction templates
 - unused specialist agents (but not Universal skills — see skill cleanup rules above)
-- prompts that are not supported in the generated repo
+- prompts that are not supported in the generated repo (but keep runtime prompts that target retained agents or skills)
 - placeholder docs for module/workflow/integration/ADR layers that were not justified by scan results
 
 Do not delete files blindly. Delete only when the manifest or repo-size strategy says they are out of scope.

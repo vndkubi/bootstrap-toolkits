@@ -52,4 +52,5 @@ After initial generation completes, use these skills to audit and maintain confi
 
 Do not advertise bootstrap-only helpers such as `source-of-truth-map` or `common-doc-generator` as ongoing maintenance tools after cleanup unless the canonical bootstrap skill is updated to retain them.
 
-For teams that regularly review very large pull requests, keep a user-facing prompt such as `/promote-review-memory` so accepted human PR discussion can be harvested into functional and technical checklist candidates over time.
+Retain user-facing review prompts such as `/plan-review-scope` and `/promote-review-memory` whenever the generated repo keeps `@code-reviewer` and `review-memory-promotion`.
+Do not drop newly generated runtime skills or prompts just because they are newer than a short static list; classify them in `.github/.runtime-fidelity.json` and keep them in the manifest unless they are explicitly bootstrap-only.
