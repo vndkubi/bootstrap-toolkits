@@ -47,10 +47,12 @@ After initial generation completes, use these skills to audit and maintain confi
 - `repo-memory-promoter` — audit memory gaps, instruction bloat, and underdocumented subsystems
 - `review-memory-promotion` — turn stable review or investigation findings into approval-ready repo-memory candidates, including create/update proposals for checklist packs learned from accepted human PR discussion
 - `review-effectiveness` — review which agents, skills, instructions, and memory-promotion loops are actually helping after a sprint or two
+- `context-inspector` — answer bounded runtime questions such as missing triggers, missing tools, likely context loading, and retained-surface explanations when retained by capability tier
 - `skill-discoverability-audit` — audit skill descriptions for runtime discoverability quality and routing coverage
 - `drift-detector` — detect configuration drift since last bootstrap; recommends patch, incremental, or full rebootstrap
 
 Do not advertise bootstrap-only helpers such as `source-of-truth-map` or `common-doc-generator` as ongoing maintenance tools after cleanup unless the canonical bootstrap skill is updated to retain them.
 
 Retain user-facing review prompts such as `/plan-review-scope` and `/promote-review-memory` whenever the generated repo keeps `@code-reviewer` and `review-memory-promotion`.
+Retain `/inspect-context` whenever the generated repo keeps `context-inspector`.
 Do not drop newly generated runtime skills or prompts just because they are newer than a short static list; classify them in `.github/.runtime-fidelity.json` and keep them in the manifest unless they are explicitly bootstrap-only.

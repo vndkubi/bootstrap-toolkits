@@ -66,6 +66,9 @@ Initial state file (create at the start of Phase 1):
   "startedAt": "<ISO 8601>",
   "classification": null,
   "contextRisk": null,
+  "capabilityTier": null,
+  "tierSelectionMode": null,
+  "tierReason": null,
   "phases": {
     "1-scan": "pending",
     "2-classify": "pending",
@@ -92,7 +95,7 @@ Phase status values: `pending`, `in_progress`, `completed`, `skipped`, `failed`.
 
 After each phase:
 - Set that phase to `completed` (or `failed` / `skipped`).
-- Update `classification` and `contextRisk` when Phase 2 completes.
+- Update `classification`, `contextRisk`, `capabilityTier`, `tierSelectionMode`, and `tierReason` when Phase 2 completes.
 - Append to `generatedFiles` as each file is created.
 - Append to `errors` if a phase encounters issues.
 
@@ -310,6 +313,32 @@ Use this matrix to identify stacks from build files found in Round 1:
 
 Classification must happen before generation.
 Classification must use target-repo evidence, not copied toolkit inventory.
+
+### Capability tier
+
+After repo-size classification, determine the retained product footprint through a separate capability tier.
+
+| Tier | Intent | Default retained surface |
+|---|---|---|
+| Lean | smallest useful day-to-day setup | core workflows, essential stack guidance, minimal maintenance overhead |
+| Collaborative | planning and review friendly setup | Lean plus spec pipeline, review memory, onboarding, and bounded diagnostics |
+| Governed | audit and enterprise-confidence setup | Collaborative plus advanced debug, validation, and maintenance helpers |
+
+Tier is not the same thing as repo-size classification.
+
+- Classification answers: what kind of repo is this?
+- Capability tier answers: how much retained workflow and governance surface should bootstrap keep?
+
+Tier selection rules:
+
+- Respect an explicit user choice when one exists and record it as `tierSelectionMode: explicit`.
+- Otherwise infer the tier from repo evidence and record `tierSelectionMode: inferred`.
+- Default inference:
+  - Lean: small, low-risk repos where extra governance surface would clearly be noise
+  - Collaborative: the default for most Standard repos and mixed docs-plus-code repos
+  - Governed: enterprise or high-risk repos that justify ongoing audit and debug helpers
+
+Record a one-line `tierReason` that explains why the selected tier fits the target repo.
 
 ### Context risk
 
@@ -945,8 +974,15 @@ These skills support **process, planning, learning, visualization, and analysis*
 | `instruction-conflict-detector` | Retained for validation |
 | `tool-permission-auditor` | Retained for validation |
 | `skill-discoverability-audit` | Retained for validation |
+| `context-inspector` | Retained for `Collaborative` and `Governed` tiers as a bounded user-facing diagnostic workflow |
 
 Treat the tables above as retention guidance, not a closed whitelist. If bootstrap generates a new post-bootstrap skill later, classify it into one of the non-bootstrap tiers and keep it. Do not let a newly added runtime skill fall out of the manifest just because an older template did not list it yet.
+
+### Tier-governed maintenance surface
+
+- `Lean`: keep the smallest useful maintenance layer. Skip advanced audit and debug helpers unless non-tier repo evidence makes them clearly necessary.
+- `Collaborative`: keep review-memory, onboarding, and bounded diagnostic helpers such as `context-inspector`.
+- `Governed`: keep the full advanced validation and debug helper set, including context assembly, permission auditing, discoverability auditing, and effectiveness review.
 
 #### Bootstrap-only skills (always remove post-bootstrap)
 
@@ -978,6 +1014,7 @@ Generate prompts as compact entry points, not miniature policy documents.
 
 - `/bootstrap-copilot` should be **retained** in the generated repo so users can re-bootstrap after major codebase changes. Mark it in the manifest as a retained runtime asset, not a toolkit-only file.
 - Bootstrap-only prompts (e.g., `/generate-agents`, `/generate-instructions`, `/generate-skills`) should be **removed** during cleanup unless the repo is the toolkit source itself.
+- Retain `/inspect-context` when `context-inspector` is retained by capability tier or equivalent runtime-debug evidence.
 
 ### Workflow-coupled prompt retention
 
@@ -1033,6 +1070,13 @@ Use official hook events only: `sessionStart`, `userPromptSubmitted`, `preToolUs
 
 After all artifacts are generated (Phases 4–11), compile a runtime fidelity manifest that classifies every generated artifact by its runtime role and maps relationships between them.
 
+Before finalizing runtime fidelity, generate two user-facing post-bootstrap artifacts from the retained runtime surface:
+
+- `.github/.bootstrap-summary.md` — a concise human-readable explanation of classification, retained artifacts, removed artifacts, and why the final generated surface looks the way it does
+- `docs/06-copilot-onboarding.md` — a concise repo-specific onboarding guide that tells maintainers where to start and when to escalate into spec-driven or review workflows
+
+These artifacts should be created from the same retained-surface reasoning that later feeds the manifest keep set. Do not generate them as generic toolkit prose.
+
 This phase produces two files:
 
 - `.github/.runtime-fidelity.json` — classifies every generated artifact by runtime role, estimated token cost, and inter-file relationships
@@ -1078,11 +1122,15 @@ For every file generated in Phases 4–11, record:
 3. `.agent.md` files → `discoverable`
 4. `SKILL.md` files → `discoverable`
 5. `.prompt.md` files → `discoverable`
-6. `docs/` files → `reference_only`
+6. `docs/` files → `reference_only`, except explicit onboarding docs retained for human readers
 7. `.scan-report.md`, `.phase3-checkpoint.md` → `bootstrap_only`
 8. `.bootstrap-state.json` → `bootstrap_only`
 9. `hooks/*.json` → `auto_injected` (event-triggered)
 10. `AGENTS.md` → `human_only`
+11. `.github/.bootstrap-summary.md` → `human_only`
+12. `docs/06-copilot-onboarding.md` → `human_only`
+
+Capability tier does not change runtime-role semantics. It changes which artifacts survive into the final kept surface.
 
 #### Token Cost Estimation
 
@@ -1225,12 +1273,15 @@ Recommended artifacts:
 - `.github/.bootstrap-manifest.json`
 - `.github/.bootstrap-state.json`
 - `.github/.bootstrap-snapshot.json`
+- `.github/.bootstrap-summary.md`
+- `docs/06-copilot-onboarding.md` when retained runtime assets justify user-facing onboarding guidance
 
 The manifest is the authoritative keep list for the final generated `.github/` tree.
 
 At minimum, record:
 
 - project classification and context risk
+- capability tier, selection mode, and tier reason
 - toolkit version
 - generated files to keep
 - skipped file groups and why they were skipped
@@ -1239,7 +1290,7 @@ At minimum, record:
 
 ### Manifest construction rule
 
-Build the manifest keep set from `.github/.runtime-fidelity.json` plus the classification outcome, not from a hard-coded prompt or skill name allowlist alone.
+Build the manifest keep set from `.github/.runtime-fidelity.json` plus the classification outcome and capability tier, not from a hard-coded prompt or skill name allowlist alone.
 
 - Keep `auto_injected`, `discoverable`, and `human_only` artifacts by default.
 - Keep `reference_only` artifacts when a retained artifact references them.
@@ -1255,6 +1306,9 @@ Generate `.github/.bootstrap-snapshot.json` as a baseline for drift detection. T
   "generatedAt": "<ISO 8601>",
   "toolkitVersion": "<from .github/VERSION>",
   "classification": "Standard",
+  "capabilityTier": "Collaborative",
+  "tierSelectionMode": "inferred",
+  "tierReason": "Mixed docs and code workflows benefit from planning, review, and bounded diagnostics without the full governed surface.",
   "dimensions": {
     "moduleTopology": {
       "modules": ["core", "api", "web"],
@@ -1296,11 +1350,31 @@ The snapshot should:
 The final summary should include:
 
 - classification and context risk
+- capability tier and whether it was explicit or inferred
 - truth-pack status
 - generated files
 - skipped files and why
 - major assumptions
 - recommended next step
+
+Generate `.github/.bootstrap-summary.md` from the final generated state with, at minimum:
+
+- classification, context risk, and capability tier
+- retained artifacts grouped by runtime role
+- removed artifacts grouped by removal reason
+- highest-cost context contributors when relevant
+- retained user-facing starting points after cleanup
+
+Generate `docs/06-copilot-onboarding.md` from the final retained runtime surface with, at minimum:
+
+- what bootstrap retained for day-to-day use in this repo
+- where maintainers should start
+- when to use direct execution versus spec-driven workflows
+- how to escalate to planning or review flows that were retained
+- when `review-memory-promotion` and review prompts are retained, how to use `/promote-review-memory` as an optional follow-up after durable accepted review findings
+- when `context-inspector` is retained, how to use `/inspect-context` for bounded runtime diagnostics
+
+If a repo is so small that a separate onboarding file would clearly be noise, it is acceptable to merge the onboarding guidance into `docs/00-repo-overview.md` instead. If you do that, do not generate an empty or placeholder `docs/06-copilot-onboarding.md`.
 
 Cleanup is mandatory, not optional.
 
@@ -1340,12 +1414,14 @@ During cleanup, respect the skill retention tiers defined in Phase 9:
 - **Core skills**: never remove
 - **Universal skills**: never remove — these are stack-agnostic process skills useful to every project
 - **Conditional skills**: remove when the target stack or evidence signal was not detected
-- **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, and `review-effectiveness` by default; keep validation/debug helpers based on classification
+- **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, `review-effectiveness`, and `context-inspector` according to capability tier; keep validation/debug helpers based on classification and tier
 - **Bootstrap-only skills**: always remove (unless the repo is the toolkit source)
 
 New runtime skills created during bootstrap must still be classified by tier and retained according to that tier. Do not delete a generated skill merely because its name is absent from an older example list.
 
 The most common cleanup mistake is treating Universal skills as Conditional. Skills like `learn-codebase`, `generate-adr`, `sprint-planning`, `specify-feature`, `generate-sequence-diagram`, `refine-user-input`, etc. have no codebase detection signal because they are process skills — they must survive cleanup regardless of detected stack.
+
+The second most common cleanup mistake is treating repo-size classification as if it already decided the retained governance surface. Use capability tier for that decision instead of overloading `Small`, `Standard`, or `Enterprise` with product-footprint meaning.
 
 ### General cleanup targets
 
@@ -1370,3 +1446,4 @@ Bootstrap is successful only when:
 - docs scale progressively with repo size
 - claims are evidence-backed
 - large repos are treated with progressive discovery, not overconfident automation
+- maintainers can understand the retained surface from the generated summary and onboarding guidance without reverse-engineering the whole bundle

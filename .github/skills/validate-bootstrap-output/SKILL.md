@@ -39,6 +39,9 @@ Fail immediately if any of these red flags appear:
 - Any agent references entities such as `Order` or `Customer` that do not exist in the target project
 - Any generated instruction file is byte-for-byte identical to a toolkit template
 - `copilot-instructions.md` still identifies the target repo as the bootstrap toolkit or treats copied bundle inventory as the repo's normal final state
+- `.github/.bootstrap-summary.md` describes retained or removed assets that do not match the final manifest or runtime fidelity state
+- `docs/06-copilot-onboarding.md` references prompts, agents, skills, or workflows that were removed during cleanup
+- manifest, summary, or onboarding guidance disagree on the applied capability tier or whether it was explicit vs inferred
 
 Project-specificity checks:
 
@@ -50,6 +53,8 @@ Project-specificity checks:
 | `testing.instructions.md` | References the actual test framework detected |
 | Domain instructions | `applyTo` patterns match real project paths |
 | Skill files | Build, test, lint, and verification commands match the real project |
+| `.github/.bootstrap-summary.md` | Retained and removed assets match final manifest/runtime fidelity state and explainability text is specific to the target repo |
+| `docs/06-copilot-onboarding.md` | Start paths and escalation guidance reference only retained runtime assets, remain repo-specific, and explain tier-specific helpers only when retained |
 
 ### Tier 3: Cross-Reference Integrity
 
@@ -69,6 +74,8 @@ Project-specificity checks:
 - [ ] `.github/.runtime-fidelity.json` exists and is valid JSON
 - [ ] Every retained artifact after cleanup has a `runtimeRole` entry in the manifest
 - [ ] No artifact with `runtimeRole: bootstrap_only` survives cleanup
+- [ ] `.github/.bootstrap-manifest.json` records `capabilityTier`, `tierSelectionMode`, and `tierReason`
+- [ ] Retained validation/debug helpers match the applied capability tier
 - [ ] Token cost estimates use the `ceil(char_count / 4)` heuristic consistently
 - [ ] `consumers` field is populated for all `auto_injected` and `discoverable` artifacts
 - [ ] `.github/.skill-index.json` exists and includes all retained skills
@@ -91,6 +98,7 @@ For all generated documentation files, verify:
 
 - [ ] `.github/.bootstrap-manifest.json` exists and is valid JSON
 - [ ] Manifest keep entries match all files intentionally retained after cleanup
+- [ ] Explicit tier choices are preserved honestly on upgrade, and inferred tier changes have a recorded reason
 - [ ] Files outside the manifest keep set were deleted
 - [ ] `contextBudget.passed` is `true`
 - [ ] The full copied toolkit inventory was not retained unless non-bundle evidence proves the repo truly is the toolkit source repository
@@ -166,3 +174,6 @@ For all generated documentation files, verify:
 | Leftover bootstrap template | Delete it and remove it from any cross references |
 | Target repo misidentified as toolkit | Rewrite `copilot-instructions.md`, rerun classification, regenerate manifest keep set, and rerun cleanup |
 | Manifest missing retained files | Update the manifest so the keep set matches the final tree |
+| Explainability summary contradicts retained output | Rebuild `.github/.bootstrap-summary.md` from the final manifest and runtime fidelity state |
+| Onboarding doc references removed runtime assets | Regenerate `docs/06-copilot-onboarding.md` from the final retained prompts, agents, skills, and workflows only |
+| Capability tier mismatch across manifest and docs | Recompute the retained surface from the chosen tier, then rebuild summary and onboarding from that final state |

@@ -58,6 +58,7 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "ADR", "architecture decision", "why did we choose" | `generate-adr` skill | Document architectural decisions with context and consequences |
 | "migration", "schema", "query" | `@database-specialist` | High-risk data changes |
 | "dependency", "which modules" | `@dependency-analyzer` | Blast-radius analysis |
+| "inspect context", "why didn't this skill trigger", "why is this tool missing", "what context gets loaded" | `context-inspector` skill | Bounded user-facing runtime diagnostics |
 | "audit context", "simulate context", "check instructions", "tool permissions" | Pack A audit skills | `context-assembly-simulator`, `instruction-conflict-detector`, `tool-permission-auditor` |
 | "memory gaps", "promote memory", "review findings", "pitfall pack", "knowledge sync", "document subsystem", "underdocumented" | Pack B skills | `repo-memory-promoter`, `review-memory-promotion`, `common-doc-generator` |
 | "effectiveness", "workflow health", "config health", "what's working", "adoption" | Feedback loop | `review-effectiveness` |

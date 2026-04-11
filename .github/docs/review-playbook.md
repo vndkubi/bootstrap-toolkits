@@ -31,6 +31,8 @@ Use this playbook when:
 5. Run the full `@code-reviewer` flow.
 6. If the review and human discussion reveal durable lessons, run `/promote-review-memory` afterward.
 
+Only use the promotion step when the lesson is backed by an accepted human fix or resolved human discussion, or when the same reasoning recurs across at least two reviews or investigations.
+
 ## Review Complexity Model
 
 Treat review size as a **review-complexity** problem, not only a diff-size problem.

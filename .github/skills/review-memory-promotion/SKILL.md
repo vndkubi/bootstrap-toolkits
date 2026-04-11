@@ -29,6 +29,7 @@ The default first consumer is the **local deep-review lane**. Use this skill aft
 
 - A completed review report, PR discussion summary, investigation report, or other durable finding source
 - Evidence anchors to real files or docs, not only chat recollection
+- Evidence that meets at least one promotion threshold: accepted human fix or resolved human discussion, or recurrence across at least two reviews or investigations
 - A likely target layer for the promoted knowledge
 - An approval owner is known or can be proposed
 
@@ -64,6 +65,7 @@ For each surviving discussion signal, capture:
 - what risk, invariant, or review heuristic triggered the comment
 - whether the PR author accepted or fixed it
 - whether the same issue appears elsewhere in the review report
+- whether the signal meets the threshold through accepted human resolution or through repeated recurrence across reviews or investigations
 - whether an existing checklist already covers it
 
 ### Step 2: Filter For Durable Candidates
@@ -74,7 +76,7 @@ Promote only findings that meet **all** of these rules:
 2. **Actionable** — can become a rule, checklist item, pitfall note, failure mode, or verification note
 3. **Evidence-backed** — anchored to files, docs, or repeated findings
 4. **Worth reusing** — likely to reduce repeated prompting, review churn, or avoidable regressions
-5. **Trusted** — supported by an accepted fix, a resolved human discussion, repeated recurrence, or a reviewer role that owns the concern
+5. **Trusted** — supported by either an accepted human fix or resolved human discussion, or by equivalent recurrence across at least two reviews or investigations
 
 Reject findings that are:
 
@@ -82,6 +84,7 @@ Reject findings that are:
 - formatting/style preferences already handled by tooling
 - temporary outages, flaky CI noise, or personal preferences
 - Copilot-only or bot-only comments with no human acceptance signal
+- single-review or single-investigation concerns that lack accepted human resolution
 - sensitive details that should not live in durable repo memory
 - unresolved debates, superseded comments, or review remarks with no acceptance signal
 
@@ -116,6 +119,7 @@ For each candidate, include:
 - title
 - candidate type
 - source signal
+- promotion threshold met via
 - durability rationale
 - trust rationale
 - reuse surface
@@ -168,6 +172,7 @@ Never auto-apply durable-memory changes from this skill alone.
 
 - [ ] At least one stable source artifact was read
 - [ ] Bot/Copilot-only comments were filtered unless a human acceptance signal existed
+- [ ] Every promoted candidate met the accepted-human or repeated-recurrence threshold and recorded how that threshold was met
 - [ ] Every promoted candidate has evidence anchors
 - [ ] Every candidate names a target layer and suggested file
 - [ ] Every checklist candidate states whether it creates a new checklist pack or updates an existing one

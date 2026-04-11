@@ -56,6 +56,8 @@ Always keep a short repo-wide layer:
 - `docs/00-repo-overview.md`
 - `docs/03-verification-runbook.md`
 
+Add `docs/06-copilot-onboarding.md` when the retained runtime surface is rich enough that a first-read maintainer guide is useful and a separate file is not just noise.
+
 ### Module / Domain Truth
 
 Add these when the repo has enough domain or boundary complexity:
@@ -75,12 +77,24 @@ Add these when work depends on business-flow or historical-decision context:
 - task-specific plans, investigations, and reviews
 - review-memory promotion reports and checklist candidates awaiting approval
 
+### Bootstrap Lifecycle Artifacts
+
+Use these as human-readable lifecycle aids, not as replacements for canonical machine-readable state:
+
+- `.github/.bootstrap-summary.md` when maintainers need a concise explanation of retained and removed bootstrap output
+
+Rule:
+
+- build `.github/.bootstrap-summary.md` from manifest and runtime-fidelity truth instead of hand-maintaining a second source of truth
+
 ### Scale Rules
 
 - Small repos: merge aggressively and avoid doc sprawl.
 - Medium repos: keep the 6 common docs.
 - Large repos: split by module and workflow.
 - Enterprise repos: add owners, cadence, dependency direction, integration boundaries, and per-domain verification notes.
+
+If onboarding guidance would be tiny, merge it into `docs/00-repo-overview.md` instead of creating a low-value `docs/06-copilot-onboarding.md`.
 
 ## When to Create a Common Doc
 

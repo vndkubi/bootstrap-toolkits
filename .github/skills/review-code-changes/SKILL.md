@@ -293,6 +293,8 @@ For huge PRs, build one scenario pack per slice instead of forcing one giant mat
 
 Use this stage only when the combined review or the follow-up PR discussion surfaces **durable** or **recurring** knowledge that should outlive the current pull request.
 
+Only enter this stage when at least one surviving signal is backed by an accepted human fix or resolved human discussion, or when equivalent reasoning recurs across at least two reviews or investigations.
+
 Delegate to `review-memory-promotion` with:
 
 1. the final combined review report
@@ -308,7 +310,7 @@ Rules:
 - treat raw PR discussion as input evidence, not as self-validating truth
 - exclude comments from GitHub Copilot, bots, and system accounts unless a human reviewer explicitly accepts or repeats the same reasoning
 - extract the human review rationale, not just the surface wording of the comment
-- promote only trusted signals, such as accepted fixes, resolved discussions, repeated findings, or reviewer-owned concerns
+- promote only trusted signals that meet the explicit threshold above; reviewer ownership alone is not sufficient for promotion
 - reject one-off branch details, style nits, and transient incidents
 - do not auto-edit source-of-truth files directly from the review stage
 - require human approval for business-rule, security, or workflow-policy candidates

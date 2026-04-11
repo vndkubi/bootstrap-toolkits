@@ -96,11 +96,13 @@ These may not exist until the bootstrap pipeline generates them for the target r
 - `.github/hooks/`
 - `.github/domains/`
 - `.github/.bootstrap-manifest.json`
+- `.github/.bootstrap-summary.md`
 - `.github/.bootstrap-state.json`
 - `.github/.phase3-checkpoint.md`
 - `.github/module-dependency-map.json`
 - `.github/MODULE-ARCHITECTURE.md`
 - `docs/00-repo-overview.md`
+- `docs/06-copilot-onboarding.md`
 - `docs/02-architecture-map.md`
 
 Their absence before generation is normal.
@@ -116,6 +118,14 @@ Generated target repositories should not get the same doc volume by default.
 This keeps Copilot context layered as global truth, module truth, and task truth instead of forcing one giant knowledge dump.
 
 It also means the generated repo should keep only the layers it actually needs. Anything outside the selected stack, repo size, or runtime keep set should be deleted in the cleanup phase.
+
+Use capability tiers separately from repo-size classification:
+
+- `Lean` keeps the smallest useful day-to-day workflow surface
+- `Collaborative` keeps planning, review, onboarding, and bounded diagnostics
+- `Governed` keeps the full audit, validation, and debug helper layer
+
+When generated, `.github/.bootstrap-summary.md` gives maintainers a concise explanation of classification, retained assets, removed assets, and the reasons behind the final surface. `docs/06-copilot-onboarding.md` gives maintainers a repo-specific starting guide when the retained runtime surface is rich enough to justify it.
 
 ## Practical Rule For Maintainers
 

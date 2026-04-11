@@ -69,6 +69,7 @@ These are ongoing maintenance and quality-audit skills. They are not bootstrap-o
 | `instruction-conflict-detector` | Retained for validation |
 | `tool-permission-auditor` | Retained for validation |
 | `skill-discoverability-audit` | Retained for validation |
+| `context-inspector` | Retained for `Collaborative` and `Governed` tiers as a bounded user-facing diagnostic helper |
 
 Treat the example tables as guidance, not a closed whitelist. If a new runtime maintenance skill is added later, classify it into Core, Universal, Conditional, or Meta/Toolkit and retain it accordingly instead of defaulting it to bootstrap-only.
 
