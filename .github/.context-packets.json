@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "packets": [
+    {
+      "path": ".github/copilot-instructions.md",
+      "tier": "global",
+      "whenToLoad": "always",
+      "tinySummary": "4-rule operating core and repo-layering guidance auto-injected into every prompt",
+      "keyAnchors": ["Operating Core", "Read This Repo In Layers", "Identity Guardrail"],
+      "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/constitution.md",
+      "tier": "global",
+      "whenToLoad": "anchor-first",
+      "tinySummary": "Deep governance principles that generated agents and skills must inherit",
+      "keyAnchors": ["Simplicity", "Duplication", "Business Logic", "Impact"],
+      "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/docs/runtime-overview.md",
+      "tier": "workflow",
+      "whenToLoad": "summary-first",
+      "tinySummary": "How Copilot assembles context from .github/ files at runtime",
+      "keyAnchors": ["Context Assembly", "Loading Order", "Budget"],
+      "owner": "context-assembly-simulator"
+    },
+    {
+      "path": ".github/docs/tool-runtime.md",
+      "tier": "workflow",
+      "whenToLoad": "on-demand",
+      "tinySummary": "Official hook events, tool permissions, and runtime fidelity constraints",
+      "keyAnchors": ["Hook Events", "Tool Permissions", "Fidelity"],
+      "owner": "generate-hooks"
+    },
+    {
+      "path": ".github/docs/prompt-and-context.md",
+      "tier": "workflow",
+      "whenToLoad": "summary-first",
+      "tinySummary": "Prompt engineering patterns and context budget guidance for generated assets",
+      "keyAnchors": ["Progressive Disclosure", "Budget Targets", "Instruction Patterns"],
+      "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/docs/team-operating-model.md",
+      "tier": "workflow",
+      "whenToLoad": "on-demand",
+      "tinySummary": "Team workflow conventions, review pipeline, and memory promotion rules",
+      "keyAnchors": ["Review Pipeline", "Memory Promotion", "Durable Knowledge"],
+      "owner": "review-memory-promotion"
+    },
+    {
+      "path": ".github/docs/github-resource-conventions.md",
+      "tier": "diagnostic",
+      "whenToLoad": "on-demand",
+      "tinySummary": "File naming, applyTo patterns, and resource classification for .github/ assets",
+      "keyAnchors": ["Resource Types", "Naming Conventions", "applyTo Patterns"],
+      "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/docs/review-playbook.md",
+      "tier": "workflow",
+      "whenToLoad": "on-demand",
+      "tinySummary": "Multi-stage code review pipeline and checklist conventions",
+      "keyAnchors": ["Review Stages", "Checklist Packs", "Severity Ratings"],
+      "owner": "review-code-changes"
+    },
+    {
+      "path": ".github/skills/generate-copilot-config/SKILL.md",
+      "tier": "workflow",
+      "whenToLoad": "anchor-first",
+      "tinySummary": "Canonical 14-phase generation pipeline for bootstrapping target repos",
+      "keyAnchors": ["Phase 1 Scan", "Phase 4 Instructions", "Phase 8 Agents", "Phase 13 Validation"],
+      "deepReference": ".github/docs/runtime-overview.md",
+      "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/skills/generate-hooks/SKILL.md",
+      "tier": "workflow",
+      "whenToLoad": "on-demand",
+      "tinySummary": "Hook generation guidance including events, tool filtering, and memory hooks",
+      "keyAnchors": ["Official Hook Events", "Detection Matrix", "Memory Hooks"],
+      "owner": "generate-hooks"
+    }
+  ]
+}

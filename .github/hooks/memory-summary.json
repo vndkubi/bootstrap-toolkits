@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "type": "command",
+        "bash": "command -v node >/dev/null 2>&1 && node .github/scripts/memory-summary.js || exit 0",
+        "powershell": "if (Get-Command node -ErrorAction SilentlyContinue) { & node .github/scripts/memory-summary.js }; exit 0",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

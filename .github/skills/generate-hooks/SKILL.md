@@ -196,6 +196,39 @@ Do not generate many hooks unless the project clearly benefits from them.
 - Forgetting Windows-compatible commands
 - Writing checkpoint files that are not in `.gitignore`
 
+## Memory Hook Generation
+
+When a target repo uses the Layer 2 memory infrastructure, generate the following additional hook set alongside the standard quality hooks.
+
+### Memory Hook Set
+
+| Hook File | Event | Script | Timeout | Purpose |
+|---|---|---|---|---|
+| `memory-capture.json` | `postToolUse` | `.github/scripts/memory-capture.js` | 5s | Append one JSONL observation per relevant tool event |
+| `memory-inject.json` | `sessionStart` | `.github/scripts/memory-inject.js` | 10s | Emit bounded summary-first context block from past sessions |
+| `memory-summary.json` | `stop` | `.github/scripts/memory-summary.js` | 10s | Write a structured session summary to `.memory/summaries/` |
+| `memory-checkpoint.json` | `preCompact` | `.github/scripts/memory-checkpoint.js` | 10s | Preserve goal, decisions, and next verification step |
+
+### Memory Hook Rules
+
+- Scripts must use Node standard library only — no external dependencies.
+- If Node is unavailable, scripts must fail open (exit 0) without blocking sessions.
+- The `postToolUse` capture hook must stay under 5 seconds.
+- Injection, summary, and checkpoint hooks must stay under 10 seconds.
+- All runtime memory artifacts (`.memory/`) must be gitignored.
+- Hook files must reference scripts inside `.github/scripts/` so they travel with the copied bundle.
+- Provide both `bash` and `powershell` commands in every hook entry.
+
+### When To Generate Memory Hooks
+
+Generate the memory hook set when:
+
+- The target repo has Standard or Enterprise maturity level
+- The target repo has multi-session or long-running feature work
+- The bootstrap analysis detects existing memory or continuity patterns
+
+Do not generate memory hooks for minimal or single-session repos unless explicitly requested.
+
 ## Output
 
 ```text
@@ -206,6 +239,10 @@ Hooks Generated:
 - compile-check.json       <- postToolUse: compile command
 - security-gate.json       <- preToolUse: optional policy command
 - context-checkpoint.json  <- preCompact: checkpoint session state (Standard/Enterprise)
+- memory-capture.json      <- postToolUse: JSONL observation capture (Layer 2)
+- memory-inject.json       <- sessionStart: context injection (Layer 2)
+- memory-summary.json      <- stop: session summary (Layer 2)
+- memory-checkpoint.json   <- preCompact: task state checkpoint (Layer 2)
 ```
 
 ## Related Files

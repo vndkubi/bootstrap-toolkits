@@ -46,7 +46,7 @@ The point is not to generate the largest doc set possible. The point is to gener
 8. **Generate agents**
 9. **Generate skills**
 10. **Generate prompts**
-11. **Generate hooks and optional workflows**
+11. **Generate hooks and optional workflows** — memory hooks are mandatory for Standard and Enterprise repos; do not skip
 12. **Compile runtime fidelity**
 13. **Validate**
 14. **Review or generate devcontainer**
@@ -297,6 +297,18 @@ Use this matrix to identify stacks from build files found in Round 1:
 - If evidence is weak for any section, say so in the Unknowns section. Do not fill gaps with generic stack assumptions.
 - Every tech stack claim must point to a specific file as evidence.
 - The `.github/.scan-report.md` file should be retained in the manifest as a runtime reference asset.
+
+#### Round 4 — Extract Existing Coding Standards (1 file read, conditional)
+
+When the target repo has an existing `.github/copilot-instructions.md`:
+
+1. Read the file in full.
+2. Identify coding standard sections using a two-pass heuristic:
+   - **Pass 1 (section-level)**: Find H2/H3 headings matching keywords: `convention`, `style`, `coding`, `format`, `naming`, `indent`, `quote`, `import`, `type`, `syntax`, `guideline`, `standard`, `pattern`, `rule`, `prefer`, `lint`. Preserve the entire section (heading through next same-level heading).
+   - **Pass 2 (inline rules)**: In remaining sections, detect bullet patterns: `use X`, `prefer X`, `always X`, `never X`, `avoid X`, configuration references (`.editorconfig`, `tsconfig`, `eslintrc`, `prettier`), code-style keywords (`tabs`, `spaces`, `semicolons`, `single quotes`, `arrow functions`, `camelCase`, `PascalCase`). When 3+ patterns appear in an uncaptured section, preserve it.
+3. Append the extracted sections to the scan report under a `## Preserved Coding Standards` heading.
+
+Skip this round when no existing `copilot-instructions.md` is present.
 
 ---
 
@@ -663,6 +675,11 @@ Do not omit the `Unknowns / Assumptions` section unless the file is intentionall
 
 Create `.github/copilot-instructions.md` as a compact operating card:
 
+- begin with a 4-rule operating core:
+  - state assumptions explicitly or ask
+  - prefer the smallest change that solves the request
+  - touch only the directly relevant surface unless evidence requires broader change
+  - define verification before claiming completion
 - project purpose
 - source-of-truth map
 - key modules/domains
@@ -674,6 +691,8 @@ Create `.github/copilot-instructions.md` as a compact operating card:
 
 Keep it concise enough to be cheap context.
 
+Target: keep the operating core itself to roughly 10-15 lines and the full `copilot-instructions.md` within the normal context-budget target for an always-loaded file.
+
 Do not dump the full architecture or glossary into this file. Instead, point to:
 
 - `docs/00-repo-overview.md`
@@ -681,6 +700,18 @@ Do not dump the full architecture or glossary into this file. Instead, point to:
 - `docs/02-architecture-map.md`
 - `docs/03-verification-runbook.md`
 - module/workflow docs when they exist
+
+### Coding Standards Preservation
+
+When the scan report contains a `## Preserved Coding Standards` section:
+
+1. Insert the preserved content under a `## Coding Standards` heading in the generated `copilot-instructions.md`.
+2. Place it after the source-of-truth map and before verification commands.
+3. If the preserved content duplicates information already in a generated `.instructions.md` file (e.g., TypeScript conventions already covered by `typescript.instructions.md`), note the overlap but preserve the original wording — the repo maintainer's conventions take precedence over generated defaults.
+
+When no preserved standards exist and no existing `copilot-instructions.md` was found:
+- Do not invent coding standards.
+- If linter configs or `.editorconfig` exist, reference them as the coding standard source instead of creating standalone rules.
 
 ---
 
@@ -744,12 +775,39 @@ Templates should include assumption markers and examples based on the target dom
 
 Generate only the agents the target repo can support safely.
 
+### Constitution generation
+
+Generate `.github/constitution.md` for every target repo that receives agents.
+
+1. Use the toolkit's own `.github/constitution.md` as the structural template.
+2. Adapt the content to the target repo:
+   - Replace toolkit-specific examples with target-stack examples.
+   - Keep all 9 articles and the Phase -1 Gates — they are stack-agnostic principles.
+   - Adjust the validation ownership table (Article III) if the target stack uses different layer names (e.g., Controller/Service/Repository → Route/Handler/Store).
+3. Verify that every `constitution.md` reference in generated agent files resolves to the generated file path.
+
+When the target repo already has a `.github/constitution.md`, preserve the existing file and verify references resolve to it.
+
 ### Mandatory rules
 
 - Every agent must reference the constitution.
 - Every agent must reference the actual target stack, not toolkit defaults.
 - Every business-aware claim must be backed by repo truth pack evidence or labeled as uncertain.
 - `dev-orchestrator` is the **default orchestration entry point**, not a promise that users never need explicit scope.
+- Every workflow-owning agent must instruct the model to surface success criteria, verification method, and stop conditions before claiming completion.
+
+### Stack-specific agent body generation
+
+Agent body text must reference only frameworks and libraries detected by Phase 1.
+
+1. Read the scan report's `## Tech Stack` and `## Conventions` sections.
+2. For each generated agent, replace generic framework references with detected-stack equivalents:
+   - Use the detected framework names, versions, and patterns.
+   - Remove mentions of frameworks NOT in the scan report.
+   - Reference detected file structure, naming, and testing patterns.
+3. When the scan report lacks detail for a particular agent's domain (e.g., no frontend framework detected for `frontend-implementor`), use a minimal generic body that mentions the detected language only — not a laundry list of possible frameworks.
+
+Example: if Phase 1 detects TypeScript + prompt-tsx + Vitest but NOT React, Vue, or Angular, then `frontend-implementor.agent.md` must reference prompt-tsx patterns (`PromptElement`, `vscpp`, priority system, `<br />` for newlines) and Vitest testing — NOT React components, hooks, JSX patterns, or any other frontend framework.
 
 ### Minimum core set
 
@@ -897,6 +955,7 @@ Generate skills that match the target repo's actual workflows.
 - use actual repo commands, paths, and patterns
 - add evidence and assumption rules to analysis-heavy skills
 - use conditional verification language, not universal promises
+- every reusable skill must define a verification contract for its workflow: expected outcome, how to verify it, and when to stop or escalate
 
 ### Skill Retention Tiers
 
@@ -958,6 +1017,7 @@ These skills support **process, planning, learning, visualization, and analysis*
 | `generate-domain-instructions` | Enterprise classification or 5+ domains |
 | `dependency-extractor` | Multi-module repo detected |
 | `domain-registry` | Enterprise classification or 5+ domains |
+| `skill-pack-import` | Org-level skill reuse demand confirmed or multi-repo team detected |
 
 #### Meta/toolkit skills (retain selectively for re-bootstrapping)
 
@@ -975,13 +1035,14 @@ These skills support **process, planning, learning, visualization, and analysis*
 | `tool-permission-auditor` | Retained for validation |
 | `skill-discoverability-audit` | Retained for validation |
 | `context-inspector` | Retained for `Collaborative` and `Governed` tiers as a bounded user-facing diagnostic workflow |
+| `correction-ledger` | Retained for learning-loop signal aggregation and approval-gated promotion |
 
 Treat the tables above as retention guidance, not a closed whitelist. If bootstrap generates a new post-bootstrap skill later, classify it into one of the non-bootstrap tiers and keep it. Do not let a newly added runtime skill fall out of the manifest just because an older template did not list it yet.
 
 ### Tier-governed maintenance surface
 
 - `Lean`: keep the smallest useful maintenance layer. Skip advanced audit and debug helpers unless non-tier repo evidence makes them clearly necessary.
-- `Collaborative`: keep review-memory, onboarding, and bounded diagnostic helpers such as `context-inspector`.
+- `Collaborative`: keep review-memory, learning-loop (`correction-ledger`, `promote-learning`), onboarding, and bounded diagnostic helpers such as `context-inspector`.
 - `Governed`: keep the full advanced validation and debug helper set, including context assembly, permission auditing, discoverability auditing, and effectiveness review.
 
 #### Bootstrap-only skills (always remove post-bootstrap)
@@ -993,6 +1054,17 @@ Treat the tables above as retention guidance, not a closed whitelist. If bootstr
 - `common-doc-generator`
 
 For large repos, make skills prefer domain-scoped execution by default.
+
+### Reference-based skill filtering
+
+After generating all skills, agents, prompts, and instructions, compute the final skill keepSet:
+
+1. **Tier-based inclusion**: Include all Core and Universal skills unconditionally. Include Meta/toolkit skills per capability tier rules.
+2. **Reference scan**: Search all generated `.agent.md`, `.prompt.md`, `.instructions.md`, and retained `SKILL.md` files for skill folder names. A skill folder name appearing in body text, frontmatter `skills:` field, or routing table counts as a reference.
+3. **Conditional signal match**: For Conditional tier skills, check whether their retention signal was detected (e.g., `.devcontainer/` exists → retain `optimize-devcontainer`).
+4. **Prune**: Skills that are not retained by tier, not referenced by any generated file, and not matched by conditional signal are excluded from the keepSet. Do not copy them to the target repo.
+
+Log the pruning decision for each excluded skill in the bootstrap summary (reason: "not referenced by any generated artifact and not retained by tier").
 
 ---
 
@@ -1022,6 +1094,8 @@ Retain user-facing prompts that activate retained runtime workflows or are refer
 
 - Keep `/plan-review-scope` whenever `code-reviewer` is retained.
 - Keep `/promote-review-memory` whenever `review-memory-promotion` is retained.
+- Keep `/promote-learning` whenever `correction-ledger` is retained. This prompt chains `correction-ledger` → `review-memory-promotion` as a single human-facing learning loop entry point.
+- Keep `/import-skill-pack` whenever `skill-pack-import` is retained.
 - Do not treat the short prompt list above as a closed whitelist. If a prompt is generated for post-bootstrap use and `.github/.runtime-fidelity.json` marks it as `discoverable`, include it in the manifest keep set unless it is explicitly classified as `bootstrap_only`.
 
 ### Prompt design rules
@@ -1031,12 +1105,27 @@ Prompts should point users toward:
 - repo truth pack artifacts
 - scoped workflows
 - explicit confirmation before risky implementation
+- an explicit verify target or a clearly labeled verification gap for non-trivial work
 
 ---
 
 ## Phase 11: Hooks and Optional Workflows
 
-Generate hooks only when the target repo has a practical command surface for them.
+### Mandatory execution rules
+
+Phase 11 MUST NOT be skipped for Standard or Enterprise repos. If no quality tooling is detected, memory and preservation hooks are still required.
+
+| Classification | Memory Hooks (4 JSON + 4 scripts) | Quality Hooks | Preservation Hook |
+|---------------|-----------------------------------|---------------|-------------------|
+| Small | Skip | Conditional (tooling detected) | Skip |
+| Standard | **MUST generate** | Conditional (tooling detected) | **MUST generate** |
+| Enterprise | **MUST generate** | Conditional (tooling detected) | **MUST generate** |
+
+If classification is Standard or Enterprise, read `.bootstrap-state.json` to confirm. Then generate the mandatory hooks before evaluating quality hook conditions.
+
+Record `"11-hooks": "completed"` after generation. Never record `"skipped"` for Standard or Enterprise repos unless an unrecoverable error occurs (record `"failed"` with error details instead).
+
+Use the `generate-hooks` skill as the reference for hook file format, event selection, detection matrix, and memory hook rules. Phase 11 defines what is mandatory; the skill defines how to produce it.
 
 ### Quality hooks (conditional on detected tooling)
 
@@ -1055,6 +1144,32 @@ For Standard and Enterprise repos, generate a `preCompact` hook that checkpoints
 
 This prevents loss of in-progress decisions, constraints, and plan state during long-running feature work.
 
+### Memory and observation hooks (conditional on repo size)
+
+For Standard and Enterprise repos, generate a memory hook set that captures, injects, summarizes, and checkpoints session observations:
+
+| Hook file | Event | Script | Purpose |
+|-----------|-------|--------|---------|
+| `memory-capture.json` | `postToolUse` | `memory-capture.js` | Append one JSONL observation to `.memory/observations.jsonl` |
+| `memory-inject.json` | `sessionStart` | `memory-inject.js` | Emit bounded summary-first context from prior session data |
+| `memory-summary.json` | `stop` | `memory-summary.js` | Write session summary Markdown to `.memory/summaries/` |
+| `memory-checkpoint.json` | `preCompact` | `memory-checkpoint.js` | Checkpoint critical state before context compaction |
+
+Rules for memory hooks:
+- Scripts must use Node.js stdlib only (no external dependencies)
+- All scripts must fail open — a script error must never block the user's workflow
+- Add `.memory/` to `.gitignore` (local-only, not committed)
+- Keep each script execution under 5 seconds
+
+### Context-packet manifest (conditional on repo size)
+
+For Standard and Enterprise repos, generate `.github/.context-packets.json` — a manifest that declares which files should be co-loaded for common tasks:
+
+- Each packet has a `name`, `description`, `trigger` keywords, and a `files` array
+- Packets enable smart context assembly: instead of loading everything, load only the packet relevant to the current task
+- Include packets for high-value bundles: core config, review workflow, spec pipeline, domain instructions, etc.
+- Keep the manifest under 4 KB
+
 ### Agentic workflows
 
 Generate agentic workflows only when CI/CD evidence exists and the repo would benefit from them.
@@ -1063,6 +1178,24 @@ Generate agentic workflows only when CI/CD evidence exists and the repo would be
 
 Avoid creating hooks that will fail constantly in normal local development.
 Use official hook events only: `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `preCompact`, `subagentStart`, `subagentStop`, `stop`.
+
+### File registration
+
+After generating hook and script files, immediately append their paths to the `generatedFiles` array in `.bootstrap-state.json`. This is critical: Phase 15 uses `generatedFiles` to build the keepSet. Files not in `generatedFiles` will be treated as copied bundle residue and deleted.
+
+Generated paths to register (when applicable):
+- `.github/hooks/memory-capture.json`
+- `.github/hooks/memory-inject.json`
+- `.github/hooks/memory-summary.json`
+- `.github/hooks/memory-checkpoint.json`
+- `.github/scripts/memory-capture.js`
+- `.github/scripts/memory-inject.js`
+- `.github/scripts/memory-summary.js`
+- `.github/scripts/memory-checkpoint.js`
+- `.github/hooks/auto-format.json` (when formatter detected)
+- `.github/hooks/lint-check.json` (when linter detected)
+- `.github/hooks/compile-check.json` (when compiler detected)
+- `.github/hooks/context-checkpoint.json` (Standard/Enterprise)
 
 ---
 
@@ -1211,12 +1344,18 @@ Validation is mandatory.
 - required files exist
 - no placeholder content
 - names and paths are consistent
+- no broken internal file references: scan all generated `.md` files for relative links (e.g., `](../constitution.md)`, `](../../constitution.md)`) and verify the target file exists in the generated output or the target repo
+- no orphan skills: every skill folder in `.github/skills/` is either referenced by a generated file or retained by tier classification
 
 ### Functional validation
 
 - instructions match real files
+- generated `copilot-instructions.md` begins with the 4-rule operating core and remains a compact operating card
 - generated agents reference real stacks and repo truth
+- generated workflow-owning agents surface success criteria, verification method, and stop conditions
 - skills reference actual commands
+- generated reusable skills define an expected outcome, verification approach, and stop/escalation rule when the workflow is non-trivial
+- generated prompts include a clear verify target or an explicit verification gap when the workflow is non-trivial
 - no agent references a specialist that was not generated
 - handoff targets reference agents that exist in the generated set
 - handoff prompts provide meaningful context for the target agent
@@ -1236,7 +1375,8 @@ Validation is mandatory.
 - prompts stay lightweight
 - large repos favor scoped memory over dumping everything into one file
 - optionally run `context-assembly-simulator` to verify per-agent context budget for key scenarios
-- optionally run `instruction-conflict-detector` to verify no overlapping instructions contradict each other
+- for repos with 3 or more generated instruction files, run `instruction-conflict-detector` to verify no overlapping instructions contradict each other — Error-level conflicts must be resolved before the manifest is finalized
+- for repos with fewer than 3 instruction files, the conflict check is optional
 - optionally run `tool-permission-auditor` to verify agent tool access matches declared roles
 - optionally run `repo-memory-promoter` to identify instruction bloat or underdocumented subsystems surfaced during generation
 
@@ -1386,6 +1526,21 @@ After generation and validation:
    - generated specifically for the target repo
    - required runtime assets for the generated repo
    - manifest/state/checkpoint artifacts explicitly declared in the manifest
+4. **keepSet-wins rule**: When a file or directory appears in both `deleteSet` and the keepSet (derived from `generatedFiles`), the keepSet takes precedence. This prevents Phase 15 from deleting files generated by earlier phases (e.g., Phase 11 hooks) that happen to share a directory path with copied bundle assets.
+
+### Gitignore management
+
+Append entries to the target repo's `.gitignore` for generated runtime artifacts that should not be committed:
+
+1. When memory hooks are generated (Phase 11): add `.memory/` if not already present.
+2. When the team prefers not to commit bootstrap metadata: add `.github/.bootstrap-manifest.json`, `.github/.bootstrap-state.json`, `.github/.bootstrap-snapshot.json` if not already present.
+3. When session checkpoint hooks are generated: add `.github/.session-checkpoint.md` if not already present.
+
+Rules:
+- Read the existing `.gitignore` before appending to avoid duplicates.
+- Group new entries under a `# Copilot Bootstrap` comment block.
+- Do not modify any existing entries in `.gitignore`.
+- If `.gitignore` does not exist, create it with only the necessary entries.
 
 ### Bootstrap-only assets
 
@@ -1402,7 +1557,7 @@ The following agents, prompts, and docs exist only to support the bootstrap pipe
 - `generate-skills`
 - `analyze-project` (unless the generated repo explicitly retains it)
 
-User-facing review prompts such as `plan-review-scope` and `promote-review-memory` are runtime assets, not bootstrap-only prompts.
+User-facing review prompts such as `plan-review-scope`, `promote-review-memory`, and `promote-learning` are runtime assets, not bootstrap-only prompts.
 
 **Bootstrap-only docs:**
 - `.github/docs/` files that describe the toolkit rather than the target repo
@@ -1414,7 +1569,7 @@ During cleanup, respect the skill retention tiers defined in Phase 9:
 - **Core skills**: never remove
 - **Universal skills**: never remove — these are stack-agnostic process skills useful to every project
 - **Conditional skills**: remove when the target stack or evidence signal was not detected
-- **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, `review-effectiveness`, and `context-inspector` according to capability tier; keep validation/debug helpers based on classification and tier
+- **Meta/toolkit skills**: retain ongoing maintenance skills like `generate-copilot-config`, `analyze-codebase`, `drift-detector`, `repo-memory-promoter`, `review-memory-promotion`, `review-effectiveness`, `correction-ledger`, and `context-inspector` according to capability tier; keep validation/debug helpers based on classification and tier
 - **Bootstrap-only skills**: always remove (unless the repo is the toolkit source)
 
 New runtime skills created during bootstrap must still be classified by tier and retained according to that tier. Do not delete a generated skill merely because its name is absent from an older example list.

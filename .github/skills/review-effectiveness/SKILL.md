@@ -74,6 +74,26 @@ Check:
 - stale-knowledge incidents where the same issue repeats despite promoted memory
 - whether promoted knowledge is reducing repeated prompting or review churn
 
+### 6. Learning Loop Metrics
+
+When the correction-ledger workflow and Layer 2 memory hooks are active, additionally check:
+
+- **Adoption**: whether `/promote-learning` or the `correction-ledger` skill is being used
+- **Signal volume**: total correction signals collected in `.memory/observations.jsonl`
+- **Noise rate**: percentage of signals filtered as noise versus promoted to candidate status
+- **Approval rate**: percentage of correction-ledger candidates approved versus rejected by humans
+- **Repeat-issue rate**: whether the same correction pattern reappears after a candidate was promoted (indicates ineffective promotion)
+- **Time to promotion**: average lag between first signal occurrence and human approval
+- **Ledger freshness**: date of most recent correction-ledger report under `docs/reviews/correction-ledger-*.md`
+
+Red flags:
+
+- No correction-ledger reports exist despite active Layer 2 hooks
+- Noise rate exceeds 80% — thresholds may be too loose or signal quality is poor
+- Approval rate below 20% — candidates are not actionable enough
+- Same pattern reappears 3+ times after promotion — the promoted rule is not effective
+- No ledger reports in the last 30 days despite active development
+
 ## Workflow
 
 ### Step 1: Gather Evidence
@@ -123,6 +143,17 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 
 ## Knowledge Sync Signals
 
+## Learning Loop Metrics
+
+| Metric | Value | Status |
+|---|---|---|
+| Correction signals collected | <N> | — |
+| Noise filtered | <N> (<pct>%) | <ok/warn> |
+| Candidates proposed | <N> | — |
+| Candidates approved | <N> (<pct>%) | <ok/warn> |
+| Repeat issues after promotion | <N> | <ok/warn> |
+| Last ledger report | <date> | <ok/stale> |
+
 ## Recommended Adjustments
 1. ...
 ```
@@ -134,3 +165,4 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 - [ ] Drift between repo reality and Copilot config was checked
 - [ ] Recommended actions are incremental and prioritized
 - [ ] Knowledge-sync or memory-promotion quality was evaluated when those workflows were retained
+- [ ] Learning loop metrics were evaluated when correction-ledger and Layer 2 hooks are active

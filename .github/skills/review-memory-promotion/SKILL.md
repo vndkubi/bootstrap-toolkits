@@ -12,6 +12,7 @@ Turn stable review or investigation findings into auditable candidate repo-memor
 - After a completed code review identifies recurring warnings, repeated fixes, or durable pitfalls
 - After PR discussion threads or resolved review summaries reveal stable human reasoning worth reusing
 - After an investigation report surfaces structural gotchas, workflow traps, or verification lessons that should outlive the current task
+- After the `correction-ledger` skill produces a ledger report with qualified promotion candidates
 - When users ask to "promote review findings", "build a pitfall pack", "create a memory candidate", or "improve knowledge sync"
 - When the same review comment keeps reappearing across pull requests and should become reusable repo knowledge
 
@@ -27,9 +28,9 @@ The default first consumer is the **local deep-review lane**. Use this skill aft
 
 ## Prerequisites
 
-- A completed review report, PR discussion summary, investigation report, or other durable finding source
+- A completed review report, PR discussion summary, investigation report, correction-ledger report, or other durable finding source
 - Evidence anchors to real files or docs, not only chat recollection
-- Evidence that meets at least one promotion threshold: accepted human fix or resolved human discussion, or recurrence across at least two reviews or investigations
+- Evidence that meets at least one promotion threshold: accepted human fix or resolved human discussion, or recurrence across at least two reviews or investigations, or qualification through correction-ledger aggregation thresholds
 - A likely target layer for the promoted knowledge
 - An approval owner is known or can be proposed
 
@@ -46,11 +47,19 @@ This workflow exists to make promotion auditable and reversible.
 Read the best available evidence set:
 
 - final review report or investigation report
+- correction-ledger reports under `docs/reviews/correction-ledger-*.md` when available
 - PR discussion summary, resolved-thread export, or accepted-fix notes when available
 - related requirement/spec artifact when present
 - existing source-of-truth docs likely to own the promoted knowledge
 - existing checklist packs under `docs/reviews/checklists/` when present
 - optional drift/effectiveness reports if they explain why the finding keeps recurring
+
+When a correction-ledger report is the source:
+
+1. Each pre-qualified candidate already meets the ledger's promotion threshold (trusted signal or 3+ occurrences)
+2. Validate that the candidate's evidence anchors are still current
+3. Apply the same durability, actionability, and trust filters from Step 2 — ledger qualification is necessary but not sufficient
+4. Candidates that pass both the ledger threshold and Step 2 filters proceed to Step 3
 
 If PR discussion artifacts are present:
 
@@ -186,5 +195,7 @@ Never auto-apply durable-memory changes from this skill alone.
 - `.github/skills/repo-memory-promoter/SKILL.md`
 - `.github/skills/review-code-changes/SKILL.md`
 - `.github/skills/review-effectiveness/SKILL.md`
+- `.github/skills/correction-ledger/SKILL.md`
+- `.github/prompts/promote-learning.prompt.md`
 - `.github/docs/team-operating-model.md`
 - `.github/docs/prompt-and-context.md`

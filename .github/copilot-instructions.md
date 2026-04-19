@@ -4,6 +4,13 @@ This `.github/` folder is a bootstrap bundle copied into the current repository 
 
 Until bootstrap rewrites this file, treat it as temporary operator guidance, not as final repo memory.
 
+## Operating Core
+
+- State assumptions explicitly, or ask when scope or business rules are unclear.
+- Prefer the smallest change that solves the request.
+- Touch only the directly relevant surface unless evidence requires broader change.
+- Define verification before claiming completion.
+
 ## Read This Repo In Layers
 
 - Root `README.md`, build files, source code, tests, and existing docs: primary evidence for what this repository actually is

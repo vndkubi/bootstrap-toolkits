@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "command -v node >/dev/null 2>&1 && node .github/scripts/memory-capture.js || exit 0",
+        "powershell": "if (Get-Command node -ErrorAction SilentlyContinue) { & node .github/scripts/memory-capture.js }; exit 0",
+        "cwd": ".",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}

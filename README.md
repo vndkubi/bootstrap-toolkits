@@ -16,7 +16,10 @@ The toolkit includes:
 - **A project constitution** — 9 immutable Articles + Phase -1 Gates governing all specification-to-code transformation
 - **Spec-driven pipeline** — specify → plan → tasks → implement workflow for vague or large features
 - **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
+- **Capability tiers** — `Lean`, `Collaborative`, and `Governed` retained-surface profiles layered on top of repo-size classification
+- **Context Inspector** — a bounded runtime-diagnostic workflow for missing triggers, missing tools, context loading, and retained-surface explanations
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
+- **Intelligence stack** — 4-rule operating core, context packets, memory hooks, correction ledger, and skill-pack import for cross-session learning and cross-repo skill reuse
 
 Important packaging model:
 
@@ -176,6 +179,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── generate-tasks/SKILL.md                      #   📋 Spec-driven: plan → executable task list
 │   ├── review-effectiveness/SKILL.md                #   🔄 Feedback loop: review config effectiveness
 │   ├── review-memory-promotion/SKILL.md             #   🧠 Promote stable review findings into approval-ready memory candidates
+│   ├── context-inspector/SKILL.md                   #   🔎 Bounded runtime diagnostics
 │   ├── generate-unit-tests/SKILL.md                 #   Unit test generation
 │   ├── generate-sequence-diagram/SKILL.md           #   Sequence diagrams
 │   ├── generate-state-diagram/SKILL.md              #   🔄 State machine diagrams
@@ -201,7 +205,9 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── domain-registry/SKILL.md                     #   🏢 Enterprise domain auto-detection
 │   ├── context-budget-check/SKILL.md                #   📏 Context budget validation
 │   ├── impact-analysis/SKILL.md                     #   💥 Cross-module impact analysis
-│   └── generate-domain-instructions/SKILL.md        #   📑 Per-domain instruction generation
+│   ├── generate-domain-instructions/SKILL.md        #   📑 Per-domain instruction generation
+│   ├── correction-ledger/SKILL.md                   #   🔄 Aggregate correction signals into promotion candidates
+│   └── skill-pack-import/SKILL.md                   #   📦 Import/export portable skill packs
 │
 ├── instructions/                                    # 📋 Coding Standards
 │   ├── java.instructions.md                         #   Java conventions
@@ -238,10 +244,28 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── implement-feature.prompt.md                  #   Full feature implementation
 │   ├── plan-review-scope.prompt.md                  #   Review blast-radius planning before deep review
 │   ├── promote-review-memory.prompt.md              #   Learn checklist candidates from accepted human review discussion
-│   └── specify-feature.prompt.md                    #   📋 Spec-driven pipeline entry point
+│   ├── inspect-context.prompt.md                    #   🔎 Runtime-diagnostic entry point
+│   ├── specify-feature.prompt.md                    #   📋 Spec-driven pipeline entry point
+│   ├── promote-learning.prompt.md                   #   🧠 Trigger correction-ledger → memory promotion
+│   └── import-skill-pack.prompt.md                  #   📦 Import a skill pack from Git or local path
 │
-└── hooks/                                           # 🔗 Lifecycle Hooks (generated per project)
-    └── (auto-generated during bootstrap)
+├── hooks/                                           # 🔗 Lifecycle Hooks (generated per project)
+│   ├── memory-capture.json                          #   📝 Capture context packets on session events
+│   ├── memory-inject.json                           #   💉 Inject context packets at session start
+│   ├── memory-summary.json                          #   📊 Summarize session context on stop
+│   └── memory-checkpoint.json                       #   💾 Auto-checkpoint context mid-session
+│
+├── scripts/                                         # ⚙️ Hook scripts (Node.js, stdlib only)
+│   ├── memory-capture.js                            #   Capture logic for memory hooks
+│   ├── memory-inject.js                             #   Inject logic for memory hooks
+│   ├── memory-summary.js                            #   Summary logic for memory hooks
+│   └── memory-checkpoint.js                         #   Checkpoint logic for memory hooks
+│
+├── templates/                                       # 📝 Handoff & decision templates
+│   ├── handoff.md                                   #   Context handoff between sessions
+│   └── decision-note.md                             #   Lightweight decision capture
+│
+└── .context-packets.json                            #   📦 Structured context packet store
 ```
 
 ## 🤖 Agents List
@@ -350,6 +374,7 @@ In multi-module projects, understand module boundaries before making changes:
 | `generate-tasks` | Plan → executable task list with parallelization + checkpoints | "tasks", "task list", "break into tasks" |
 | `review-effectiveness` | Feedback loop: review which agents/skills/instructions are working | "review config", "effectiveness", "what's working" |
 | `review-memory-promotion` | Turn stable review or investigation findings into approval-ready repo-memory candidates | "promote review findings", "pitfall pack", "memory candidate", "knowledge sync" |
+| `context-inspector` | Bounded runtime diagnostics using manifest, runtime fidelity, context assembly, and tool-permission evidence | "inspect context", "why didn't this skill trigger", "why is this tool missing", "what context gets loaded" |
 
 ### Mobile Skills 📱
 
@@ -381,6 +406,13 @@ In multi-module projects, understand module boundaries before making changes:
 | `context-budget-check` | Validate config file sizes and co-loading budgets | "check budget", "validate sizes" |
 | `impact-analysis` | Cross-module blast radius analysis | "impact", "blast radius", "what breaks" |
 | `generate-domain-instructions` | Generate per-domain .instructions.md files | "domain instructions" |
+
+### Intelligence & Learning Skills 🧠
+
+| Skill | Description | Trigger Keywords |
+|-------|--------|------------------|
+| `correction-ledger` | Aggregate trusted correction signals from reviews, redirections, and recurring findings into promotion candidates | "correction ledger", "learning loop", "correction patterns", "promotion candidates" |
+| `skill-pack-import` | Import, export, and manage portable skill packs from Git URLs or local paths with conflict resolution | "skill pack", "import skill", "export skill", "portable skills", "shared skills" |
 
 ## 📋 Instructions List
 
@@ -460,7 +492,10 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 | `/generate-instructions` | Generate coding standards from conventions | Create instruction files |
 | `/generate-skills` | Generate skills from detected workflows | Create workflow skills |
 | `/implement-feature` | Full implementation: investigate → confirm → code → tests → docs | Well-defined PBIs — implement end-to-end |
+| `/inspect-context` | Bounded runtime diagnostics for missing triggers, missing tools, context loading, and retained-surface explanations | Debug Copilot runtime behavior without raw internal dumps |
 | `/specify-feature` | Spec-driven pipeline: specify → plan → tasks → implement | Vague ideas or large features — spec first, then implement |
+| `/promote-learning` | Trigger the correction-ledger → memory promotion loop | After reviews or recurring findings — learn from corrections |
+| `/import-skill-pack` | Import a portable skill pack from a Git URL or local path | Reuse skills across repos, import org-level skill packs |
 
 ## 🚀 Usage
 
@@ -836,6 +871,45 @@ for outdated dependencies and security vulnerabilities
 
 Output: `.github/copilot/` workflow files that run as GitHub Actions with Copilot as the AI agent.
 
+#### Use Case 12: Learning From Code Reviews
+
+**Scenario**: Your team wants Copilot to learn from recurring review findings and avoid repeating the same mistakes.
+
+```
+# After a review cycle, promote corrections into memory
+/promote-learning
+
+# The correction-ledger skill will:
+# 1. Aggregate accepted review fixes, explicit redirections, and repeated findings
+# 2. Score each correction signal for stability and recurrence
+# 3. Generate approval-ready promotion candidates for repo memory
+# 4. Present candidates for human review before committing to memory
+```
+
+Output: Promotion candidates with severity, recurrence count, and suggested memory entries. Only human-approved candidates are persisted.
+
+#### Use Case 13: Sharing Skills Across Repositories
+
+**Scenario**: Your organization has standardized skills (e.g., review checklists, deployment workflows) that should be reused across multiple repos.
+
+```
+# Import a skill pack from a Git URL
+/import-skill-pack
+
+# Or via the agent
+@dev-orchestrator Import skill pack from https://github.com/our-org/shared-skills.git
+
+# The skill-pack-import skill will:
+# 1. Clone/fetch the source pack
+# 2. Validate the skill-pack-manifest.json
+# 3. Detect conflicts with local skills (4-tier: clean/no-op/conflict/local-override)
+# 4. Present conflict resolution options (keep local / accept import / merge manually)
+# 5. Register imported skills in .skill-pack-registry.json
+# 6. Verify all imported skills pass validation
+```
+
+Output: Imported skills registered in the local `.github/` tree with full conflict audit trail. Offline-first — no runtime dependency on the source after import.
+
 ### 🔄 Workflow Summary
 
 | What You Want | Command |
@@ -862,6 +936,8 @@ Output: `.github/copilot/` workflow files that run as GitHub Actions with Copilo
 | Full lifecycle (everything) | `@dev-orchestrator Implement [PBI]` |
 | Spec-driven (vague/large features) | `/specify-feature` |
 | Review config effectiveness | `@dev-orchestrator Review effectiveness` |
+| Promote learnings from reviews | `/promote-learning` |
+| Import a shared skill pack | `/import-skill-pack` |
 
 ### Developer Daily Workflows
 

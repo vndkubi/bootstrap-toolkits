@@ -1,1 +1,5 @@
 /results/
+
+# Layer 2 memory artifacts (ephemeral local state)
+.memory/
+.github/.session-checkpoint.md
