@@ -8,6 +8,8 @@ const path = require('path');
 
 const MEMORY_DIR = path.resolve(process.env.MEMORY_DIR || '.memory');
 const OBS_FILE = path.join(MEMORY_DIR, 'observations.jsonl');
+const ARCHIVE_DIR = path.join(MEMORY_DIR, 'archive');
+const ROTATION_THRESHOLD = parseInt(process.env.ROTATION_THRESHOLD, 10) || 500;
 
 function main() {
   let input = '';
@@ -26,6 +28,8 @@ function main() {
         process.exit(0);
       }
 
+      const agentName = extractAgentName(payload);
+
       const observation = {
         version: 1,
         sessionId: payload.session_id || payload.sessionId || 'unknown',
@@ -40,11 +44,17 @@ function main() {
         trusted: false
       };
 
+      if (agentName) {
+        observation.agentName = agentName;
+      }
+
       if (!fs.existsSync(MEMORY_DIR)) {
         fs.mkdirSync(MEMORY_DIR, { recursive: true });
       }
 
       fs.appendFileSync(OBS_FILE, JSON.stringify(observation) + '\n', 'utf8');
+
+      rotateIfNeeded();
     } catch (_err) {
     }
     process.exit(0);
@@ -114,6 +124,50 @@ function extractFiles(payload) {
   }
 
   return [...new Set(files)];
+}
+
+function rotateIfNeeded() {
+  try {
+    if (!fs.existsSync(OBS_FILE)) {
+      return;
+    }
+
+    const content = fs.readFileSync(OBS_FILE, 'utf8');
+    const lines = content.split('\n').filter(Boolean);
+
+    if (lines.length <= ROTATION_THRESHOLD) {
+      return;
+    }
+
+    const archiveLines = lines.slice(0, lines.length - ROTATION_THRESHOLD);
+    const retainLines = lines.slice(lines.length - ROTATION_THRESHOLD);
+
+    if (!fs.existsSync(ARCHIVE_DIR)) {
+      fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
+    }
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const archivePath = path.join(ARCHIVE_DIR, `observations-${dateStr}.jsonl`);
+
+    // Append to existing archive for same date, or create new
+    fs.appendFileSync(archivePath, archiveLines.join('\n') + '\n', 'utf8');
+
+    // Atomic write: write to temp, then rename
+    const tmpFile = OBS_FILE + '.tmp';
+    fs.writeFileSync(tmpFile, retainLines.join('\n') + '\n', 'utf8');
+    fs.renameSync(tmpFile, OBS_FILE);
+  } catch (_err) {
+    // Fail open: rotation failure should not block capture
+  }
+}
+
+function extractAgentName(payload) {
+  return payload.agent_name
+    || payload.agentName
+    || payload.agent
+    || (payload.tool_input && payload.tool_input.agentName)
+    || process.env.COPILOT_AGENT
+    || null;
 }
 
 main();

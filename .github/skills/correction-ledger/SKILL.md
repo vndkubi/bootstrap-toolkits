@@ -69,12 +69,42 @@ Rules:
 
 ### Step 3: Aggregate Into Patterns
 
-Group signals by normalized lesson content:
+Group signals using a two-tier strategy: exact match first, then semantic merge.
+
+#### 3a: Exact-Match Grouping
 
 1. Normalize summaries to a `patternKey` (lowercase, strip file-specific details)
 2. Count total occurrences (`occurrenceCount`)
 3. Count trusted occurrences (`trustedCount`)
-4. Assign status based on thresholds
+4. Extract keywords and file scope for each aggregate
+
+#### 3b: Semantic Merge
+
+After exact-match grouping, attempt to merge aggregates that represent the same underlying lesson with different wording:
+
+1. For each aggregate, extract `semanticKeywords` — significant words from the summary after removing stop words
+2. For each aggregate, extract `semanticFileScope` — normalized directories from evidence refs
+3. Compare every pair of aggregates using:
+   - **Keyword Jaccard**: `|intersection| / |union|` of semanticKeywords
+   - **File Scope Overlap**: at least one shared entry in semanticFileScope
+4. Merge when **both** conditions are met:
+   - Keyword Jaccard ≥ 0.50 (50% keyword overlap)
+   - At least one shared file scope entry
+5. When merging:
+   - Combine occurrences and trusted counts
+   - Keep all `contributingVariants` (the different wording versions)
+   - Use the highest-frequency variant as the primary `patternKey`
+   - Union semanticKeywords and semanticFileScope
+
+**Important**: If only keyword overlap (no shared file scope) or only file scope (no keyword overlap), aggregates remain separate. This prevents false merges.
+
+#### 3c: Agent-Specific Grouping
+
+When observations include an `agentName` field, additionally group by agent:
+
+1. Produce **global aggregates** (across all agents) — same as above
+2. Produce **per-agent aggregates** — group signals by `agentName`, then apply the same exact-match + semantic merge logic
+3. Per-agent aggregates use `agentProfile: "<agentName>"` while global aggregates use `agentProfile: null`
 
 #### Promotion Thresholds
 
@@ -118,6 +148,65 @@ For each aggregate with status `candidate`, produce a PromotionCandidate:
 
 Save the report as: `docs/reviews/correction-ledger-<YYYY-MM-DD>.md`
 
+### Step 5b: Update Effectiveness Tracking
+
+After generating the ledger report, update the promotion tracker:
+
+1. Read `.memory/promotion-tracker.json` if it exists
+2. For each pattern with status `promoted` or `approved`:
+   - If not yet in the tracker, add it with `promotedAt`, `postPromotionOccurrences: 0`, `effectivenessStatus: "monitoring"`
+   - If already in the tracker, update `postPromotionOccurrences` by counting how many times this pattern's correction signals appear **after** the `promotedAt` date
+3. Compute effectiveness status for each tracked promotion:
+   - `"effective"`: `postPromotionOccurrences == 0` after 5+ sessions since promotion
+   - `"monitoring"`: fewer than 5 sessions since promotion
+   - `"ineffective"`: `postPromotionOccurrences > 0` after 5+ sessions
+   - `"reverted"`: manually marked by a human reviewer
+4. Write the updated tracker to `.memory/promotion-tracker.json`
+
+**Schema**: See `specs/006-self-improving-intelligence/contracts/promotion-tracker.schema.json`
+
+Include a summary in the ledger report:
+
+```md
+## Post-Promotion Effectiveness
+
+| Pattern | Promoted | Post-Promotion Occurrences | Status |
+|---------|----------|---------------------------|--------|
+| <key>   | <date>   | <count>                   | <status> |
+
+- Effective: <N>
+- Monitoring: <N>
+- Ineffective: <N> (consider refining or escalating)
+```
+
+### Step 5c: Write Correction Patterns File
+
+Write aggregated patterns to `.memory/correction-patterns.json` for consumption by `memory-inject.js` proactive warnings:
+
+1. Collect all aggregates (both global and per-agent) with `occurrenceCount >= 2`
+2. Write the file with this schema:
+
+```json
+{
+  "version": 1,
+  "generatedAt": "<ISO-8601>",
+  "patterns": [
+    {
+      "patternKey": "<key>",
+      "summary": "<human-readable lesson>",
+      "occurrenceCount": <N>,
+      "relevantFiles": ["<dir-or-file-paths>"],
+      "agentName": "<agent-name-or-null>",
+      "promoted": <true|false>
+    }
+  ]
+}
+```
+
+**Schema**: See `specs/006-self-improving-intelligence/contracts/correction-patterns.schema.json`
+
+This file acts as a cache: the correction-ledger writes it, `memory-inject.js` reads it at session start to surface proactive warnings.
+
 ### Step 6: Route To Review-Memory-Promotion
 
 Pass the candidate list to `review-memory-promotion` as a source artifact. The downstream skill handles the approval gate — corrections never self-promote.
@@ -131,7 +220,7 @@ Pass the candidate list to `review-memory-promotion` as a source artifact. The d
 > Sources: observations.jsonl, review reports
 > Signals collected: <N>
 > Trusted signals: <N>
-> Patterns found: <N>
+> Patterns found: <N> (after semantic merge: <N>)
 > Candidates for promotion: <N>
 > Noise filtered: <N>
 
@@ -140,10 +229,28 @@ Pass the candidate list to `review-memory-promotion` as a source artifact. The d
 ### Candidate 1: <title>
 - **Category**: <style|pattern|business|verification|safety>
 - **Occurrences**: <N> (<M> trusted)
+- **Wording variants**: <list of contributing variants if merged>
 - **Evidence**: <links>
 - **Proposed target**: <file>
 - **Proposed change**: <delta>
 - **Approval owner**: <owner>
+
+## Agent-Specific Profiles
+
+### Agent: <agentName>
+| Pattern | Occurrences | Status |
+|---------|-------------|--------|
+| <key>   | <N>         | <status> |
+
+## Post-Promotion Effectiveness
+
+| Pattern | Promoted | Post-Promotion Occurrences | Status |
+|---------|----------|---------------------------|--------|
+| <key>   | <date>   | <count>                   | <status> |
+
+- Effective: <N>
+- Monitoring: <N>
+- Ineffective: <N>
 
 ## Noise (Filtered)
 
@@ -156,11 +263,16 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 
 ## Verification Contract
 
-- **Expected outcome**: A ledger report containing only candidates that meet the promotion threshold
+- **Expected outcome**: A ledger report containing only candidates that meet the promotion threshold, with semantic grouping, effectiveness tracking, and correction-patterns.json output
 - **How to verify**:
   - Retries without human confirmation are excluded from candidates (may appear in noise section)
   - Every candidate has at least one trusted signal OR at least 3 total occurrences
   - Every candidate names a target file and proposed delta
+  - Semantic merge only occurs when BOTH keyword Jaccard ≥ 0.50 AND shared file scope
+  - Merged candidates list all contributing wording variants
+  - `.memory/promotion-tracker.json` is written with current effectiveness statuses
+  - `.memory/correction-patterns.json` is written with all patterns having ≥2 occurrences
+  - Per-agent profiles are generated when agentName data is available
   - The report routes to `review-memory-promotion`, not to direct source edits
 - **Stop condition**: Report generated and saved; do not proceed to edit durable files
 - **Escalation**: If fewer than 0 candidates qualify, report that the signal pool is too small and suggest waiting for more session data
@@ -169,8 +281,13 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 
 - [ ] Only trusted signals or recurring patterns (3+) become candidates
 - [ ] Retry-only signals are filtered to noise unless recurrence threshold is met
+- [ ] Semantic merge requires both keyword AND file-scope overlap
+- [ ] Merged aggregates list all contributing variants
+- [ ] Per-agent profiles are generated alongside global aggregates
 - [ ] Every candidate has evidence anchors
 - [ ] Every candidate names a target layer and suggested file
+- [ ] `.memory/correction-patterns.json` written with ≥2 occurrence patterns
+- [ ] `.memory/promotion-tracker.json` updated with effectiveness statuses
 - [ ] No durable source files were modified by this skill
 - [ ] The report was saved under `docs/reviews/`
 - [ ] Candidates were routed to `review-memory-promotion` for approval
@@ -182,6 +299,10 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 - Bypassing the approval gate and editing durable files directly
 - Running the ledger before any observations exist
 - Counting bot or system signals as trusted without human acceptance
+- Semantic merge with only keyword overlap but no file-scope overlap (false merge)
+- Semantic merge with only file-scope overlap but no keyword overlap (false merge)
+- Not writing correction-patterns.json after ledger report generation
+- Not updating promotion-tracker.json with post-promotion occurrence counts
 
 ## Related Files
 
@@ -189,4 +310,8 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 - `.github/skills/review-effectiveness/SKILL.md`
 - `.github/prompts/promote-learning.prompt.md`
 - `.memory/observations.jsonl`
+- `.memory/correction-patterns.json` — pattern cache for proactive warnings
+- `.memory/promotion-tracker.json` — effectiveness tracking state
+- `specs/006-self-improving-intelligence/contracts/correction-patterns.schema.json`
+- `specs/006-self-improving-intelligence/contracts/promotion-tracker.schema.json`
 - `docs/reviews/`

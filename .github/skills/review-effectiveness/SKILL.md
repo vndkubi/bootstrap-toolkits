@@ -86,6 +86,34 @@ When the correction-ledger workflow and Layer 2 memory hooks are active, additio
 - **Time to promotion**: average lag between first signal occurrence and human approval
 - **Ledger freshness**: date of most recent correction-ledger report under `docs/reviews/correction-ledger-*.md`
 
+#### Promotion Effectiveness (from promotion-tracker.json)
+
+When `.memory/promotion-tracker.json` exists, read it and report:
+
+- **Total promoted patterns**: count of tracked promotions
+- **Effective**: patterns with zero post-promotion occurrences after 5+ sessions
+- **Ineffective**: patterns still recurring after 5+ sessions (these need refinement)
+- **Monitoring**: recently promoted patterns still collecting data
+- **Success rate**: `effective / (effective + ineffective)` as a percentage
+- **Top ineffective patterns**: up to 5 patterns with highest post-promotion recurrence, with suggestion to refine the promoted instruction
+
+#### Semantic Grouping Quality
+
+When correction-ledger reports include semantic merges:
+
+- **Pre-merge pattern count**: raw aggregates before semantic merge
+- **Post-merge pattern count**: aggregates after merge (lower is better grouping)
+- **Merge ratio**: percentage reduction from semantic merge
+- **False merge risk**: flag if merge ratio > 40% (may indicate grouping is too aggressive)
+
+#### Agent-Specific Insights
+
+When `.memory/correction-patterns.json` contains agent-specific entries:
+
+- **Agents with profiles**: list of agents that have correction data
+- **Top agent-specific patterns**: most frequent per-agent corrections
+- **Global vs agent-specific distribution**: percentage split
+
 Red flags:
 
 - No correction-ledger reports exist despite active Layer 2 hooks
@@ -93,6 +121,8 @@ Red flags:
 - Approval rate below 20% — candidates are not actionable enough
 - Same pattern reappears 3+ times after promotion — the promoted rule is not effective
 - No ledger reports in the last 30 days despite active development
+- Promotion success rate below 50% — promoted instructions are not reducing corrections
+- No `.memory/correction-patterns.json` exists despite ledger reports being generated
 
 ## Workflow
 
@@ -154,6 +184,36 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 | Repeat issues after promotion | <N> | <ok/warn> |
 | Last ledger report | <date> | <ok/stale> |
 
+### Promotion Effectiveness
+
+| Metric | Value | Status |
+|---|---|---|
+| Total promoted | <N> | — |
+| Effective | <N> | — |
+| Ineffective | <N> | <ok/warn> |
+| Monitoring | <N> | — |
+| Success rate | <pct>% | <ok/warn> |
+
+### Top Ineffective Patterns
+
+| Pattern | Post-Promotion Count | Sessions Since | Action |
+|---------|---------------------|----------------|--------|
+| <key>   | <N>                 | <N>            | Refine/Escalate |
+
+### Semantic Grouping Quality
+
+| Metric | Value | Status |
+|---|---|---|
+| Pre-merge patterns | <N> | — |
+| Post-merge patterns | <N> | — |
+| Merge ratio | <pct>% | <ok/aggressive> |
+
+### Agent-Specific Insights
+
+| Agent | Patterns | Top Issue |
+|-------|----------|-----------|
+| <name> | <N>     | <summary> |
+
 ## Recommended Adjustments
 1. ...
 ```
@@ -166,3 +226,6 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 - [ ] Recommended actions are incremental and prioritized
 - [ ] Knowledge-sync or memory-promotion quality was evaluated when those workflows were retained
 - [ ] Learning loop metrics were evaluated when correction-ledger and Layer 2 hooks are active
+- [ ] Promotion effectiveness was reported when `.memory/promotion-tracker.json` exists
+- [ ] Semantic grouping quality was assessed when ledger reports include merges
+- [ ] Agent-specific insights were reported when agent data is available in correction-patterns.json
