@@ -272,6 +272,7 @@ When a target repo uses the Layer 2 memory infrastructure, generate the followin
 | Hook File | Event | Script | Timeout | Purpose |
 |---|---|---|---|---|
 | `memory-capture.json` | `PostToolUse` | `.github/scripts/memory-capture.js` | 5s | Append one JSONL observation per relevant tool event |
+| `memory-prompt.json` | `UserPromptSubmit` | `.github/scripts/memory-capture.js` | 3s | Capture user prompts as intent observations |
 | `memory-inject.json` | `SessionStart` | `.github/scripts/memory-inject.js` | 10s | Inject bounded context from past sessions via `hookSpecificOutput.additionalContext` |
 | `memory-summary.json` | `Stop` | `.github/scripts/memory-summary.js` | 10s | Write a structured session summary to `.memory/summaries/` |
 | `memory-checkpoint.json` | `PreCompact` | `.github/scripts/memory-checkpoint.js` | 10s | Preserve goal, decisions, and next verification step |
@@ -280,7 +281,8 @@ When a target repo uses the Layer 2 memory infrastructure, generate the followin
 
 - Scripts must use Node standard library only — no external dependencies.
 - If Node is unavailable, scripts must fail open (exit 0) without blocking sessions.
-- The `postToolUse` capture hook must stay under 5 seconds.
+- The `PostToolUse` capture hook must stay under 5 seconds.
+- The `UserPromptSubmit` capture hook must stay under 3 seconds.
 - Injection, summary, and checkpoint hooks must stay under 10 seconds.
 - All runtime memory artifacts (`.memory/`) must be gitignored.
 - Hook files must reference scripts inside `.github/scripts/` so they travel with the copied bundle.
@@ -308,9 +310,10 @@ Hooks Generated:
 - security-gate.json       <- preToolUse: optional policy command
 - context-checkpoint.json  <- preCompact: checkpoint session state (Standard/Enterprise)
 - memory-capture.json      <- postToolUse: JSONL observation capture (Layer 2)
-- memory-inject.json       <- sessionStart: context injection (Layer 2)
-- memory-summary.json      <- stop: session summary (Layer 2)
-- memory-checkpoint.json   <- preCompact: task state checkpoint (Layer 2)
+- memory-prompt.json       <- UserPromptSubmit: user intent capture (Layer 2)
+- memory-inject.json       <- SessionStart: context injection (Layer 2)
+- memory-summary.json      <- Stop: session summary (Layer 2)
+- memory-checkpoint.json   <- PreCompact: task state checkpoint (Layer 2)
 ```
 
 ## Related Files

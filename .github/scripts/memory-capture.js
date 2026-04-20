@@ -10,6 +10,28 @@ const MEMORY_DIR = path.resolve(process.env.MEMORY_DIR || '.memory');
 const OBS_FILE = path.join(MEMORY_DIR, 'observations.jsonl');
 const ARCHIVE_DIR = path.join(MEMORY_DIR, 'archive');
 const ROTATION_THRESHOLD = parseInt(process.env.ROTATION_THRESHOLD, 10) || 500;
+const MAX_TOOL_RESPONSE_CHARS = 500;
+const MAX_TOOL_INPUT_CHARS = 500;
+const MAX_PROMPT_CHARS = 1000;
+const MAX_PROMPT_SUMMARY_CHARS = 80;
+
+// Add new payload extraction here when VS Code extends hook fields.
+// Each entry is declarative, so adopting a new field is a single-line change.
+const FIELD_EXTRACTORS = [
+  {
+    from: 'tool_response',
+    to: 'toolResponse',
+    transform: (value) => sanitizeToolResponse(value)
+  },
+  {
+    from: 'tool_use_id',
+    to: 'toolUseId'
+  },
+  {
+    from: 'transcript_path',
+    to: 'transcriptPath'
+  }
+];
 
 function main() {
   let input = '';
@@ -23,29 +45,13 @@ function main() {
         process.exit(0);
       }
 
-      const toolName = extractToolName(payload);
-      if (!toolName) {
+      const sourceEvent = normalizeHookEventName(payload.hook_event_name || payload.hookEventName || 'postToolUse');
+      const observation = sourceEvent === 'userPromptSubmit'
+        ? buildPromptObservation(payload, sourceEvent)
+        : buildToolObservation(payload, sourceEvent);
+
+      if (!observation) {
         process.exit(0);
-      }
-
-      const agentName = extractAgentName(payload);
-
-      const observation = {
-        version: 1,
-        sessionId: payload.session_id || payload.sessionId || 'unknown',
-        timestamp: new Date().toISOString(),
-        sourceEvent: normalizeHookEventName(payload.hook_event_name || payload.hookEventName || 'postToolUse'),
-        type: 'observation',
-        actor: 'agent',
-        summary: buildSummary(toolName, payload),
-        files: extractFiles(payload),
-        toolName,
-        tags: [],
-        trusted: false
-      };
-
-      if (agentName) {
-        observation.agentName = agentName;
       }
 
       if (!fs.existsSync(MEMORY_DIR)) {
@@ -76,8 +82,166 @@ function extractToolName(payload) {
   return payload.tool_name || payload.toolName || payload.tool || '';
 }
 
+function buildToolObservation(payload, sourceEvent) {
+  const toolName = extractToolName(payload);
+  if (!toolName) {
+    return null;
+  }
+
+  const agentName = extractAgentName(payload);
+  const observation = {
+    version: 2,
+    sessionId: payload.session_id || payload.sessionId || 'unknown',
+    timestamp: new Date().toISOString(),
+    sourceEvent,
+    type: 'observation',
+    actor: 'agent',
+    summary: buildSummary(toolName, payload),
+    files: extractFiles(payload),
+    toolName,
+    tags: [],
+    trusted: false,
+    ...applyExtractors(payload)
+  };
+
+  const toolInput = getToolInput(payload);
+  if (toolInput && typeof toolInput === 'object' && Object.keys(toolInput).length > 0) {
+    observation.toolInput = truncateString(JSON.stringify(toolInput), MAX_TOOL_INPUT_CHARS);
+  }
+
+  if (agentName) {
+    observation.agentName = agentName;
+  }
+
+  return observation;
+}
+
+function buildPromptObservation(payload, sourceEvent) {
+  const prompt = payload.prompt;
+  if (typeof prompt !== 'string' || prompt.trim().length === 0) {
+    return null;
+  }
+
+  const trimmedPrompt = truncateString(prompt.trim(), MAX_PROMPT_CHARS);
+  return {
+    version: 2,
+    sessionId: payload.session_id || payload.sessionId || 'unknown',
+    timestamp: new Date().toISOString(),
+    sourceEvent,
+    type: 'prompt',
+    actor: 'user',
+    summary: `User prompt: ${truncateString(trimmedPrompt, MAX_PROMPT_SUMMARY_CHARS)}`,
+    prompt: trimmedPrompt,
+    tags: [],
+    trusted: false,
+    ...applyExtractors(payload)
+  };
+}
+
 function getToolInput(payload) {
   return payload.tool_input || payload.toolInput || payload.input || {};
+}
+
+function applyExtractors(payload) {
+  const extracted = {};
+  for (const extractor of FIELD_EXTRACTORS) {
+    const rawValue = getPayloadField(payload, extractor.from);
+    if (rawValue === undefined || rawValue === null) {
+      continue;
+    }
+
+    let value = rawValue;
+    if (typeof extractor.transform === 'function') {
+      try {
+        value = extractor.transform(rawValue);
+      } catch (_err) {
+        continue;
+      }
+    }
+
+    if (value === undefined || value === null || value === '') {
+      continue;
+    }
+
+    extracted[extractor.to] = value;
+  }
+  return extracted;
+}
+
+function getPayloadField(payload, primaryKey) {
+  if (!payload || typeof payload !== 'object') {
+    return undefined;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, primaryKey)) {
+    return payload[primaryKey];
+  }
+
+  const altKey = toCamelCase(primaryKey);
+  if (Object.prototype.hasOwnProperty.call(payload, altKey)) {
+    return payload[altKey];
+  }
+
+  return undefined;
+}
+
+function toCamelCase(value) {
+  return String(value).replace(/_([a-z])/g, (_m, ch) => ch.toUpperCase());
+}
+
+function sanitizeToolResponse(value) {
+  const raw = valueToString(value);
+  if (!raw) {
+    return '';
+  }
+  const redacted = redactSecrets(raw);
+  return truncateString(redacted, MAX_TOOL_RESPONSE_CHARS);
+}
+
+function valueToString(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  try {
+    return JSON.stringify(value);
+  } catch (_err) {
+    return String(value);
+  }
+}
+
+function truncateString(str, maxChars) {
+  if (typeof str !== 'string') {
+    return '';
+  }
+  if (str.length <= maxChars) {
+    return str;
+  }
+  if (maxChars <= 3) {
+    return str.slice(0, maxChars);
+  }
+  return str.slice(0, maxChars - 3) + '...';
+}
+
+function redactSecrets(text) {
+  if (!text || typeof text !== 'string') {
+    return text;
+  }
+
+  let output = text;
+  const patterns = [
+    /(Bearer\s+)([^\s"'\n\r]+)/gi,
+    /(Authorization:\s*)([^\s"'\n\r]+)/gi,
+    /((?:password|secret|token|api[_-]?key)\s*[=:]\s*)([^\s"'\n\r]+)/gi
+  ];
+
+  for (const pattern of patterns) {
+    output = output.replace(pattern, '$1[REDACTED]');
+  }
+
+  return output;
 }
 
 function normalizeHookEventName(eventName) {

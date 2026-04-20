@@ -14,14 +14,17 @@ const PATTERNS_FILE = path.join(MEMORY_DIR, 'correction-patterns.json');
 const MAX_OUTPUT_LINES = 60;
 const MAX_SUMMARIES = 3;
 const MAX_OBSERVATIONS = 10;
+const MAX_PROMPTS = 3;
 const MAX_WARNINGS = 5;
 const MAX_WARNING_LINES = 10;
+const MAX_TOOL_RESPONSE_SNIPPET = 80;
 
 // Scoring weights (TD-2)
 const WEIGHT_FILE = 0.40;
 const WEIGHT_RECENCY = 0.30;
 const WEIGHT_KEYWORD = 0.20;
 const WEIGHT_AGENT = 0.10;
+const PROMPT_BONUS = 0.15;
 
 function main() {
   let input = '';
@@ -49,10 +52,15 @@ function main() {
         sections.push('## Recent Session Summaries\n' + summaries.join('\n\n'));
       }
 
+      const prompts = loadRecentPrompts(MAX_PROMPTS);
+      if (prompts.length > 0) {
+        sections.push('## User Intent\n' + prompts.map((item) => `- ${item}`).join('\n'));
+      }
+
       const observations = loadRelevantObservations(MAX_OBSERVATIONS, context);
       if (observations.length > 0) {
         sections.push(
-          '## Recent Observations\n' + observations.map((item) => `- ${item.summary}`).join('\n')
+          '## Recent Observations\n' + observations.map((item) => `- ${formatObservationSummary(item)}`).join('\n')
         );
       }
 
@@ -194,16 +202,60 @@ function loadRelevantObservations(limit, context) {
   });
 }
 
+function loadRecentPrompts(limit) {
+  if (!fs.existsSync(OBS_FILE)) {
+    return [];
+  }
+
+  const allObs = fs.readFileSync(OBS_FILE, 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => tryParseJSON(line))
+    .filter((item) => item && item.type === 'prompt' && typeof item.summary === 'string' && item.summary.length > 0);
+
+  return allObs.slice(-limit).map((item) => item.summary);
+}
+
 function scoreObservation(obs, context, now) {
   const fileScore = computeFileMatch(obs, context);
   const recencyScore = computeRecency(obs, now);
   const keywordScore = computeKeywordScore(obs, context);
   const agentScore = computeAgentMatch(obs, context);
+  const promptBonus = obs.type === 'prompt' ? PROMPT_BONUS : 0;
 
-  return (WEIGHT_FILE * fileScore)
+  const baseScore = (WEIGHT_FILE * fileScore)
     + (WEIGHT_RECENCY * recencyScore)
     + (WEIGHT_KEYWORD * keywordScore)
     + (WEIGHT_AGENT * agentScore);
+
+  return Math.min(1.0, baseScore + promptBonus);
+}
+
+function formatObservationSummary(obs) {
+  if (!obs || typeof obs.summary !== 'string') {
+    return '';
+  }
+
+  if (typeof obs.toolResponse !== 'string' || obs.toolResponse.trim().length === 0) {
+    return obs.summary;
+  }
+
+  const normalized = obs.toolResponse.replace(/\s+/g, ' ').trim();
+  const snippet = truncateForDisplay(normalized, MAX_TOOL_RESPONSE_SNIPPET);
+  return `${obs.summary} -> "${snippet}"`;
+}
+
+function truncateForDisplay(text, limit) {
+  if (typeof text !== 'string') {
+    return '';
+  }
+  if (text.length <= limit) {
+    return text;
+  }
+  if (limit <= 3) {
+    return text.slice(0, limit);
+  }
+  return text.slice(0, limit - 3) + '...';
 }
 
 function computeFileMatch(obs, context) {
