@@ -74,7 +74,14 @@ function main() {
           + '\n\n> [Truncated — see .memory/ for full context]';
       }
 
-      process.stdout.write(output + '\n');
+      // VS Code expects JSON with hookSpecificOutput.additionalContext
+      const result = {
+        hookSpecificOutput: {
+          hookEventName: 'SessionStart',
+          additionalContext: output
+        }
+      };
+      process.stdout.write(JSON.stringify(result) + '\n');
     } catch (_err) {
     }
     process.exit(0);

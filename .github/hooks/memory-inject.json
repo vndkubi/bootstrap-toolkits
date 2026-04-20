@@ -1,13 +1,10 @@
 {
-  "version": 1,
   "hooks": {
-    "sessionStart": [
+    "SessionStart": [
       {
         "type": "command",
-        "bash": "command -v node >/dev/null 2>&1 && node .github/scripts/memory-inject.js || exit 0",
-        "powershell": "if (Get-Command node -ErrorAction SilentlyContinue) { & node .github/scripts/memory-inject.js }; exit 0",
-        "cwd": ".",
-        "timeoutSec": 10
+        "command": "node .github/scripts/memory-inject.js",
+        "timeout": 10
       }
     ]
   }

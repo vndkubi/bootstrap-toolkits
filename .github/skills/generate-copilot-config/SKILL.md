@@ -1177,7 +1177,18 @@ Generate agentic workflows only when CI/CD evidence exists and the repo would be
 ### Rules
 
 Avoid creating hooks that will fail constantly in normal local development.
-Use official hook events only: `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `preCompact`, `subagentStart`, `subagentStop`, `stop`.
+Use official hook events only — PascalCase names: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`.
+
+### Smoke-test after generation
+
+After generating all hooks, run the Step 5 smoke test defined in the `generate-hooks` skill:
+
+1. **Structural validation** — parse every `.github/hooks/*.json`, confirm PascalCase events, `type: "command"`, and valid properties
+2. **Script availability** — confirm referenced scripts exist on disk; run `node -c` for Node.js scripts
+3. **Dry-run** — execute each Node.js script with `echo '{}' | node <script>` using a temp MEMORY_DIR; must exit 0
+4. **Fix-on-fail** — if any check fails, fix the generated file and re-run the failing check before moving on
+
+Record `"11-hooks": "completed"` only after the smoke test passes. If the smoke test reveals failures that cannot be fixed, record `"11-hooks": "failed"` with error details.
 
 ### File registration
 
