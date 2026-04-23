@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/.github/schemas/trace.schema.json",
+  "title": "Autorun Trace Record",
+  "description": "Single line in .github/.traces/autorun-<PBI>.jsonl. First line MUST be a MetaRecord; every subsequent line MUST be an EventRecord. Canonical copy for runtime validation; spec-scoped copy lives at specs/008-prove-by-api-flow/contracts/trace.schema.json.",
+  "oneOf": [
+    { "$ref": "#/$defs/MetaRecord" },
+    { "$ref": "#/$defs/EventRecord" }
+  ],
+  "$defs": {
+    "MetaRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schemaVersion", "pbi", "slug", "harness", "toolkitVersion", "startedAt"],
+      "properties": {
+        "kind": { "const": "meta" },
+        "schemaVersion": { "const": "1" },
+        "pbi": { "type": "string", "minLength": 1 },
+        "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "harness": { "enum": ["vscode", "cli"] },
+        "toolkitVersion": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "EventRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schemaVersion", "phase", "agent", "action", "durationMs", "tokenCost"],
+      "properties": {
+        "kind": { "const": "event" },
+        "schemaVersion": { "const": "1" },
+        "phase": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "agent": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "inputs": { "type": "object" },
+        "outputs": { "type": "object" },
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "tokenCost": { "type": "integer", "minimum": 0 },
+        "gate": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "articleXCompliant": { "type": "boolean" },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "message"],
+          "properties": {
+            "code": { "type": "string" },
+            "message": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

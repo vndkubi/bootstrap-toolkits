@@ -161,3 +161,49 @@ php artisan test                # PHP/Laravel
 - Keep PR descriptions reviewer-friendly — they should understand the PR in 30 seconds
 - Use tables and checklists for scanability
 - Be explicit about testing steps — another developer must be able to verify
+
+## Autorun Mode (Phase 7)
+
+When invoked from `prompts/autorun.prompt.md` Phase 7 with an `--evidence-bundle <path>` argument (typically `.artifacts/<pbi>/` or `specs/<id>-<slug>/`):
+
+### Inputs consumed
+
+- `evidence-summary.md` — authoritative summary produced by the `generate-evidence-summary` skill.
+- `trace.jsonl` — raw phase trace.
+- `test-coverage.md` — AC↔test map.
+- `tdd-log.md` — iteration log.
+- `mocks-used.md` + (optional) `mock-exceptions.md`.
+- `review-report.json` — combined verdict from `review-code-changes` including `articleXCompliant`.
+
+### Hard gate: articleXCompliant
+
+Before the PR is marked **ready for review**:
+
+1. Parse `review-report.json`.
+2. If `articleXCompliant === false` and `mock-exceptions.md` does not contain a ratified entry covering the offending mock → **do not open** a ready PR. Open as **draft** instead, add the Article X blocker to the PR body under ⚠️ **Blocking**, and emit exit code 31 back to `/autorun`.
+3. If `verdict === "reject"` → same treatment; draft PR with blocker summary at the top.
+4. If `verdict === "pass"` and `articleXCompliant === true` → open the PR as ready, populated from [templates/pr-body.autorun.md](../templates/pr-body.autorun.md).
+
+### PR body generation
+
+Use the [pr-body.autorun.md](../templates/pr-body.autorun.md) template. Substitute placeholders from the evidence bundle:
+
+| Placeholder | Source |
+|---|---|
+| `{{pbiRef}}` | trace meta `pbi` |
+| `{{summary}}` | evidence-summary.md §Summary |
+| `{{acTable}}` | test-coverage.md |
+| `{{gateChecklist}}` | evidence-summary.md §Gates |
+| `{{mocksTable}}` | mocks-used.md |
+| `{{evidenceLinks}}` | evidence-summary.md §Artifacts |
+| `{{articleXLine}}` | `review-report.json.articleXCompliant` → `✅` or `❌` |
+| `{{tddIterations}}` | tdd-log.md row count |
+| `{{costUsd}}` | trace final cost event |
+
+### Never without bundle
+
+In autorun mode, refuse to open a PR when `--evidence-bundle` is missing or incomplete (no `evidence-summary.md`). Emit trace `{action: "pr-refused", reason: "evidence-bundle-missing"}` and exit 1. Do not fall back to classic `generate-pr-description`.
+
+### Reviewers
+
+Use code-owners if the repo has `CODEOWNERS`; otherwise suggest the last 3 committers to the touched directories. Always add a human reviewer — never set auto-merge in autorun mode.

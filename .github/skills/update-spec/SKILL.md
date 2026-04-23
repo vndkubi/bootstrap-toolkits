@@ -73,6 +73,12 @@ Apply changes in this order:
 6. `quickstart.md` if validation scenarios changed
 7. `tasks.md` if execution order or work items changed
 
+#### Contract re-emission rule
+
+If the spec change touches an external surface (endpoint added/removed/renamed, request/response schema, event topic, CLI command, error code) **and** the taxonomy is API-bearing, re-invoke the `generate-api-contract` skill to regenerate the affected file(s) under `contracts/`. A spec change that narrows or widens acceptance criteria is treated as a contract change. Update `tasks.md` if test tasks need re-running.
+
+When the change is cosmetic (wording clarifications, typo fixes, non-normative notes), leave `contracts/` unchanged and note the decision in the update report.
+
 ### Step 5: Preserve History
 
 When the workspace tracks versions or changelog notes:

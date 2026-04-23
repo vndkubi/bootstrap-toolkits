@@ -288,3 +288,32 @@ services:
 - NEVER use production data — generate realistic fake data
 - Include metadata/description in every mapping for documentation
 - Organize stubs by external service name in subdirectories
+
+## Autorun Responsibilities (Phase 3 / Phase 5)
+
+When invoked from the `/autorun` loop by `@api-test-author` or `tdd-implement-loop`:
+
+### (a) Test fixture builder + DB seed
+
+- Emit a language-appropriate fixture builder in the project's test source root (`TestFixtures.<lang>` / `fixtures.py` / `fixtures.ts`), covering every entity referenced in the red tests authored in Phase 3.
+- Emit an idempotent DB seed script under the project's test resource path (e.g. `src/test/resources/test-data/V999__test_data.sql`, `tests/fixtures/seed.sql`, `tests/conftest.py` fixtures). Must be safe to re-run between test cases.
+- Prefer **real ephemeral databases** (Testcontainers, `pytest-postgresql`, `dotnet-testcontainers`, docker-compose DB service) over in-memory fakes when the change affects persistence semantics — Article X.
+- Record every mock introduced (WireMock stub, HTTP fake, in-process double) in `specs/<id>-<slug>/mocks-used.md` with: what, why, and when it will be removed.
+
+### (b) PII scan on generated stubs
+
+Before writing any mapping or response body under `wiremock/`, `__files/`, or any fixture file, scan the content for:
+
+| Pattern | Action |
+|---|---|
+| Email that matches a real TLD + non-`example.com`/`test.com`/`localhost` domain | 🔴 replace with `*@example.com` |
+| Phone numbers matching E.164 real-country prefixes | 🔴 replace with `+10000000000` |
+| Credit-card-shaped digits passing Luhn check | 🔴 replace with `4242424242424242` (Stripe test card) |
+| National IDs (SSN, MyNumber, CCCD, NRIC, etc.) | 🔴 replace with a dummy pattern |
+| Real names from a seed list the user supplied | 🔴 replace with `Test <Role>` |
+| Bearer tokens, API keys, JWTs | 🔴 replace with `Bearer test-token` |
+| IP addresses outside reserved ranges | 🔴 replace with `127.0.0.1` or `10.0.0.1` |
+
+If any scan hit cannot be auto-replaced safely — emit gate `mock-pii-detected` (category `security`, blocking) with the offending file path (not the offending value).
+
+Re-run the scan on every regeneration. Emit trace event `{phase: 3, action: "mock-pii-scan", outputs: {files, hits, replaced, blocked}}`.

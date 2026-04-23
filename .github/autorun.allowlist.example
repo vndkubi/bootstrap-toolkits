@@ -1,0 +1,45 @@
+# .github/autorun.allowlist.example
+# YAML. Copy to `.github/autorun.allowlist` and edit per repo.
+# Used ONLY in CLI harness. VS Code harness uses hookSpecificOutput permissionDecision.
+# Each entry: id (kebab-case), patterns (array of shell glob commands).
+# Phase 0 of /autorun rejects CLI runs if this file is missing.
+
+commands:
+  - id: run-tests
+    patterns:
+      - "mvn -pl * test"
+      - "mvn verify"
+      - "dotnet test **"
+      - "pytest **"
+      - "npm test"
+      - "npm run test:unit"
+  - id: start-stack
+    patterns:
+      - "docker compose up -d"
+      - "docker compose -f docker-compose.dev.yml up -d"
+      - "make dev"
+  - id: stop-stack
+    patterns:
+      - "docker compose down"
+      - "make dev-down"
+  - id: lint
+    patterns:
+      - "mvn spotless:check"
+      - "dotnet format --verify-no-changes"
+      - "ruff check ."
+      - "eslint ."
+  - id: schema-validate
+    patterns:
+      - "ajv validate -s **/*.schema.json -d **"
+      - "openapi-spec-validator **/openapi.yaml"
+      - "asyncapi validate **/asyncapi.yaml"
+  - id: secrets-scan
+    patterns:
+      - "gitleaks detect --no-git --redact"
+      - "detect-secrets scan --baseline .secrets.baseline"
+  - id: git-readonly
+    patterns:
+      - "git status"
+      - "git diff *"
+      - "git log *"
+      - "git rev-parse *"

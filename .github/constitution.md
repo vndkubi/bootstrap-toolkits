@@ -119,6 +119,22 @@ Enforcement: deliverables without a completion report are incomplete.
 
 ---
 
+## Article X: Evidence Over Mocks
+
+Automated agents must prove behavior against real systems, real data, and real contracts wherever feasible. Mocks and stubs are permitted only when the real dependency is unavailable, unsafe, non-deterministic, or out of scope for the change.
+
+- Prefer real HTTP calls against a locally booted stack (devcontainer, docker-compose, or equivalent) over WireMock or in-code mocks.
+- Prefer real database operations against an ephemeral or containerized database over in-memory fakes for integration-relevant tests.
+- Prefer real event brokers (Kafka, RabbitMQ, SNS/SQS test harnesses) over synchronous stand-ins when the change depends on delivery semantics.
+- Mocks are allowed for third-party SaaS, payment rails, email/SMS providers, non-deterministic external clocks, and explicitly ratified exceptions.
+- Every mock introduced by an autonomous agent must be recorded in `specs/<id>-<slug>/mocks-used.md` with: what is mocked, why a real dependency was not used, and when it will be removed.
+- Exceptions beyond the allowed list must be ratified in `specs/<id>-<slug>/mock-exceptions.md` with a human-readable rationale before the change can be declared complete.
+- Review pipelines must emit a structured `articleXCompliant` flag. `false` + no ratified exception is a blocking finding and causes `/autorun` to halt with exit code 31.
+
+Enforcement: any PR authored by an agent that uses mocks for the primary system under test without a `mocks-used.md` entry, or uses mocks for payment/auth/data-critical paths without a `mock-exceptions.md` ratification, is non-compliant and must not be merged.
+
+---
+
 ## Phase -1 Gates
 
 These gates must pass before implementation begins.
@@ -168,3 +184,4 @@ If any gate fails:
 |---|---|---|---|
 | 2026-03-21 | All | Initial constitution formalized | Apply spec-driven engineering principles |
 | 2026-03-24 | II, VI | Added evidence/assumption guardrails and conditional verification rules | Reduce overclaim risk for enterprise repos |
+| 2026-04-24 | X | Added Article X "Evidence Over Mocks" | Enforce real-system proof for autonomous /autorun loop; block mock-heavy PRs without ratified exceptions |

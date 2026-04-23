@@ -64,6 +64,7 @@ All work must comply with the [Project Constitution](../constitution.md).
 | "effectiveness", "workflow health", "config health", "what's working", "adoption" | Feedback loop | `review-effectiveness` |
 | "skill discoverability", "audit skills", "description quality" | Skill audit | `skill-discoverability-audit` |
 | "drift", "stale config", "rebootstrap", "config freshness" | Drift detection | `drift-detector` |
+| "/autorun", "autonomous loop", "end-to-end PBI", "prove by API flow" | `prompts/autorun.prompt.md` | 7-phase autonomous loop with gates; VS Code + CLI parity |
 
 If a request mixes several intents, sequence them instead of pretending one agent can skip the others.
 

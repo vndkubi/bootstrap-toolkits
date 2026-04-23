@@ -3,3 +3,6 @@
 # Layer 2 memory artifacts (ephemeral local state)
 .memory/
 .github/.session-checkpoint.md
+
+# /autorun local evidence bundles (committed summary lives in specs/<id>/evidence-summary.md)
+.artifacts/

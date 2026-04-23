@@ -101,6 +101,12 @@ Generate supporting spec-kit files when relevant:
 
 If an artifact is not needed, say why in `plan.md`.
 
+#### Contract enforcement (taxonomy-driven)
+
+If the classified taxonomy is **API-bearing** (`api-rest`, `api-graphql`, `api-grpc`, `event-driven`, or `mixed`), the `contracts/` folder **must** be non-empty. Plan generation halts with a `contract-invalid` gate (category `config`, blocking) when the taxonomy is API-bearing but no contract artifact exists. Invoke the `generate-api-contract` skill to produce the appropriate contract(s) before declaring the plan complete.
+
+For `library`, `cli`, or `ui-only` taxonomies, `contracts/` may be empty; record the rationale in `plan.md` §Supporting Artifacts.
+
 ### Step 6: Traceability Check
 
 Verify:

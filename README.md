@@ -1340,6 +1340,40 @@ Real Objects > Test Builders > Fakes > Stubs > Mocks > Reflection
 - **Mocks with verify**: Only when interaction verification is needed
 - **Reflection**: Only when a private method MUST be tested and cannot be refactored
 
-## 📄 License
+## � Changelog
+
+### 0.6.0 — 2026-04-24 — `/autorun` autonomous loop
+
+Ships the **prove-by-API-flow** toolkit (PBI-008). Drives a scoped feature end-to-end through 7 phases: INTAKE → CONTRACT → TEST-FIRST → FIXTURE → IMPLEMENT (TDD) → REVIEW → EVIDENCE.
+
+**New**
+- Prompt: [`prompts/autorun.prompt.md`](.github/prompts/autorun.prompt.md) — 7-phase state machine, harness parity (VS Code + Copilot CLI), JSONL trace, validated gates, resume tokens.
+- Skills: `generate-api-contract`, `run-local-stack`, `generate-api-flow-tests`, `tdd-implement-loop`, `generate-evidence-summary`, `resolve-pbi-ref`, `autorun-branch`, `sanitize-untrusted-input`, `redact-sensitive-data`.
+- Agent: [`agents/api-test-author.agent.md`](.github/agents/api-test-author.agent.md) — Phase 3 red-test specialist, stack-agnostic.
+- Schemas: [`schemas/trace.schema.json`](.github/schemas/trace.schema.json), [`schemas/gate.schema.json`](.github/schemas/gate.schema.json), [`schemas/autorun.config.schema.json`](.github/schemas/autorun.config.schema.json) (JSON Schema 2020-12).
+- Hook: [`hooks/post-edit-run-tests.json`](.github/hooks/post-edit-run-tests.json) — opt-in, branch-gated to `autorun/*`, cost-cap aware.
+- Template: [`templates/pr-body.autorun.md`](.github/templates/pr-body.autorun.md) — evidence-bundle-driven PR body.
+
+**Changed**
+- Constitution gains **Article X — Evidence Over Mocks**; PRs that mock the primary SUT without a ratified `mock-exceptions.md` entry fail `/autorun` with exit code 31.
+- `skills/plan-implementation` now requires a non-empty `contracts/` folder for API-bearing taxonomies (emits `contract-invalid` gate).
+- `skills/update-spec` re-emits the contract on any surface-affecting spec change.
+- `skills/review-code-changes` accepts `--evidence-bundle <path>` and requires evidence-cited findings in bundle mode.
+- `agents/pr-manager` gains an Autorun Mode that refuses to open a PR without a bundle and forces draft + exit 31 when `articleXCompliant=false`.
+- `agents/functional-reviewer` emits a structured JSON verdict with `articleXCompliant` and Article X compliance rules.
+- `agents/mock-data-specialist` is responsible for DB seeds + PII scan on generated stubs (`mock-pii-detected` gate).
+- `agents/dev-orchestrator` routes `/autorun`, `"autonomous loop"`, `"end-to-end PBI"`, `"prove by API flow"` to the new prompt.
+
+**Governance**
+- Article X documented with allow-list (third-party SaaS, payment, email/SMS, non-deterministic clocks); everything else must be ratified in `specs/<id>-<slug>/mock-exceptions.md`.
+- Local evidence bundles live under `.artifacts/<pbi>/` (gitignored); the durable audit trail is committed as `specs/<id>-<slug>/evidence-summary.md`.
+
+**Known follow-ups**
+- End-to-end CI smoke matrix (OS × harness × stack) against golden Java/.NET repos is deferred until the target repos are provisioned.
+- AC ↔ test traceability verifier (`verify-ac-coverage` equivalent) is a target-repo concern and should be generated per project stack by `/bootstrap-copilot`, not shipped as a toolkit-level script.
+- R-1 Copilot CLI live spike is superseded by the file-based resume-token fallback; see `specs/008-prove-by-api-flow/research.md` Decision Log (2026-04-24).
+- `/autorun` slash-command surface in Copilot CLI: ported as a parallel `skills/autorun` entry so CLI users can invoke it via skill dispatch (see [skills/autorun/SKILL.md](.github/skills/autorun/SKILL.md)).
+
+## �📄 License
 
 MIT

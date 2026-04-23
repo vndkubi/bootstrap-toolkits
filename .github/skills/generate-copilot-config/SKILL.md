@@ -1004,6 +1004,26 @@ These skills support **process, planning, learning, visualization, and analysis*
 - `generate-pr-description` — PR description from diff
 - `core-principles` — engineering principles for all agents
 
+**Autorun loop (always retain — stack-agnostic; target-repo plugs in contract + test generators per detected stack):**
+- `autorun` — CLI-discoverable entry point for the 7-phase `/autorun` loop (mirrors `prompts/autorun.prompt.md` for VS Code)
+- `generate-api-contract` — OpenAPI/GraphQL/proto/AsyncAPI emitter driven by spec ACs
+- `generate-api-flow-tests` — red-first API flow tests per stack (REST Assured / WAF / httpx / supertest / Go stdlib)
+- `tdd-implement-loop` — bounded red→green loop with invariants (never edit tests, one failing test at a time, never mock SUT)
+- `run-local-stack` — devcontainer/docker-compose boot for real-system proofs
+- `generate-evidence-summary` — redacted evidence bundle writer
+- `resolve-pbi-ref` — precedence-based PBI reference resolution
+- `autorun-branch` — branch creation + per-phase commits
+- `sanitize-untrusted-input` — prompt-injection hardening on PBI text
+- `redact-sensitive-data` — trace/log redaction before emit
+
+Retain these unconditionally; they are referenced by `constitution.md` (Article X), `agents/dev-orchestrator`, `agents/pr-manager` (Autorun Mode), `agents/functional-reviewer` (structured verdict), and `agents/api-test-author`. Also retain the supporting **non-skill** assets:
+- `prompts/autorun.prompt.md` (VS Code entry point)
+- `agents/api-test-author.agent.md`
+- `schemas/trace.schema.json`, `schemas/gate.schema.json`, `schemas/autorun.config.schema.json`
+- `hooks/post-edit-run-tests.json` (opt-in; `enabled: false` default is honored)
+- `templates/pr-body.autorun.md`
+- `autorun.config.example.json`, `autorun.allowlist.example`
+
 #### Conditional skills (generate only when evidence matches)
 
 | Skill | Retention Signal |
@@ -1081,6 +1101,7 @@ Generate prompts as compact entry points, not miniature policy documents.
 - `/promote-review-memory`
 - `/specify-feature`
 - `/plan-implementation`
+- `/autorun` — autonomous prove-by-API-flow loop (Article X enforced)
 
 ### Post-bootstrap retention rule
 

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/.github/schemas/autorun.config.schema.json",
+  "title": "Autorun Config",
+  "description": "Parsed from .github/autorun.config.json at session start. Unknown keys raise a config-unknown-key gate. Canonical runtime copy.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "tddLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxIterations": { "type": "integer", "minimum": 1, "maximum": 32, "default": 8 },
+        "noProgressThreshold": { "type": "integer", "minimum": 1, "maximum": 8, "default": 2 },
+        "regression": { "enum": ["scoped", "full"], "default": "scoped" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tokenCap": { "type": "integer", "minimum": 10000, "default": 200000 },
+        "warnAtPercent": { "type": "integer", "minimum": 50, "maximum": 99, "default": 90 }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["local-gitignored", "ci-upload", "lfs"], "default": "local-gitignored" },
+        "root": { "type": "string", "default": ".artifacts" },
+        "traceRoot": { "type": "string", "default": ".github/.traces" }
+      }
+    },
+    "pbi": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolver": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "order": {
+              "type": "array",
+              "items": { "enum": ["folder", "github", "jira", "freetext"] },
+              "uniqueItems": true,
+              "minItems": 1,
+              "default": ["folder", "github", "jira", "freetext"]
+            }
+          }
+        }
+      }
+    },
+    "taxonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "autoClassify": { "type": "boolean", "default": true },
+        "allowed": {
+          "type": "array",
+          "items": { "enum": ["api-rest", "api-graphql", "api-grpc", "event-driven", "library", "cli", "ui-only", "mixed"] },
+          "uniqueItems": true,
+          "default": ["api-rest", "api-graphql", "api-grpc", "event-driven", "library", "cli", "ui-only", "mixed"]
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "postEditRunTests": { "type": "boolean", "default": false }
+      }
+    },
+    "secretScanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": { "enum": ["auto", "detect-secrets", "gitleaks"], "default": "auto" }
+      }
+    }
+  }
+}

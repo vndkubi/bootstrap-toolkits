@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/.github/schemas/gate.schema.json",
+  "title": "Autorun Confirmation Gate",
+  "description": "Emitted by the orchestrator whenever a phase must pause for user input. Single source of truth for both VS Code and CLI harnesses. Canonical runtime copy; spec-scoped copy lives at specs/008-prove-by-api-flow/contracts/gate.schema.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "phase", "gateId", "question", "blocking", "resumeToken", "category"],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "phase": { "type": "integer", "minimum": 1, "maximum": 7 },
+    "gateId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Stable kebab-case id; registered in contracts/autorun-cli.md"
+    },
+    "question": { "type": "string", "minLength": 1, "maxLength": 280 },
+    "options": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "default": {
+      "type": ["string", "null"],
+      "description": "Auto-answer for non-blocking gates. MUST be null for category authz/security."
+    },
+    "blocking": { "type": "boolean" },
+    "resumeToken": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,}$",
+      "description": "base64url-encoded random, matches the session token"
+    },
+    "category": {
+      "enum": ["business", "authz", "security", "taxonomy", "config"]
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "category": { "enum": ["authz", "security"] } } },
+      "then": {
+        "properties": {
+          "blocking": { "const": true },
+          "default": { "const": null }
+        }
+      }
+    }
+  ]
+}

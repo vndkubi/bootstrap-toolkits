@@ -1,0 +1,33 @@
+{
+  "$schema": "./schemas/autorun.config.schema.json",
+  "schemaVersion": "1",
+  "tddLoop": {
+    "maxIterations": 8,
+    "noProgressThreshold": 2,
+    "regression": "scoped"
+  },
+  "cost": {
+    "tokenCap": 200000,
+    "warnAtPercent": 90
+  },
+  "artifacts": {
+    "mode": "local-gitignored",
+    "root": ".artifacts",
+    "traceRoot": ".github/.traces"
+  },
+  "pbi": {
+    "resolver": {
+      "order": ["folder", "github", "jira", "freetext"]
+    }
+  },
+  "taxonomy": {
+    "autoClassify": true,
+    "allowed": ["api-rest", "api-graphql", "api-grpc", "event-driven", "library", "cli", "ui-only", "mixed"]
+  },
+  "hooks": {
+    "postEditRunTests": false
+  },
+  "secretScanner": {
+    "tool": "auto"
+  }
+}

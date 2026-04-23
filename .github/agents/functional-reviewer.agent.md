@@ -230,3 +230,49 @@ For each business scenario the code change addresses, verify:
 - **If no PRD/AC exists**, flag it as the first finding and proceed with best-effort review based on commit messages and code intent
 - **If supporting business docs do not exist**, infer carefully from stable repo signals and state the confidence level explicitly
 - **Be specific** — "Line 45 of OrderService" not "somewhere in the service layer"
+
+## Structured Verdict (required when invoked from /autorun)
+
+When called by `prompts/autorun.prompt.md` Phase 6, in addition to the markdown report above you MUST emit a machine-readable verdict as the last fenced JSON block:
+
+```json
+{
+  "verdict": "pass | reject | needs-clarification",
+  "articleXCompliant": true,
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "blocker | warning | suggestion",
+      "category": "traceability | business-logic | data-integrity | edge-case | scenario-coverage | article-x",
+      "acRef": "AC-US-B1-02",
+      "file": "src/main/java/...WidgetService.java",
+      "line": 45,
+      "message": "...",
+      "suggestedFix": "```java\n...\n```"
+    }
+  ],
+  "traceability": {
+    "totalACs": 5,
+    "acsWithPrimaryTest": 4,
+    "acsWithNoCode": 0,
+    "orphanTests": 1
+  }
+}
+```
+
+### Article X compliance check
+
+Before setting `articleXCompliant`:
+
+1. Read `specs/<id>-<slug>/mocks-used.md`. Cross-reference every mock against the allow-list in Article X (third-party SaaS, payment, email/SMS, non-deterministic clocks).
+2. For any mock **not** on the allow-list, check `specs/<id>-<slug>/mock-exceptions.md` for a ratified entry.
+3. If any primary SUT path is mocked without a ratified exception → set `articleXCompliant = false` and add a blocker finding in category `article-x`.
+4. If `mocks-used.md` is missing but the change added fixtures under `wiremock/`, `__mocks__/`, or `fakes/` → `articleXCompliant = false`, finding category `article-x`.
+
+`articleXCompliant = false` with no ratified exception causes `/autorun` to exit with code 31.
+
+## Severity ↔ Verdict Rules
+
+- Any `blocker` finding → `verdict = "reject"`.
+- Only `warning` or `suggestion` findings → `verdict = "pass"`.
+- Low-confidence business context + risky change → `verdict = "needs-clarification"`.

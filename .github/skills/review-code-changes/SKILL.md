@@ -14,6 +14,41 @@ Structured multi-stage code review pipeline with short-circuit logic for maximum
 - Code review as part of feature delivery pipeline
 - Keywords: "review PR", "review code", "check changes", "code review"
 
+## Arguments
+
+| Arg | Purpose |
+|---|---|
+| `--evidence-bundle <path>` | Path to an autorun evidence bundle (typically `.artifacts/<pbi>/`). When present, reviewers MUST cite evidence paths in every finding and run the Article X compliance check before emitting a verdict. Absent → classic PR review. |
+| `--base <ref>` / `--head <ref>` | Git refs to diff. Default: target branch → HEAD. |
+| `--planning-only` | Stop after Stage 0 and emit a Review Scope Plan. |
+
+### Evidence Bundle Contract
+
+When `--evidence-bundle` is supplied the bundle directory MUST contain:
+
+- `trace.jsonl` — JSONL trace emitted by `/autorun` (first line MetaRecord).
+- `test-coverage.md` — AC↔test map authored by `@api-test-author` in Phase 3.
+- `tdd-log.md` — iteration log from `tdd-implement-loop`.
+- `mocks-used.md` — Article X mock inventory (may be empty).
+- `mock-exceptions.md` — ratified exceptions (optional; absent ⇒ no exceptions).
+- `test-results/` — final green test output (junit XML, trx, pytest-json, etc.).
+
+Missing required file → halt with `evidence-bundle-incomplete` and list what is absent; do not emit a verdict.
+
+### Evidence-Cited Findings
+
+In evidence-bundle mode, every finding MUST reference at least one evidence path, e.g.:
+
+> 🔴 BLOCKER — `src/main/java/.../WidgetService.java:L45` — cancel path does not restore inventory. **Evidence**: `trace.jsonl` L142 (phase-5 iteration 3, scope-regression skipped); `test-coverage.md` row AC-US-B1-04 marked 🔴 but no test changed since iter 2.
+
+Findings without an evidence path in bundle mode are **invalid** and must be rewritten before being reported.
+
+### Article X Compliance
+
+In bundle mode, the functional reviewer stage MUST set `articleXCompliant` in its structured verdict based on `mocks-used.md` and `mock-exceptions.md` (rules live in [functional-reviewer.agent.md](../../agents/functional-reviewer.agent.md)).
+
+`articleXCompliant: false` without a ratified `mock-exceptions.md` entry → the combined report verdict is forced to `reject` and the review caller (typically `/autorun` Phase 6) halts with exit code 31.
+
 ## Planning-Only Mode
 
 Use planning-only mode before the full review when any of these are true:
