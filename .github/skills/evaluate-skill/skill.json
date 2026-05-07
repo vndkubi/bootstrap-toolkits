@@ -10,10 +10,7 @@
     "skills": [
       "trace-replay"
     ],
-    "mcp": [
-      "audit_discoverability",
-      "validate_bootstrap_output"
-    ],
+    "mcp": [],
     "tools": []
   },
   "inputs": [
@@ -29,10 +26,7 @@
     "skill regression",
     "skill score"
   ],
-  "mcp_tools_used": [
-    "audit_discoverability",
-    "validate_bootstrap_output"
-  ],
+  "mcp_tools_used": [],
   "invocationMode": "model_routed",
   "paths": {
     "skill": ".github/skills/evaluate-skill/SKILL.md",

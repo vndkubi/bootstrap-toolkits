@@ -7,16 +7,9 @@
         "context-budget-check",
         "skill-discoverability-audit"
       ],
-      "mcp": [
-        "list_skills",
-        "audit_discoverability"
-      ],
+      "mcp": [],
       "tools": []
-    },
-    "mcp_tools_used": [
-      "list_skills",
-      "audit_discoverability"
-    ]
+    }
   },
   "evaluate-skill": {
     "tier": "enterprise",
@@ -25,16 +18,9 @@
       "skills": [
         "trace-replay"
       ],
-      "mcp": [
-        "audit_discoverability",
-        "validate_bootstrap_output"
-      ],
+      "mcp": [],
       "tools": []
-    },
-    "mcp_tools_used": [
-      "audit_discoverability",
-      "validate_bootstrap_output"
-    ]
+    }
   },
   "generate-copilot-config": {
     "tier": "foundational",
@@ -66,34 +52,9 @@
         "tool-permission-auditor",
         "validate-bootstrap-output"
       ],
-      "mcp": [
-        "analyze_repo",
-        "detect_drift",
-        "audit_context",
-        "audit_tools",
-        "list_skills",
-        "list_domains",
-        "inspect_source_of_truth",
-        "get_module_graph",
-        "audit_discoverability",
-        "validate_bootstrap_output",
-        "audit_instruction_conflicts"
-      ],
+      "mcp": [],
       "tools": []
-    },
-    "mcp_tools_used": [
-      "analyze_repo",
-      "detect_drift",
-      "audit_context",
-      "audit_tools",
-      "list_skills",
-      "list_domains",
-      "inspect_source_of_truth",
-      "get_module_graph",
-      "audit_discoverability",
-      "validate_bootstrap_output",
-      "audit_instruction_conflicts"
-    ]
+    }
   },
   "review-effectiveness": {
     "requires": {
@@ -118,36 +79,18 @@
     "stability": "stable",
     "requires": {
       "skills": [],
-      "mcp": [
-        "analyze_repo",
-        "get_module_graph",
-        "list_domains"
-      ],
+      "mcp": [],
       "tools": []
-    },
-    "mcp_tools_used": [
-      "analyze_repo",
-      "get_module_graph",
-      "list_domains"
-    ]
+    }
   },
   "bootstrap-phase-validate": {
     "tier": "foundational",
     "stability": "stable",
     "requires": {
       "skills": [],
-      "mcp": [
-        "audit_discoverability",
-        "audit_instruction_conflicts",
-        "validate_bootstrap_output"
-      ],
+      "mcp": [],
       "tools": []
-    },
-    "mcp_tools_used": [
-      "audit_discoverability",
-      "audit_instruction_conflicts",
-      "validate_bootstrap_output"
-    ]
+    }
   },
   "skill-pack-export": {
     "tier": "foundational",

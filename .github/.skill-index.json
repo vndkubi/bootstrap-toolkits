@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-05-07T16:04:22.026Z",
+  "generatedAt": "2026-05-07T22:08:16.659Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -81,10 +81,7 @@
       "invocationMode": "model_routed",
       "tier": "foundational",
       "stability": "experimental",
-      "mcpToolsUsed": [
-        "audit_discoverability",
-        "list_skills"
-      ],
+      "mcpToolsUsed": [],
       "estimatedTokenCost": 532
     },
     "autorun": {
@@ -381,11 +378,7 @@
       "invocationMode": "pipeline_only",
       "tier": "foundational",
       "stability": "stable",
-      "mcpToolsUsed": [
-        "analyze_repo",
-        "get_module_graph",
-        "list_domains"
-      ],
+      "mcpToolsUsed": [],
       "estimatedTokenCost": 398
     },
     "bootstrap-phase-skills": {
@@ -442,11 +435,7 @@
       "invocationMode": "pipeline_only",
       "tier": "foundational",
       "stability": "stable",
-      "mcpToolsUsed": [
-        "audit_discoverability",
-        "audit_instruction_conflicts",
-        "validate_bootstrap_output"
-      ],
+      "mcpToolsUsed": [],
       "estimatedTokenCost": 391
     },
     "common-doc-generator": {
@@ -772,10 +761,7 @@
       "invocationMode": "model_routed",
       "tier": "enterprise",
       "stability": "experimental",
-      "mcpToolsUsed": [
-        "audit_discoverability",
-        "validate_bootstrap_output"
-      ],
+      "mcpToolsUsed": [],
       "estimatedTokenCost": 337
     },
     "generate-adr": {
@@ -913,20 +899,8 @@
       "invocationMode": "pipeline_only",
       "tier": "foundational",
       "stability": "stable",
-      "mcpToolsUsed": [
-        "analyze_repo",
-        "audit_context",
-        "audit_discoverability",
-        "audit_instruction_conflicts",
-        "audit_tools",
-        "detect_drift",
-        "get_module_graph",
-        "inspect_source_of_truth",
-        "list_domains",
-        "list_skills",
-        "validate_bootstrap_output"
-      ],
-      "estimatedTokenCost": 17896
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 18335
     },
     "generate-domain-instructions": {
       "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
@@ -2174,7 +2148,7 @@
       "tier": "enterprise",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2628
+      "estimatedTokenCost": 2748
     }
   }
 }

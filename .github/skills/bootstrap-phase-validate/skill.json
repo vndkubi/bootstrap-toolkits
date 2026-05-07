@@ -8,11 +8,7 @@
   "stability": "stable",
   "requires": {
     "skills": [],
-    "mcp": [
-      "audit_discoverability",
-      "audit_instruction_conflicts",
-      "validate_bootstrap_output"
-    ],
+    "mcp": [],
     "tools": []
   },
   "inputs": [
@@ -29,11 +25,7 @@
     "bootstrap pipeline",
     "validate"
   ],
-  "mcp_tools_used": [
-    "audit_discoverability",
-    "audit_instruction_conflicts",
-    "validate_bootstrap_output"
-  ],
+  "mcp_tools_used": [],
   "invocationMode": "pipeline_only",
   "paths": {
     "skill": ".github/skills/bootstrap-phase-validate/SKILL.md",

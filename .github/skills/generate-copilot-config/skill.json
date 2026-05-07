@@ -33,19 +33,7 @@
       "tool-permission-auditor",
       "validate-bootstrap-output"
     ],
-    "mcp": [
-      "analyze_repo",
-      "audit_context",
-      "audit_discoverability",
-      "audit_instruction_conflicts",
-      "audit_tools",
-      "detect_drift",
-      "get_module_graph",
-      "inspect_source_of_truth",
-      "list_domains",
-      "list_skills",
-      "validate_bootstrap_output"
-    ],
+    "mcp": [],
     "tools": []
   },
   "inputs": [
@@ -75,19 +63,7 @@
     "pack",
     "pipeline"
   ],
-  "mcp_tools_used": [
-    "analyze_repo",
-    "audit_context",
-    "audit_discoverability",
-    "audit_instruction_conflicts",
-    "audit_tools",
-    "detect_drift",
-    "get_module_graph",
-    "inspect_source_of_truth",
-    "list_domains",
-    "list_skills",
-    "validate_bootstrap_output"
-  ],
+  "mcp_tools_used": [],
   "invocationMode": "pipeline_only",
   "paths": {
     "skill": ".github/skills/generate-copilot-config/SKILL.md",

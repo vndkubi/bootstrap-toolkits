@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// test-memory-hooks.js — Validate the retained post-edit hook contract.
+// test-memory-hooks.js — Validate the retained post-edit helper contract.
 'use strict';
 
 const { execSync } = require('child_process');
@@ -54,27 +54,11 @@ function runScript(stdinData, extraEnv) {
   }
 }
 
-function testHookFile() {
-  console.log('--- Post-edit Hook JSON validation ---\n');
+function testNoDefaultHookRegistration() {
+  console.log('--- Post-edit hook registration ---\n');
 
   const filePath = path.join(HOOKS_DIR, 'post-edit-run-tests.json');
-  assert(fs.existsSync(filePath), 'post-edit-run-tests.json exists');
-
-  let hook;
-  try {
-    hook = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    assert(true, 'post-edit-run-tests.json is valid JSON');
-  } catch (e) {
-    assert(false, `post-edit-run-tests.json is valid JSON: ${e.message}`);
-    return;
-  }
-
-  assert(hook.hooks && hook.hooks.PostToolUse, 'post-edit-run-tests.json uses PostToolUse event');
-  const entry = hook.hooks.PostToolUse[0];
-  assert(entry.type === 'command', 'post-edit-run-tests.json has type command');
-  assert(typeof entry.command === 'string', 'post-edit-run-tests.json has command field');
-  assert(entry.command.includes('.github/scripts/post-edit-run-tests.js'), 'post-edit command references script');
-  assert(entry.timeout <= 120, 'post-edit timeout is at most 120s');
+  assert(!fs.existsSync(filePath), 'post-edit-run-tests.json is not retained by default');
 }
 
 function testScriptFile() {
@@ -165,8 +149,8 @@ function testPostEditBehavior() {
 }
 
 function run() {
-  console.log('=== Post-edit Hook Tests ===\n');
-  testHookFile();
+  console.log('=== Post-edit Helper Tests ===\n');
+  testNoDefaultHookRegistration();
   testScriptFile();
   testPostEditBehavior();
   teardown();

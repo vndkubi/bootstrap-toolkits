@@ -18,6 +18,7 @@
     "configuration",
     "prompt",
     "report",
+    "review findings",
     "tests"
   ],
   "triggers": [

@@ -34,6 +34,7 @@ The copied `.github/` folder must work as a self-contained bootstrap bundle.
 - Anything required to run `/bootstrap-copilot` after copying must live inside `.github/`.
 - Runtime help and operator guidance belong in `.github/docs/`.
 - The target repo's own `README.md`, source code, tests, build files, and docs remain valid scan inputs.
+- Do not declare MCP servers or MCP-only tools as required retained runtime dependencies unless the generated repo also ships the matching MCP server/runtime configuration inside the retained surface.
 
 ## Repo Identity Guardrail
 
@@ -1040,7 +1041,7 @@ Retain these unconditionally; they are referenced by `constitution.md` (Article 
 - `prompts/autorun.prompt.md` (VS Code entry point)
 - `agents/api-test-author.agent.md`
 - `schemas/trace.schema.json`, `schemas/gate.schema.json`, `schemas/autorun.config.schema.json`
-- `hooks/post-edit-run-tests.json` (opt-in; `enabled: false` default is honored)
+- `scripts/post-edit-run-tests.js` (optional helper; keep the matching hook only when the target repo explicitly enables it)
 - `templates/pr-body.autorun.md`
 - `autorun.config.example.json`, `autorun.allowlist.example`
 
@@ -1190,6 +1191,19 @@ This prevents loss of in-progress decisions, constraints, and plan state during 
 Do not generate or retain `.github/hooks/memory-*.json` or `.github/scripts/memory-*.js` in the default bootstrap output. Repo-tracked artifacts are the primary shared continuity layer for generated repositories.
 
 If a future target repo explicitly needs hook-driven local memory, treat that as a separate custom extension with its own scripts, tests, and manifest entries. Do not imply those files are present in this bundle.
+
+### Post-edit test helper surface
+
+Keep `.github/scripts/post-edit-run-tests.js` as an optional helper only when the retained workflow surface justifies it.
+
+Do not retain `.github/hooks/post-edit-run-tests.json` in the default generated bundle when `autorun.config.json.hooks.postEditRunTests` is `false`. A disabled default config must not still register a per-edit hook that wakes up on every tool event just to no-op.
+
+If a target repo explicitly enables post-edit test runs, then generate both:
+
+- `.github/scripts/post-edit-run-tests.js`
+- `.github/hooks/post-edit-run-tests.json`
+
+Otherwise keep the script only when it is useful as a documented opt-in helper, or remove both if the repo does not retain autorun-related workflows.
 
 ### Context-packet manifest (conditional on repo size)
 
@@ -1503,6 +1517,17 @@ Build the manifest keep set from `.github/.runtime-fidelity.json` plus the class
 - Keep `auto_injected`, `discoverable`, and `human_only` artifacts by default.
 - Keep `reference_only` artifacts when a retained artifact references them.
 - Remove artifacts only when they are explicitly classified as `bootstrap_only` or were intentionally skipped by the generation/classification strategy.
+
+### Artifact scope rule
+
+`.github/.bootstrap-manifest.json`, `.github/.bootstrap-summary.md`, and `.github/.bootstrap-snapshot.json` describe the full generated output of the target repo, not just a `.github` subfolder capture.
+
+If you export or archive only the generated `.github/` subtree for review:
+
+- either include every referenced retained `docs/` artifact in that review bundle too
+- or mark the capture as `.github`-only / partial and remove or annotate summary text that would otherwise imply the external docs are present inside the captured artifact
+
+Do not create a review artifact that claims `docs/00-*`, `docs/06-*`, module docs, or workflow docs were retained when the artifact being handed to a reviewer does not actually contain them and does not say it is partial.
 
 ### Bootstrap Snapshot
 

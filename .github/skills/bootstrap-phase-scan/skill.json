@@ -8,11 +8,7 @@
   "stability": "stable",
   "requires": {
     "skills": [],
-    "mcp": [
-      "analyze_repo",
-      "get_module_graph",
-      "list_domains"
-    ],
+    "mcp": [],
     "tools": []
   },
   "inputs": [
@@ -30,11 +26,7 @@
     "bootstrap pipeline",
     "scan"
   ],
-  "mcp_tools_used": [
-    "analyze_repo",
-    "get_module_graph",
-    "list_domains"
-  ],
+  "mcp_tools_used": [],
   "invocationMode": "pipeline_only",
   "paths": {
     "skill": ".github/skills/bootstrap-phase-scan/SKILL.md",

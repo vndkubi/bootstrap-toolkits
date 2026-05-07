@@ -111,5 +111,15 @@ test('Runtime index carries invocation mode, tier, and stability for every skill
   }
 });
 
+test('Portable bundle skills do not require unshipped MCP runtime by default', () => {
+  const catalog = readJson(CATALOG_PATH);
+  for (const skillName of ['generate-copilot-config', 'bootstrap-phase-scan', 'bootstrap-phase-validate']) {
+    const manifest = catalog.skills[skillName];
+    assert(manifest, `missing manifest for ${skillName}`);
+    assert(Array.isArray(manifest.requires.mcp) && manifest.requires.mcp.length === 0, `${skillName} should not require MCP runtime by default`);
+    assert(Array.isArray(manifest.mcp_tools_used) && manifest.mcp_tools_used.length === 0, `${skillName} should not advertise MCP tool usage without retained runtime`);
+  }
+});
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

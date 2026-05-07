@@ -42,8 +42,6 @@ const conductor = read('.github/agents/conductor.agent.md');
 const runtimeOverview = read('.github/docs/runtime-overview.md');
 const userPlaybook = read('.github/docs/user-playbook.md');
 const bootstrapSkill = read('.github/skills/generate-copilot-config/SKILL.md');
-const postEditHook = JSON.parse(read('.github/hooks/post-edit-run-tests.json'));
-
 test('Prompt declares the canonical bootstrap handoff', () => {
   assert(
     includesAll(prompt, ['/bootstrap-copilot', '@conductor', 'generate-copilot-config']),
@@ -73,6 +71,17 @@ test('Optional workflow artifacts stay optional', () => {
   assert(prompt.includes('Do not assume they exist'), 'Prompt should explicitly state that external delivery artifacts are optional');
   assert(runtimeOverview.includes('optional context'), 'Runtime overview should describe delivery artifacts as optional context');
   assert(userPlaybook.includes('Do not assume they exist'), 'User playbook should explicitly state that external delivery artifacts are optional');
+});
+
+test('Post-edit test helper stays opt-in instead of auto-registered', () => {
+  assert(!fs.existsSync(path.join(ROOT, '.github', 'hooks', 'post-edit-run-tests.json')), 'Default bundle should not auto-register post-edit-run-tests hook');
+  assert(fs.existsSync(path.join(ROOT, '.github', 'scripts', 'post-edit-run-tests.js')), 'Default bundle should retain post-edit-run-tests helper script');
+});
+
+test('Bundle docs distinguish full output from .github-only review captures', () => {
+  const bundleReadme = read('.github/README.md');
+  assert(bundleReadme.includes('partial artifact'), 'Bundle README should describe partial review artifacts');
+  assert(runtimeOverview.includes('partial artifact'), 'Runtime overview should distinguish partial captures from full output');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

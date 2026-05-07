@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "toolkitVersion": "0.6.0",
-  "generatedAt": "2026-05-07T16:04:22.026Z",
+  "generatedAt": "2026-05-07T22:08:16.659Z",
   "skills": {
     "analyze-codebase": {
       "schemaVersion": 1,
@@ -145,10 +145,7 @@
           "context-budget-check",
           "skill-discoverability-audit"
         ],
-        "mcp": [
-          "audit_discoverability",
-          "list_skills"
-        ],
+        "mcp": [],
         "tools": []
       },
       "inputs": [
@@ -168,10 +165,7 @@
         "draft skill",
         "promote pattern"
       ],
-      "mcp_tools_used": [
-        "audit_discoverability",
-        "list_skills"
-      ],
+      "mcp_tools_used": [],
       "invocationMode": "model_routed",
       "paths": {
         "skill": ".github/skills/author-skill/SKILL.md",
@@ -839,11 +833,7 @@
       "stability": "stable",
       "requires": {
         "skills": [],
-        "mcp": [
-          "analyze_repo",
-          "get_module_graph",
-          "list_domains"
-        ],
+        "mcp": [],
         "tools": []
       },
       "inputs": [
@@ -861,11 +851,7 @@
         "bootstrap pipeline",
         "scan"
       ],
-      "mcp_tools_used": [
-        "analyze_repo",
-        "get_module_graph",
-        "list_domains"
-      ],
+      "mcp_tools_used": [],
       "invocationMode": "pipeline_only",
       "paths": {
         "skill": ".github/skills/bootstrap-phase-scan/SKILL.md",
@@ -980,11 +966,7 @@
       "stability": "stable",
       "requires": {
         "skills": [],
-        "mcp": [
-          "audit_discoverability",
-          "audit_instruction_conflicts",
-          "validate_bootstrap_output"
-        ],
+        "mcp": [],
         "tools": []
       },
       "inputs": [
@@ -1001,11 +983,7 @@
         "bootstrap pipeline",
         "validate"
       ],
-      "mcp_tools_used": [
-        "audit_discoverability",
-        "audit_instruction_conflicts",
-        "validate_bootstrap_output"
-      ],
+      "mcp_tools_used": [],
       "invocationMode": "pipeline_only",
       "paths": {
         "skill": ".github/skills/bootstrap-phase-validate/SKILL.md",
@@ -1691,10 +1669,7 @@
         "skills": [
           "trace-replay"
         ],
-        "mcp": [
-          "audit_discoverability",
-          "validate_bootstrap_output"
-        ],
+        "mcp": [],
         "tools": []
       },
       "inputs": [
@@ -1710,10 +1685,7 @@
         "skill regression",
         "skill score"
       ],
-      "mcp_tools_used": [
-        "audit_discoverability",
-        "validate_bootstrap_output"
-      ],
+      "mcp_tools_used": [],
       "invocationMode": "model_routed",
       "paths": {
         "skill": ".github/skills/evaluate-skill/SKILL.md",
@@ -1999,19 +1971,7 @@
           "tool-permission-auditor",
           "validate-bootstrap-output"
         ],
-        "mcp": [
-          "analyze_repo",
-          "audit_context",
-          "audit_discoverability",
-          "audit_instruction_conflicts",
-          "audit_tools",
-          "detect_drift",
-          "get_module_graph",
-          "inspect_source_of_truth",
-          "list_domains",
-          "list_skills",
-          "validate_bootstrap_output"
-        ],
+        "mcp": [],
         "tools": []
       },
       "inputs": [
@@ -2041,19 +2001,7 @@
         "pack",
         "pipeline"
       ],
-      "mcp_tools_used": [
-        "analyze_repo",
-        "audit_context",
-        "audit_discoverability",
-        "audit_instruction_conflicts",
-        "audit_tools",
-        "detect_drift",
-        "get_module_graph",
-        "inspect_source_of_truth",
-        "list_domains",
-        "list_skills",
-        "validate_bootstrap_output"
-      ],
+      "mcp_tools_used": [],
       "invocationMode": "pipeline_only",
       "paths": {
         "skill": ".github/skills/generate-copilot-config/SKILL.md",
@@ -4733,6 +4681,7 @@
         "configuration",
         "prompt",
         "report",
+        "review findings",
         "tests"
       ],
       "triggers": [

@@ -84,6 +84,7 @@ Project-specificity checks:
 - [ ] All skills in `.skill-index.json` have an `invocationMode` classification
 - [ ] Tier-filtered retained skills still satisfy all `requires.skills` dependencies
 - [ ] Any `mcp_tools_used` entry is also declared through `requires.mcp`
+- [ ] No retained skill declares required MCP dependencies unless the retained bundle also ships the matching MCP runtime/configuration surface
 - [ ] `relations` capture cross-references between generated files (no orphan references)
 - [ ] `auto_injected` artifacts total stays within context budget targets from `context-budget-check`
 
@@ -104,6 +105,7 @@ For all generated documentation files, verify:
 - [ ] Manifest keep entries match all files intentionally retained after cleanup
 - [ ] Explicit tier choices are preserved honestly on upgrade, and inferred tier changes have a recorded reason
 - [ ] Files outside the manifest keep set were deleted
+- [ ] If the reviewed artifact is `.github`-only, any retained external `docs/` outputs are included alongside it or the artifact is explicitly marked partial
 - [ ] `contextBudget.passed` is `true`
 - [ ] The full copied toolkit inventory was not retained unless non-bundle evidence proves the repo truly is the toolkit source repository
 
@@ -182,3 +184,4 @@ For all generated documentation files, verify:
 | Explainability summary contradicts retained output | Rebuild `.github/.bootstrap-summary.md` from the final manifest and runtime fidelity state |
 | Onboarding doc references removed runtime assets | Regenerate `docs/06-copilot-onboarding.md` from the final retained prompts, agents, skills, and workflows only |
 | Capability tier mismatch across manifest and docs | Recompute the retained surface from the chosen tier, then rebuild summary and onboarding from that final state |
+| `.github` review snapshot omits retained external docs | Either copy the retained `docs/` files into the review artifact or mark the artifact as partial and remove misleading summary claims |

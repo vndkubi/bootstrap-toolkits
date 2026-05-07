@@ -160,25 +160,7 @@ function inferInputs(text) {
 }
 
 function inferMcpToolsUsed(skillName) {
-  const mapping = {
-    'generate-copilot-config': [
-      'analyze_repo',
-      'detect_drift',
-      'audit_context',
-      'audit_tools',
-      'list_skills',
-      'list_domains',
-      'inspect_source_of_truth',
-      'get_module_graph',
-      'audit_discoverability',
-      'validate_bootstrap_output',
-      'audit_instruction_conflicts'
-    ],
-    'author-skill': ['list_skills', 'audit_discoverability'],
-    'evaluate-skill': ['audit_discoverability', 'validate_bootstrap_output'],
-    'bootstrap-phase-scan': ['analyze_repo', 'get_module_graph', 'list_domains'],
-    'bootstrap-phase-validate': ['validate_bootstrap_output', 'audit_discoverability', 'audit_instruction_conflicts']
-  };
+  const mapping = {};
   return mapping[skillName] || [];
 }
 

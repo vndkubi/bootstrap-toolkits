@@ -21,6 +21,8 @@ Explain the high-level GitHub Copilot Chat execution model that matters when mai
 6. The bootstrap workflow writes progress into `.github/.bootstrap-state.json`, generates repo-truth and runtime outputs sized to the target repo, emits `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and prunes copied toolkit residue to the manifest keep set.
 7. If the current repository or surrounding workflow has separate delivery artifacts, they may audit, review, or prioritize follow-up work around that bootstrap flow, but they are optional context and not alternate runtime entrypoints.
 
+When reviewing generated output, distinguish between the full generated repo surface and a `.github`-only capture. Treat a `.github` snapshot as a partial artifact: it may legitimately omit retained `docs/` artifacts, but if so the capture should say that explicitly instead of implying those docs were never generated.
+
 ## What Goes Into the Model Request
 
 The model does not see raw IDE state. Only what the prompt builder selects, renders, and retains after compaction reaches the model:

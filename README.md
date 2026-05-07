@@ -249,9 +249,6 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── promote-learning.prompt.md                   #   🧠 Trigger correction-ledger → memory promotion
 │   └── import-skill-pack.prompt.md                  #   📦 Import a skill pack from Git or local path
 │
-├── hooks/                                           # 🔗 Optional lifecycle hooks generated per project
-│   └── post-edit-run-tests.json                     #   🧪 Opt-in autorun post-edit test gate
-│
 ├── scripts/                                         # ⚙️ Hook scripts (Node.js, stdlib only)
 │   └── post-edit-run-tests.js                       #   Autorun post-edit test gate helper
 │
@@ -1345,7 +1342,7 @@ Ships the **prove-by-API-flow** toolkit (PBI-008). Drives a scoped feature end-t
 - Skills: `generate-api-contract`, `run-local-stack`, `generate-api-flow-tests`, `tdd-implement-loop`, `generate-evidence-summary`, `resolve-pbi-ref`, `autorun-branch`, `sanitize-untrusted-input`, `redact-sensitive-data`.
 - Agent: [`agents/api-test-author.agent.md`](.github/agents/api-test-author.agent.md) — Phase 3 red-test specialist, stack-agnostic.
 - Schemas: [`schemas/trace.schema.json`](.github/schemas/trace.schema.json), [`schemas/gate.schema.json`](.github/schemas/gate.schema.json), [`schemas/autorun.config.schema.json`](.github/schemas/autorun.config.schema.json) (JSON Schema 2020-12).
-- Hook: [`hooks/post-edit-run-tests.json`](.github/hooks/post-edit-run-tests.json) — opt-in, branch-gated to `autorun/*`, cost-cap aware.
+- Helper: [`scripts/post-edit-run-tests.js`](.github/scripts/post-edit-run-tests.js) — branch-gated, cost-cap-aware post-edit test helper for repos that explicitly opt into a matching hook.
 - Template: [`templates/pr-body.autorun.md`](.github/templates/pr-body.autorun.md) — evidence-bundle-driven PR body.
 
 **Changed**

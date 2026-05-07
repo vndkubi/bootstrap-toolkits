@@ -11,10 +11,7 @@
       "context-budget-check",
       "skill-discoverability-audit"
     ],
-    "mcp": [
-      "audit_discoverability",
-      "list_skills"
-    ],
+    "mcp": [],
     "tools": []
   },
   "inputs": [
@@ -34,10 +31,7 @@
     "draft skill",
     "promote pattern"
   ],
-  "mcp_tools_used": [
-    "audit_discoverability",
-    "list_skills"
-  ],
+  "mcp_tools_used": [],
   "invocationMode": "model_routed",
   "paths": {
     "skill": ".github/skills/author-skill/SKILL.md",

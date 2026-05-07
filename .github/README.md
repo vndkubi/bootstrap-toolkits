@@ -127,6 +127,8 @@ Use capability tiers separately from repo-size classification:
 
 When generated, `.github/.bootstrap-summary.md` gives maintainers a concise explanation of classification, retained assets, removed assets, and the reasons behind the final surface. `docs/06-copilot-onboarding.md` gives maintainers a repo-specific starting guide when the retained runtime surface is rich enough to justify it.
 
+If you capture only the generated `.github/` folder for review, treat that as a partial artifact. Either copy the retained repo-truth docs under `docs/` as well, or clearly mark the capture as `.github`-only so missing external docs are not mistaken for bootstrap failures.
+
 Generated runtime metadata should also include a skill-manifest layer:
 
 - `.github/skills/<name>/skill.json` for per-skill machine-readable metadata
