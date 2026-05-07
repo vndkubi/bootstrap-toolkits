@@ -13,12 +13,13 @@ Explain the high-level GitHub Copilot Chat execution model that matters when mai
 
 ## Request / Data Flow
 
-1. User runs `/bootstrap-copilot` or invokes a relevant agent.
-2. The prompt routes to `@conductor`.
-3. `@conductor` defers to `generate-copilot-config` as the canonical bootstrap workflow.
+1. User runs `/bootstrap-copilot` inside the target repository after copying the portable `.github/` bundle.
+2. The prompt routes bootstrap work to `@conductor`.
+3. `@conductor` defers bootstrap execution to `generate-copilot-config` as the canonical workflow.
 4. Copilot Chat assembles model input from repo instructions, current-turn context, history, tool results, and available tool schemas.
 5. The model may call tools across multiple rounds; tool results are injected into later prompt rounds.
-6. The bootstrap workflow generates or refines project-specific `.github/` output for the target repository.
+6. The bootstrap workflow writes progress into `.github/.bootstrap-state.json`, generates repo-truth and runtime outputs sized to the target repo, emits `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and prunes copied toolkit residue to the manifest keep set.
+7. If the current repository or surrounding workflow has separate delivery artifacts, they may audit, review, or prioritize follow-up work around that bootstrap flow, but they are optional context and not alternate runtime entrypoints.
 
 ## What Goes Into the Model Request
 
@@ -100,6 +101,7 @@ Keep these roles separate. Do not restate the same operational rule in prompts, 
 - Do not assume the whole workspace or every `.github/` file goes directly into the model.
 - `copilot-instructions.md`, scoped instructions, agents, prompts, and skills are prompt resources; GitHub infra files are not automatically injected.
 - The bootstrap pipeline source of truth lives in the skill, not in prompts or agents.
+- Operator-facing guidance should mirror the same `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config` chain instead of implying a second primary journey.
 - Long-running threads are compacted and summarized, so keep threads aligned by subsystem or workflow.
 - Tool results from round N appear in the prompt for round N+1, not in the same round.
 

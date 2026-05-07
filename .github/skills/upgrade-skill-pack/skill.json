@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "upgrade-skill-pack",
+  "displayName": "upgrade-skill-pack",
+  "description": "Compare a current skill-pack manifest to a newer one and report added, removed, and changed skills before import. Use when preparing an upgrade PR or reviewing lineage drift between pack versions. Keywords: upgrade skill pack, diff skill pack, pack lineage, pack upgrade.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [
+      "skill-pack-export",
+      "skill-pack-import"
+    ],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "New pack manifest path",
+    "Old pack manifest path"
+  ],
+  "outputs": [
+    "JSON diff with added, removed, changed, and unchanged skills"
+  ],
+  "triggers": [
+    "diff skill pack",
+    "pack lineage",
+    "pack upgrade",
+    "upgrade skill pack"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/upgrade-skill-pack/SKILL.md",
+    "scripts": ".github/skills/upgrade-skill-pack/scripts",
+    "assets": ".github/skills/upgrade-skill-pack/assets",
+    "references": ".github/skills/upgrade-skill-pack/references"
+  },
+  "keywords": [
+    "diff skill pack",
+    "pack lineage",
+    "pack upgrade",
+    "upgrade skill pack"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

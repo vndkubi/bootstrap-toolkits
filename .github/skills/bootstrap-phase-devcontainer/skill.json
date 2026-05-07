@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-devcontainer",
+  "displayName": "bootstrap-phase-devcontainer",
+  "description": "Run Phase 14 of the bootstrap pipeline: Devcontainer. Review or generate a devcontainer surface only when the target repo requires it for local workflow parity. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 14, devcontainer, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "devcontainer guidance"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 14",
+    "bootstrap pipeline",
+    "devcontainer"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-devcontainer/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-devcontainer/scripts",
+    "assets": ".github/skills/bootstrap-phase-devcontainer/assets",
+    "references": ".github/skills/bootstrap-phase-devcontainer/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 14",
+    "bootstrap pipeline",
+    "devcontainer"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

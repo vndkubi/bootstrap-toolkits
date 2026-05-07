@@ -72,14 +72,18 @@ Project-specificity checks:
 ### Tier 4: Runtime Fidelity
 
 - [ ] `.github/.runtime-fidelity.json` exists and is valid JSON
+- [ ] `.github/skills/INDEX.json` exists and is valid JSON
 - [ ] Every retained artifact after cleanup has a `runtimeRole` entry in the manifest
 - [ ] No artifact with `runtimeRole: bootstrap_only` survives cleanup
 - [ ] `.github/.bootstrap-manifest.json` records `capabilityTier`, `tierSelectionMode`, and `tierReason`
 - [ ] Retained validation/debug helpers match the applied capability tier
 - [ ] Token cost estimates use the `ceil(char_count / 4)` heuristic consistently
 - [ ] `consumers` field is populated for all `auto_injected` and `discoverable` artifacts
+- [ ] Every retained skill has `.github/skills/<name>/skill.json`
 - [ ] `.github/.skill-index.json` exists and includes all retained skills
 - [ ] All skills in `.skill-index.json` have an `invocationMode` classification
+- [ ] Tier-filtered retained skills still satisfy all `requires.skills` dependencies
+- [ ] Any `mcp_tools_used` entry is also declared through `requires.mcp`
 - [ ] `relations` capture cross-references between generated files (no orphan references)
 - [ ] `auto_injected` artifacts total stays within context budget targets from `context-budget-check`
 
@@ -138,6 +142,7 @@ For all generated documentation files, verify:
 | Check | Status | Notes |
 |---|---|---|
 | .runtime-fidelity.json exists | PASS | |
+| .github/skills/INDEX.json exists | PASS | |
 | All retained artifacts have runtimeRole | PASS | |
 | No bootstrap_only survived cleanup | PASS | |
 | .skill-index.json exists | PASS | |

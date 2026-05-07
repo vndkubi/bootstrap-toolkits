@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/specs/009-episodic-memory-trace-replay/contracts/episode.schema.json",
+  "title": "Episode",
+  "description": "A structured record of one completed /autorun session, used as few-shot precedent by the trace-replay skill. See ../data-model.md for invariants and transitions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "episode_id",
+    "created_at",
+    "pbi_ref",
+    "raw_intent",
+    "summary",
+    "detected",
+    "embedding",
+    "phases",
+    "outcome",
+    "outcome_score",
+    "score_components",
+    "artifacts",
+    "regression_events",
+    "replay_count",
+    "tags"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "episode_id": {
+      "type": "string",
+      "pattern": "^[0-9]{8}-[A-Za-z0-9._-]+-[a-z0-9-]+$",
+      "description": "YYYYMMDD-<pbi-id>-<slug>. Immutable and unique."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pbi_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "enum": ["github", "jira", "folder", "freetext"] },
+        "id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "raw_intent": {
+      "type": "string",
+      "maxLength": 20000,
+      "description": "Captured for audit. MUST NOT be injected into any downstream prompt (see data-model.md I-3)."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1000,
+      "description": "Orchestrator-voice sanitized description. This is what replay surfaces."
+    },
+    "detected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modules", "contracts", "stacks"],
+      "properties": {
+        "modules":   { "type": "array", "items": { "type": "string" } },
+        "contracts": { "type": "array", "items": { "type": "string" } },
+        "stacks":    { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "embedding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "vector_ref"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+(@sha256-[a-f0-9]{16,64})?$",
+          "description": "e.g. local-minilm-l6-v2@sha256-abc123... Drift detected by retrieve.js on mismatch."
+        },
+        "vector_ref": {
+          "type": "string",
+          "pattern": "^\\.github/\\.episode-index/.+\\.f32\\.bin#[0-9]+\\+[0-9]+$",
+          "description": "Relative path + '#offset+bytes' into the manifest vector blob."
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["phase", "duration_ms", "token_cost"],
+        "properties": {
+          "phase": { "enum": ["preflight", "intake", "contract", "test-first", "fixture", "implement", "review", "evidence"] },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "token_cost":  { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "outcome": { "enum": ["success", "failed", "aborted"] },
+    "outcome_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "score_components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tests", "review", "contract", "rounds"],
+      "properties": {
+        "tests":    { "type": "number", "minimum": 0, "maximum": 1 },
+        "review":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "contract": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rounds":   { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spec", "evidence"],
+      "properties": {
+        "spec":     { "type": "string", "minLength": 1 },
+        "pr":       { "type": "string", "format": "uri" },
+        "evidence": { "type": "string", "minLength": 1 }
+      }
+    },
+    "regression_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["at", "reason"],
+        "properties": {
+          "at":         { "type": "string", "format": "date-time" },
+          "reason":     { "type": "string", "minLength": 1, "maxLength": 500 },
+          "detected_by":{ "enum": ["drift-detector", "manual", "ci"] }
+        }
+      }
+    },
+    "replay_count": { "type": "integer", "minimum": 0 },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^!?[a-z0-9][a-z0-9-]*$",
+        "description": "Values starting with '!' (e.g. '!bad') override computed outcome_score (US-3 AC-4)."
+      },
+      "uniqueItems": true
+    }
+  }
+}

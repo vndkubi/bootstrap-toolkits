@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "impact-analysis",
+  "displayName": "impact-analysis",
+  "description": "Cross-module impact analysis for enterprise projects. Traces reverse dependencies, estimates blast radius, detects breaking changes, and generates migration guides. Use before making changes to shared code, APIs, or database schemas in large multi-module codebases.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "report",
+    "tests"
+  ],
+  "triggers": [
+    "analysis",
+    "apis",
+    "blast",
+    "breaking",
+    "changes",
+    "code",
+    "codebases",
+    "cross",
+    "database",
+    "dependencies",
+    "detects",
+    "enterprise"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/impact-analysis/SKILL.md",
+    "scripts": ".github/skills/impact-analysis/scripts",
+    "assets": ".github/skills/impact-analysis/assets",
+    "references": ".github/skills/impact-analysis/references"
+  },
+  "keywords": [
+    "analysis",
+    "apis",
+    "blast",
+    "breaking",
+    "changes",
+    "code",
+    "codebases",
+    "cross",
+    "database",
+    "dependencies",
+    "detects",
+    "enterprise"
+  ],
+  "routedBy": [
+    "investigator"
+  ],
+  "referencedByAgents": [
+    "investigator"
+  ]
+}

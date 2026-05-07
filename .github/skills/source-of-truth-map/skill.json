@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "source-of-truth-map",
+  "displayName": "source-of-truth-map",
+  "description": "Scan the .github/ and docs/ directories to generate SOURCE-OF-TRUTH.md — a persistent map of which files are canonical for each domain, instruction scope, and agent-skill reference. Use as a foundation before running context-assembly-simulator or when onboarding a new contributor. Keywords: source of truth, canonical files, domain map, instruction scope map.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "prompt",
+    "tests"
+  ],
+  "triggers": [
+    "canonical files",
+    "domain map",
+    "instruction scope map",
+    "source of truth"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/source-of-truth-map/SKILL.md",
+    "scripts": ".github/skills/source-of-truth-map/scripts",
+    "assets": ".github/skills/source-of-truth-map/assets",
+    "references": ".github/skills/source-of-truth-map/references"
+  },
+  "keywords": [
+    "canonical files",
+    "domain map",
+    "instruction scope map",
+    "source of truth"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

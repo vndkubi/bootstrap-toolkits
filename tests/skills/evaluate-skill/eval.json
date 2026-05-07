@@ -1,0 +1,27 @@
+{
+  "name": "evaluate-skill",
+  "checks": [
+    {
+      "type": "file_exists",
+      "path": ".github/skills/evaluate-skill/SKILL.md"
+    },
+    {
+      "type": "file_exists",
+      "path": ".github/skills/evaluate-skill/scripts/evaluate-skill.js"
+    },
+    {
+      "type": "json_field_equals",
+      "path": ".github/skills/evaluate-skill/skill.json",
+      "field": "tier",
+      "value": "enterprise"
+    },
+    {
+      "type": "text_includes",
+      "path": ".github/skills/evaluate-skill/SKILL.md",
+      "includes": [
+        "tests/skills/<name>/eval.json",
+        "numeric score"
+      ]
+    }
+  ]
+}

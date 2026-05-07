@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "sanitize-untrusted-input",
+  "displayName": "sanitize-untrusted-input",
+  "description": "Wrap any externally-sourced text (PBI body, issue description, commit message from another author) in <UNTRUSTED>...</UNTRUSTED> tags and scan for prompt-injection patterns. Any match raises an injection-suspected gate. Used by the autorun orchestrator before merging external text into agent context.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "When `blocked=true`, the orchestrator emits the gate and must not pass the wrapped text onward until the user confirms.",
+    "`{wrapped: string, findings: string[], blocked: boolean}`."
+  ],
+  "triggers": [
+    "agent",
+    "another",
+    "any",
+    "author",
+    "autorun",
+    "body",
+    "commit",
+    "context",
+    "description",
+    "external",
+    "externally",
+    "gate"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/sanitize-untrusted-input/SKILL.md",
+    "scripts": ".github/skills/sanitize-untrusted-input/scripts",
+    "assets": ".github/skills/sanitize-untrusted-input/assets",
+    "references": ".github/skills/sanitize-untrusted-input/references"
+  },
+  "keywords": [
+    "agent",
+    "another",
+    "any",
+    "author",
+    "autorun",
+    "body",
+    "commit",
+    "context",
+    "description",
+    "external",
+    "externally",
+    "gate"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "episode_id": "20260101-pbi-042-add-user-endpoint",
+  "created_at": "2026-01-01T09:30:00Z",
+  "pbi_ref": { "type": "github", "id": "42" },
+  "raw_intent": "Add POST /users endpoint with email validation.",
+  "summary": "Implemented POST /users with Joi email validation; all Phase-3 tests green on first pass; review clean.",
+  "detected": {
+    "modules": ["api", "services/users"],
+    "contracts": ["openapi/users.yaml"],
+    "stacks": ["node", "express"]
+  },
+  "embedding": {
+    "model": "local-minilm-l6-v2@sha256-abc123def456abc123def456",
+    "vector_ref": ".github/.episode-index/vectors.f32.bin#0+1536"
+  },
+  "phases": [
+    { "phase": "intake", "duration_ms": 1200, "token_cost": 500 },
+    { "phase": "contract", "duration_ms": 800, "token_cost": 300 },
+    { "phase": "test-first", "duration_ms": 2400, "token_cost": 900 },
+    { "phase": "implement", "duration_ms": 5400, "token_cost": 2100 },
+    { "phase": "review", "duration_ms": 1800, "token_cost": 700 },
+    { "phase": "evidence", "duration_ms": 400, "token_cost": 150 }
+  ],
+  "outcome": "success",
+  "outcome_score": 0.96,
+  "score_components": { "tests": 1.0, "review": 1.0, "contract": 1.0, "rounds": 0.6 },
+  "artifacts": {
+    "spec": "specs/042-add-user-endpoint/spec.md",
+    "pr": "https://github.com/example/repo/pull/42",
+    "evidence": ".artifacts/042/evidence-summary.md"
+  },
+  "regression_events": [],
+  "replay_count": 3,
+  "tags": ["api", "users"]
+}

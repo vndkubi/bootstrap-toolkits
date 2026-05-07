@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "resolve-pbi-ref",
+  "displayName": "resolve-pbi-ref",
+  "description": "Resolve a PBI reference passed to /autorun into a concrete {pbi, slug, source, body}. Walks the configured resolver order (folder → github → jira → freetext) and halts with a pbi-ambiguous gate if multiple matches tie. Use only from the autorun orchestrator; not a user-facing skill.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "`config.pbi.resolver.order` — precedence list from `.github/autorun.config.json`.",
+    "`ref` — the raw string passed to `/autorun`. Examples: `#123`, `PROJ-42`, `specs/007-add-coupon/spec.md`, free text."
+  ],
+  "outputs": [
+    "Slug rule: lowercase, kebab-case, max 40 chars, derived from title or first 5 body words.",
+    "`{pbi: string, slug: string, source: \"folder\"|\"github\"|\"jira\"|\"freetext\", body: string, acceptanceCriteria?: string[]}`."
+  ],
+  "triggers": [
+    "ambiguous",
+    "autorun",
+    "body",
+    "concrete",
+    "configured",
+    "facing",
+    "folder",
+    "freetext",
+    "gate",
+    "github",
+    "halts",
+    "jira"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/resolve-pbi-ref/SKILL.md",
+    "scripts": ".github/skills/resolve-pbi-ref/scripts",
+    "assets": ".github/skills/resolve-pbi-ref/assets",
+    "references": ".github/skills/resolve-pbi-ref/references"
+  },
+  "keywords": [
+    "ambiguous",
+    "autorun",
+    "body",
+    "concrete",
+    "configured",
+    "facing",
+    "folder",
+    "freetext",
+    "gate",
+    "github",
+    "halts",
+    "jira"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

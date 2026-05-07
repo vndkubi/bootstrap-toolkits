@@ -154,6 +154,8 @@ Maintain `.github/.skill-pack-registry.json` to track installed packs:
 }
 ```
 
+Also update `.github/.skill-lineage.json` with import provenance so later exports and upgrades can trace pack origin and version lineage without relying on local shell history.
+
 ### Step 5: Validate Installation
 
 After import, verify:
@@ -216,6 +218,8 @@ The skill-pack system follows the bundle's core portability principle:
 4. **No lock-in** — imported skills are plain `.github/skills/<name>/SKILL.md` files. If the skill-pack system is removed, the imported skills continue to work normally.
 
 5. **Graceful degradation** — if the registry file is missing or corrupted, skills still function. The registry is metadata for management, not a runtime dependency.
+
+6. **Explicit lineage** — imported and exported pack metadata should remain traceable through `.github/.skill-lineage.json`, but runtime skill execution must not depend on that file being present.
 
 ## Conflict Resolution Details
 

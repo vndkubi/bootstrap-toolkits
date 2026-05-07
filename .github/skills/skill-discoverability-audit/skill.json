@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "skill-discoverability-audit",
+  "displayName": "skill-discoverability-audit",
+  "description": "Audit all SKILL.md files for runtime discoverability quality. Checks description keyword coverage, argument documentation, user-invocable vs model-invocable alignment, routing table reachability, and progressive loading compatibility. Produces a scored report with actionable fixes. Use after bootstrap or when skills seem undiscoverable. Keywords: skill audit, discoverability, description quality, skill routing, keyword coverage, model invocation.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "prompt",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "description quality",
+    "discoverability",
+    "keyword coverage",
+    "model invocation",
+    "skill audit",
+    "skill routing"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/skill-discoverability-audit/SKILL.md",
+    "scripts": ".github/skills/skill-discoverability-audit/scripts",
+    "assets": ".github/skills/skill-discoverability-audit/assets",
+    "references": ".github/skills/skill-discoverability-audit/references"
+  },
+  "keywords": [
+    "description quality",
+    "discoverability",
+    "keyword coverage",
+    "model invocation",
+    "skill audit",
+    "skill routing"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

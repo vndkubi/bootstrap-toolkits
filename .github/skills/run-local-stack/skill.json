@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "run-local-stack",
+  "displayName": "run-local-stack",
+  "description": "Detect and start the local dev stack (devcontainer > docker-compose > make dev > native), then run a healthcheck. Halts with quickstart-healthcheck-failed gate on failure. Used by autorun Phase 2 to prove the stack boots before tests run.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "One trace event per step (detect, start, healthcheck, teardown).",
+    "`{strategy, healthcheckUrl, bootMs, healthcheckMs, containers?: string[]}`."
+  ],
+  "triggers": [
+    "autorun",
+    "boots",
+    "compose",
+    "detect",
+    "dev",
+    "devcontainer",
+    "docker",
+    "failed",
+    "failure",
+    "gate",
+    "halts",
+    "healthcheck"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/run-local-stack/SKILL.md",
+    "scripts": ".github/skills/run-local-stack/scripts",
+    "assets": ".github/skills/run-local-stack/assets",
+    "references": ".github/skills/run-local-stack/references"
+  },
+  "keywords": [
+    "autorun",
+    "boots",
+    "compose",
+    "detect",
+    "dev",
+    "devcontainer",
+    "docker",
+    "failed",
+    "failure",
+    "gate",
+    "halts",
+    "healthcheck"
+  ],
+  "routedBy": [
+    "api-test-author"
+  ],
+  "referencedByAgents": [
+    "api-test-author"
+  ]
+}

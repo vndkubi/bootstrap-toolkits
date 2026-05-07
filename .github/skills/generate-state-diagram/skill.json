@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-state-diagram",
+  "displayName": "generate-state-diagram",
+  "description": "Generate Mermaid state diagrams by analyzing entity lifecycle, status fields, and state transitions in the codebase. Traces enums, state machines, status update logic, and transition guards across services and validators. Creates both as-is and to-be diagrams with change markers. Use when asked to visualize entity lifecycle, status flow, or state transitions.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "review findings"
+  ],
+  "triggers": [
+    "across",
+    "analyzing",
+    "asked",
+    "both",
+    "change",
+    "codebase",
+    "creates",
+    "diagram",
+    "diagrams",
+    "entity",
+    "enums",
+    "fields"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-state-diagram/SKILL.md",
+    "scripts": ".github/skills/generate-state-diagram/scripts",
+    "assets": ".github/skills/generate-state-diagram/assets",
+    "references": ".github/skills/generate-state-diagram/references"
+  },
+  "keywords": [
+    "across",
+    "analyzing",
+    "asked",
+    "both",
+    "change",
+    "codebase",
+    "creates",
+    "diagram",
+    "diagrams",
+    "entity",
+    "enums",
+    "fields"
+  ],
+  "routedBy": [
+    "sequence-diagrammer"
+  ],
+  "referencedByAgents": [
+    "sequence-diagrammer"
+  ]
+}

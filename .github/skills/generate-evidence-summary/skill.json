@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-evidence-summary",
+  "displayName": "generate-evidence-summary",
+  "description": "Phase 7 of /autorun. Consolidates the autorun trace, AC map, TDD log, mocks inventory, and review verdict into specs/<id>-<slug>/evidence-summary.md. Also prepares the evidence bundle directory consumed by @pr-manager and review-code-changes.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Harness env (`COPILOT_HARNESS`) — renders `harness` field in output.",
+    "`.artifacts/<pbi>/` — local cache with `review-report.json` and `test-results/`.",
+    "`.github/.traces/autorun-<pbi>.jsonl` — raw trace.",
+    "`specs/<id>-<slug>/` — feature workspace (spec.md, plan.md, contracts/, test-coverage.md, tdd-log.md, mocks-used.md, optional mock-exceptions.md)."
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "also",
+    "autorun",
+    "bundle",
+    "changes",
+    "code",
+    "consolidates",
+    "consumed",
+    "directory",
+    "evidence",
+    "generate",
+    "inventory",
+    "log"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-evidence-summary/SKILL.md",
+    "scripts": ".github/skills/generate-evidence-summary/scripts",
+    "assets": ".github/skills/generate-evidence-summary/assets",
+    "references": ".github/skills/generate-evidence-summary/references"
+  },
+  "keywords": [
+    "also",
+    "autorun",
+    "bundle",
+    "changes",
+    "code",
+    "consolidates",
+    "consumed",
+    "directory",
+    "evidence",
+    "generate",
+    "inventory",
+    "log"
+  ],
+  "routedBy": [
+    "pr-manager"
+  ],
+  "referencedByAgents": [
+    "pr-manager"
+  ]
+}

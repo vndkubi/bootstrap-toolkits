@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-cleanup-summary",
+  "displayName": "bootstrap-phase-cleanup-summary",
+  "description": "Run Phase 15 of the bootstrap pipeline: Manifest, Snapshot, Cleanup, and Summary. Write manifest and summary artifacts, delete bootstrap-only residue, and capture the retained surface honestly. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 15, manifest, snapshot, cleanup, and summary, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "cleanup report",
+    "manifest",
+    "summary"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "and summary",
+    "bootstrap phase 15",
+    "bootstrap pipeline",
+    "cleanup",
+    "manifest",
+    "snapshot"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-cleanup-summary/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-cleanup-summary/scripts",
+    "assets": ".github/skills/bootstrap-phase-cleanup-summary/assets",
+    "references": ".github/skills/bootstrap-phase-cleanup-summary/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "and summary",
+    "bootstrap phase 15",
+    "bootstrap pipeline",
+    "cleanup",
+    "manifest",
+    "snapshot"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

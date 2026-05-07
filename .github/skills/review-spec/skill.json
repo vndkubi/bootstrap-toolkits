@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "id": "review-spec",
+  "displayName": "review-spec",
+  "description": "Review a feature specification and its spec-kit artifacts for completeness, ambiguity, security gaps, testability, and traceability. Evaluates the feature workspace as a whole, not just spec.md.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Review the feature workspace when available:",
+    "`contracts/`",
+    "`data-model.md`",
+    "`plan.md`",
+    "`research.md`",
+    "`spec.md`"
+  ],
+  "outputs": [
+    "plan",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "ambiguity",
+    "artifacts",
+    "completeness",
+    "evaluates",
+    "feature",
+    "gaps",
+    "its",
+    "just",
+    "kit",
+    "not",
+    "review",
+    "security"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/review-spec/SKILL.md",
+    "scripts": ".github/skills/review-spec/scripts",
+    "assets": ".github/skills/review-spec/assets",
+    "references": ".github/skills/review-spec/references"
+  },
+  "keywords": [
+    "ambiguity",
+    "artifacts",
+    "completeness",
+    "evaluates",
+    "feature",
+    "gaps",
+    "its",
+    "just",
+    "kit",
+    "not",
+    "review",
+    "security"
+  ],
+  "routedBy": [
+    "spec-reviewer"
+  ],
+  "referencedByAgents": [
+    "spec-reviewer"
+  ]
+}

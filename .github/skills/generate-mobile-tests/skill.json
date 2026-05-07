@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-mobile-tests",
+  "displayName": "generate-mobile-tests",
+  "description": "Generate comprehensive unit and UI tests for Android (JUnit 5, MockK, Turbine, Compose Testing) and iOS (XCTest, Swift Testing) mobile applications. Analyzes all code branches, creates test builders and fake repositories, uses real objects over mocks whenever possible. Outputs structured tests covering all UI states and business logic branches. Use when asked to write tests, improve coverage, or generate tests for mobile code.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "tests"
+  ],
+  "triggers": [
+    "all",
+    "analyzes",
+    "android",
+    "applications",
+    "asked",
+    "branches",
+    "builders",
+    "business",
+    "code",
+    "compose",
+    "comprehensive",
+    "coverage"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-mobile-tests/SKILL.md",
+    "scripts": ".github/skills/generate-mobile-tests/scripts",
+    "assets": ".github/skills/generate-mobile-tests/assets",
+    "references": ".github/skills/generate-mobile-tests/references"
+  },
+  "keywords": [
+    "all",
+    "analyzes",
+    "android",
+    "applications",
+    "asked",
+    "branches",
+    "builders",
+    "business",
+    "code",
+    "compose",
+    "comprehensive",
+    "coverage"
+  ],
+  "routedBy": [
+    "mobile-test-specialist"
+  ],
+  "referencedByAgents": [
+    "mobile-test-specialist"
+  ]
+}

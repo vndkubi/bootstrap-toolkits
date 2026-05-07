@@ -1,0 +1,28 @@
+{
+  "$schema": "./schemas/autorun.config.schema.json",
+  "tddLoop": {
+    "maxIterations": 8,
+    "noProgressThreshold": 2,
+    "regression": "scoped"
+  },
+  "cost": {
+    "tokenCap": 200000
+  },
+  "artifacts": {
+    "mode": "local-gitignored"
+  },
+  "pbi": {
+    "resolver": {
+      "order": ["folder", "github", "jira", "freetext"]
+    }
+  },
+  "taxonomy": {
+    "autoClassify": true
+  },
+  "hooks": {
+    "postEditRunTests": false
+  },
+  "secretScanner": {
+    "tool": "auto"
+  }
+}

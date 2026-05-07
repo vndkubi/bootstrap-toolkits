@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "technical-debt-analysis",
+  "displayName": "technical-debt-analysis",
+  "description": "Analyze codebase for technical debt including code smells, outdated dependencies, missing tests, architecture violations, and security vulnerabilities. Produces prioritized tech debt backlog with effort estimates and business impact. Use when assessing code quality, planning tech debt sprints, or justifying refactoring work.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "analysis",
+    "analyze",
+    "architecture",
+    "assessing",
+    "backlog",
+    "business",
+    "code",
+    "codebase",
+    "debt",
+    "dependencies",
+    "effort",
+    "estimates"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/technical-debt-analysis/SKILL.md",
+    "scripts": ".github/skills/technical-debt-analysis/scripts",
+    "assets": ".github/skills/technical-debt-analysis/assets",
+    "references": ".github/skills/technical-debt-analysis/references"
+  },
+  "keywords": [
+    "analysis",
+    "analyze",
+    "architecture",
+    "assessing",
+    "backlog",
+    "business",
+    "code",
+    "codebase",
+    "debt",
+    "dependencies",
+    "effort",
+    "estimates"
+  ],
+  "routedBy": [
+    "refactoring-specialist"
+  ],
+  "referencedByAgents": [
+    "refactoring-specialist"
+  ]
+}

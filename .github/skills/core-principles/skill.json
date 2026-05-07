@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "core-principles",
+  "displayName": "core-principles",
+  "description": "Core engineering principles for all agents: understand before changing, respect business rules and module boundaries, avoid duplicate validation, and verify honestly.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "report",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "agents",
+    "all",
+    "avoid",
+    "boundaries",
+    "business",
+    "changing",
+    "core",
+    "duplicate",
+    "engineering",
+    "honestly",
+    "module",
+    "principles"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/core-principles/SKILL.md",
+    "scripts": ".github/skills/core-principles/scripts",
+    "assets": ".github/skills/core-principles/assets",
+    "references": ".github/skills/core-principles/references"
+  },
+  "keywords": [
+    "agents",
+    "all",
+    "avoid",
+    "boundaries",
+    "business",
+    "changing",
+    "core",
+    "duplicate",
+    "engineering",
+    "honestly",
+    "module",
+    "principles"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

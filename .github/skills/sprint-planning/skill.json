@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "sprint-planning",
+  "displayName": "sprint-planning",
+  "description": "Sprint planning assistant for agile teams. Decomposes PBIs into technical tasks, estimates story points using t-shirt sizing or Fibonacci, identifies dependencies and risks, creates sprint backlogs with clear acceptance criteria. Use when planning sprints, breaking down user stories, or estimating effort.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "acceptance",
+    "agile",
+    "assistant",
+    "backlogs",
+    "breaking",
+    "clear",
+    "creates",
+    "criteria",
+    "decomposes",
+    "dependencies",
+    "down",
+    "effort"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/sprint-planning/SKILL.md",
+    "scripts": ".github/skills/sprint-planning/scripts",
+    "assets": ".github/skills/sprint-planning/assets",
+    "references": ".github/skills/sprint-planning/references"
+  },
+  "keywords": [
+    "acceptance",
+    "agile",
+    "assistant",
+    "backlogs",
+    "breaking",
+    "clear",
+    "creates",
+    "criteria",
+    "decomposes",
+    "dependencies",
+    "down",
+    "effort"
+  ],
+  "routedBy": [
+    "dev-orchestrator",
+    "sprint-planner"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator",
+    "sprint-planner"
+  ]
+}

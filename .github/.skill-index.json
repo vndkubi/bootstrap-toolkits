@@ -1,0 +1,2180 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-07T16:04:22.026Z",
+  "skills": {
+    "analyze-codebase": {
+      "manifestPath": ".github/skills/analyze-codebase/skill.json",
+      "descriptionLength": 412,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": false,
+      "triggerKeywords": [
+        "analysis",
+        "analyze",
+        "android",
+        "approaches",
+        "architecture",
+        "boundaries",
+        "build",
+        "code",
+        "codebase",
+        "coding",
+        "configs",
+        "conventions"
+      ],
+      "routedBy": [
+        "codebase-analyzer"
+      ],
+      "referencedByAgents": [
+        "codebase-analyzer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2563
+    },
+    "analyze-requirements": {
+      "manifestPath": ".github/skills/analyze-requirements/skill.json",
+      "descriptionLength": 553,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "acceptance",
+        "actual",
+        "analysis",
+        "analyze",
+        "analyzes",
+        "artifacts",
+        "asked",
+        "assessments",
+        "backlog",
+        "breakdowns",
+        "canonical",
+        "codebase"
+      ],
+      "routedBy": [
+        "business-analyst"
+      ],
+      "referencedByAgents": [
+        "business-analyst"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 949
+    },
+    "author-skill": {
+      "manifestPath": ".github/skills/author-skill/skill.json",
+      "descriptionLength": 368,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "author skill",
+        "business skill",
+        "create skill",
+        "draft skill",
+        "promote pattern"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [
+        "audit_discoverability",
+        "list_skills"
+      ],
+      "estimatedTokenCost": 532
+    },
+    "autorun": {
+      "manifestPath": ".github/skills/autorun/skill.json",
+      "descriptionLength": 365,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": false,
+      "triggerKeywords": [
+        "across",
+        "agnostic",
+        "api",
+        "asks",
+        "autonomous",
+        "autorun",
+        "cli",
+        "code",
+        "confirmation",
+        "contract",
+        "copilot",
+        "end"
+      ],
+      "routedBy": [
+        "api-test-author",
+        "dev-orchestrator",
+        "functional-reviewer",
+        "mock-data-specialist",
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "api-test-author",
+        "dev-orchestrator",
+        "functional-reviewer",
+        "mock-data-specialist",
+        "pr-manager"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2063
+    },
+    "autorun-branch": {
+      "manifestPath": ".github/skills/autorun-branch/skill.json",
+      "descriptionLength": 206,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "abort",
+        "autorun",
+        "branch",
+        "clean",
+        "cleanup",
+        "commit",
+        "create",
+        "head",
+        "lifecycle",
+        "manage",
+        "merge",
+        "only"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 621
+    },
+    "bootstrap-phase-agents": {
+      "manifestPath": ".github/skills/bootstrap-phase-agents/skill.json",
+      "descriptionLength": 367,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 8",
+        "bootstrap pipeline",
+        "generate agents"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 391
+    },
+    "bootstrap-phase-classify": {
+      "manifestPath": ".github/skills/bootstrap-phase-classify/skill.json",
+      "descriptionLength": 359,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 2",
+        "bootstrap pipeline",
+        "classify"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 396
+    },
+    "bootstrap-phase-cleanup-summary": {
+      "manifestPath": ".github/skills/bootstrap-phase-cleanup-summary/skill.json",
+      "descriptionLength": 429,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "and summary",
+        "bootstrap phase 15",
+        "bootstrap pipeline",
+        "cleanup",
+        "manifest",
+        "snapshot"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 430
+    },
+    "bootstrap-phase-core-instructions": {
+      "manifestPath": ".github/skills/bootstrap-phase-core-instructions/skill.json",
+      "descriptionLength": 406,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 4",
+        "bootstrap pipeline",
+        "generate core instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 415
+    },
+    "bootstrap-phase-devcontainer": {
+      "manifestPath": ".github/skills/bootstrap-phase-devcontainer/skill.json",
+      "descriptionLength": 368,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 14",
+        "bootstrap pipeline",
+        "devcontainer"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 395
+    },
+    "bootstrap-phase-domain-instructions": {
+      "manifestPath": ".github/skills/bootstrap-phase-domain-instructions/skill.json",
+      "descriptionLength": 395,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 5",
+        "bootstrap pipeline",
+        "generate domain instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 413
+    },
+    "bootstrap-phase-domain-repo-truth": {
+      "manifestPath": ".github/skills/bootstrap-phase-domain-repo-truth/skill.json",
+      "descriptionLength": 404,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 3",
+        "bootstrap pipeline",
+        "domain and repo truth pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 416
+    },
+    "bootstrap-phase-hooks-workflows": {
+      "manifestPath": ".github/skills/bootstrap-phase-hooks-workflows/skill.json",
+      "descriptionLength": 401,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 11",
+        "bootstrap pipeline",
+        "hooks and optional workflows"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 415
+    },
+    "bootstrap-phase-language-framework-instructions": {
+      "manifestPath": ".github/skills/bootstrap-phase-language-framework-instructions/skill.json",
+      "descriptionLength": 424,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 6",
+        "bootstrap pipeline",
+        "generate language and framework instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 432
+    },
+    "bootstrap-phase-prompts": {
+      "manifestPath": ".github/skills/bootstrap-phase-prompts/skill.json",
+      "descriptionLength": 384,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 10",
+        "bootstrap pipeline",
+        "generate prompts"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 398
+    },
+    "bootstrap-phase-runtime-compilation": {
+      "manifestPath": ".github/skills/bootstrap-phase-runtime-compilation/skill.json",
+      "descriptionLength": 385,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 12",
+        "bootstrap pipeline",
+        "runtime compilation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 409
+    },
+    "bootstrap-phase-scan": {
+      "manifestPath": ".github/skills/bootstrap-phase-scan/skill.json",
+      "descriptionLength": 374,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 1",
+        "bootstrap pipeline",
+        "scan"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [
+        "analyze_repo",
+        "get_module_graph",
+        "list_domains"
+      ],
+      "estimatedTokenCost": 398
+    },
+    "bootstrap-phase-skills": {
+      "manifestPath": ".github/skills/bootstrap-phase-skills/skill.json",
+      "descriptionLength": 370,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 9",
+        "bootstrap pipeline",
+        "generate skills"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 390
+    },
+    "bootstrap-phase-templates": {
+      "manifestPath": ".github/skills/bootstrap-phase-templates/skill.json",
+      "descriptionLength": 361,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 7",
+        "bootstrap pipeline",
+        "generate templates"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 385
+    },
+    "bootstrap-phase-validate": {
+      "manifestPath": ".github/skills/bootstrap-phase-validate/skill.json",
+      "descriptionLength": 365,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 13",
+        "bootstrap pipeline",
+        "validate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [
+        "audit_discoverability",
+        "audit_instruction_conflicts",
+        "validate_bootstrap_output"
+      ],
+      "estimatedTokenCost": 391
+    },
+    "common-doc-generator": {
+      "manifestPath": ".github/skills/common-doc-generator/skill.json",
+      "descriptionLength": 339,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "any",
+        "chat",
+        "code",
+        "common",
+        "component",
+        "constraints",
+        "content",
+        "data",
+        "doc",
+        "does",
+        "evidence",
+        "failure"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1729
+    },
+    "context-assembly-simulator": {
+      "manifestPath": ".github/skills/context-assembly-simulator/skill.json",
+      "descriptionLength": 398,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "budget check",
+        "context debugging",
+        "context loading",
+        "context simulation",
+        "what is loaded"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1662
+    },
+    "context-budget-check": {
+      "manifestPath": ".github/skills/context-budget-check/skill.json",
+      "descriptionLength": 225,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "all",
+        "budget",
+        "calculates",
+        "case",
+        "check",
+        "comply",
+        "configuration",
+        "context",
+        "copilot",
+        "files",
+        "flags",
+        "generated"
+      ],
+      "routedBy": [
+        "conductor"
+      ],
+      "referencedByAgents": [
+        "conductor"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 678
+    },
+    "context-inspector": {
+      "manifestPath": ".github/skills/context-inspector/skill.json",
+      "descriptionLength": 295,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "answer",
+        "artifact",
+        "ask",
+        "assembly",
+        "behavior",
+        "bounded",
+        "capability",
+        "context",
+        "did",
+        "evidence",
+        "fidelity",
+        "github"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1004
+    },
+    "conventional-commit": {
+      "manifestPath": ".github/skills/conventional-commit/skill.json",
+      "descriptionLength": 236,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analyzing",
+        "applying",
+        "bodies",
+        "breaking",
+        "changes",
+        "commit",
+        "commits",
+        "committing",
+        "conventional",
+        "generate",
+        "git",
+        "line"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 789
+    },
+    "core-principles": {
+      "manifestPath": ".github/skills/core-principles/skill.json",
+      "descriptionLength": 166,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": false,
+      "triggerKeywords": [
+        "agents",
+        "all",
+        "avoid",
+        "boundaries",
+        "business",
+        "changing",
+        "core",
+        "duplicate",
+        "engineering",
+        "honestly",
+        "module",
+        "principles"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 551
+    },
+    "correction-ledger": {
+      "manifestPath": ".github/skills/correction-ledger/skill.json",
+      "descriptionLength": 392,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "correction ledger",
+        "correction patterns",
+        "learning loop",
+        "promotion candidates",
+        "recurring fixes"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 3264
+    },
+    "dependency-extractor": {
+      "manifestPath": ".github/skills/dependency-extractor/skill.json",
+      "descriptionLength": 353,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "dependency map",
+        "impact map",
+        "module graph",
+        "regenerate dependencies"
+      ],
+      "routedBy": [
+        "dependency-analyzer"
+      ],
+      "referencedByAgents": [
+        "dependency-analyzer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2066
+    },
+    "domain-registry": {
+      "manifestPath": ".github/skills/domain-registry/skill.json",
+      "descriptionLength": 283,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analysis",
+        "auto",
+        "business",
+        "code",
+        "cross",
+        "dependencies",
+        "detect",
+        "domain",
+        "domains",
+        "entities",
+        "files",
+        "generate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1430
+    },
+    "drift-detector": {
+      "manifestPath": ".github/skills/drift-detector/skill.json",
+      "descriptionLength": 461,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "bootstrap freshness",
+        "config drift",
+        "configuration audit",
+        "drift detection",
+        "rebootstrap",
+        "stale config"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1946
+    },
+    "estimate-effort": {
+      "manifestPath": ".github/skills/estimate-effort/skill.json",
+      "descriptionLength": 289,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "affected",
+        "analyzing",
+        "backlog",
+        "capacity",
+        "codebase",
+        "complexity",
+        "confidence",
+        "coverage",
+        "development",
+        "effort",
+        "estimate",
+        "estimates"
+      ],
+      "routedBy": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 797
+    },
+    "evaluate-skill": {
+      "manifestPath": ".github/skills/evaluate-skill/skill.json",
+      "descriptionLength": 267,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "evaluate skill",
+        "skill checks",
+        "skill regression",
+        "skill score"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "enterprise",
+      "stability": "experimental",
+      "mcpToolsUsed": [
+        "audit_discoverability",
+        "validate_bootstrap_output"
+      ],
+      "estimatedTokenCost": 337
+    },
+    "generate-adr": {
+      "manifestPath": ".github/skills/generate-adr/skill.json",
+      "descriptionLength": 421,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "ADR",
+        "architecture decision",
+        "design decision",
+        "technical decision",
+        "why we chose"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "deprecated",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 776
+    },
+    "generate-agentic-workflow": {
+      "manifestPath": ".github/skills/generate-agentic-workflow/skill.json",
+      "descriptionLength": 318,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actions",
+        "agent",
+        "agentic",
+        "audits",
+        "automated",
+        "automation",
+        "checks",
+        "coding",
+        "compliance",
+        "copilot",
+        "creates",
+        "daily"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1018
+    },
+    "generate-api-contract": {
+      "manifestPath": ".github/skills/generate-api-contract/skill.json",
+      "descriptionLength": 375,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "acceptance",
+        "api",
+        "appropriate",
+        "artifacts",
+        "asyncapi",
+        "autorun",
+        "based",
+        "chosen",
+        "cli",
+        "contract",
+        "criteria",
+        "driven"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1007
+    },
+    "generate-api-flow-tests": {
+      "manifestPath": ".github/skills/generate-api-flow-tests/skill.json",
+      "descriptionLength": 311,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "acceptance",
+        "agnostic",
+        "api",
+        "assured",
+        "author",
+        "autorun",
+        "booted",
+        "contract",
+        "converts",
+        "criteria",
+        "detects",
+        "during"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1408
+    },
+    "generate-copilot-config": {
+      "manifestPath": ".github/skills/generate-copilot-config/skill.json",
+      "descriptionLength": 179,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": false,
+      "triggerKeywords": [
+        "analysis",
+        "artifact",
+        "classification",
+        "config",
+        "configuration",
+        "copilot",
+        "domain",
+        "generate",
+        "generation",
+        "github",
+        "pack",
+        "pipeline"
+      ],
+      "routedBy": [
+        "codebase-analyzer",
+        "conductor"
+      ],
+      "referencedByAgents": [
+        "codebase-analyzer",
+        "conductor"
+      ],
+      "invocationMode": "pipeline_only",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [
+        "analyze_repo",
+        "audit_context",
+        "audit_discoverability",
+        "audit_instruction_conflicts",
+        "audit_tools",
+        "detect_drift",
+        "get_module_graph",
+        "inspect_source_of_truth",
+        "list_domains",
+        "list_skills",
+        "validate_bootstrap_output"
+      ],
+      "estimatedTokenCost": 17896
+    },
+    "generate-domain-instructions": {
+      "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
+      "descriptionLength": 272,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "4kb",
+        "analysis",
+        "applyto",
+        "business",
+        "codebase",
+        "context",
+        "creates",
+        "domain",
+        "each",
+        "efficient",
+        "entity",
+        "file"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 826
+    },
+    "generate-evidence-summary": {
+      "manifestPath": ".github/skills/generate-evidence-summary/skill.json",
+      "descriptionLength": 242,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "also",
+        "autorun",
+        "bundle",
+        "changes",
+        "code",
+        "consolidates",
+        "consumed",
+        "directory",
+        "evidence",
+        "generate",
+        "inventory",
+        "log"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1177
+    },
+    "generate-hooks": {
+      "manifestPath": ".github/skills/generate-hooks/skill.json",
+      "descriptionLength": 306,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "adding",
+        "audit",
+        "automation",
+        "bootstrapping",
+        "checks",
+        "compile",
+        "config",
+        "copilot",
+        "events",
+        "filtering",
+        "formatter",
+        "generate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2950
+    },
+    "generate-mobile-tests": {
+      "manifestPath": ".github/skills/generate-mobile-tests/skill.json",
+      "descriptionLength": 430,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "all",
+        "analyzes",
+        "android",
+        "applications",
+        "asked",
+        "branches",
+        "builders",
+        "business",
+        "code",
+        "compose",
+        "comprehensive",
+        "coverage"
+      ],
+      "routedBy": [
+        "mobile-test-specialist"
+      ],
+      "referencedByAgents": [
+        "mobile-test-specialist"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1639
+    },
+    "generate-pr-description": {
+      "manifestPath": ".github/skills/generate-pr-description/skill.json",
+      "descriptionLength": 250,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analyzing",
+        "changes",
+        "checklist",
+        "commit",
+        "comprehensive",
+        "creates",
+        "creating",
+        "description",
+        "descriptions",
+        "diff",
+        "generate",
+        "git"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 854
+    },
+    "generate-sequence-diagram": {
+      "manifestPath": ".github/skills/generate-sequence-diagram/skill.json",
+      "descriptionLength": 436,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "across",
+        "all",
+        "applications",
+        "asked",
+        "both",
+        "change",
+        "code",
+        "components",
+        "create",
+        "creates",
+        "databases",
+        "detailed"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 739
+    },
+    "generate-state-diagram": {
+      "manifestPath": ".github/skills/generate-state-diagram/skill.json",
+      "descriptionLength": 361,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "across",
+        "analyzing",
+        "asked",
+        "both",
+        "change",
+        "codebase",
+        "creates",
+        "diagram",
+        "diagrams",
+        "entity",
+        "enums",
+        "fields"
+      ],
+      "routedBy": [
+        "sequence-diagrammer"
+      ],
+      "referencedByAgents": [
+        "sequence-diagrammer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2387
+    },
+    "generate-tasks": {
+      "manifestPath": ".github/skills/generate-tasks/skill.json",
+      "descriptionLength": 244,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analyzes",
+        "artifacts",
+        "checkpoints",
+        "contracts",
+        "converts",
+        "data",
+        "dependencies",
+        "executable",
+        "generate",
+        "groups",
+        "implementation",
+        "kit"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 773
+    },
+    "generate-unit-tests": {
+      "manifestPath": ".github/skills/generate-unit-tests/skill.json",
+      "descriptionLength": 461,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "aaa",
+        "all",
+        "analyzes",
+        "applies",
+        "asked",
+        "assertions",
+        "assertj",
+        "branches",
+        "builder",
+        "catch",
+        "classes",
+        "code"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 777
+    },
+    "generate-wiremock": {
+      "manifestPath": ".github/skills/generate-wiremock/skill.json",
+      "descriptionLength": 422,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "add",
+        "analyzing",
+        "asked",
+        "calls",
+        "codebase",
+        "configurations",
+        "conventions",
+        "create",
+        "creates",
+        "data",
+        "devcontainer",
+        "error"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 757
+    },
+    "impact-analysis": {
+      "manifestPath": ".github/skills/impact-analysis/skill.json",
+      "descriptionLength": 265,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analysis",
+        "apis",
+        "blast",
+        "breaking",
+        "changes",
+        "code",
+        "codebases",
+        "cross",
+        "database",
+        "dependencies",
+        "detects",
+        "enterprise"
+      ],
+      "routedBy": [
+        "investigator"
+      ],
+      "referencedByAgents": [
+        "investigator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 851
+    },
+    "implement-feature": {
+      "manifestPath": ".github/skills/implement-feature/skill.json",
+      "descriptionLength": 264,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actual",
+        "approved",
+        "artifacts",
+        "commands",
+        "contracts",
+        "defaults",
+        "drive",
+        "driven",
+        "executes",
+        "feature",
+        "implement",
+        "implementation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1229
+    },
+    "implement-mobile-feature": {
+      "manifestPath": ".github/skills/implement-mobile-feature/skill.json",
+      "descriptionLength": 399,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "across",
+        "add",
+        "all",
+        "android",
+        "applications",
+        "architecture",
+        "asked",
+        "bug",
+        "cases",
+        "changes",
+        "clean",
+        "code"
+      ],
+      "routedBy": [
+        "mobile-implementor"
+      ],
+      "referencedByAgents": [
+        "mobile-implementor"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1161
+    },
+    "instruction-conflict-detector": {
+      "manifestPath": ".github/skills/instruction-conflict-detector/skill.json",
+      "descriptionLength": 388,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "applyTo overlap",
+        "instruction audit",
+        "instruction conflict",
+        "rule contradiction"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1184
+    },
+    "investigate-pbi": {
+      "manifestPath": ".github/skills/investigate-pbi/skill.json",
+      "descriptionLength": 410,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "affected",
+        "analysis",
+        "asked",
+        "assesses",
+        "bug",
+        "cases",
+        "change",
+        "changes",
+        "code",
+        "current",
+        "designs",
+        "edge"
+      ],
+      "routedBy": [
+        "investigator"
+      ],
+      "referencedByAgents": [
+        "investigator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1512
+    },
+    "learn-codebase": {
+      "manifestPath": ".github/skills/learn-codebase/skill.json",
+      "descriptionLength": 256,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "any",
+        "business",
+        "codebase",
+        "data",
+        "developers",
+        "domain",
+        "domains",
+        "external",
+        "feature",
+        "guide",
+        "integrations",
+        "interactive"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1317
+    },
+    "optimize-devcontainer": {
+      "manifestPath": ".github/skills/optimize-devcontainer/skill.json",
+      "descriptionLength": 621,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "container",
+        "dev container",
+        "devcontainer",
+        "docker",
+        "feature",
+        "image",
+        "mount",
+        "optimize",
+        "performance",
+        "startup",
+        "volume"
+      ],
+      "routedBy": [
+        "devcontainer-reviewer"
+      ],
+      "referencedByAgents": [
+        "devcontainer-reviewer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 3685
+    },
+    "orchestrate-development": {
+      "manifestPath": ".github/skills/orchestrate-development/skill.json",
+      "descriptionLength": 247,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "backed",
+        "confirm",
+        "development",
+        "document",
+        "end",
+        "evidence",
+        "forcing",
+        "hand",
+        "heavy",
+        "hoc",
+        "implement",
+        "implementation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1034
+    },
+    "plan-implementation": {
+      "manifestPath": ".github/skills/plan-implementation/skill.json",
+      "descriptionLength": 281,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "artifacts",
+        "comprehensive",
+        "constitutional",
+        "contracts",
+        "creates",
+        "data",
+        "decisions",
+        "execution",
+        "gates",
+        "generates",
+        "implementation",
+        "kit"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1411
+    },
+    "redact-sensitive-data": {
+      "manifestPath": ".github/skills/redact-sensitive-data/skill.json",
+      "descriptionLength": 264,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "any",
+        "autorun",
+        "bundle",
+        "commit",
+        "data",
+        "defense",
+        "deny",
+        "detect",
+        "evidence",
+        "file",
+        "fixtures",
+        "generated"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 706
+    },
+    "refine-user-input": {
+      "manifestPath": ".github/skills/refine-user-input/skill.json",
+      "descriptionLength": 383,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actionable",
+        "already",
+        "analyze",
+        "anchor",
+        "are",
+        "asks",
+        "clear",
+        "constraints",
+        "cross",
+        "cutting",
+        "default",
+        "details"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1967
+    },
+    "repo-memory-promoter": {
+      "manifestPath": ".github/skills/repo-memory-promoter/skill.json",
+      "descriptionLength": 347,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actions",
+        "approval",
+        "bloat",
+        "broad",
+        "candidate",
+        "chat",
+        "concrete",
+        "config",
+        "copilot",
+        "deltas",
+        "does",
+        "files"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1328
+    },
+    "resolve-pbi-ref": {
+      "manifestPath": ".github/skills/resolve-pbi-ref/skill.json",
+      "descriptionLength": 283,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "ambiguous",
+        "autorun",
+        "body",
+        "concrete",
+        "configured",
+        "facing",
+        "folder",
+        "freetext",
+        "gate",
+        "github",
+        "halts",
+        "jira"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 637
+    },
+    "resume-bootstrap": {
+      "manifestPath": ".github/skills/resume-bootstrap/skill.json",
+      "descriptionLength": 343,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "continue pipeline",
+        "restart from phase",
+        "resume bootstrap"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1382
+    },
+    "review-code-changes": {
+      "manifestPath": ".github/skills/review-code-changes/skill.json",
+      "descriptionLength": 370,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actionable",
+        "branch",
+        "business",
+        "changes",
+        "code",
+        "combined",
+        "each",
+        "finding",
+        "first",
+        "functional",
+        "immediately",
+        "include"
+      ],
+      "routedBy": [
+        "code-reviewer",
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "code-reviewer",
+        "pr-manager"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 4955
+    },
+    "review-effectiveness": {
+      "manifestPath": ".github/skills/review-effectiveness/skill.json",
+      "descriptionLength": 244,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actually",
+        "adoption",
+        "are",
+        "artifact",
+        "configuration",
+        "copilot",
+        "drift",
+        "effectiveness",
+        "evaluates",
+        "following",
+        "generated",
+        "how"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2098
+    },
+    "review-memory-promotion": {
+      "manifestPath": ".github/skills/review-memory-promotion/skill.json",
+      "descriptionLength": 390,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "approval",
+        "artifacts",
+        "authored",
+        "bootstrap",
+        "candidates",
+        "checklist",
+        "code",
+        "completed",
+        "creating",
+        "curating",
+        "discussion",
+        "discussions"
+      ],
+      "routedBy": [
+        "code-reviewer",
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "code-reviewer",
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2277
+    },
+    "review-spec": {
+      "manifestPath": ".github/skills/review-spec/skill.json",
+      "descriptionLength": 194,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "ambiguity",
+        "artifacts",
+        "completeness",
+        "evaluates",
+        "feature",
+        "gaps",
+        "its",
+        "just",
+        "kit",
+        "not",
+        "review",
+        "security"
+      ],
+      "routedBy": [
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "spec-reviewer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1130
+    },
+    "run-local-stack": {
+      "manifestPath": ".github/skills/run-local-stack/skill.json",
+      "descriptionLength": 238,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "autorun",
+        "boots",
+        "compose",
+        "detect",
+        "dev",
+        "devcontainer",
+        "docker",
+        "failed",
+        "failure",
+        "gate",
+        "halts",
+        "healthcheck"
+      ],
+      "routedBy": [
+        "api-test-author"
+      ],
+      "referencedByAgents": [
+        "api-test-author"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 780
+    },
+    "sanitize-untrusted-input": {
+      "manifestPath": ".github/skills/sanitize-untrusted-input/skill.json",
+      "descriptionLength": 301,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "agent",
+        "another",
+        "any",
+        "author",
+        "autorun",
+        "body",
+        "commit",
+        "context",
+        "description",
+        "external",
+        "externally",
+        "gate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 661
+    },
+    "skill-discoverability-audit": {
+      "manifestPath": ".github/skills/skill-discoverability-audit/skill.json",
+      "descriptionLength": 450,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "description quality",
+        "discoverability",
+        "keyword coverage",
+        "model invocation",
+        "skill audit",
+        "skill routing"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2380
+    },
+    "skill-pack-export": {
+      "manifestPath": ".github/skills/skill-pack-export/skill.json",
+      "descriptionLength": 287,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "export skill pack",
+        "pack manifest",
+        "share skills",
+        "skill lineage"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 396
+    },
+    "skill-pack-import": {
+      "manifestPath": ".github/skills/skill-pack-import/skill.json",
+      "descriptionLength": 435,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "export skill",
+        "import skill",
+        "org skills",
+        "portable skills",
+        "reuse",
+        "shared skills",
+        "skill pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2853
+    },
+    "source-of-truth-map": {
+      "manifestPath": ".github/skills/source-of-truth-map/skill.json",
+      "descriptionLength": 360,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "canonical files",
+        "domain map",
+        "instruction scope map",
+        "source of truth"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1052
+    },
+    "specify-feature": {
+      "manifestPath": ".github/skills/specify-feature/skill.json",
+      "descriptionLength": 262,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "clarification",
+        "creates",
+        "description",
+        "feature",
+        "marks",
+        "needs",
+        "pbi",
+        "pipeline",
+        "plan",
+        "prd",
+        "prepares",
+        "repo"
+      ],
+      "routedBy": [
+        "investigator",
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "investigator",
+        "spec-reviewer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "foundational",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1211
+    },
+    "sprint-planning": {
+      "manifestPath": ".github/skills/sprint-planning/skill.json",
+      "descriptionLength": 306,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "acceptance",
+        "agile",
+        "assistant",
+        "backlogs",
+        "breaking",
+        "clear",
+        "creates",
+        "criteria",
+        "decomposes",
+        "dependencies",
+        "down",
+        "effort"
+      ],
+      "routedBy": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1020
+    },
+    "tdd-implement-loop": {
+      "manifestPath": ".github/skills/tdd-implement-loop/skill.json",
+      "descriptionLength": 325,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analysis",
+        "authored",
+        "autorun",
+        "bounded",
+        "cap",
+        "conditions",
+        "cost",
+        "drives",
+        "edits",
+        "enforces",
+        "fallback",
+        "full"
+      ],
+      "routedBy": [
+        "api-test-author",
+        "mock-data-specialist"
+      ],
+      "referencedByAgents": [
+        "api-test-author",
+        "mock-data-specialist"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1113
+    },
+    "technical-debt-analysis": {
+      "manifestPath": ".github/skills/technical-debt-analysis/skill.json",
+      "descriptionLength": 326,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "analysis",
+        "analyze",
+        "architecture",
+        "assessing",
+        "backlog",
+        "business",
+        "code",
+        "codebase",
+        "debt",
+        "dependencies",
+        "effort",
+        "estimates"
+      ],
+      "routedBy": [
+        "refactoring-specialist"
+      ],
+      "referencedByAgents": [
+        "refactoring-specialist"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1276
+    },
+    "tool-permission-auditor": {
+      "manifestPath": ".github/skills/tool-permission-auditor/skill.json",
+      "descriptionLength": 367,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "agent audit",
+        "overprivileged",
+        "security risk",
+        "tool matrix",
+        "tool permission"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1335
+    },
+    "trace-replay": {
+      "manifestPath": ".github/skills/trace-replay/skill.json",
+      "descriptionLength": 281,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": false,
+      "triggerKeywords": [
+        "autorun",
+        "both",
+        "capture",
+        "cautionary",
+        "completed",
+        "enabled",
+        "episode",
+        "episodes",
+        "episodicmemory",
+        "every",
+        "feature",
+        "few"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 458
+    },
+    "update-spec": {
+      "manifestPath": ".github/skills/update-spec/skill.json",
+      "descriptionLength": 231,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "affected",
+        "arrive",
+        "artifacts",
+        "change",
+        "contracts",
+        "data",
+        "downstream",
+        "existing",
+        "feature",
+        "first",
+        "incrementally",
+        "model"
+      ],
+      "routedBy": [
+        "business-analyst",
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "business-analyst",
+        "spec-reviewer"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 960
+    },
+    "upgrade-config": {
+      "manifestPath": ".github/skills/upgrade-config/skill.json",
+      "descriptionLength": 403,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "migrate copilot config",
+        "update toolkit",
+        "upgrade config",
+        "version migration"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 1902
+    },
+    "upgrade-skill-pack": {
+      "manifestPath": ".github/skills/upgrade-skill-pack/skill.json",
+      "descriptionLength": 271,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "diff skill pack",
+        "pack lineage",
+        "pack upgrade",
+        "upgrade skill pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "model_routed",
+      "tier": "foundational",
+      "stability": "experimental",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 339
+    },
+    "validate-bootstrap-output": {
+      "manifestPath": ".github/skills/validate-bootstrap-output/skill.json",
+      "descriptionLength": 240,
+      "hasKeywordsSuffix": false,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "actually",
+        "agents",
+        "beyond",
+        "bootstrap",
+        "bootstrapped",
+        "checks",
+        "cleanup",
+        "configuration",
+        "copilot",
+        "decisions",
+        "generated",
+        "generic"
+      ],
+      "routedBy": [],
+      "referencedByAgents": [],
+      "invocationMode": "pipeline_only",
+      "tier": "enterprise",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2628
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-scan",
+  "displayName": "bootstrap-phase-scan",
+  "description": "Run Phase 1 of the bootstrap pipeline: Scan. Read root-level evidence from the target repo and produce stack, module, build, test, and identity findings before classification. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 1, scan, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [
+      "analyze_repo",
+      "get_module_graph",
+      "list_domains"
+    ],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "repo identity evidence",
+    "scan findings"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 1",
+    "bootstrap pipeline",
+    "scan"
+  ],
+  "mcp_tools_used": [
+    "analyze_repo",
+    "get_module_graph",
+    "list_domains"
+  ],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-scan/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-scan/scripts",
+    "assets": ".github/skills/bootstrap-phase-scan/assets",
+    "references": ".github/skills/bootstrap-phase-scan/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 1",
+    "bootstrap pipeline",
+    "scan"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

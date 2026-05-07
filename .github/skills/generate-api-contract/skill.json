@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-api-contract",
+  "displayName": "generate-api-contract",
+  "description": "Generate a protocol-appropriate API contract from a reviewed spec + acceptance criteria, based on the chosen taxonomy. Emits OpenAPI 3.1 (api-rest), GraphQL SDL (api-graphql), Protobuf 3 (api-grpc), or AsyncAPI 2.6 (event-driven). For library/cli/ui-only, skips with rationale. For mixed, emits multiple artifacts. Use from autorun Phase 2 or from plan-implementation Step 5.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "`featureWorkspace` — path to `specs/<id>-<slug>/`.",
+    "`spec.md` with testable acceptance criteria.",
+    "`taxonomy` — one of: `api-rest | api-graphql | api-grpc | event-driven | library | cli | ui-only | mixed`."
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "acceptance",
+    "api",
+    "appropriate",
+    "artifacts",
+    "asyncapi",
+    "autorun",
+    "based",
+    "chosen",
+    "cli",
+    "contract",
+    "criteria",
+    "driven"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-api-contract/SKILL.md",
+    "scripts": ".github/skills/generate-api-contract/scripts",
+    "assets": ".github/skills/generate-api-contract/assets",
+    "references": ".github/skills/generate-api-contract/references"
+  },
+  "keywords": [
+    "acceptance",
+    "api",
+    "appropriate",
+    "artifacts",
+    "asyncapi",
+    "autorun",
+    "based",
+    "chosen",
+    "cli",
+    "contract",
+    "criteria",
+    "driven"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

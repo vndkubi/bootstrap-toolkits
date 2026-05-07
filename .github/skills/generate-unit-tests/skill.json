@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-unit-tests",
+  "displayName": "generate-unit-tests",
+  "description": "Generate comprehensive unit tests for Java classes with minimal mocking. Analyzes all code branches (if/switch/ternary/try-catch/loops), creates test builder classes, uses real objects over mocks whenever possible, applies reflection only as last resort for private methods. Outputs JUnit 5 tests with @Nested grouping, @DisplayName, AssertJ assertions, and AAA pattern. Use when asked to write tests, improve test coverage, or generate tests for existing code.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "tests"
+  ],
+  "triggers": [
+    "aaa",
+    "all",
+    "analyzes",
+    "applies",
+    "asked",
+    "assertions",
+    "assertj",
+    "branches",
+    "builder",
+    "catch",
+    "classes",
+    "code"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-unit-tests/SKILL.md",
+    "scripts": ".github/skills/generate-unit-tests/scripts",
+    "assets": ".github/skills/generate-unit-tests/assets",
+    "references": ".github/skills/generate-unit-tests/references"
+  },
+  "keywords": [
+    "aaa",
+    "all",
+    "analyzes",
+    "applies",
+    "asked",
+    "assertions",
+    "assertj",
+    "branches",
+    "builder",
+    "catch",
+    "classes",
+    "code"
+  ],
+  "routedBy": [
+    "agent-generator"
+  ],
+  "referencedByAgents": [
+    "agent-generator"
+  ]
+}

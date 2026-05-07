@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "orchestrate-development",
+  "displayName": "orchestrate-development",
+  "description": "Scoped end-to-end development workflow: investigate, confirm, implement, test, verify, and document with evidence-backed reasoning. For larger or requirement-heavy work, hand off into the spec-kit workflow instead of forcing ad hoc implementation.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "plan",
+    "report",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "backed",
+    "confirm",
+    "development",
+    "document",
+    "end",
+    "evidence",
+    "forcing",
+    "hand",
+    "heavy",
+    "hoc",
+    "implement",
+    "implementation"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/orchestrate-development/SKILL.md",
+    "scripts": ".github/skills/orchestrate-development/scripts",
+    "assets": ".github/skills/orchestrate-development/assets",
+    "references": ".github/skills/orchestrate-development/references"
+  },
+  "keywords": [
+    "backed",
+    "confirm",
+    "development",
+    "document",
+    "end",
+    "evidence",
+    "forcing",
+    "hand",
+    "heavy",
+    "hoc",
+    "implement",
+    "implementation"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-api-flow-tests",
+  "displayName": "generate-api-flow-tests",
+  "description": "Stack-agnostic skill that converts a contract + acceptance criteria into red API-flow tests against the locally booted stack. Detects the test stack from repo evidence (JUnit/REST Assured, xUnit/WebApplicationFactory, pytest/httpx, Jest/supertest, Go stdlib). Invoked by @api-test-author during autorun Phase 3.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "`baseUrl` — from `run-local-stack` healthcheck output.",
+    "`contracts/<protocol>.{yaml|graphql|proto}` — reviewed contract.",
+    "`featureWorkspace` — `specs/<id>-<slug>/`.",
+    "`spec.md` — ACs with ids."
+  ],
+  "outputs": [
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "acceptance",
+    "agnostic",
+    "api",
+    "assured",
+    "author",
+    "autorun",
+    "booted",
+    "contract",
+    "converts",
+    "criteria",
+    "detects",
+    "during"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-api-flow-tests/SKILL.md",
+    "scripts": ".github/skills/generate-api-flow-tests/scripts",
+    "assets": ".github/skills/generate-api-flow-tests/assets",
+    "references": ".github/skills/generate-api-flow-tests/references"
+  },
+  "keywords": [
+    "acceptance",
+    "agnostic",
+    "api",
+    "assured",
+    "author",
+    "autorun",
+    "booted",
+    "contract",
+    "converts",
+    "criteria",
+    "detects",
+    "during"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

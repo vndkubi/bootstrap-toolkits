@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "context-inspector",
+  "displayName": "context-inspector",
+  "description": "Answer bounded runtime-behavior questions using manifest, runtime fidelity, context assembly, and tool-permission evidence. Use when users ask why a skill or prompt did not trigger, why a tool is missing, what .github context is likely loaded, or why an artifact or capability tier was retained.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "task list"
+  ],
+  "triggers": [
+    "answer",
+    "artifact",
+    "ask",
+    "assembly",
+    "behavior",
+    "bounded",
+    "capability",
+    "context",
+    "did",
+    "evidence",
+    "fidelity",
+    "github"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/context-inspector/SKILL.md",
+    "scripts": ".github/skills/context-inspector/scripts",
+    "assets": ".github/skills/context-inspector/assets",
+    "references": ".github/skills/context-inspector/references"
+  },
+  "keywords": [
+    "answer",
+    "artifact",
+    "ask",
+    "assembly",
+    "behavior",
+    "bounded",
+    "capability",
+    "context",
+    "did",
+    "evidence",
+    "fidelity",
+    "github"
+  ],
+  "routedBy": [
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator"
+  ]
+}

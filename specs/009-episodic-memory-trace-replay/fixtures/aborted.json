@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "episode_id": "20260120-pbi-060-schema-migration",
+  "created_at": "2026-01-20T11:00:00Z",
+  "pbi_ref": { "type": "folder", "id": "060-schema-migration" },
+  "raw_intent": "Migrate orders table to new status column.",
+  "summary": "Aborted at Phase 2: taxonomy classification was ambiguous and cost cap reached before CONTRACT artifact emitted.",
+  "detected": {
+    "modules": ["db/migrations"],
+    "contracts": [],
+    "stacks": ["postgres"]
+  },
+  "embedding": {
+    "model": "local-minilm-l6-v2@sha256-abc123def456abc123def456",
+    "vector_ref": ".github/.episode-index/vectors.f32.bin#3072+1536"
+  },
+  "phases": [
+    { "phase": "intake", "duration_ms": 1100, "token_cost": 450 },
+    { "phase": "contract", "duration_ms": 6500, "token_cost": 3200 }
+  ],
+  "outcome": "aborted",
+  "outcome_score": 0.05,
+  "score_components": { "tests": 0.0, "review": 0.0, "contract": 0.0, "rounds": 0.5 },
+  "artifacts": {
+    "spec": "specs/060-schema-migration/spec.md",
+    "evidence": ".artifacts/060/evidence-summary.md"
+  },
+  "regression_events": [],
+  "replay_count": 0,
+  "tags": ["db", "cost-cap"]
+}

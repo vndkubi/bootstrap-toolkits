@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "id": "autorun",
+  "displayName": "autorun",
+  "description": "Run a scoped feature end-to-end through 7 phases: INTAKE → CONTRACT → TEST-FIRST → FIXTURE → IMPLEMENT (TDD) → REVIEW → EVIDENCE. Stack-agnostic autonomous loop with JSONL trace, validated confirmation gates, and harness-parity across VS Code and Copilot CLI. Invoke when the user asks for an autonomous end-to-end PBI run, `prove by API flow`, or types `/autorun`.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": [
+      "bash",
+      "edit",
+      "glob",
+      "grep",
+      "read",
+      "task"
+    ]
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "across",
+    "agnostic",
+    "api",
+    "asks",
+    "autonomous",
+    "autorun",
+    "cli",
+    "code",
+    "confirmation",
+    "contract",
+    "copilot",
+    "end"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/autorun/SKILL.md",
+    "scripts": ".github/skills/autorun/scripts",
+    "assets": ".github/skills/autorun/assets",
+    "references": ".github/skills/autorun/references"
+  },
+  "keywords": [
+    "across",
+    "agnostic",
+    "api",
+    "asks",
+    "autonomous",
+    "autorun",
+    "cli",
+    "code",
+    "confirmation",
+    "contract",
+    "copilot",
+    "end"
+  ],
+  "routedBy": [
+    "api-test-author",
+    "dev-orchestrator",
+    "functional-reviewer",
+    "mock-data-specialist",
+    "pr-manager"
+  ],
+  "referencedByAgents": [
+    "api-test-author",
+    "dev-orchestrator",
+    "functional-reviewer",
+    "mock-data-specialist",
+    "pr-manager"
+  ]
+}

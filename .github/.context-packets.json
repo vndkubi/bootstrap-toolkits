@@ -78,8 +78,8 @@
       "path": ".github/skills/generate-hooks/SKILL.md",
       "tier": "workflow",
       "whenToLoad": "on-demand",
-      "tinySummary": "Hook generation guidance including events, tool filtering, and memory hooks",
-      "keyAnchors": ["Official Hook Events", "Detection Matrix", "Memory Hooks"],
+      "tinySummary": "Hook generation guidance including official events and tool-filtered quality checks",
+      "keyAnchors": ["Official Hook Events", "Detection Matrix", "Tool Filtering"],
       "owner": "generate-hooks"
     }
   ]

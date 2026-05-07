@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "optimize-devcontainer",
+  "displayName": "optimize-devcontainer",
+  "description": "Analyze and optimize dev container configurations (devcontainer.json, Dockerfile, Docker Compose) for performance, security, and developer experience. Reviews base images, Features, lifecycle scripts, volume mounts, port forwarding, extensions, and resource limits. Generates optimized configurations for any tech stack. Use when asked to review devcontainer, improve container performance, optimize docker setup, fix slow container startup, reduce image size, or generate devcontainer configuration. Keywords: devcontainer, dev container, docker, container, optimize, performance, startup, image, volume, mount, feature.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "container",
+    "dev container",
+    "devcontainer",
+    "docker",
+    "feature",
+    "image",
+    "mount",
+    "optimize",
+    "performance",
+    "startup",
+    "volume"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/optimize-devcontainer/SKILL.md",
+    "scripts": ".github/skills/optimize-devcontainer/scripts",
+    "assets": ".github/skills/optimize-devcontainer/assets",
+    "references": ".github/skills/optimize-devcontainer/references"
+  },
+  "keywords": [
+    "container",
+    "dev container",
+    "devcontainer",
+    "docker",
+    "feature",
+    "image",
+    "mount",
+    "optimize",
+    "performance",
+    "startup",
+    "volume"
+  ],
+  "routedBy": [
+    "devcontainer-reviewer"
+  ],
+  "referencedByAgents": [
+    "devcontainer-reviewer"
+  ]
+}

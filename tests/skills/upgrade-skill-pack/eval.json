@@ -1,0 +1,21 @@
+{
+  "name": "upgrade-skill-pack",
+  "checks": [
+    {
+      "type": "file_exists",
+      "path": ".github/skills/upgrade-skill-pack/SKILL.md"
+    },
+    {
+      "type": "file_exists",
+      "path": ".github/skills/upgrade-skill-pack/scripts/diff-pack.js"
+    },
+    {
+      "type": "text_includes",
+      "path": ".github/skills/upgrade-skill-pack/SKILL.md",
+      "includes": [
+        "changed skills",
+        "lineage drift"
+      ]
+    }
+  ]
+}

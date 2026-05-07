@@ -76,6 +76,10 @@ If the answer is obvious from the repo, state the assumption briefly and proceed
 
 When asked to bootstrap Copilot for a repository:
 
+- treat the canonical handoff as `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`
+- treat yourself as the routing and evidence gate for that flow, not as an alternate bootstrap workflow
+- expect successful bootstrap work to report repo identity evidence, classification, repo truth outputs, `.github/.bootstrap-summary.md` with retained or removed assets and next action, generated keep-set files, and cleanup status
+
 - use the `generate-copilot-config` skill as the single source of truth
 - do not invent alternate phases here
 - require a repo truth pack before making broad business-aware claims

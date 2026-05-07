@@ -19,7 +19,7 @@ The toolkit includes:
 - **Capability tiers** — `Lean`, `Collaborative`, and `Governed` retained-surface profiles layered on top of repo-size classification
 - **Context Inspector** — a bounded runtime-diagnostic workflow for missing triggers, missing tools, context loading, and retained-surface explanations
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
-- **Intelligence stack** — 4-rule operating core, context packets, memory hooks, correction ledger, and skill-pack import for cross-session learning and cross-repo skill reuse
+- **Intelligence stack** — 4-rule operating core, context packets, correction ledger, and skill-pack import for cross-session learning and cross-repo skill reuse
 
 Important packaging model:
 
@@ -249,17 +249,11 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── promote-learning.prompt.md                   #   🧠 Trigger correction-ledger → memory promotion
 │   └── import-skill-pack.prompt.md                  #   📦 Import a skill pack from Git or local path
 │
-├── hooks/                                           # 🔗 Lifecycle Hooks (generated per project)
-│   ├── memory-capture.json                          #   📝 Capture context packets on session events
-│   ├── memory-inject.json                           #   💉 Inject context packets at session start
-│   ├── memory-summary.json                          #   📊 Summarize session context on stop
-│   └── memory-checkpoint.json                       #   💾 Auto-checkpoint context mid-session
+├── hooks/                                           # 🔗 Optional lifecycle hooks generated per project
+│   └── post-edit-run-tests.json                     #   🧪 Opt-in autorun post-edit test gate
 │
 ├── scripts/                                         # ⚙️ Hook scripts (Node.js, stdlib only)
-│   ├── memory-capture.js                            #   Capture logic for memory hooks
-│   ├── memory-inject.js                             #   Inject logic for memory hooks
-│   ├── memory-summary.js                            #   Summary logic for memory hooks
-│   └── memory-checkpoint.js                         #   Checkpoint logic for memory hooks
+│   └── post-edit-run-tests.js                       #   Autorun post-edit test gate helper
 │
 ├── templates/                                       # 📝 Handoff & decision templates
 │   ├── handoff.md                                   #   Context handoff between sessions

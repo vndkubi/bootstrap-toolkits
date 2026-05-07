@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "dependency-extractor",
+  "displayName": "dependency-extractor",
+  "description": "Extract and write the module dependency graph for any codebase to .github/module-dependency-map.json and .github/MODULE-ARCHITECTURE.md. Supports Maven, Gradle, npm workspaces, .NET solutions, and Python monorepos. Use after bootstrap or whenever the module structure changes. Keywords: dependency map, module graph, impact map, regenerate dependencies.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "report"
+  ],
+  "triggers": [
+    "dependency map",
+    "impact map",
+    "module graph",
+    "regenerate dependencies"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/dependency-extractor/SKILL.md",
+    "scripts": ".github/skills/dependency-extractor/scripts",
+    "assets": ".github/skills/dependency-extractor/assets",
+    "references": ".github/skills/dependency-extractor/references"
+  },
+  "keywords": [
+    "dependency map",
+    "impact map",
+    "module graph",
+    "regenerate dependencies"
+  ],
+  "routedBy": [
+    "dependency-analyzer"
+  ],
+  "referencedByAgents": [
+    "dependency-analyzer"
+  ]
+}

@@ -71,7 +71,7 @@ const FIXTURES = {
     signalId: 'sig-002',
     source: 'user_redirect',
     summary: 'Use record DTOs instead of Optional for JPA entities',
-    evidenceRefs: ['.memory/observations.jsonl:42']
+    evidenceRefs: ['docs/reviews/review-001.md:42']
   },
 
   // Scenario C: Single retry = untrusted, remains noise
@@ -79,7 +79,7 @@ const FIXTURES = {
     signalId: 'sig-003',
     source: 'retry',
     summary: 'Use record DTOs instead of Optional for JPA entities',
-    evidenceRefs: ['.memory/observations.jsonl:50']
+    evidenceRefs: ['docs/reviews/review-002.md:50']
   },
 
   // Scenario D: Three retries = recurrence threshold met, becomes candidate

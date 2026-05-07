@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "autorun-branch",
+  "displayName": "autorun-branch",
+  "description": "Manage the autorun/<PBI> branch lifecycle: create from HEAD, commit-per-phase with a standard prefix, support --abort (clean reset), and --revert (post-merge cleanup). Used only by the autorun orchestrator.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "All operations return `{ok: boolean, sha?: string, error?: string}`.",
+    "Every operation emits exactly one trace event."
+  ],
+  "triggers": [
+    "abort",
+    "autorun",
+    "branch",
+    "clean",
+    "cleanup",
+    "commit",
+    "create",
+    "head",
+    "lifecycle",
+    "manage",
+    "merge",
+    "only"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/autorun-branch/SKILL.md",
+    "scripts": ".github/skills/autorun-branch/scripts",
+    "assets": ".github/skills/autorun-branch/assets",
+    "references": ".github/skills/autorun-branch/references"
+  },
+  "keywords": [
+    "abort",
+    "autorun",
+    "branch",
+    "clean",
+    "cleanup",
+    "commit",
+    "create",
+    "head",
+    "lifecycle",
+    "manage",
+    "merge",
+    "only"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

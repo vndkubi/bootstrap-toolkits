@@ -1,0 +1,4778 @@
+{
+  "schemaVersion": 1,
+  "toolkitVersion": "0.6.0",
+  "generatedAt": "2026-05-07T16:04:22.026Z",
+  "skills": {
+    "analyze-codebase": {
+      "schemaVersion": 1,
+      "id": "analyze-codebase",
+      "displayName": "analyze-codebase",
+      "description": "Deep multi-stack codebase analysis with per-stack detection recipes. Scans project structure, build configs, source code, architecture patterns, domain boundaries, coding conventions, testing approaches, CI/CD pipelines, and external dependencies. Produces a structured analysis report. Supports Java/Maven/Gradle, .NET/C#, Python/Django/FastAPI, TypeScript/React, PHP/Laravel/Symfony, Android/Kotlin, iOS/Swift.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "report",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "analysis",
+        "analyze",
+        "android",
+        "approaches",
+        "architecture",
+        "boundaries",
+        "build",
+        "code",
+        "codebase",
+        "coding",
+        "configs",
+        "conventions"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/analyze-codebase/SKILL.md",
+        "scripts": ".github/skills/analyze-codebase/scripts",
+        "assets": ".github/skills/analyze-codebase/assets",
+        "references": ".github/skills/analyze-codebase/references"
+      },
+      "keywords": [
+        "analysis",
+        "analyze",
+        "android",
+        "approaches",
+        "architecture",
+        "boundaries",
+        "build",
+        "code",
+        "codebase",
+        "coding",
+        "configs",
+        "conventions"
+      ],
+      "routedBy": [
+        "codebase-analyzer"
+      ],
+      "referencedByAgents": [
+        "codebase-analyzer"
+      ]
+    },
+    "analyze-requirements": {
+      "schemaVersion": 1,
+      "id": "analyze-requirements",
+      "displayName": "analyze-requirements",
+      "description": "Requirements analysis and PBI writing workflow. Transforms user feature requests into structured User Stories with acceptance criteria, PBI breakdowns with story point estimates, impact assessments, and dependency maps. Analyzes actual codebase for feasibility and reuse opportunities. Outputs polished markdown requirements, using specs/<feature-id>-<slug>/spec.md as the canonical home for non-trivial work and docs/requirements/ only for backlog-intake artifacts. Use when asked to write a story, create PBIs, analyze requirements, or plan a feature.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "plan",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "acceptance",
+        "actual",
+        "analysis",
+        "analyze",
+        "analyzes",
+        "artifacts",
+        "asked",
+        "assessments",
+        "backlog",
+        "breakdowns",
+        "canonical",
+        "codebase"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/analyze-requirements/SKILL.md",
+        "scripts": ".github/skills/analyze-requirements/scripts",
+        "assets": ".github/skills/analyze-requirements/assets",
+        "references": ".github/skills/analyze-requirements/references"
+      },
+      "keywords": [
+        "acceptance",
+        "actual",
+        "analysis",
+        "analyze",
+        "analyzes",
+        "artifacts",
+        "asked",
+        "assessments",
+        "backlog",
+        "breakdowns",
+        "canonical",
+        "codebase"
+      ],
+      "routedBy": [
+        "business-analyst"
+      ],
+      "referencedByAgents": [
+        "business-analyst"
+      ]
+    },
+    "author-skill": {
+      "schemaVersion": 1,
+      "id": "author-skill",
+      "displayName": "author-skill",
+      "description": "Turn a correction pattern or plain-language capability brief into a draft skill package with SKILL.md, skill.json, standard layout, and an evaluation scaffold. Use when promoting repeated work into a reusable skill or when a non-technical teammate needs a guided business-skill draft. Keywords: author skill, create skill, draft skill, business skill, promote pattern.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [
+          "context-budget-check",
+          "skill-discoverability-audit"
+        ],
+        "mcp": [
+          "audit_discoverability",
+          "list_skills"
+        ],
+        "tools": []
+      },
+      "inputs": [
+        "A plain-language brief or structured JSON with `displayName`, `description`, and `goal`",
+        "Optional dependency hints: `requires.skills`, `requires.mcp`, `mcp_tools_used`",
+        "Optional evidence refs: correction-ledger entries, trace ids, docs, or review findings"
+      ],
+      "outputs": [
+        "Draft file map for the proposed skill package",
+        "Manifest aligned to `.github/schemas/skill-manifest.schema.json`",
+        "Missing-information questions when the input is incomplete"
+      ],
+      "triggers": [
+        "author skill",
+        "business skill",
+        "create skill",
+        "draft skill",
+        "promote pattern"
+      ],
+      "mcp_tools_used": [
+        "audit_discoverability",
+        "list_skills"
+      ],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/author-skill/SKILL.md",
+        "scripts": ".github/skills/author-skill/scripts",
+        "assets": ".github/skills/author-skill/assets",
+        "references": ".github/skills/author-skill/references"
+      },
+      "keywords": [
+        "author skill",
+        "business skill",
+        "create skill",
+        "draft skill",
+        "promote pattern"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "autorun": {
+      "schemaVersion": 1,
+      "id": "autorun",
+      "displayName": "autorun",
+      "description": "Run a scoped feature end-to-end through 7 phases: INTAKE → CONTRACT → TEST-FIRST → FIXTURE → IMPLEMENT (TDD) → REVIEW → EVIDENCE. Stack-agnostic autonomous loop with JSONL trace, validated confirmation gates, and harness-parity across VS Code and Copilot CLI. Invoke when the user asks for an autonomous end-to-end PBI run, `prove by API flow`, or types `/autorun`.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": [
+          "bash",
+          "edit",
+          "glob",
+          "grep",
+          "read",
+          "task"
+        ]
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "across",
+        "agnostic",
+        "api",
+        "asks",
+        "autonomous",
+        "autorun",
+        "cli",
+        "code",
+        "confirmation",
+        "contract",
+        "copilot",
+        "end"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/autorun/SKILL.md",
+        "scripts": ".github/skills/autorun/scripts",
+        "assets": ".github/skills/autorun/assets",
+        "references": ".github/skills/autorun/references"
+      },
+      "keywords": [
+        "across",
+        "agnostic",
+        "api",
+        "asks",
+        "autonomous",
+        "autorun",
+        "cli",
+        "code",
+        "confirmation",
+        "contract",
+        "copilot",
+        "end"
+      ],
+      "routedBy": [
+        "api-test-author",
+        "dev-orchestrator",
+        "functional-reviewer",
+        "mock-data-specialist",
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "api-test-author",
+        "dev-orchestrator",
+        "functional-reviewer",
+        "mock-data-specialist",
+        "pr-manager"
+      ]
+    },
+    "autorun-branch": {
+      "schemaVersion": 1,
+      "id": "autorun-branch",
+      "displayName": "autorun-branch",
+      "description": "Manage the autorun/<PBI> branch lifecycle: create from HEAD, commit-per-phase with a standard prefix, support --abort (clean reset), and --revert (post-merge cleanup). Used only by the autorun orchestrator.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "All operations return `{ok: boolean, sha?: string, error?: string}`.",
+        "Every operation emits exactly one trace event."
+      ],
+      "triggers": [
+        "abort",
+        "autorun",
+        "branch",
+        "clean",
+        "cleanup",
+        "commit",
+        "create",
+        "head",
+        "lifecycle",
+        "manage",
+        "merge",
+        "only"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/autorun-branch/SKILL.md",
+        "scripts": ".github/skills/autorun-branch/scripts",
+        "assets": ".github/skills/autorun-branch/assets",
+        "references": ".github/skills/autorun-branch/references"
+      },
+      "keywords": [
+        "abort",
+        "autorun",
+        "branch",
+        "clean",
+        "cleanup",
+        "commit",
+        "create",
+        "head",
+        "lifecycle",
+        "manage",
+        "merge",
+        "only"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-agents": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-agents",
+      "displayName": "bootstrap-phase-agents",
+      "description": "Run Phase 8 of the bootstrap pipeline: Generate Agents. Generate agents and routing files that reflect the target repo stack, workflow, and escalation paths. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 8, generate agents, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "agents",
+        "routing updates"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 8",
+        "bootstrap pipeline",
+        "generate agents"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-agents/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-agents/scripts",
+        "assets": ".github/skills/bootstrap-phase-agents/assets",
+        "references": ".github/skills/bootstrap-phase-agents/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 8",
+        "bootstrap pipeline",
+        "generate agents"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-classify": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-classify",
+      "displayName": "bootstrap-phase-classify",
+      "description": "Run Phase 2 of the bootstrap pipeline: Classify. Translate scan evidence into repo size, complexity, and retained-surface strategy before generation starts. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 2, classify, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "classification summary",
+        "tier recommendation"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 2",
+        "bootstrap pipeline",
+        "classify"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-classify/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-classify/scripts",
+        "assets": ".github/skills/bootstrap-phase-classify/assets",
+        "references": ".github/skills/bootstrap-phase-classify/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 2",
+        "bootstrap pipeline",
+        "classify"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-cleanup-summary": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-cleanup-summary",
+      "displayName": "bootstrap-phase-cleanup-summary",
+      "description": "Run Phase 15 of the bootstrap pipeline: Manifest, Snapshot, Cleanup, and Summary. Write manifest and summary artifacts, delete bootstrap-only residue, and capture the retained surface honestly. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 15, manifest, snapshot, cleanup, and summary, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "cleanup report",
+        "manifest",
+        "summary"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "and summary",
+        "bootstrap phase 15",
+        "bootstrap pipeline",
+        "cleanup",
+        "manifest",
+        "snapshot"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-cleanup-summary/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-cleanup-summary/scripts",
+        "assets": ".github/skills/bootstrap-phase-cleanup-summary/assets",
+        "references": ".github/skills/bootstrap-phase-cleanup-summary/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "and summary",
+        "bootstrap phase 15",
+        "bootstrap pipeline",
+        "cleanup",
+        "manifest",
+        "snapshot"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-core-instructions": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-core-instructions",
+      "displayName": "bootstrap-phase-core-instructions",
+      "description": "Run Phase 4 of the bootstrap pipeline: Generate Core Instructions. Generate the small always-loaded instruction layer that teaches the target repo operating model and global guardrails. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 4, generate core instructions, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "core instructions"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 4",
+        "bootstrap pipeline",
+        "generate core instructions"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-core-instructions/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-core-instructions/scripts",
+        "assets": ".github/skills/bootstrap-phase-core-instructions/assets",
+        "references": ".github/skills/bootstrap-phase-core-instructions/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 4",
+        "bootstrap pipeline",
+        "generate core instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-devcontainer": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-devcontainer",
+      "displayName": "bootstrap-phase-devcontainer",
+      "description": "Run Phase 14 of the bootstrap pipeline: Devcontainer. Review or generate a devcontainer surface only when the target repo requires it for local workflow parity. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 14, devcontainer, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "devcontainer guidance"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 14",
+        "bootstrap pipeline",
+        "devcontainer"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-devcontainer/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-devcontainer/scripts",
+        "assets": ".github/skills/bootstrap-phase-devcontainer/assets",
+        "references": ".github/skills/bootstrap-phase-devcontainer/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 14",
+        "bootstrap pipeline",
+        "devcontainer"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-domain-instructions": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-domain-instructions",
+      "displayName": "bootstrap-phase-domain-instructions",
+      "description": "Run Phase 5 of the bootstrap pipeline: Generate Domain Instructions. Generate domain-scoped instruction files that keep business or subsystem context narrow and searchable. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 5, generate domain instructions, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "domain instructions"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 5",
+        "bootstrap pipeline",
+        "generate domain instructions"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-domain-instructions/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-domain-instructions/scripts",
+        "assets": ".github/skills/bootstrap-phase-domain-instructions/assets",
+        "references": ".github/skills/bootstrap-phase-domain-instructions/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 5",
+        "bootstrap pipeline",
+        "generate domain instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-domain-repo-truth": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-domain-repo-truth",
+      "displayName": "bootstrap-phase-domain-repo-truth",
+      "description": "Run Phase 3 of the bootstrap pipeline: Domain and Repo Truth Pack. Build the progressive-disclosure truth pack that anchors global, module, and workflow reasoning for the target repo. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 3, domain and repo truth pack, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "domain map",
+        "repo truth pack"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 3",
+        "bootstrap pipeline",
+        "domain and repo truth pack"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-domain-repo-truth/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-domain-repo-truth/scripts",
+        "assets": ".github/skills/bootstrap-phase-domain-repo-truth/assets",
+        "references": ".github/skills/bootstrap-phase-domain-repo-truth/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 3",
+        "bootstrap pipeline",
+        "domain and repo truth pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-hooks-workflows": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-hooks-workflows",
+      "displayName": "bootstrap-phase-hooks-workflows",
+      "description": "Run Phase 11 of the bootstrap pipeline: Hooks and Optional Workflows. Generate hooks and optional workflow automation only when the target repo and capability tier justify them. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 11, hooks and optional workflows, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "hooks",
+        "optional workflows"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 11",
+        "bootstrap pipeline",
+        "hooks and optional workflows"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-hooks-workflows/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-hooks-workflows/scripts",
+        "assets": ".github/skills/bootstrap-phase-hooks-workflows/assets",
+        "references": ".github/skills/bootstrap-phase-hooks-workflows/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 11",
+        "bootstrap pipeline",
+        "hooks and optional workflows"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-language-framework-instructions": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-language-framework-instructions",
+      "displayName": "bootstrap-phase-language-framework-instructions",
+      "description": "Run Phase 6 of the bootstrap pipeline: Generate Language and Framework Instructions. Retain only the language and framework instructions justified by the detected stack and file layout. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 6, generate language and framework instructions, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "framework instructions",
+        "language instructions"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 6",
+        "bootstrap pipeline",
+        "generate language and framework instructions"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-language-framework-instructions/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-language-framework-instructions/scripts",
+        "assets": ".github/skills/bootstrap-phase-language-framework-instructions/assets",
+        "references": ".github/skills/bootstrap-phase-language-framework-instructions/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 6",
+        "bootstrap pipeline",
+        "generate language and framework instructions"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-prompts": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-prompts",
+      "displayName": "bootstrap-phase-prompts",
+      "description": "Run Phase 10 of the bootstrap pipeline: Generate Prompts. Generate the user-facing prompt surface that exposes the retained workflow entry points without bootstrap residue. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 10, generate prompts, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "prompts"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 10",
+        "bootstrap pipeline",
+        "generate prompts"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-prompts/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-prompts/scripts",
+        "assets": ".github/skills/bootstrap-phase-prompts/assets",
+        "references": ".github/skills/bootstrap-phase-prompts/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 10",
+        "bootstrap pipeline",
+        "generate prompts"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-runtime-compilation": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-runtime-compilation",
+      "displayName": "bootstrap-phase-runtime-compilation",
+      "description": "Run Phase 12 of the bootstrap pipeline: Runtime Compilation. Compile runtime fidelity, per-skill manifests, and discoverability indexes from the retained runtime surface. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 12, runtime compilation, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "runtime fidelity manifest",
+        "skill indexes"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 12",
+        "bootstrap pipeline",
+        "runtime compilation"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-runtime-compilation/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-runtime-compilation/scripts",
+        "assets": ".github/skills/bootstrap-phase-runtime-compilation/assets",
+        "references": ".github/skills/bootstrap-phase-runtime-compilation/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 12",
+        "bootstrap pipeline",
+        "runtime compilation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-scan": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-scan",
+      "displayName": "bootstrap-phase-scan",
+      "description": "Run Phase 1 of the bootstrap pipeline: Scan. Read root-level evidence from the target repo and produce stack, module, build, test, and identity findings before classification. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 1, scan, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [
+          "analyze_repo",
+          "get_module_graph",
+          "list_domains"
+        ],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "repo identity evidence",
+        "scan findings"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 1",
+        "bootstrap pipeline",
+        "scan"
+      ],
+      "mcp_tools_used": [
+        "analyze_repo",
+        "get_module_graph",
+        "list_domains"
+      ],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-scan/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-scan/scripts",
+        "assets": ".github/skills/bootstrap-phase-scan/assets",
+        "references": ".github/skills/bootstrap-phase-scan/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 1",
+        "bootstrap pipeline",
+        "scan"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-skills": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-skills",
+      "displayName": "bootstrap-phase-skills",
+      "description": "Run Phase 9 of the bootstrap pipeline: Generate Skills. Generate runtime skills that map the retained workflows, validations, and repo-specialized capabilities. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 9, generate skills, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "runtime skills"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 9",
+        "bootstrap pipeline",
+        "generate skills"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-skills/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-skills/scripts",
+        "assets": ".github/skills/bootstrap-phase-skills/assets",
+        "references": ".github/skills/bootstrap-phase-skills/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 9",
+        "bootstrap pipeline",
+        "generate skills"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-templates": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-templates",
+      "displayName": "bootstrap-phase-templates",
+      "description": "Run Phase 7 of the bootstrap pipeline: Generate Templates. Generate repo-specific templates for PRDs, handoffs, and other repeated writing surfaces. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 7, generate templates, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "templates"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 7",
+        "bootstrap pipeline",
+        "generate templates"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-templates/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-templates/scripts",
+        "assets": ".github/skills/bootstrap-phase-templates/assets",
+        "references": ".github/skills/bootstrap-phase-templates/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 7",
+        "bootstrap pipeline",
+        "generate templates"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "bootstrap-phase-validate": {
+      "schemaVersion": 1,
+      "id": "bootstrap-phase-validate",
+      "displayName": "bootstrap-phase-validate",
+      "description": "Run Phase 13 of the bootstrap pipeline: Validate. Validate structural, discoverability, dependency, and cleanup integrity before finalizing the generated output. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 13, validate, bootstrap pipeline, /bootstrap-copilot.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [
+          "audit_discoverability",
+          "audit_instruction_conflicts",
+          "validate_bootstrap_output"
+        ],
+        "tools": []
+      },
+      "inputs": [
+        "Existing bootstrap state when resuming",
+        "Outputs from the previous phase",
+        "Target repo root"
+      ],
+      "outputs": [
+        "validation report"
+      ],
+      "triggers": [
+        "/bootstrap-copilot",
+        "bootstrap phase 13",
+        "bootstrap pipeline",
+        "validate"
+      ],
+      "mcp_tools_used": [
+        "audit_discoverability",
+        "audit_instruction_conflicts",
+        "validate_bootstrap_output"
+      ],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/bootstrap-phase-validate/SKILL.md",
+        "scripts": ".github/skills/bootstrap-phase-validate/scripts",
+        "assets": ".github/skills/bootstrap-phase-validate/assets",
+        "references": ".github/skills/bootstrap-phase-validate/references"
+      },
+      "keywords": [
+        "/bootstrap-copilot",
+        "bootstrap phase 13",
+        "bootstrap pipeline",
+        "validate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "common-doc-generator": {
+      "schemaVersion": 1,
+      "id": "common-doc-generator",
+      "displayName": "common-doc-generator",
+      "description": "Generate a structured 7-section common doc for any subsystem or .github/ component by tracing source code or skill files. Fills Purpose, Source of Truth, Request/Data Flow, Key Constraints, Verification, Common Failure Modes, and Related Files. Marks [NEEDS CONTENT] where evidence is insufficient. Chat output only — does not write files.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "any",
+        "chat",
+        "code",
+        "common",
+        "component",
+        "constraints",
+        "content",
+        "data",
+        "doc",
+        "does",
+        "evidence",
+        "failure"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/common-doc-generator/SKILL.md",
+        "scripts": ".github/skills/common-doc-generator/scripts",
+        "assets": ".github/skills/common-doc-generator/assets",
+        "references": ".github/skills/common-doc-generator/references"
+      },
+      "keywords": [
+        "any",
+        "chat",
+        "code",
+        "common",
+        "component",
+        "constraints",
+        "content",
+        "data",
+        "doc",
+        "does",
+        "evidence",
+        "failure"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ]
+    },
+    "context-assembly-simulator": {
+      "schemaVersion": 1,
+      "id": "context-assembly-simulator",
+      "displayName": "context-assembly-simulator",
+      "description": "Simulate which .github/ files will be loaded into context for a given agent and file path. Outputs an ordered context list with KB sizes, budget calculation, and flags for overbudget or conflicting instructions. Use before debugging why an agent behaves unexpectedly, or to validate context efficiency. Keywords: context simulation, context loading, budget check, what is loaded, context debugging.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "--",
+        "| Agent name | Optional | e.g. `dev-orchestrator`, `implementor`. If omitted, show all agents. |",
+        "| File path being edited | Optional | e.g. `src/main/java/OrderService.java`. If omitted, show instruction-only load. |",
+        "| Input | Required | Description |",
+        "|-------|----------|-------------|"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "budget check",
+        "context debugging",
+        "context loading",
+        "context simulation",
+        "what is loaded"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/context-assembly-simulator/SKILL.md",
+        "scripts": ".github/skills/context-assembly-simulator/scripts",
+        "assets": ".github/skills/context-assembly-simulator/assets",
+        "references": ".github/skills/context-assembly-simulator/references"
+      },
+      "keywords": [
+        "budget check",
+        "context debugging",
+        "context loading",
+        "context simulation",
+        "what is loaded"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "context-budget-check": {
+      "schemaVersion": 1,
+      "id": "context-budget-check",
+      "displayName": "context-budget-check",
+      "description": "Validate that all generated Copilot configuration files comply with context budget targets. Calculates worst-case co-loading scenarios and flags oversized files. Use after generating or modifying .github/ configuration files.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "prompt",
+        "report"
+      ],
+      "triggers": [
+        "all",
+        "budget",
+        "calculates",
+        "case",
+        "check",
+        "comply",
+        "configuration",
+        "context",
+        "copilot",
+        "files",
+        "flags",
+        "generated"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/context-budget-check/SKILL.md",
+        "scripts": ".github/skills/context-budget-check/scripts",
+        "assets": ".github/skills/context-budget-check/assets",
+        "references": ".github/skills/context-budget-check/references"
+      },
+      "keywords": [
+        "all",
+        "budget",
+        "calculates",
+        "case",
+        "check",
+        "comply",
+        "configuration",
+        "context",
+        "copilot",
+        "files",
+        "flags",
+        "generated"
+      ],
+      "routedBy": [
+        "conductor"
+      ],
+      "referencedByAgents": [
+        "conductor"
+      ]
+    },
+    "context-inspector": {
+      "schemaVersion": 1,
+      "id": "context-inspector",
+      "displayName": "context-inspector",
+      "description": "Answer bounded runtime-behavior questions using manifest, runtime fidelity, context assembly, and tool-permission evidence. Use when users ask why a skill or prompt did not trigger, why a tool is missing, what .github context is likely loaded, or why an artifact or capability tier was retained.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "task list"
+      ],
+      "triggers": [
+        "answer",
+        "artifact",
+        "ask",
+        "assembly",
+        "behavior",
+        "bounded",
+        "capability",
+        "context",
+        "did",
+        "evidence",
+        "fidelity",
+        "github"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/context-inspector/SKILL.md",
+        "scripts": ".github/skills/context-inspector/scripts",
+        "assets": ".github/skills/context-inspector/assets",
+        "references": ".github/skills/context-inspector/references"
+      },
+      "keywords": [
+        "answer",
+        "artifact",
+        "ask",
+        "assembly",
+        "behavior",
+        "bounded",
+        "capability",
+        "context",
+        "did",
+        "evidence",
+        "fidelity",
+        "github"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ]
+    },
+    "conventional-commit": {
+      "schemaVersion": 1,
+      "id": "conventional-commit",
+      "displayName": "conventional-commit",
+      "description": "Generate conventional commit messages by analyzing staged git changes and applying the Conventional Commits specification. Supports scopes, breaking changes, and multi-line bodies. Use when committing changes or writing commit messages.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "analyzing",
+        "applying",
+        "bodies",
+        "breaking",
+        "changes",
+        "commit",
+        "commits",
+        "committing",
+        "conventional",
+        "generate",
+        "git",
+        "line"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/conventional-commit/SKILL.md",
+        "scripts": ".github/skills/conventional-commit/scripts",
+        "assets": ".github/skills/conventional-commit/assets",
+        "references": ".github/skills/conventional-commit/references"
+      },
+      "keywords": [
+        "analyzing",
+        "applying",
+        "bodies",
+        "breaking",
+        "changes",
+        "commit",
+        "commits",
+        "committing",
+        "conventional",
+        "generate",
+        "git",
+        "line"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ]
+    },
+    "core-principles": {
+      "schemaVersion": 1,
+      "id": "core-principles",
+      "displayName": "core-principles",
+      "description": "Core engineering principles for all agents: understand before changing, respect business rules and module boundaries, avoid duplicate validation, and verify honestly.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "report",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "agents",
+        "all",
+        "avoid",
+        "boundaries",
+        "business",
+        "changing",
+        "core",
+        "duplicate",
+        "engineering",
+        "honestly",
+        "module",
+        "principles"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/core-principles/SKILL.md",
+        "scripts": ".github/skills/core-principles/scripts",
+        "assets": ".github/skills/core-principles/assets",
+        "references": ".github/skills/core-principles/references"
+      },
+      "keywords": [
+        "agents",
+        "all",
+        "avoid",
+        "boundaries",
+        "business",
+        "changing",
+        "core",
+        "duplicate",
+        "engineering",
+        "honestly",
+        "module",
+        "principles"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "correction-ledger": {
+      "schemaVersion": 1,
+      "id": "correction-ledger",
+      "displayName": "correction-ledger",
+      "description": "Aggregate trusted correction signals from accepted review fixes, explicit user redirections, and repeated reviewer findings into approval-ready promotion candidates. Use when running the learning loop, analyzing correction patterns, or feeding stable signals into review-memory-promotion. Keywords: correction ledger, learning loop, correction patterns, promotion candidates, recurring fixes.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "prompt",
+        "report",
+        "review findings"
+      ],
+      "triggers": [
+        "correction ledger",
+        "correction patterns",
+        "learning loop",
+        "promotion candidates",
+        "recurring fixes"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/correction-ledger/SKILL.md",
+        "scripts": ".github/skills/correction-ledger/scripts",
+        "assets": ".github/skills/correction-ledger/assets",
+        "references": ".github/skills/correction-ledger/references"
+      },
+      "keywords": [
+        "correction ledger",
+        "correction patterns",
+        "learning loop",
+        "promotion candidates",
+        "recurring fixes"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "dependency-extractor": {
+      "schemaVersion": 1,
+      "id": "dependency-extractor",
+      "displayName": "dependency-extractor",
+      "description": "Extract and write the module dependency graph for any codebase to .github/module-dependency-map.json and .github/MODULE-ARCHITECTURE.md. Supports Maven, Gradle, npm workspaces, .NET solutions, and Python monorepos. Use after bootstrap or whenever the module structure changes. Keywords: dependency map, module graph, impact map, regenerate dependencies.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "report"
+      ],
+      "triggers": [
+        "dependency map",
+        "impact map",
+        "module graph",
+        "regenerate dependencies"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/dependency-extractor/SKILL.md",
+        "scripts": ".github/skills/dependency-extractor/scripts",
+        "assets": ".github/skills/dependency-extractor/assets",
+        "references": ".github/skills/dependency-extractor/references"
+      },
+      "keywords": [
+        "dependency map",
+        "impact map",
+        "module graph",
+        "regenerate dependencies"
+      ],
+      "routedBy": [
+        "dependency-analyzer"
+      ],
+      "referencedByAgents": [
+        "dependency-analyzer"
+      ]
+    },
+    "domain-registry": {
+      "schemaVersion": 1,
+      "id": "domain-registry",
+      "displayName": "domain-registry",
+      "description": "Auto-detect and register business domains from source code analysis. Scans package/module structure, entities, services, and cross-domain dependencies to generate domain-registry.json and domain-scoped .instructions.md files. Use for projects with 5+ business domains or 10+ modules.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "workflow output"
+      ],
+      "triggers": [
+        "analysis",
+        "auto",
+        "business",
+        "code",
+        "cross",
+        "dependencies",
+        "detect",
+        "domain",
+        "domains",
+        "entities",
+        "files",
+        "generate"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/domain-registry/SKILL.md",
+        "scripts": ".github/skills/domain-registry/scripts",
+        "assets": ".github/skills/domain-registry/assets",
+        "references": ".github/skills/domain-registry/references"
+      },
+      "keywords": [
+        "analysis",
+        "auto",
+        "business",
+        "code",
+        "cross",
+        "dependencies",
+        "detect",
+        "domain",
+        "domains",
+        "entities",
+        "files",
+        "generate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "drift-detector": {
+      "schemaVersion": 1,
+      "id": "drift-detector",
+      "displayName": "drift-detector",
+      "description": "Detect configuration drift between the bootstrap snapshot and the current repository state. Scans module topology, frameworks, instruction coverage, reference integrity, and source-of-truth changes to produce a drift score with actionable recommendations. Use after significant repo changes, dependency updates, or when Copilot suggestions seem stale. Keywords: drift detection, config drift, bootstrap freshness, stale config, rebootstrap, configuration audit.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "--",
+        "| Input | Required | Description |",
+        "| Scan depth | Optional | `lightweight` (default) or `deep`. Lightweight checks build files + directory structure only. Deep re-runs full Phase 1 scan logic. |",
+        "| Snapshot path | Optional | Path to `.github/.bootstrap-snapshot.json`. Defaults to `.github/.bootstrap-snapshot.json` |",
+        "|-------|----------|-------------|"
+      ],
+      "outputs": [
+        "configuration",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "bootstrap freshness",
+        "config drift",
+        "configuration audit",
+        "drift detection",
+        "rebootstrap",
+        "stale config"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/drift-detector/SKILL.md",
+        "scripts": ".github/skills/drift-detector/scripts",
+        "assets": ".github/skills/drift-detector/assets",
+        "references": ".github/skills/drift-detector/references"
+      },
+      "keywords": [
+        "bootstrap freshness",
+        "config drift",
+        "configuration audit",
+        "drift detection",
+        "rebootstrap",
+        "stale config"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "estimate-effort": {
+      "schemaVersion": 1,
+      "id": "estimate-effort",
+      "displayName": "estimate-effort",
+      "description": "Estimate development effort for user stories, PBIs, or technical tasks by analyzing codebase complexity, affected layers, test coverage needs, and risk factors. Produces story point estimates with justification and confidence levels. Use when estimating backlog items or planning capacity.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "affected",
+        "analyzing",
+        "backlog",
+        "capacity",
+        "codebase",
+        "complexity",
+        "confidence",
+        "coverage",
+        "development",
+        "effort",
+        "estimate",
+        "estimates"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/estimate-effort/SKILL.md",
+        "scripts": ".github/skills/estimate-effort/scripts",
+        "assets": ".github/skills/estimate-effort/assets",
+        "references": ".github/skills/estimate-effort/references"
+      },
+      "keywords": [
+        "affected",
+        "analyzing",
+        "backlog",
+        "capacity",
+        "codebase",
+        "complexity",
+        "confidence",
+        "coverage",
+        "development",
+        "effort",
+        "estimate",
+        "estimates"
+      ],
+      "routedBy": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ]
+    },
+    "evaluate-skill": {
+      "schemaVersion": 1,
+      "id": "evaluate-skill",
+      "displayName": "evaluate-skill",
+      "description": "Evaluate a skill against repo-local checks and fixtures under tests/skills/<name>/eval.json. Produces pass/fail results and a numeric score so new or changed skills are validated before retention. Keywords: evaluate skill, skill checks, skill regression, skill score.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "experimental",
+      "requires": {
+        "skills": [
+          "trace-replay"
+        ],
+        "mcp": [
+          "audit_discoverability",
+          "validate_bootstrap_output"
+        ],
+        "tools": []
+      },
+      "inputs": [
+        "Optional repo root override",
+        "Skill id"
+      ],
+      "outputs": [
+        "JSON result with pass/fail counts, score, and individual check results"
+      ],
+      "triggers": [
+        "evaluate skill",
+        "skill checks",
+        "skill regression",
+        "skill score"
+      ],
+      "mcp_tools_used": [
+        "audit_discoverability",
+        "validate_bootstrap_output"
+      ],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/evaluate-skill/SKILL.md",
+        "scripts": ".github/skills/evaluate-skill/scripts",
+        "assets": ".github/skills/evaluate-skill/assets",
+        "references": ".github/skills/evaluate-skill/references"
+      },
+      "keywords": [
+        "evaluate skill",
+        "skill checks",
+        "skill regression",
+        "skill score"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-adr": {
+      "schemaVersion": 1,
+      "id": "generate-adr",
+      "displayName": "generate-adr",
+      "description": "Generate Architecture Decision Records (ADRs) for significant technical decisions. Creates structured markdown documents capturing context, decision, alternatives considered, consequences, and status. Use when making architecture choices, selecting technologies, changing patterns, or documenting why a specific approach was chosen. Keywords: ADR, architecture decision, design decision, technical decision, why we chose.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "deprecated",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "workflow output"
+      ],
+      "triggers": [
+        "ADR",
+        "architecture decision",
+        "design decision",
+        "technical decision",
+        "why we chose"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-adr/SKILL.md",
+        "scripts": ".github/skills/generate-adr/scripts",
+        "assets": ".github/skills/generate-adr/assets",
+        "references": ".github/skills/generate-adr/references"
+      },
+      "keywords": [
+        "ADR",
+        "architecture decision",
+        "design decision",
+        "technical decision",
+        "why we chose"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ]
+    },
+    "generate-agentic-workflow": {
+      "schemaVersion": 1,
+      "id": "generate-agentic-workflow",
+      "displayName": "generate-agentic-workflow",
+      "description": "Generate GitHub Copilot Agentic Workflow files (.md) with frontmatter for triggers, permissions, and safe-outputs. Creates automation workflows for issue triage, daily reports, PR checks, and compliance audits that run via the Copilot coding agent in GitHub Actions. Use when setting up automated repository workflows.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "report",
+        "task list"
+      ],
+      "triggers": [
+        "actions",
+        "agent",
+        "agentic",
+        "audits",
+        "automated",
+        "automation",
+        "checks",
+        "coding",
+        "compliance",
+        "copilot",
+        "creates",
+        "daily"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-agentic-workflow/SKILL.md",
+        "scripts": ".github/skills/generate-agentic-workflow/scripts",
+        "assets": ".github/skills/generate-agentic-workflow/assets",
+        "references": ".github/skills/generate-agentic-workflow/references"
+      },
+      "keywords": [
+        "actions",
+        "agent",
+        "agentic",
+        "audits",
+        "automated",
+        "automation",
+        "checks",
+        "coding",
+        "compliance",
+        "copilot",
+        "creates",
+        "daily"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-api-contract": {
+      "schemaVersion": 1,
+      "id": "generate-api-contract",
+      "displayName": "generate-api-contract",
+      "description": "Generate a protocol-appropriate API contract from a reviewed spec + acceptance criteria, based on the chosen taxonomy. Emits OpenAPI 3.1 (api-rest), GraphQL SDL (api-graphql), Protobuf 3 (api-grpc), or AsyncAPI 2.6 (event-driven). For library/cli/ui-only, skips with rationale. For mixed, emits multiple artifacts. Use from autorun Phase 2 or from plan-implementation Step 5.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "`featureWorkspace` — path to `specs/<id>-<slug>/`.",
+        "`spec.md` with testable acceptance criteria.",
+        "`taxonomy` — one of: `api-rest | api-graphql | api-grpc | event-driven | library | cli | ui-only | mixed`."
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "acceptance",
+        "api",
+        "appropriate",
+        "artifacts",
+        "asyncapi",
+        "autorun",
+        "based",
+        "chosen",
+        "cli",
+        "contract",
+        "criteria",
+        "driven"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-api-contract/SKILL.md",
+        "scripts": ".github/skills/generate-api-contract/scripts",
+        "assets": ".github/skills/generate-api-contract/assets",
+        "references": ".github/skills/generate-api-contract/references"
+      },
+      "keywords": [
+        "acceptance",
+        "api",
+        "appropriate",
+        "artifacts",
+        "asyncapi",
+        "autorun",
+        "based",
+        "chosen",
+        "cli",
+        "contract",
+        "criteria",
+        "driven"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-api-flow-tests": {
+      "schemaVersion": 1,
+      "id": "generate-api-flow-tests",
+      "displayName": "generate-api-flow-tests",
+      "description": "Stack-agnostic skill that converts a contract + acceptance criteria into red API-flow tests against the locally booted stack. Detects the test stack from repo evidence (JUnit/REST Assured, xUnit/WebApplicationFactory, pytest/httpx, Jest/supertest, Go stdlib). Invoked by @api-test-author during autorun Phase 3.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "`baseUrl` — from `run-local-stack` healthcheck output.",
+        "`contracts/<protocol>.{yaml|graphql|proto}` — reviewed contract.",
+        "`featureWorkspace` — `specs/<id>-<slug>/`.",
+        "`spec.md` — ACs with ids."
+      ],
+      "outputs": [
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "acceptance",
+        "agnostic",
+        "api",
+        "assured",
+        "author",
+        "autorun",
+        "booted",
+        "contract",
+        "converts",
+        "criteria",
+        "detects",
+        "during"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-api-flow-tests/SKILL.md",
+        "scripts": ".github/skills/generate-api-flow-tests/scripts",
+        "assets": ".github/skills/generate-api-flow-tests/assets",
+        "references": ".github/skills/generate-api-flow-tests/references"
+      },
+      "keywords": [
+        "acceptance",
+        "agnostic",
+        "api",
+        "assured",
+        "author",
+        "autorun",
+        "booted",
+        "contract",
+        "converts",
+        "criteria",
+        "detects",
+        "during"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-copilot-config": {
+      "schemaVersion": 1,
+      "id": "generate-copilot-config",
+      "displayName": "generate-copilot-config",
+      "description": "Generate a project-specific GitHub Copilot configuration through a scan, classification, domain analysis, repo-truth-pack generation, artifact generation, and validation pipeline.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [
+          "bootstrap-phase-agents",
+          "bootstrap-phase-classify",
+          "bootstrap-phase-cleanup-summary",
+          "bootstrap-phase-core-instructions",
+          "bootstrap-phase-devcontainer",
+          "bootstrap-phase-domain-instructions",
+          "bootstrap-phase-domain-repo-truth",
+          "bootstrap-phase-hooks-workflows",
+          "bootstrap-phase-language-framework-instructions",
+          "bootstrap-phase-prompts",
+          "bootstrap-phase-runtime-compilation",
+          "bootstrap-phase-scan",
+          "bootstrap-phase-skills",
+          "bootstrap-phase-templates",
+          "bootstrap-phase-validate",
+          "context-budget-check",
+          "drift-detector",
+          "instruction-conflict-detector",
+          "repo-memory-promoter",
+          "review-effectiveness",
+          "review-memory-promotion",
+          "skill-discoverability-audit",
+          "tool-permission-auditor",
+          "validate-bootstrap-output"
+        ],
+        "mcp": [
+          "analyze_repo",
+          "audit_context",
+          "audit_discoverability",
+          "audit_instruction_conflicts",
+          "audit_tools",
+          "detect_drift",
+          "get_module_graph",
+          "inspect_source_of_truth",
+          "list_domains",
+          "list_skills",
+          "validate_bootstrap_output"
+        ],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "analysis",
+        "artifact",
+        "classification",
+        "config",
+        "configuration",
+        "copilot",
+        "domain",
+        "generate",
+        "generation",
+        "github",
+        "pack",
+        "pipeline"
+      ],
+      "mcp_tools_used": [
+        "analyze_repo",
+        "audit_context",
+        "audit_discoverability",
+        "audit_instruction_conflicts",
+        "audit_tools",
+        "detect_drift",
+        "get_module_graph",
+        "inspect_source_of_truth",
+        "list_domains",
+        "list_skills",
+        "validate_bootstrap_output"
+      ],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/generate-copilot-config/SKILL.md",
+        "scripts": ".github/skills/generate-copilot-config/scripts",
+        "assets": ".github/skills/generate-copilot-config/assets",
+        "references": ".github/skills/generate-copilot-config/references"
+      },
+      "keywords": [
+        "analysis",
+        "artifact",
+        "classification",
+        "config",
+        "configuration",
+        "copilot",
+        "domain",
+        "generate",
+        "generation",
+        "github",
+        "pack",
+        "pipeline"
+      ],
+      "routedBy": [
+        "codebase-analyzer",
+        "conductor"
+      ],
+      "referencedByAgents": [
+        "codebase-analyzer",
+        "conductor"
+      ]
+    },
+    "generate-domain-instructions": {
+      "schemaVersion": 1,
+      "id": "generate-domain-instructions",
+      "displayName": "generate-domain-instructions",
+      "description": "Generate domain-scoped .instructions.md files from codebase analysis results. Creates one instruction file per business domain with business rules, entity relationships, patterns, and glossary. Each file is ≤ 4KB with narrow applyTo patterns for efficient context loading.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "report"
+      ],
+      "triggers": [
+        "4kb",
+        "analysis",
+        "applyto",
+        "business",
+        "codebase",
+        "context",
+        "creates",
+        "domain",
+        "each",
+        "efficient",
+        "entity",
+        "file"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-domain-instructions/SKILL.md",
+        "scripts": ".github/skills/generate-domain-instructions/scripts",
+        "assets": ".github/skills/generate-domain-instructions/assets",
+        "references": ".github/skills/generate-domain-instructions/references"
+      },
+      "keywords": [
+        "4kb",
+        "analysis",
+        "applyto",
+        "business",
+        "codebase",
+        "context",
+        "creates",
+        "domain",
+        "each",
+        "efficient",
+        "entity",
+        "file"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-evidence-summary": {
+      "schemaVersion": 1,
+      "id": "generate-evidence-summary",
+      "displayName": "generate-evidence-summary",
+      "description": "Phase 7 of /autorun. Consolidates the autorun trace, AC map, TDD log, mocks inventory, and review verdict into specs/<id>-<slug>/evidence-summary.md. Also prepares the evidence bundle directory consumed by @pr-manager and review-code-changes.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Harness env (`COPILOT_HARNESS`) — renders `harness` field in output.",
+        "`.artifacts/<pbi>/` — local cache with `review-report.json` and `test-results/`.",
+        "`.github/.traces/autorun-<pbi>.jsonl` — raw trace.",
+        "`specs/<id>-<slug>/` — feature workspace (spec.md, plan.md, contracts/, test-coverage.md, tdd-log.md, mocks-used.md, optional mock-exceptions.md)."
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "also",
+        "autorun",
+        "bundle",
+        "changes",
+        "code",
+        "consolidates",
+        "consumed",
+        "directory",
+        "evidence",
+        "generate",
+        "inventory",
+        "log"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-evidence-summary/SKILL.md",
+        "scripts": ".github/skills/generate-evidence-summary/scripts",
+        "assets": ".github/skills/generate-evidence-summary/assets",
+        "references": ".github/skills/generate-evidence-summary/references"
+      },
+      "keywords": [
+        "also",
+        "autorun",
+        "bundle",
+        "changes",
+        "code",
+        "consolidates",
+        "consumed",
+        "directory",
+        "evidence",
+        "generate",
+        "inventory",
+        "log"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ]
+    },
+    "generate-hooks": {
+      "schemaVersion": 1,
+      "id": "generate-hooks",
+      "displayName": "generate-hooks",
+      "description": "Generate GitHub Copilot hooks (.github/hooks/*.json) for formatter, lint, compile, security, and audit automation. Uses only official hook events and prefers postToolUse with tool filtering for quality checks. Use when bootstrapping Copilot config, setting up quality automation, or adding lifecycle hooks.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "adding",
+        "audit",
+        "automation",
+        "bootstrapping",
+        "checks",
+        "compile",
+        "config",
+        "copilot",
+        "events",
+        "filtering",
+        "formatter",
+        "generate"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-hooks/SKILL.md",
+        "scripts": ".github/skills/generate-hooks/scripts",
+        "assets": ".github/skills/generate-hooks/assets",
+        "references": ".github/skills/generate-hooks/references"
+      },
+      "keywords": [
+        "adding",
+        "audit",
+        "automation",
+        "bootstrapping",
+        "checks",
+        "compile",
+        "config",
+        "copilot",
+        "events",
+        "filtering",
+        "formatter",
+        "generate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-mobile-tests": {
+      "schemaVersion": 1,
+      "id": "generate-mobile-tests",
+      "displayName": "generate-mobile-tests",
+      "description": "Generate comprehensive unit and UI tests for Android (JUnit 5, MockK, Turbine, Compose Testing) and iOS (XCTest, Swift Testing) mobile applications. Analyzes all code branches, creates test builders and fake repositories, uses real objects over mocks whenever possible. Outputs structured tests covering all UI states and business logic branches. Use when asked to write tests, improve coverage, or generate tests for mobile code.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "tests"
+      ],
+      "triggers": [
+        "all",
+        "analyzes",
+        "android",
+        "applications",
+        "asked",
+        "branches",
+        "builders",
+        "business",
+        "code",
+        "compose",
+        "comprehensive",
+        "coverage"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-mobile-tests/SKILL.md",
+        "scripts": ".github/skills/generate-mobile-tests/scripts",
+        "assets": ".github/skills/generate-mobile-tests/assets",
+        "references": ".github/skills/generate-mobile-tests/references"
+      },
+      "keywords": [
+        "all",
+        "analyzes",
+        "android",
+        "applications",
+        "asked",
+        "branches",
+        "builders",
+        "business",
+        "code",
+        "compose",
+        "comprehensive",
+        "coverage"
+      ],
+      "routedBy": [
+        "mobile-test-specialist"
+      ],
+      "referencedByAgents": [
+        "mobile-test-specialist"
+      ]
+    },
+    "generate-pr-description": {
+      "schemaVersion": 1,
+      "id": "generate-pr-description",
+      "displayName": "generate-pr-description",
+      "description": "Generate comprehensive pull request descriptions by analyzing git diff, commit history, and related issues. Creates structured PR descriptions with summary, changes, testing notes, and review checklist. Use when creating or improving PR descriptions.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "analyzing",
+        "changes",
+        "checklist",
+        "commit",
+        "comprehensive",
+        "creates",
+        "creating",
+        "description",
+        "descriptions",
+        "diff",
+        "generate",
+        "git"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-pr-description/SKILL.md",
+        "scripts": ".github/skills/generate-pr-description/scripts",
+        "assets": ".github/skills/generate-pr-description/assets",
+        "references": ".github/skills/generate-pr-description/references"
+      },
+      "keywords": [
+        "analyzing",
+        "changes",
+        "checklist",
+        "commit",
+        "comprehensive",
+        "creates",
+        "creating",
+        "description",
+        "descriptions",
+        "diff",
+        "generate",
+        "git"
+      ],
+      "routedBy": [
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "pr-manager"
+      ]
+    },
+    "generate-sequence-diagram": {
+      "schemaVersion": 1,
+      "id": "generate-sequence-diagram",
+      "displayName": "generate-sequence-diagram",
+      "description": "Generate detailed Mermaid sequence diagrams by tracing code flows through Java/Jakarta EE applications. Identifies all participants across layers (REST resources, services, repositories, databases, external services, message queues). Creates both as-is and to-be diagrams with visual change markers for new, modified, and removed components. Use when asked to create a sequence diagram, visualize a flow, or document request processing.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "diagram",
+        "review findings"
+      ],
+      "triggers": [
+        "across",
+        "all",
+        "applications",
+        "asked",
+        "both",
+        "change",
+        "code",
+        "components",
+        "create",
+        "creates",
+        "databases",
+        "detailed"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-sequence-diagram/SKILL.md",
+        "scripts": ".github/skills/generate-sequence-diagram/scripts",
+        "assets": ".github/skills/generate-sequence-diagram/assets",
+        "references": ".github/skills/generate-sequence-diagram/references"
+      },
+      "keywords": [
+        "across",
+        "all",
+        "applications",
+        "asked",
+        "both",
+        "change",
+        "code",
+        "components",
+        "create",
+        "creates",
+        "databases",
+        "detailed"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ]
+    },
+    "generate-state-diagram": {
+      "schemaVersion": 1,
+      "id": "generate-state-diagram",
+      "displayName": "generate-state-diagram",
+      "description": "Generate Mermaid state diagrams by analyzing entity lifecycle, status fields, and state transitions in the codebase. Traces enums, state machines, status update logic, and transition guards across services and validators. Creates both as-is and to-be diagrams with change markers. Use when asked to visualize entity lifecycle, status flow, or state transitions.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "review findings"
+      ],
+      "triggers": [
+        "across",
+        "analyzing",
+        "asked",
+        "both",
+        "change",
+        "codebase",
+        "creates",
+        "diagram",
+        "diagrams",
+        "entity",
+        "enums",
+        "fields"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-state-diagram/SKILL.md",
+        "scripts": ".github/skills/generate-state-diagram/scripts",
+        "assets": ".github/skills/generate-state-diagram/assets",
+        "references": ".github/skills/generate-state-diagram/references"
+      },
+      "keywords": [
+        "across",
+        "analyzing",
+        "asked",
+        "both",
+        "change",
+        "codebase",
+        "creates",
+        "diagram",
+        "diagrams",
+        "entity",
+        "enums",
+        "fields"
+      ],
+      "routedBy": [
+        "sequence-diagrammer"
+      ],
+      "referencedByAgents": [
+        "sequence-diagrammer"
+      ]
+    },
+    "generate-tasks": {
+      "schemaVersion": 1,
+      "id": "generate-tasks",
+      "displayName": "generate-tasks",
+      "description": "Analyzes an implementation plan and supporting spec-kit artifacts to generate an executable task list. Converts contracts, data models, research, and verification scenarios into ordered tasks with dependencies, parallel groups, and checkpoints.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "analyzes",
+        "artifacts",
+        "checkpoints",
+        "contracts",
+        "converts",
+        "data",
+        "dependencies",
+        "executable",
+        "generate",
+        "groups",
+        "implementation",
+        "kit"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/generate-tasks/SKILL.md",
+        "scripts": ".github/skills/generate-tasks/scripts",
+        "assets": ".github/skills/generate-tasks/assets",
+        "references": ".github/skills/generate-tasks/references"
+      },
+      "keywords": [
+        "analyzes",
+        "artifacts",
+        "checkpoints",
+        "contracts",
+        "converts",
+        "data",
+        "dependencies",
+        "executable",
+        "generate",
+        "groups",
+        "implementation",
+        "kit"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "generate-unit-tests": {
+      "schemaVersion": 1,
+      "id": "generate-unit-tests",
+      "displayName": "generate-unit-tests",
+      "description": "Generate comprehensive unit tests for Java classes with minimal mocking. Analyzes all code branches (if/switch/ternary/try-catch/loops), creates test builder classes, uses real objects over mocks whenever possible, applies reflection only as last resort for private methods. Outputs JUnit 5 tests with @Nested grouping, @DisplayName, AssertJ assertions, and AAA pattern. Use when asked to write tests, improve test coverage, or generate tests for existing code.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "tests"
+      ],
+      "triggers": [
+        "aaa",
+        "all",
+        "analyzes",
+        "applies",
+        "asked",
+        "assertions",
+        "assertj",
+        "branches",
+        "builder",
+        "catch",
+        "classes",
+        "code"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-unit-tests/SKILL.md",
+        "scripts": ".github/skills/generate-unit-tests/scripts",
+        "assets": ".github/skills/generate-unit-tests/assets",
+        "references": ".github/skills/generate-unit-tests/references"
+      },
+      "keywords": [
+        "aaa",
+        "all",
+        "analyzes",
+        "applies",
+        "asked",
+        "assertions",
+        "assertj",
+        "branches",
+        "builder",
+        "catch",
+        "classes",
+        "code"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ]
+    },
+    "generate-wiremock": {
+      "schemaVersion": 1,
+      "id": "generate-wiremock",
+      "displayName": "generate-wiremock",
+      "description": "Generate WireMock stub configurations and response files by analyzing external HTTP service calls in the codebase. Learns existing WireMock patterns and conventions, creates mappings for success, error, and timeout scenarios with response templating. Supports stateful scenarios for multi-step workflows and devcontainer integration. Use when asked to create mock data, add WireMock stubs, or set up local service mocking.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "tests"
+      ],
+      "triggers": [
+        "add",
+        "analyzing",
+        "asked",
+        "calls",
+        "codebase",
+        "configurations",
+        "conventions",
+        "create",
+        "creates",
+        "data",
+        "devcontainer",
+        "error"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/generate-wiremock/SKILL.md",
+        "scripts": ".github/skills/generate-wiremock/scripts",
+        "assets": ".github/skills/generate-wiremock/assets",
+        "references": ".github/skills/generate-wiremock/references"
+      },
+      "keywords": [
+        "add",
+        "analyzing",
+        "asked",
+        "calls",
+        "codebase",
+        "configurations",
+        "conventions",
+        "create",
+        "creates",
+        "data",
+        "devcontainer",
+        "error"
+      ],
+      "routedBy": [
+        "agent-generator"
+      ],
+      "referencedByAgents": [
+        "agent-generator"
+      ]
+    },
+    "impact-analysis": {
+      "schemaVersion": 1,
+      "id": "impact-analysis",
+      "displayName": "impact-analysis",
+      "description": "Cross-module impact analysis for enterprise projects. Traces reverse dependencies, estimates blast radius, detects breaking changes, and generates migration guides. Use before making changes to shared code, APIs, or database schemas in large multi-module codebases.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "analysis",
+        "apis",
+        "blast",
+        "breaking",
+        "changes",
+        "code",
+        "codebases",
+        "cross",
+        "database",
+        "dependencies",
+        "detects",
+        "enterprise"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/impact-analysis/SKILL.md",
+        "scripts": ".github/skills/impact-analysis/scripts",
+        "assets": ".github/skills/impact-analysis/assets",
+        "references": ".github/skills/impact-analysis/references"
+      },
+      "keywords": [
+        "analysis",
+        "apis",
+        "blast",
+        "breaking",
+        "changes",
+        "code",
+        "codebases",
+        "cross",
+        "database",
+        "dependencies",
+        "detects",
+        "enterprise"
+      ],
+      "routedBy": [
+        "investigator"
+      ],
+      "referencedByAgents": [
+        "investigator"
+      ]
+    },
+    "implement-feature": {
+      "schemaVersion": 1,
+      "id": "implement-feature",
+      "displayName": "implement-feature",
+      "description": "Executes an approved spec-driven implementation using the feature workspace artifacts and the repo's actual stack. Uses the reviewed spec, plan, tasks, contracts, and verification commands to drive safe implementation instead of relying on stack-specific defaults.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "actual",
+        "approved",
+        "artifacts",
+        "commands",
+        "contracts",
+        "defaults",
+        "drive",
+        "driven",
+        "executes",
+        "feature",
+        "implement",
+        "implementation"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/implement-feature/SKILL.md",
+        "scripts": ".github/skills/implement-feature/scripts",
+        "assets": ".github/skills/implement-feature/assets",
+        "references": ".github/skills/implement-feature/references"
+      },
+      "keywords": [
+        "actual",
+        "approved",
+        "artifacts",
+        "commands",
+        "contracts",
+        "defaults",
+        "drive",
+        "driven",
+        "executes",
+        "feature",
+        "implement",
+        "implementation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "implement-mobile-feature": {
+      "schemaVersion": 1,
+      "id": "implement-mobile-feature",
+      "displayName": "implement-mobile-feature",
+      "description": "Guided mobile feature implementation across all layers of Android (Kotlin/Jetpack Compose) and iOS (Swift/SwiftUI) applications. Creates or modifies screens, ViewModels, use cases, repositories, data sources, DTOs, navigation routes, and DI modules following MVVM + Clean Architecture patterns. Use when asked to implement a feature, fix a bug, add a screen, or make code changes in mobile projects.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "across",
+        "add",
+        "all",
+        "android",
+        "applications",
+        "architecture",
+        "asked",
+        "bug",
+        "cases",
+        "changes",
+        "clean",
+        "code"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/implement-mobile-feature/SKILL.md",
+        "scripts": ".github/skills/implement-mobile-feature/scripts",
+        "assets": ".github/skills/implement-mobile-feature/assets",
+        "references": ".github/skills/implement-mobile-feature/references"
+      },
+      "keywords": [
+        "across",
+        "add",
+        "all",
+        "android",
+        "applications",
+        "architecture",
+        "asked",
+        "bug",
+        "cases",
+        "changes",
+        "clean",
+        "code"
+      ],
+      "routedBy": [
+        "mobile-implementor"
+      ],
+      "referencedByAgents": [
+        "mobile-implementor"
+      ]
+    },
+    "instruction-conflict-detector": {
+      "schemaVersion": 1,
+      "id": "instruction-conflict-detector",
+      "displayName": "instruction-conflict-detector",
+      "description": "Scan all .instructions.md files in .github/instructions/, build a glob overlap matrix, and detect contradicting rules across files. Flags overlapping instruction scopes as Warning (overlap only) or Error (overlap plus contradicting keywords). Use after bootstrap or when adding new instruction files. Keywords: instruction conflict, applyTo overlap, rule contradiction, instruction audit.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "applyTo overlap",
+        "instruction audit",
+        "instruction conflict",
+        "rule contradiction"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/instruction-conflict-detector/SKILL.md",
+        "scripts": ".github/skills/instruction-conflict-detector/scripts",
+        "assets": ".github/skills/instruction-conflict-detector/assets",
+        "references": ".github/skills/instruction-conflict-detector/references"
+      },
+      "keywords": [
+        "applyTo overlap",
+        "instruction audit",
+        "instruction conflict",
+        "rule contradiction"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "investigate-pbi": {
+      "schemaVersion": 1,
+      "id": "investigate-pbi",
+      "displayName": "investigate-pbi",
+      "description": "PBI and technical investigation workflow. Performs as-is analysis by tracing current code flow, designs to-be state with proposed changes, maps scenarios with edge cases, assesses impact on affected modules and systems, identifies risks, and outputs a structured markdown investigation report. Use when asked to investigate a PBI, bug, performance issue, or plan a technical change in Java/Jakarta EE projects.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "affected",
+        "analysis",
+        "asked",
+        "assesses",
+        "bug",
+        "cases",
+        "change",
+        "changes",
+        "code",
+        "current",
+        "designs",
+        "edge"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/investigate-pbi/SKILL.md",
+        "scripts": ".github/skills/investigate-pbi/scripts",
+        "assets": ".github/skills/investigate-pbi/assets",
+        "references": ".github/skills/investigate-pbi/references"
+      },
+      "keywords": [
+        "affected",
+        "analysis",
+        "asked",
+        "assesses",
+        "bug",
+        "cases",
+        "change",
+        "changes",
+        "code",
+        "current",
+        "designs",
+        "edge"
+      ],
+      "routedBy": [
+        "investigator"
+      ],
+      "referencedByAgents": [
+        "investigator"
+      ]
+    },
+    "learn-codebase": {
+      "schemaVersion": 1,
+      "id": "learn-codebase",
+      "displayName": "learn-codebase",
+      "description": "Interactive codebase learning guide. Teaches developers the business domains, workflows, rules, data model, and external integrations of any codebase. Use when onboarding new team members, understanding a specific domain, or preparing to work on a feature.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "report",
+        "task list"
+      ],
+      "triggers": [
+        "any",
+        "business",
+        "codebase",
+        "data",
+        "developers",
+        "domain",
+        "domains",
+        "external",
+        "feature",
+        "guide",
+        "integrations",
+        "interactive"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/learn-codebase/SKILL.md",
+        "scripts": ".github/skills/learn-codebase/scripts",
+        "assets": ".github/skills/learn-codebase/assets",
+        "references": ".github/skills/learn-codebase/references"
+      },
+      "keywords": [
+        "any",
+        "business",
+        "codebase",
+        "data",
+        "developers",
+        "domain",
+        "domains",
+        "external",
+        "feature",
+        "guide",
+        "integrations",
+        "interactive"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "optimize-devcontainer": {
+      "schemaVersion": 1,
+      "id": "optimize-devcontainer",
+      "displayName": "optimize-devcontainer",
+      "description": "Analyze and optimize dev container configurations (devcontainer.json, Dockerfile, Docker Compose) for performance, security, and developer experience. Reviews base images, Features, lifecycle scripts, volume mounts, port forwarding, extensions, and resource limits. Generates optimized configurations for any tech stack. Use when asked to review devcontainer, improve container performance, optimize docker setup, fix slow container startup, reduce image size, or generate devcontainer configuration. Keywords: devcontainer, dev container, docker, container, optimize, performance, startup, image, volume, mount, feature.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "container",
+        "dev container",
+        "devcontainer",
+        "docker",
+        "feature",
+        "image",
+        "mount",
+        "optimize",
+        "performance",
+        "startup",
+        "volume"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/optimize-devcontainer/SKILL.md",
+        "scripts": ".github/skills/optimize-devcontainer/scripts",
+        "assets": ".github/skills/optimize-devcontainer/assets",
+        "references": ".github/skills/optimize-devcontainer/references"
+      },
+      "keywords": [
+        "container",
+        "dev container",
+        "devcontainer",
+        "docker",
+        "feature",
+        "image",
+        "mount",
+        "optimize",
+        "performance",
+        "startup",
+        "volume"
+      ],
+      "routedBy": [
+        "devcontainer-reviewer"
+      ],
+      "referencedByAgents": [
+        "devcontainer-reviewer"
+      ]
+    },
+    "orchestrate-development": {
+      "schemaVersion": 1,
+      "id": "orchestrate-development",
+      "displayName": "orchestrate-development",
+      "description": "Scoped end-to-end development workflow: investigate, confirm, implement, test, verify, and document with evidence-backed reasoning. For larger or requirement-heavy work, hand off into the spec-kit workflow instead of forcing ad hoc implementation.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "plan",
+        "report",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "backed",
+        "confirm",
+        "development",
+        "document",
+        "end",
+        "evidence",
+        "forcing",
+        "hand",
+        "heavy",
+        "hoc",
+        "implement",
+        "implementation"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/orchestrate-development/SKILL.md",
+        "scripts": ".github/skills/orchestrate-development/scripts",
+        "assets": ".github/skills/orchestrate-development/assets",
+        "references": ".github/skills/orchestrate-development/references"
+      },
+      "keywords": [
+        "backed",
+        "confirm",
+        "development",
+        "document",
+        "end",
+        "evidence",
+        "forcing",
+        "hand",
+        "heavy",
+        "hoc",
+        "implement",
+        "implementation"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "plan-implementation": {
+      "schemaVersion": 1,
+      "id": "plan-implementation",
+      "displayName": "plan-implementation",
+      "description": "Creates a comprehensive implementation plan from a reviewed specification. Runs constitutional gates, maps requirements to technical decisions, and generates the supporting spec-kit artifacts needed for execution: plan.md, research.md, data-model.md, contracts/, and quickstart.md.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "review findings",
+        "task list"
+      ],
+      "triggers": [
+        "artifacts",
+        "comprehensive",
+        "constitutional",
+        "contracts",
+        "creates",
+        "data",
+        "decisions",
+        "execution",
+        "gates",
+        "generates",
+        "implementation",
+        "kit"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/plan-implementation/SKILL.md",
+        "scripts": ".github/skills/plan-implementation/scripts",
+        "assets": ".github/skills/plan-implementation/assets",
+        "references": ".github/skills/plan-implementation/references"
+      },
+      "keywords": [
+        "artifacts",
+        "comprehensive",
+        "constitutional",
+        "contracts",
+        "creates",
+        "data",
+        "decisions",
+        "execution",
+        "gates",
+        "generates",
+        "implementation",
+        "kit"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "redact-sensitive-data": {
+      "schemaVersion": 1,
+      "id": "redact-sensitive-data",
+      "displayName": "redact-sensitive-data",
+      "description": "Redact secrets and PII before any write to the trace file, evidence bundle, or generated fixtures. Layered defense: deny-list regex at write time + signature scan (gitleaks/detect-secrets) at commit time. Used by the autorun orchestrator and @mock-data-specialist.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "`{text: string, redactedCategories: string[]}` or `{ok: boolean, findings: []}`."
+      ],
+      "triggers": [
+        "any",
+        "autorun",
+        "bundle",
+        "commit",
+        "data",
+        "defense",
+        "deny",
+        "detect",
+        "evidence",
+        "file",
+        "fixtures",
+        "generated"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/redact-sensitive-data/SKILL.md",
+        "scripts": ".github/skills/redact-sensitive-data/scripts",
+        "assets": ".github/skills/redact-sensitive-data/assets",
+        "references": ".github/skills/redact-sensitive-data/references"
+      },
+      "keywords": [
+        "any",
+        "autorun",
+        "bundle",
+        "commit",
+        "data",
+        "defense",
+        "deny",
+        "detect",
+        "evidence",
+        "file",
+        "fixtures",
+        "generated"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "refine-user-input": {
+      "schemaVersion": 1,
+      "id": "refine-user-input",
+      "displayName": "refine-user-input",
+      "description": "Analyze raw freeform user input and restructure it into an actionable prompt following the Goal/Anchor/Constraints/Verify shape. Default intake normalizer for non-trivial requests: use proactively before routing heavy workflows or when prompts are vague, cross-cutting, or missing scope, constraints, or verification details. Skip explicit refinement for trivial, already-clear asks.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "--",
+        "| Input | Required | Description |",
+        "| Raw input | Yes | The user's freeform text exactly as provided |",
+        "| Target skill | No | Downstream skill this input is destined for. Defaults to auto-detect from intent classification |",
+        "|-------|----------|-------------|"
+      ],
+      "outputs": [
+        "prompt",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "actionable",
+        "already",
+        "analyze",
+        "anchor",
+        "are",
+        "asks",
+        "clear",
+        "constraints",
+        "cross",
+        "cutting",
+        "default",
+        "details"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/refine-user-input/SKILL.md",
+        "scripts": ".github/skills/refine-user-input/scripts",
+        "assets": ".github/skills/refine-user-input/assets",
+        "references": ".github/skills/refine-user-input/references"
+      },
+      "keywords": [
+        "actionable",
+        "already",
+        "analyze",
+        "anchor",
+        "are",
+        "asks",
+        "clear",
+        "constraints",
+        "cross",
+        "cutting",
+        "default",
+        "details"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ]
+    },
+    "repo-memory-promoter": {
+      "schemaVersion": 1,
+      "id": "repo-memory-promoter",
+      "displayName": "repo-memory-promoter",
+      "description": "Scan .github/ config to find information worth promoting to a persistent memory layer. Identifies copilot-instructions.md bloat, broad instruction globs, underdocumented subsystems, and workflow gaps. Outputs a prioritised promotion report with concrete actions. Chat output only — does not write files or generate approval-ready candidate deltas.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "task list"
+      ],
+      "triggers": [
+        "actions",
+        "approval",
+        "bloat",
+        "broad",
+        "candidate",
+        "chat",
+        "concrete",
+        "config",
+        "copilot",
+        "deltas",
+        "does",
+        "files"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/repo-memory-promoter/SKILL.md",
+        "scripts": ".github/skills/repo-memory-promoter/scripts",
+        "assets": ".github/skills/repo-memory-promoter/assets",
+        "references": ".github/skills/repo-memory-promoter/references"
+      },
+      "keywords": [
+        "actions",
+        "approval",
+        "bloat",
+        "broad",
+        "candidate",
+        "chat",
+        "concrete",
+        "config",
+        "copilot",
+        "deltas",
+        "does",
+        "files"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "resolve-pbi-ref": {
+      "schemaVersion": 1,
+      "id": "resolve-pbi-ref",
+      "displayName": "resolve-pbi-ref",
+      "description": "Resolve a PBI reference passed to /autorun into a concrete {pbi, slug, source, body}. Walks the configured resolver order (folder → github → jira → freetext) and halts with a pbi-ambiguous gate if multiple matches tie. Use only from the autorun orchestrator; not a user-facing skill.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "`config.pbi.resolver.order` — precedence list from `.github/autorun.config.json`.",
+        "`ref` — the raw string passed to `/autorun`. Examples: `#123`, `PROJ-42`, `specs/007-add-coupon/spec.md`, free text."
+      ],
+      "outputs": [
+        "Slug rule: lowercase, kebab-case, max 40 chars, derived from title or first 5 body words.",
+        "`{pbi: string, slug: string, source: \"folder\"|\"github\"|\"jira\"|\"freetext\", body: string, acceptanceCriteria?: string[]}`."
+      ],
+      "triggers": [
+        "ambiguous",
+        "autorun",
+        "body",
+        "concrete",
+        "configured",
+        "facing",
+        "folder",
+        "freetext",
+        "gate",
+        "github",
+        "halts",
+        "jira"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/resolve-pbi-ref/SKILL.md",
+        "scripts": ".github/skills/resolve-pbi-ref/scripts",
+        "assets": ".github/skills/resolve-pbi-ref/assets",
+        "references": ".github/skills/resolve-pbi-ref/references"
+      },
+      "keywords": [
+        "ambiguous",
+        "autorun",
+        "body",
+        "concrete",
+        "configured",
+        "facing",
+        "folder",
+        "freetext",
+        "gate",
+        "github",
+        "halts",
+        "jira"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "resume-bootstrap": {
+      "schemaVersion": 1,
+      "id": "resume-bootstrap",
+      "displayName": "resume-bootstrap",
+      "description": "Resume an interrupted Copilot bootstrap pipeline from the last completed phase. Reads .github/.bootstrap-state.json to determine which phases completed and which need to run. Use when the bootstrap pipeline was interrupted mid-run (context exhaustion, session timeout, error). Keywords: resume bootstrap, continue pipeline, restart from phase.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report"
+      ],
+      "triggers": [
+        "continue pipeline",
+        "restart from phase",
+        "resume bootstrap"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/resume-bootstrap/SKILL.md",
+        "scripts": ".github/skills/resume-bootstrap/scripts",
+        "assets": ".github/skills/resume-bootstrap/assets",
+        "references": ".github/skills/resume-bootstrap/references"
+      },
+      "keywords": [
+        "continue pipeline",
+        "restart from phase",
+        "resume bootstrap"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "review-code-changes": {
+      "schemaVersion": 1,
+      "id": "review-code-changes",
+      "displayName": "review-code-changes",
+      "description": "Multi-stage code review pipeline: Self-Review → Functional Review (@functional-reviewer) → Technical Review (@technical-reviewer). Functional Review runs first — if business logic is wrong, reject immediately. Each finding must include actionable code snippets. Produces a combined review report with verdict. Use when reviewing PRs or branch changes via @code-reviewer.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "actionable",
+        "branch",
+        "business",
+        "changes",
+        "code",
+        "combined",
+        "each",
+        "finding",
+        "first",
+        "functional",
+        "immediately",
+        "include"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/review-code-changes/SKILL.md",
+        "scripts": ".github/skills/review-code-changes/scripts",
+        "assets": ".github/skills/review-code-changes/assets",
+        "references": ".github/skills/review-code-changes/references"
+      },
+      "keywords": [
+        "actionable",
+        "branch",
+        "business",
+        "changes",
+        "code",
+        "combined",
+        "each",
+        "finding",
+        "first",
+        "functional",
+        "immediately",
+        "include"
+      ],
+      "routedBy": [
+        "code-reviewer",
+        "pr-manager"
+      ],
+      "referencedByAgents": [
+        "code-reviewer",
+        "pr-manager"
+      ]
+    },
+    "review-effectiveness": {
+      "schemaVersion": 1,
+      "id": "review-effectiveness",
+      "displayName": "review-effectiveness",
+      "description": "Review how well the generated Copilot configuration and spec-kit workflow are working in practice. Evaluates usage, drift, artifact quality, memory-promotion adoption, and whether teams are actually following the Spec -> Plan -> Tasks workflow.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [
+          "correction-ledger"
+        ],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "report",
+        "review findings",
+        "task list"
+      ],
+      "triggers": [
+        "actually",
+        "adoption",
+        "are",
+        "artifact",
+        "configuration",
+        "copilot",
+        "drift",
+        "effectiveness",
+        "evaluates",
+        "following",
+        "generated",
+        "how"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/review-effectiveness/SKILL.md",
+        "scripts": ".github/skills/review-effectiveness/scripts",
+        "assets": ".github/skills/review-effectiveness/assets",
+        "references": ".github/skills/review-effectiveness/references"
+      },
+      "keywords": [
+        "actually",
+        "adoption",
+        "are",
+        "artifact",
+        "configuration",
+        "copilot",
+        "drift",
+        "effectiveness",
+        "evaluates",
+        "following",
+        "generated",
+        "how"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "review-memory-promotion": {
+      "schemaVersion": 1,
+      "id": "review-memory-promotion",
+      "displayName": "review-memory-promotion",
+      "description": "Generate approval-ready repo memory and review checklist candidates from completed code reviews, human-authored PR discussion artifacts, investigation reports, and recurring findings. Use when promoting review findings, learning from PR discussions, creating or updating functional or technical checklist packs, curating recurring gotchas, or improving local knowledge sync after bootstrap.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [
+          "correction-ledger"
+        ],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "prompt",
+        "report",
+        "review findings",
+        "task list"
+      ],
+      "triggers": [
+        "approval",
+        "artifacts",
+        "authored",
+        "bootstrap",
+        "candidates",
+        "checklist",
+        "code",
+        "completed",
+        "creating",
+        "curating",
+        "discussion",
+        "discussions"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/review-memory-promotion/SKILL.md",
+        "scripts": ".github/skills/review-memory-promotion/scripts",
+        "assets": ".github/skills/review-memory-promotion/assets",
+        "references": ".github/skills/review-memory-promotion/references"
+      },
+      "keywords": [
+        "approval",
+        "artifacts",
+        "authored",
+        "bootstrap",
+        "candidates",
+        "checklist",
+        "code",
+        "completed",
+        "creating",
+        "curating",
+        "discussion",
+        "discussions"
+      ],
+      "routedBy": [
+        "code-reviewer",
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "code-reviewer",
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "review-spec": {
+      "schemaVersion": 1,
+      "id": "review-spec",
+      "displayName": "review-spec",
+      "description": "Review a feature specification and its spec-kit artifacts for completeness, ambiguity, security gaps, testability, and traceability. Evaluates the feature workspace as a whole, not just spec.md.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Review the feature workspace when available:",
+        "`contracts/`",
+        "`data-model.md`",
+        "`plan.md`",
+        "`research.md`",
+        "`spec.md`"
+      ],
+      "outputs": [
+        "plan",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "ambiguity",
+        "artifacts",
+        "completeness",
+        "evaluates",
+        "feature",
+        "gaps",
+        "its",
+        "just",
+        "kit",
+        "not",
+        "review",
+        "security"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/review-spec/SKILL.md",
+        "scripts": ".github/skills/review-spec/scripts",
+        "assets": ".github/skills/review-spec/assets",
+        "references": ".github/skills/review-spec/references"
+      },
+      "keywords": [
+        "ambiguity",
+        "artifacts",
+        "completeness",
+        "evaluates",
+        "feature",
+        "gaps",
+        "its",
+        "just",
+        "kit",
+        "not",
+        "review",
+        "security"
+      ],
+      "routedBy": [
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "spec-reviewer"
+      ]
+    },
+    "run-local-stack": {
+      "schemaVersion": 1,
+      "id": "run-local-stack",
+      "displayName": "run-local-stack",
+      "description": "Detect and start the local dev stack (devcontainer > docker-compose > make dev > native), then run a healthcheck. Halts with quickstart-healthcheck-failed gate on failure. Used by autorun Phase 2 to prove the stack boots before tests run.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "One trace event per step (detect, start, healthcheck, teardown).",
+        "`{strategy, healthcheckUrl, bootMs, healthcheckMs, containers?: string[]}`."
+      ],
+      "triggers": [
+        "autorun",
+        "boots",
+        "compose",
+        "detect",
+        "dev",
+        "devcontainer",
+        "docker",
+        "failed",
+        "failure",
+        "gate",
+        "halts",
+        "healthcheck"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/run-local-stack/SKILL.md",
+        "scripts": ".github/skills/run-local-stack/scripts",
+        "assets": ".github/skills/run-local-stack/assets",
+        "references": ".github/skills/run-local-stack/references"
+      },
+      "keywords": [
+        "autorun",
+        "boots",
+        "compose",
+        "detect",
+        "dev",
+        "devcontainer",
+        "docker",
+        "failed",
+        "failure",
+        "gate",
+        "halts",
+        "healthcheck"
+      ],
+      "routedBy": [
+        "api-test-author"
+      ],
+      "referencedByAgents": [
+        "api-test-author"
+      ]
+    },
+    "sanitize-untrusted-input": {
+      "schemaVersion": 1,
+      "id": "sanitize-untrusted-input",
+      "displayName": "sanitize-untrusted-input",
+      "description": "Wrap any externally-sourced text (PBI body, issue description, commit message from another author) in <UNTRUSTED>...</UNTRUSTED> tags and scan for prompt-injection patterns. Any match raises an injection-suspected gate. Used by the autorun orchestrator before merging external text into agent context.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "When `blocked=true`, the orchestrator emits the gate and must not pass the wrapped text onward until the user confirms.",
+        "`{wrapped: string, findings: string[], blocked: boolean}`."
+      ],
+      "triggers": [
+        "agent",
+        "another",
+        "any",
+        "author",
+        "autorun",
+        "body",
+        "commit",
+        "context",
+        "description",
+        "external",
+        "externally",
+        "gate"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/sanitize-untrusted-input/SKILL.md",
+        "scripts": ".github/skills/sanitize-untrusted-input/scripts",
+        "assets": ".github/skills/sanitize-untrusted-input/assets",
+        "references": ".github/skills/sanitize-untrusted-input/references"
+      },
+      "keywords": [
+        "agent",
+        "another",
+        "any",
+        "author",
+        "autorun",
+        "body",
+        "commit",
+        "context",
+        "description",
+        "external",
+        "externally",
+        "gate"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "skill-discoverability-audit": {
+      "schemaVersion": 1,
+      "id": "skill-discoverability-audit",
+      "displayName": "skill-discoverability-audit",
+      "description": "Audit all SKILL.md files for runtime discoverability quality. Checks description keyword coverage, argument documentation, user-invocable vs model-invocable alignment, routing table reachability, and progressive loading compatibility. Produces a scored report with actionable fixes. Use after bootstrap or when skills seem undiscoverable. Keywords: skill audit, discoverability, description quality, skill routing, keyword coverage, model invocation.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "diagram",
+        "prompt",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "description quality",
+        "discoverability",
+        "keyword coverage",
+        "model invocation",
+        "skill audit",
+        "skill routing"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/skill-discoverability-audit/SKILL.md",
+        "scripts": ".github/skills/skill-discoverability-audit/scripts",
+        "assets": ".github/skills/skill-discoverability-audit/assets",
+        "references": ".github/skills/skill-discoverability-audit/references"
+      },
+      "keywords": [
+        "description quality",
+        "discoverability",
+        "keyword coverage",
+        "model invocation",
+        "skill audit",
+        "skill routing"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "skill-pack-export": {
+      "schemaVersion": 1,
+      "id": "skill-pack-export",
+      "displayName": "skill-pack-export",
+      "description": "Export a selected set of local skills into a shareable skill-pack manifest with lineage metadata, manifest hashes, and source provenance. Use when publishing reusable skills to another repo, team, or pack registry. Keywords: export skill pack, skill lineage, share skills, pack manifest.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [
+          "skill-pack-import"
+        ],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "Pack descriptor JSON with `packId`, `title`, `skillIds`, and `source`"
+      ],
+      "outputs": [
+        "JSON pack manifest with skill versions, hashes, and source provenance"
+      ],
+      "triggers": [
+        "export skill pack",
+        "pack manifest",
+        "share skills",
+        "skill lineage"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/skill-pack-export/SKILL.md",
+        "scripts": ".github/skills/skill-pack-export/scripts",
+        "assets": ".github/skills/skill-pack-export/assets",
+        "references": ".github/skills/skill-pack-export/references"
+      },
+      "keywords": [
+        "export skill pack",
+        "pack manifest",
+        "share skills",
+        "skill lineage"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "skill-pack-import": {
+      "schemaVersion": 1,
+      "id": "skill-pack-import",
+      "displayName": "skill-pack-import",
+      "description": "Import, export, and manage portable skill packs from Git URLs or local paths. Handles conflict resolution to prevent overwriting local customizations. Supports offline-first workflows where the bundle remains fully self-contained. Use when importing shared skills, exporting domain skills for reuse, or auditing installed skill packs. Keywords: skill pack, import skill, export skill, portable skills, shared skills, org skills, reuse.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "export skill",
+        "import skill",
+        "org skills",
+        "portable skills",
+        "reuse",
+        "shared skills",
+        "skill pack"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/skill-pack-import/SKILL.md",
+        "scripts": ".github/skills/skill-pack-import/scripts",
+        "assets": ".github/skills/skill-pack-import/assets",
+        "references": ".github/skills/skill-pack-import/references"
+      },
+      "keywords": [
+        "export skill",
+        "import skill",
+        "org skills",
+        "portable skills",
+        "reuse",
+        "shared skills",
+        "skill pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "source-of-truth-map": {
+      "schemaVersion": 1,
+      "id": "source-of-truth-map",
+      "displayName": "source-of-truth-map",
+      "description": "Scan the .github/ and docs/ directories to generate SOURCE-OF-TRUTH.md — a persistent map of which files are canonical for each domain, instruction scope, and agent-skill reference. Use as a foundation before running context-assembly-simulator or when onboarding a new contributor. Keywords: source of truth, canonical files, domain map, instruction scope map.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "prompt",
+        "tests"
+      ],
+      "triggers": [
+        "canonical files",
+        "domain map",
+        "instruction scope map",
+        "source of truth"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/source-of-truth-map/SKILL.md",
+        "scripts": ".github/skills/source-of-truth-map/scripts",
+        "assets": ".github/skills/source-of-truth-map/assets",
+        "references": ".github/skills/source-of-truth-map/references"
+      },
+      "keywords": [
+        "canonical files",
+        "domain map",
+        "instruction scope map",
+        "source of truth"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "specify-feature": {
+      "schemaVersion": 1,
+      "id": "specify-feature",
+      "displayName": "specify-feature",
+      "description": "Transforms a feature description, PBI, or user request into a structured specification using the PRD template. Creates a feature workspace under specs/, marks uncertainties with [NEEDS CLARIFICATION], and prepares the repo for the Spec -> Plan -> Tasks pipeline.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "plan",
+        "review findings",
+        "task list"
+      ],
+      "triggers": [
+        "clarification",
+        "creates",
+        "description",
+        "feature",
+        "marks",
+        "needs",
+        "pbi",
+        "pipeline",
+        "plan",
+        "prd",
+        "prepares",
+        "repo"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/specify-feature/SKILL.md",
+        "scripts": ".github/skills/specify-feature/scripts",
+        "assets": ".github/skills/specify-feature/assets",
+        "references": ".github/skills/specify-feature/references"
+      },
+      "keywords": [
+        "clarification",
+        "creates",
+        "description",
+        "feature",
+        "marks",
+        "needs",
+        "pbi",
+        "pipeline",
+        "plan",
+        "prd",
+        "prepares",
+        "repo"
+      ],
+      "routedBy": [
+        "investigator",
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "investigator",
+        "spec-reviewer"
+      ]
+    },
+    "sprint-planning": {
+      "schemaVersion": 1,
+      "id": "sprint-planning",
+      "displayName": "sprint-planning",
+      "description": "Sprint planning assistant for agile teams. Decomposes PBIs into technical tasks, estimates story points using t-shirt sizing or Fibonacci, identifies dependencies and risks, creates sprint backlogs with clear acceptance criteria. Use when planning sprints, breaking down user stories, or estimating effort.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "acceptance",
+        "agile",
+        "assistant",
+        "backlogs",
+        "breaking",
+        "clear",
+        "creates",
+        "criteria",
+        "decomposes",
+        "dependencies",
+        "down",
+        "effort"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/sprint-planning/SKILL.md",
+        "scripts": ".github/skills/sprint-planning/scripts",
+        "assets": ".github/skills/sprint-planning/assets",
+        "references": ".github/skills/sprint-planning/references"
+      },
+      "keywords": [
+        "acceptance",
+        "agile",
+        "assistant",
+        "backlogs",
+        "breaking",
+        "clear",
+        "creates",
+        "criteria",
+        "decomposes",
+        "dependencies",
+        "down",
+        "effort"
+      ],
+      "routedBy": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator",
+        "sprint-planner"
+      ]
+    },
+    "tdd-implement-loop": {
+      "schemaVersion": 1,
+      "id": "tdd-implement-loop",
+      "displayName": "tdd-implement-loop",
+      "description": "Drives Phase 5 (IMPLEMENT) of the /autorun loop. Runs a bounded red→green→refactor loop against the red suite authored in Phase 3. Enforces maxIterations + noProgressThreshold stop conditions; scopes regression via impact-analysis skill (fallback: full suite). Halts with tdd-no-progress or cost-cap gates. Never edits tests.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "`config.cost.maxUsd` — global cap; reset-free.",
+        "`config.tddLoop.maxIterations` (default `6`).",
+        "`config.tddLoop.noProgressThreshold` (default `2` consecutive iterations with no newly green test).",
+        "`failedTests[]` — initial list (all primary tests from Phase 3).",
+        "`test-coverage.md` — AC→test map from Phase 3."
+      ],
+      "outputs": [
+        "configuration",
+        "prompt",
+        "tests"
+      ],
+      "triggers": [
+        "analysis",
+        "authored",
+        "autorun",
+        "bounded",
+        "cap",
+        "conditions",
+        "cost",
+        "drives",
+        "edits",
+        "enforces",
+        "fallback",
+        "full"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/tdd-implement-loop/SKILL.md",
+        "scripts": ".github/skills/tdd-implement-loop/scripts",
+        "assets": ".github/skills/tdd-implement-loop/assets",
+        "references": ".github/skills/tdd-implement-loop/references"
+      },
+      "keywords": [
+        "analysis",
+        "authored",
+        "autorun",
+        "bounded",
+        "cap",
+        "conditions",
+        "cost",
+        "drives",
+        "edits",
+        "enforces",
+        "fallback",
+        "full"
+      ],
+      "routedBy": [
+        "api-test-author",
+        "mock-data-specialist"
+      ],
+      "referencedByAgents": [
+        "api-test-author",
+        "mock-data-specialist"
+      ]
+    },
+    "technical-debt-analysis": {
+      "schemaVersion": 1,
+      "id": "technical-debt-analysis",
+      "displayName": "technical-debt-analysis",
+      "description": "Analyze codebase for technical debt including code smells, outdated dependencies, missing tests, architecture violations, and security vulnerabilities. Produces prioritized tech debt backlog with effort estimates and business impact. Use when assessing code quality, planning tech debt sprints, or justifying refactoring work.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "analysis",
+        "analyze",
+        "architecture",
+        "assessing",
+        "backlog",
+        "business",
+        "code",
+        "codebase",
+        "debt",
+        "dependencies",
+        "effort",
+        "estimates"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/technical-debt-analysis/SKILL.md",
+        "scripts": ".github/skills/technical-debt-analysis/scripts",
+        "assets": ".github/skills/technical-debt-analysis/assets",
+        "references": ".github/skills/technical-debt-analysis/references"
+      },
+      "keywords": [
+        "analysis",
+        "analyze",
+        "architecture",
+        "assessing",
+        "backlog",
+        "business",
+        "code",
+        "codebase",
+        "debt",
+        "dependencies",
+        "effort",
+        "estimates"
+      ],
+      "routedBy": [
+        "refactoring-specialist"
+      ],
+      "referencedByAgents": [
+        "refactoring-specialist"
+      ]
+    },
+    "tool-permission-auditor": {
+      "schemaVersion": 1,
+      "id": "tool-permission-auditor",
+      "displayName": "tool-permission-auditor",
+      "description": "Scan all .agent.md files, classify each agent's role from its description and body, and produce an agent × tool-category permission matrix. Flags overprivileged agents (security risk) and agents with unnecessary heavy tools (cost risk). Use after bootstrap or when adding new agents. Keywords: tool permission, agent audit, overprivileged, security risk, tool matrix.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "diagram",
+        "plan",
+        "report",
+        "review findings",
+        "tests"
+      ],
+      "triggers": [
+        "agent audit",
+        "overprivileged",
+        "security risk",
+        "tool matrix",
+        "tool permission"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/tool-permission-auditor/SKILL.md",
+        "scripts": ".github/skills/tool-permission-auditor/scripts",
+        "assets": ".github/skills/tool-permission-auditor/assets",
+        "references": ".github/skills/tool-permission-auditor/references"
+      },
+      "keywords": [
+        "agent audit",
+        "overprivileged",
+        "security risk",
+        "tool matrix",
+        "tool permission"
+      ],
+      "routedBy": [
+        "conductor",
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "conductor",
+        "dev-orchestrator"
+      ]
+    },
+    "trace-replay": {
+      "schemaVersion": 1,
+      "id": "trace-replay",
+      "displayName": "trace-replay",
+      "description": "Capture every completed /autorun run as a structured Episode and replay similar past episodes (both successful and cautionary) as few-shot precedent into Phase 1 of future runs. Scoped to this repo; storage under .github/.episode-index/. Feature-flagged via episodicMemory.enabled.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "experimental",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "prompt",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "autorun",
+        "both",
+        "capture",
+        "cautionary",
+        "completed",
+        "enabled",
+        "episode",
+        "episodes",
+        "episodicmemory",
+        "every",
+        "feature",
+        "few"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/trace-replay/SKILL.md",
+        "scripts": ".github/skills/trace-replay/scripts",
+        "assets": ".github/skills/trace-replay/assets",
+        "references": ".github/skills/trace-replay/references"
+      },
+      "keywords": [
+        "autorun",
+        "both",
+        "capture",
+        "cautionary",
+        "completed",
+        "enabled",
+        "episode",
+        "episodes",
+        "episodicmemory",
+        "every",
+        "feature",
+        "few"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "update-spec": {
+      "schemaVersion": 1,
+      "id": "update-spec",
+      "displayName": "update-spec",
+      "description": "Incrementally update an existing feature workspace when change requests arrive. Patches spec.md first, then updates affected downstream artifacts such as plan.md, research.md, data-model.md, contracts/, quickstart.md, and tasks.md.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "change request or review feedback",
+        "feature workspace under `specs/<feature-id>-<slug>/`"
+      ],
+      "outputs": [
+        "plan",
+        "report",
+        "review findings",
+        "task list",
+        "tests"
+      ],
+      "triggers": [
+        "affected",
+        "arrive",
+        "artifacts",
+        "change",
+        "contracts",
+        "data",
+        "downstream",
+        "existing",
+        "feature",
+        "first",
+        "incrementally",
+        "model"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/update-spec/SKILL.md",
+        "scripts": ".github/skills/update-spec/scripts",
+        "assets": ".github/skills/update-spec/assets",
+        "references": ".github/skills/update-spec/references"
+      },
+      "keywords": [
+        "affected",
+        "arrive",
+        "artifacts",
+        "change",
+        "contracts",
+        "data",
+        "downstream",
+        "existing",
+        "feature",
+        "first",
+        "incrementally",
+        "model"
+      ],
+      "routedBy": [
+        "business-analyst",
+        "spec-reviewer"
+      ],
+      "referencedByAgents": [
+        "business-analyst",
+        "spec-reviewer"
+      ]
+    },
+    "upgrade-config": {
+      "schemaVersion": 1,
+      "id": "upgrade-config",
+      "displayName": "upgrade-config",
+      "description": "Upgrade a previously bootstrapped Copilot configuration to the current toolkit version. Reads .github/.bootstrap-manifest.json to detect the toolkit version used, diffs against current toolkit capabilities, and generates a migration plan. Use when pulling a newer toolkit version into an existing bootstrapped project. Keywords: upgrade config, migrate copilot config, update toolkit, version migration.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "plan",
+        "report",
+        "review findings"
+      ],
+      "triggers": [
+        "migrate copilot config",
+        "update toolkit",
+        "upgrade config",
+        "version migration"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/upgrade-config/SKILL.md",
+        "scripts": ".github/skills/upgrade-config/scripts",
+        "assets": ".github/skills/upgrade-config/assets",
+        "references": ".github/skills/upgrade-config/references"
+      },
+      "keywords": [
+        "migrate copilot config",
+        "update toolkit",
+        "upgrade config",
+        "version migration"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "upgrade-skill-pack": {
+      "schemaVersion": 1,
+      "id": "upgrade-skill-pack",
+      "displayName": "upgrade-skill-pack",
+      "description": "Compare a current skill-pack manifest to a newer one and report added, removed, and changed skills before import. Use when preparing an upgrade PR or reviewing lineage drift between pack versions. Keywords: upgrade skill pack, diff skill pack, pack lineage, pack upgrade.",
+      "version": "0.6.0",
+      "tier": "foundational",
+      "stability": "experimental",
+      "requires": {
+        "skills": [
+          "skill-pack-export",
+          "skill-pack-import"
+        ],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "New pack manifest path",
+        "Old pack manifest path"
+      ],
+      "outputs": [
+        "JSON diff with added, removed, changed, and unchanged skills"
+      ],
+      "triggers": [
+        "diff skill pack",
+        "pack lineage",
+        "pack upgrade",
+        "upgrade skill pack"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "model_routed",
+      "paths": {
+        "skill": ".github/skills/upgrade-skill-pack/SKILL.md",
+        "scripts": ".github/skills/upgrade-skill-pack/scripts",
+        "assets": ".github/skills/upgrade-skill-pack/assets",
+        "references": ".github/skills/upgrade-skill-pack/references"
+      },
+      "keywords": [
+        "diff skill pack",
+        "pack lineage",
+        "pack upgrade",
+        "upgrade skill pack"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    },
+    "validate-bootstrap-output": {
+      "schemaVersion": 1,
+      "id": "validate-bootstrap-output",
+      "displayName": "validate-bootstrap-output",
+      "description": "Validate the quality of a bootstrapped Copilot configuration beyond structural checks. Tests that generated agents, skills, instructions, and cleanup decisions actually match the target project rather than leaving generic bootstrap residue.",
+      "version": "0.6.0",
+      "tier": "enterprise",
+      "stability": "stable",
+      "requires": {
+        "skills": [],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "workspace context"
+      ],
+      "outputs": [
+        "configuration",
+        "prompt",
+        "report",
+        "tests"
+      ],
+      "triggers": [
+        "actually",
+        "agents",
+        "beyond",
+        "bootstrap",
+        "bootstrapped",
+        "checks",
+        "cleanup",
+        "configuration",
+        "copilot",
+        "decisions",
+        "generated",
+        "generic"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "pipeline_only",
+      "paths": {
+        "skill": ".github/skills/validate-bootstrap-output/SKILL.md",
+        "scripts": ".github/skills/validate-bootstrap-output/scripts",
+        "assets": ".github/skills/validate-bootstrap-output/assets",
+        "references": ".github/skills/validate-bootstrap-output/references"
+      },
+      "keywords": [
+        "actually",
+        "agents",
+        "beyond",
+        "bootstrap",
+        "bootstrapped",
+        "checks",
+        "cleanup",
+        "configuration",
+        "copilot",
+        "decisions",
+        "generated",
+        "generic"
+      ],
+      "routedBy": [],
+      "referencedByAgents": []
+    }
+  }
+}

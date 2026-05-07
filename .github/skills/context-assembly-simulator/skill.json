@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "context-assembly-simulator",
+  "displayName": "context-assembly-simulator",
+  "description": "Simulate which .github/ files will be loaded into context for a given agent and file path. Outputs an ordered context list with KB sizes, budget calculation, and flags for overbudget or conflicting instructions. Use before debugging why an agent behaves unexpectedly, or to validate context efficiency. Keywords: context simulation, context loading, budget check, what is loaded, context debugging.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "--",
+    "| Agent name | Optional | e.g. `dev-orchestrator`, `implementor`. If omitted, show all agents. |",
+    "| File path being edited | Optional | e.g. `src/main/java/OrderService.java`. If omitted, show instruction-only load. |",
+    "| Input | Required | Description |",
+    "|-------|----------|-------------|"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "budget check",
+    "context debugging",
+    "context loading",
+    "context simulation",
+    "what is loaded"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/context-assembly-simulator/SKILL.md",
+    "scripts": ".github/skills/context-assembly-simulator/scripts",
+    "assets": ".github/skills/context-assembly-simulator/assets",
+    "references": ".github/skills/context-assembly-simulator/references"
+  },
+  "keywords": [
+    "budget check",
+    "context debugging",
+    "context loading",
+    "context simulation",
+    "what is loaded"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

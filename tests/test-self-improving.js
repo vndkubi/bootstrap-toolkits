@@ -354,7 +354,7 @@ function testAgentProfiles() {
   assert(byAgent['test-specialist'].length === 1, 'Test-specialist has 1 observation');
   assert(byAgent['__global__'].length === 1, 'Global has 1 observation');
 
-  // Test: correction-patterns.json with agent entries
+  // Test: recurring pattern data with agent entries
   const agentAggregates = [
     {
       patternKey: 'avoid-optional',

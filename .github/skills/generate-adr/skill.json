@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-adr",
+  "displayName": "generate-adr",
+  "description": "Generate Architecture Decision Records (ADRs) for significant technical decisions. Creates structured markdown documents capturing context, decision, alternatives considered, consequences, and status. Use when making architecture choices, selecting technologies, changing patterns, or documenting why a specific approach was chosen. Keywords: ADR, architecture decision, design decision, technical decision, why we chose.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "deprecated",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "workflow output"
+  ],
+  "triggers": [
+    "ADR",
+    "architecture decision",
+    "design decision",
+    "technical decision",
+    "why we chose"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-adr/SKILL.md",
+    "scripts": ".github/skills/generate-adr/scripts",
+    "assets": ".github/skills/generate-adr/assets",
+    "references": ".github/skills/generate-adr/references"
+  },
+  "keywords": [
+    "ADR",
+    "architecture decision",
+    "design decision",
+    "technical decision",
+    "why we chose"
+  ],
+  "routedBy": [
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator"
+  ]
+}

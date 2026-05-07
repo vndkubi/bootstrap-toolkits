@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-runtime-compilation",
+  "displayName": "bootstrap-phase-runtime-compilation",
+  "description": "Run Phase 12 of the bootstrap pipeline: Runtime Compilation. Compile runtime fidelity, per-skill manifests, and discoverability indexes from the retained runtime surface. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 12, runtime compilation, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "runtime fidelity manifest",
+    "skill indexes"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 12",
+    "bootstrap pipeline",
+    "runtime compilation"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-runtime-compilation/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-runtime-compilation/scripts",
+    "assets": ".github/skills/bootstrap-phase-runtime-compilation/assets",
+    "references": ".github/skills/bootstrap-phase-runtime-compilation/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 12",
+    "bootstrap pipeline",
+    "runtime compilation"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

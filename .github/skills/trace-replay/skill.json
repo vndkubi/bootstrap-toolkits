@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "trace-replay",
+  "displayName": "trace-replay",
+  "description": "Capture every completed /autorun run as a structured Episode and replay similar past episodes (both successful and cautionary) as few-shot precedent into Phase 1 of future runs. Scoped to this repo; storage under .github/.episode-index/. Feature-flagged via episodicMemory.enabled.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "autorun",
+    "both",
+    "capture",
+    "cautionary",
+    "completed",
+    "enabled",
+    "episode",
+    "episodes",
+    "episodicmemory",
+    "every",
+    "feature",
+    "few"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/trace-replay/SKILL.md",
+    "scripts": ".github/skills/trace-replay/scripts",
+    "assets": ".github/skills/trace-replay/assets",
+    "references": ".github/skills/trace-replay/references"
+  },
+  "keywords": [
+    "autorun",
+    "both",
+    "capture",
+    "cautionary",
+    "completed",
+    "enabled",
+    "episode",
+    "episodes",
+    "episodicmemory",
+    "every",
+    "feature",
+    "few"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

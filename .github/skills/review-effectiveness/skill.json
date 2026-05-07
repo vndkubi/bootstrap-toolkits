@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "id": "review-effectiveness",
+  "displayName": "review-effectiveness",
+  "description": "Review how well the generated Copilot configuration and spec-kit workflow are working in practice. Evaluates usage, drift, artifact quality, memory-promotion adoption, and whether teams are actually following the Spec -> Plan -> Tasks workflow.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [
+      "correction-ledger"
+    ],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "task list"
+  ],
+  "triggers": [
+    "actually",
+    "adoption",
+    "are",
+    "artifact",
+    "configuration",
+    "copilot",
+    "drift",
+    "effectiveness",
+    "evaluates",
+    "following",
+    "generated",
+    "how"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/review-effectiveness/SKILL.md",
+    "scripts": ".github/skills/review-effectiveness/scripts",
+    "assets": ".github/skills/review-effectiveness/assets",
+    "references": ".github/skills/review-effectiveness/references"
+  },
+  "keywords": [
+    "actually",
+    "adoption",
+    "are",
+    "artifact",
+    "configuration",
+    "copilot",
+    "drift",
+    "effectiveness",
+    "evaluates",
+    "following",
+    "generated",
+    "how"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "common-doc-generator",
+  "displayName": "common-doc-generator",
+  "description": "Generate a structured 7-section common doc for any subsystem or .github/ component by tracing source code or skill files. Fills Purpose, Source of Truth, Request/Data Flow, Key Constraints, Verification, Common Failure Modes, and Related Files. Marks [NEEDS CONTENT] where evidence is insufficient. Chat output only — does not write files.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "any",
+    "chat",
+    "code",
+    "common",
+    "component",
+    "constraints",
+    "content",
+    "data",
+    "doc",
+    "does",
+    "evidence",
+    "failure"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/common-doc-generator/SKILL.md",
+    "scripts": ".github/skills/common-doc-generator/scripts",
+    "assets": ".github/skills/common-doc-generator/assets",
+    "references": ".github/skills/common-doc-generator/references"
+  },
+  "keywords": [
+    "any",
+    "chat",
+    "code",
+    "common",
+    "component",
+    "constraints",
+    "content",
+    "data",
+    "doc",
+    "does",
+    "evidence",
+    "failure"
+  ],
+  "routedBy": [
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator"
+  ]
+}

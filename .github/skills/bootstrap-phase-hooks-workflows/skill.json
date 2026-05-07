@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-hooks-workflows",
+  "displayName": "bootstrap-phase-hooks-workflows",
+  "description": "Run Phase 11 of the bootstrap pipeline: Hooks and Optional Workflows. Generate hooks and optional workflow automation only when the target repo and capability tier justify them. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 11, hooks and optional workflows, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "hooks",
+    "optional workflows"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 11",
+    "bootstrap pipeline",
+    "hooks and optional workflows"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-hooks-workflows/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-hooks-workflows/scripts",
+    "assets": ".github/skills/bootstrap-phase-hooks-workflows/assets",
+    "references": ".github/skills/bootstrap-phase-hooks-workflows/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 11",
+    "bootstrap pipeline",
+    "hooks and optional workflows"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

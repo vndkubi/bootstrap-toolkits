@@ -40,6 +40,20 @@ Verify with ...
 
 ## Task-Specific Prompt Templates
 
+### Bootstrap this repository
+
+```text
+Bootstrap Copilot for this repository.
+Goal: Generate the project-specific .github configuration from the copied bundle.
+Anchor: Start from /bootstrap-copilot and use the target repo's README, build files, source code, tests, and docs.
+Constraints: Treat copied toolkit files as bootstrap inputs, not repo identity proof. Keep the bootstrap chain /bootstrap-copilot -> @conductor -> generate-copilot-config.
+Verify: Report classification, repo truth outputs, generated keep set, and cleanup summary.
+```
+
+Prefer the generated `.github/.bootstrap-summary.md` as the concise operator-facing outcome summary when it exists. It should let a maintainer understand classification, retained or removed assets, and next action without reconstructing state from multiple files.
+
+If the current repository or workflow has separate audit or delivery artifacts, you can use them to track review and follow-up decisions around bootstrap work. Do not assume they exist, and do not treat them as the primary runtime bootstrap path.
+
 ### Bug fix
 
 ```text

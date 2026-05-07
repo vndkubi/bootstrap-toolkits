@@ -7,6 +7,26 @@ description: "Generate a project-specific GitHub Copilot configuration through a
 
 This skill is the **single source of truth** for the bootstrap pipeline. Prompts and orchestrator agents should reference this file instead of redefining the process.
 
+`generate-copilot-config` remains the top-level orchestrator. The pipeline phases below should also exist as progressively disclosed phase skills named:
+
+- `bootstrap-phase-scan`
+- `bootstrap-phase-classify`
+- `bootstrap-phase-domain-repo-truth`
+- `bootstrap-phase-core-instructions`
+- `bootstrap-phase-domain-instructions`
+- `bootstrap-phase-language-framework-instructions`
+- `bootstrap-phase-templates`
+- `bootstrap-phase-agents`
+- `bootstrap-phase-skills`
+- `bootstrap-phase-prompts`
+- `bootstrap-phase-hooks-workflows`
+- `bootstrap-phase-runtime-compilation`
+- `bootstrap-phase-validate`
+- `bootstrap-phase-devcontainer`
+- `bootstrap-phase-cleanup-summary`
+
+Those phase skills must not redefine pipeline intent. They exist so runtime routing can load cheap phase-local instructions instead of the full monolith when only one slice is active.
+
 ## Portable Bundle Rule
 
 The copied `.github/` folder must work as a self-contained bootstrap bundle.
@@ -46,7 +66,7 @@ The point is not to generate the largest doc set possible. The point is to gener
 8. **Generate agents**
 9. **Generate skills**
 10. **Generate prompts**
-11. **Generate hooks and optional workflows** — memory hooks are mandatory for Standard and Enterprise repos; do not skip
+11. **Generate hooks and optional workflows** — hooks are opt-in or evidence-driven; local memory hook files are outside the default bundle
 12. **Compile runtime fidelity**
 13. **Validate**
 14. **Review or generate devcontainer**
@@ -1146,7 +1166,7 @@ If classification is Standard or Enterprise, read `.bootstrap-state.json` to con
 
 Record `"11-hooks": "completed"` after generation. Never record `"skipped"` for Standard or Enterprise repos unless an unrecoverable error occurs (record `"failed"` with error details instead).
 
-Use the `generate-hooks` skill as the reference for hook file format, event selection, detection matrix, and memory hook rules. Phase 11 defines what is mandatory; the skill defines how to produce it.
+Use the `generate-hooks` skill as the reference for hook file format, event selection, and tool-filtered quality checks. Phase 11 defines what is mandatory; the skill defines how to produce it.
 
 ### Quality hooks (conditional on detected tooling)
 
@@ -1165,22 +1185,11 @@ For Standard and Enterprise repos, generate a `preCompact` hook that checkpoints
 
 This prevents loss of in-progress decisions, constraints, and plan state during long-running feature work.
 
-### Memory and observation hooks (conditional on repo size)
+### Local memory hook surface
 
-For Standard and Enterprise repos, generate a memory hook set that captures, injects, summarizes, and checkpoints session observations:
+Do not generate or retain `.github/hooks/memory-*.json` or `.github/scripts/memory-*.js` in the default bootstrap output. Repo-tracked artifacts are the primary shared continuity layer for generated repositories.
 
-| Hook file | Event | Script | Purpose |
-|-----------|-------|--------|---------|
-| `memory-capture.json` | `postToolUse` | `memory-capture.js` | Append one JSONL observation to `.memory/observations.jsonl` |
-| `memory-inject.json` | `sessionStart` | `memory-inject.js` | Emit bounded summary-first context from prior session data |
-| `memory-summary.json` | `stop` | `memory-summary.js` | Write session summary Markdown to `.memory/summaries/` |
-| `memory-checkpoint.json` | `preCompact` | `memory-checkpoint.js` | Checkpoint critical state before context compaction |
-
-Rules for memory hooks:
-- Scripts must use Node.js stdlib only (no external dependencies)
-- All scripts must fail open — a script error must never block the user's workflow
-- Add `.memory/` to `.gitignore` (local-only, not committed)
-- Keep each script execution under 5 seconds
+If a future target repo explicitly needs hook-driven local memory, treat that as a separate custom extension with its own scripts, tests, and manifest entries. Do not imply those files are present in this bundle.
 
 ### Context-packet manifest (conditional on repo size)
 
@@ -1216,14 +1225,6 @@ Record `"11-hooks": "completed"` only after the smoke test passes. If the smoke 
 After generating hook and script files, immediately append their paths to the `generatedFiles` array in `.bootstrap-state.json`. This is critical: Phase 15 uses `generatedFiles` to build the keepSet. Files not in `generatedFiles` will be treated as copied bundle residue and deleted.
 
 Generated paths to register (when applicable):
-- `.github/hooks/memory-capture.json`
-- `.github/hooks/memory-inject.json`
-- `.github/hooks/memory-summary.json`
-- `.github/hooks/memory-checkpoint.json`
-- `.github/scripts/memory-capture.js`
-- `.github/scripts/memory-inject.js`
-- `.github/scripts/memory-summary.js`
-- `.github/scripts/memory-checkpoint.js`
 - `.github/hooks/auto-format.json` (when formatter detected)
 - `.github/hooks/lint-check.json` (when linter detected)
 - `.github/hooks/compile-check.json` (when compiler detected)
@@ -1246,6 +1247,11 @@ This phase produces two files:
 
 - `.github/.runtime-fidelity.json` — classifies every generated artifact by runtime role, estimated token cost, and inter-file relationships
 - `.github/.skill-index.json` — skill discoverability metadata for routing and context-assembly consumers
+
+It also materializes the skill-manifest layer for progressively disclosed runtime loading:
+
+- `.github/skills/<name>/skill.json` — machine-readable manifest for each retained skill
+- `.github/skills/INDEX.json` — aggregated catalog of retained skill manifests for low-cost routing and tier-aware pruning
 
 ### Runtime Fidelity Manifest
 
@@ -1326,6 +1332,35 @@ Scan file contents for cross-references to other generated files:
 
 ### Skill Index
 
+Before building `.github/.skill-index.json`, emit a per-skill manifest at `.github/skills/<name>/skill.json` with at least:
+
+```json
+{
+  "schemaVersion": 1,
+  "id": "generate-unit-tests",
+  "displayName": "generate-unit-tests",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "triggers": ["unit test", "coverage", "junit"],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-unit-tests/SKILL.md",
+    "scripts": ".github/skills/generate-unit-tests/scripts",
+    "assets": ".github/skills/generate-unit-tests/assets",
+    "references": ".github/skills/generate-unit-tests/references"
+  }
+}
+```
+
+Aggregate those manifests into `.github/skills/INDEX.json` before computing discoverability-only runtime data in `.github/.skill-index.json`.
+
 Build `.github/.skill-index.json` with discoverability metadata for each skill:
 
 ```json
@@ -1360,6 +1395,7 @@ Build `.github/.skill-index.json` with discoverability metadata for each skill:
 
 - Run this phase AFTER all generation phases (4–11) but BEFORE validation (Phase 13)
 - Phase 13 (Validate) should READ `.runtime-fidelity.json` to verify cleanup decisions
+- Every retained skill must have a valid `.github/skills/<name>/skill.json` entry and appear in `.github/skills/INDEX.json`
 - If a retained artifact has no `runtimeRole` entry, Phase 13 should flag it as a validation error
 - If a `bootstrap_only` artifact survives cleanup, Phase 13 should flag it as a cleanup error
 - Update `.bootstrap-state.json` with phase `12-runtime-compilation` status after completion
@@ -1564,7 +1600,7 @@ After generation and validation:
 
 Append entries to the target repo's `.gitignore` for generated runtime artifacts that should not be committed:
 
-1. When memory hooks are generated (Phase 11): add `.memory/` if not already present.
+1. Do not add `.memory/` unless a separate custom extension explicitly introduces local memory files.
 2. When the team prefers not to commit bootstrap metadata: add `.github/.bootstrap-manifest.json`, `.github/.bootstrap-state.json`, `.github/.bootstrap-snapshot.json` if not already present.
 3. When session checkpoint hooks are generated: add `.github/.session-checkpoint.md` if not already present.
 

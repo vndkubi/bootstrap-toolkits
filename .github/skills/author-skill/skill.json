@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "author-skill",
+  "displayName": "author-skill",
+  "description": "Turn a correction pattern or plain-language capability brief into a draft skill package with SKILL.md, skill.json, standard layout, and an evaluation scaffold. Use when promoting repeated work into a reusable skill or when a non-technical teammate needs a guided business-skill draft. Keywords: author skill, create skill, draft skill, business skill, promote pattern.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [
+      "context-budget-check",
+      "skill-discoverability-audit"
+    ],
+    "mcp": [
+      "audit_discoverability",
+      "list_skills"
+    ],
+    "tools": []
+  },
+  "inputs": [
+    "A plain-language brief or structured JSON with `displayName`, `description`, and `goal`",
+    "Optional dependency hints: `requires.skills`, `requires.mcp`, `mcp_tools_used`",
+    "Optional evidence refs: correction-ledger entries, trace ids, docs, or review findings"
+  ],
+  "outputs": [
+    "Draft file map for the proposed skill package",
+    "Manifest aligned to `.github/schemas/skill-manifest.schema.json`",
+    "Missing-information questions when the input is incomplete"
+  ],
+  "triggers": [
+    "author skill",
+    "business skill",
+    "create skill",
+    "draft skill",
+    "promote pattern"
+  ],
+  "mcp_tools_used": [
+    "audit_discoverability",
+    "list_skills"
+  ],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/author-skill/SKILL.md",
+    "scripts": ".github/skills/author-skill/scripts",
+    "assets": ".github/skills/author-skill/assets",
+    "references": ".github/skills/author-skill/references"
+  },
+  "keywords": [
+    "author skill",
+    "business skill",
+    "create skill",
+    "draft skill",
+    "promote pattern"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "analyze-requirements",
+  "displayName": "analyze-requirements",
+  "description": "Requirements analysis and PBI writing workflow. Transforms user feature requests into structured User Stories with acceptance criteria, PBI breakdowns with story point estimates, impact assessments, and dependency maps. Analyzes actual codebase for feasibility and reuse opportunities. Outputs polished markdown requirements, using specs/<feature-id>-<slug>/spec.md as the canonical home for non-trivial work and docs/requirements/ only for backlog-intake artifacts. Use when asked to write a story, create PBIs, analyze requirements, or plan a feature.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "plan",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "acceptance",
+    "actual",
+    "analysis",
+    "analyze",
+    "analyzes",
+    "artifacts",
+    "asked",
+    "assessments",
+    "backlog",
+    "breakdowns",
+    "canonical",
+    "codebase"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/analyze-requirements/SKILL.md",
+    "scripts": ".github/skills/analyze-requirements/scripts",
+    "assets": ".github/skills/analyze-requirements/assets",
+    "references": ".github/skills/analyze-requirements/references"
+  },
+  "keywords": [
+    "acceptance",
+    "actual",
+    "analysis",
+    "analyze",
+    "analyzes",
+    "artifacts",
+    "asked",
+    "assessments",
+    "backlog",
+    "breakdowns",
+    "canonical",
+    "codebase"
+  ],
+  "routedBy": [
+    "business-analyst"
+  ],
+  "referencedByAgents": [
+    "business-analyst"
+  ]
+}

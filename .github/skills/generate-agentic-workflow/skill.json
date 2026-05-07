@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-agentic-workflow",
+  "displayName": "generate-agentic-workflow",
+  "description": "Generate GitHub Copilot Agentic Workflow files (.md) with frontmatter for triggers, permissions, and safe-outputs. Creates automation workflows for issue triage, daily reports, PR checks, and compliance audits that run via the Copilot coding agent in GitHub Actions. Use when setting up automated repository workflows.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "report",
+    "task list"
+  ],
+  "triggers": [
+    "actions",
+    "agent",
+    "agentic",
+    "audits",
+    "automated",
+    "automation",
+    "checks",
+    "coding",
+    "compliance",
+    "copilot",
+    "creates",
+    "daily"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-agentic-workflow/SKILL.md",
+    "scripts": ".github/skills/generate-agentic-workflow/scripts",
+    "assets": ".github/skills/generate-agentic-workflow/assets",
+    "references": ".github/skills/generate-agentic-workflow/references"
+  },
+  "keywords": [
+    "actions",
+    "agent",
+    "agentic",
+    "audits",
+    "automated",
+    "automation",
+    "checks",
+    "coding",
+    "compliance",
+    "copilot",
+    "creates",
+    "daily"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

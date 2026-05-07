@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "plan-implementation",
+  "displayName": "plan-implementation",
+  "description": "Creates a comprehensive implementation plan from a reviewed specification. Runs constitutional gates, maps requirements to technical decisions, and generates the supporting spec-kit artifacts needed for execution: plan.md, research.md, data-model.md, contracts/, and quickstart.md.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "review findings",
+    "task list"
+  ],
+  "triggers": [
+    "artifacts",
+    "comprehensive",
+    "constitutional",
+    "contracts",
+    "creates",
+    "data",
+    "decisions",
+    "execution",
+    "gates",
+    "generates",
+    "implementation",
+    "kit"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/plan-implementation/SKILL.md",
+    "scripts": ".github/skills/plan-implementation/scripts",
+    "assets": ".github/skills/plan-implementation/assets",
+    "references": ".github/skills/plan-implementation/references"
+  },
+  "keywords": [
+    "artifacts",
+    "comprehensive",
+    "constitutional",
+    "contracts",
+    "creates",
+    "data",
+    "decisions",
+    "execution",
+    "gates",
+    "generates",
+    "implementation",
+    "kit"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

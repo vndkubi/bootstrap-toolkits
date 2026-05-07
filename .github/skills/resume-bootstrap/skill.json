@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "resume-bootstrap",
+  "displayName": "resume-bootstrap",
+  "description": "Resume an interrupted Copilot bootstrap pipeline from the last completed phase. Reads .github/.bootstrap-state.json to determine which phases completed and which need to run. Use when the bootstrap pipeline was interrupted mid-run (context exhaustion, session timeout, error). Keywords: resume bootstrap, continue pipeline, restart from phase.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report"
+  ],
+  "triggers": [
+    "continue pipeline",
+    "restart from phase",
+    "resume bootstrap"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/resume-bootstrap/SKILL.md",
+    "scripts": ".github/skills/resume-bootstrap/scripts",
+    "assets": ".github/skills/resume-bootstrap/assets",
+    "references": ".github/skills/resume-bootstrap/references"
+  },
+  "keywords": [
+    "continue pipeline",
+    "restart from phase",
+    "resume bootstrap"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

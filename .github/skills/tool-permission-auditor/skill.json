@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "tool-permission-auditor",
+  "displayName": "tool-permission-auditor",
+  "description": "Scan all .agent.md files, classify each agent's role from its description and body, and produce an agent × tool-category permission matrix. Flags overprivileged agents (security risk) and agents with unnecessary heavy tools (cost risk). Use after bootstrap or when adding new agents. Keywords: tool permission, agent audit, overprivileged, security risk, tool matrix.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "diagram",
+    "plan",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "agent audit",
+    "overprivileged",
+    "security risk",
+    "tool matrix",
+    "tool permission"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/tool-permission-auditor/SKILL.md",
+    "scripts": ".github/skills/tool-permission-auditor/scripts",
+    "assets": ".github/skills/tool-permission-auditor/assets",
+    "references": ".github/skills/tool-permission-auditor/references"
+  },
+  "keywords": [
+    "agent audit",
+    "overprivileged",
+    "security risk",
+    "tool matrix",
+    "tool permission"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

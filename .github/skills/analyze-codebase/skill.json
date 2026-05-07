@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "analyze-codebase",
+  "displayName": "analyze-codebase",
+  "description": "Deep multi-stack codebase analysis with per-stack detection recipes. Scans project structure, build configs, source code, architecture patterns, domain boundaries, coding conventions, testing approaches, CI/CD pipelines, and external dependencies. Produces a structured analysis report. Supports Java/Maven/Gradle, .NET/C#, Python/Django/FastAPI, TypeScript/React, PHP/Laravel/Symfony, Android/Kotlin, iOS/Swift.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "report",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "analysis",
+    "analyze",
+    "android",
+    "approaches",
+    "architecture",
+    "boundaries",
+    "build",
+    "code",
+    "codebase",
+    "coding",
+    "configs",
+    "conventions"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/analyze-codebase/SKILL.md",
+    "scripts": ".github/skills/analyze-codebase/scripts",
+    "assets": ".github/skills/analyze-codebase/assets",
+    "references": ".github/skills/analyze-codebase/references"
+  },
+  "keywords": [
+    "analysis",
+    "analyze",
+    "android",
+    "approaches",
+    "architecture",
+    "boundaries",
+    "build",
+    "code",
+    "codebase",
+    "coding",
+    "configs",
+    "conventions"
+  ],
+  "routedBy": [
+    "codebase-analyzer"
+  ],
+  "referencedByAgents": [
+    "codebase-analyzer"
+  ]
+}

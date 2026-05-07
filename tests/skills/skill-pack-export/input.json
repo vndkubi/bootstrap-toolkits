@@ -1,0 +1,12 @@
+{
+  "packId": "bootstrap-authoring-pack",
+  "title": "Bootstrap Authoring Pack",
+  "skillIds": [
+    "author-skill",
+    "evaluate-skill"
+  ],
+  "source": {
+    "type": "local",
+    "value": "copilot-bootstrap"
+  }
+}

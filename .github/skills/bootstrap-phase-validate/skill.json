@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-validate",
+  "displayName": "bootstrap-phase-validate",
+  "description": "Run Phase 13 of the bootstrap pipeline: Validate. Validate structural, discoverability, dependency, and cleanup integrity before finalizing the generated output. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 13, validate, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [
+      "audit_discoverability",
+      "audit_instruction_conflicts",
+      "validate_bootstrap_output"
+    ],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "validation report"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 13",
+    "bootstrap pipeline",
+    "validate"
+  ],
+  "mcp_tools_used": [
+    "audit_discoverability",
+    "audit_instruction_conflicts",
+    "validate_bootstrap_output"
+  ],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-validate/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-validate/scripts",
+    "assets": ".github/skills/bootstrap-phase-validate/assets",
+    "references": ".github/skills/bootstrap-phase-validate/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 13",
+    "bootstrap pipeline",
+    "validate"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

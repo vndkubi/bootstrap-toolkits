@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-copilot-config",
+  "displayName": "generate-copilot-config",
+  "description": "Generate a project-specific GitHub Copilot configuration through a scan, classification, domain analysis, repo-truth-pack generation, artifact generation, and validation pipeline.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [
+      "bootstrap-phase-agents",
+      "bootstrap-phase-classify",
+      "bootstrap-phase-cleanup-summary",
+      "bootstrap-phase-core-instructions",
+      "bootstrap-phase-devcontainer",
+      "bootstrap-phase-domain-instructions",
+      "bootstrap-phase-domain-repo-truth",
+      "bootstrap-phase-hooks-workflows",
+      "bootstrap-phase-language-framework-instructions",
+      "bootstrap-phase-prompts",
+      "bootstrap-phase-runtime-compilation",
+      "bootstrap-phase-scan",
+      "bootstrap-phase-skills",
+      "bootstrap-phase-templates",
+      "bootstrap-phase-validate",
+      "context-budget-check",
+      "drift-detector",
+      "instruction-conflict-detector",
+      "repo-memory-promoter",
+      "review-effectiveness",
+      "review-memory-promotion",
+      "skill-discoverability-audit",
+      "tool-permission-auditor",
+      "validate-bootstrap-output"
+    ],
+    "mcp": [
+      "analyze_repo",
+      "audit_context",
+      "audit_discoverability",
+      "audit_instruction_conflicts",
+      "audit_tools",
+      "detect_drift",
+      "get_module_graph",
+      "inspect_source_of_truth",
+      "list_domains",
+      "list_skills",
+      "validate_bootstrap_output"
+    ],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "analysis",
+    "artifact",
+    "classification",
+    "config",
+    "configuration",
+    "copilot",
+    "domain",
+    "generate",
+    "generation",
+    "github",
+    "pack",
+    "pipeline"
+  ],
+  "mcp_tools_used": [
+    "analyze_repo",
+    "audit_context",
+    "audit_discoverability",
+    "audit_instruction_conflicts",
+    "audit_tools",
+    "detect_drift",
+    "get_module_graph",
+    "inspect_source_of_truth",
+    "list_domains",
+    "list_skills",
+    "validate_bootstrap_output"
+  ],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/generate-copilot-config/SKILL.md",
+    "scripts": ".github/skills/generate-copilot-config/scripts",
+    "assets": ".github/skills/generate-copilot-config/assets",
+    "references": ".github/skills/generate-copilot-config/references"
+  },
+  "keywords": [
+    "analysis",
+    "artifact",
+    "classification",
+    "config",
+    "configuration",
+    "copilot",
+    "domain",
+    "generate",
+    "generation",
+    "github",
+    "pack",
+    "pipeline"
+  ],
+  "routedBy": [
+    "codebase-analyzer",
+    "conductor"
+  ],
+  "referencedByAgents": [
+    "codebase-analyzer",
+    "conductor"
+  ]
+}

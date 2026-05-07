@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "implement-feature",
+  "displayName": "implement-feature",
+  "description": "Executes an approved spec-driven implementation using the feature workspace artifacts and the repo's actual stack. Uses the reviewed spec, plan, tasks, contracts, and verification commands to drive safe implementation instead of relying on stack-specific defaults.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "actual",
+    "approved",
+    "artifacts",
+    "commands",
+    "contracts",
+    "defaults",
+    "drive",
+    "driven",
+    "executes",
+    "feature",
+    "implement",
+    "implementation"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/implement-feature/SKILL.md",
+    "scripts": ".github/skills/implement-feature/scripts",
+    "assets": ".github/skills/implement-feature/assets",
+    "references": ".github/skills/implement-feature/references"
+  },
+  "keywords": [
+    "actual",
+    "approved",
+    "artifacts",
+    "commands",
+    "contracts",
+    "defaults",
+    "drive",
+    "driven",
+    "executes",
+    "feature",
+    "implement",
+    "implementation"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "repo-memory-promoter",
+  "displayName": "repo-memory-promoter",
+  "description": "Scan .github/ config to find information worth promoting to a persistent memory layer. Identifies copilot-instructions.md bloat, broad instruction globs, underdocumented subsystems, and workflow gaps. Outputs a prioritised promotion report with concrete actions. Chat output only — does not write files or generate approval-ready candidate deltas.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "task list"
+  ],
+  "triggers": [
+    "actions",
+    "approval",
+    "bloat",
+    "broad",
+    "candidate",
+    "chat",
+    "concrete",
+    "config",
+    "copilot",
+    "deltas",
+    "does",
+    "files"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/repo-memory-promoter/SKILL.md",
+    "scripts": ".github/skills/repo-memory-promoter/scripts",
+    "assets": ".github/skills/repo-memory-promoter/assets",
+    "references": ".github/skills/repo-memory-promoter/references"
+  },
+  "keywords": [
+    "actions",
+    "approval",
+    "bloat",
+    "broad",
+    "candidate",
+    "chat",
+    "concrete",
+    "config",
+    "copilot",
+    "deltas",
+    "does",
+    "files"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

@@ -11,6 +11,13 @@ You are a Copilot configuration generator. Analyze the current codebase and gene
 
 Use the `@conductor` agent and follow the `generate-copilot-config` skill. That skill is the single source of truth for the bootstrap pipeline.
 
+## Bootstrap Flow Contract
+
+- `/bootstrap-copilot` is the primary bootstrap entrypoint for a copied bundle inside a target repository.
+- The bootstrap handoff is `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`.
+- Expected bootstrap outputs are a project-specific `.github/` tree, `.github/.bootstrap-state.json` progress updates, a repo truth pack sized to the target repo, `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and cleanup to the manifest keep set.
+- If the current repository or workflow also has separate audit or delivery artifacts, treat them as optional evidence inputs around the bootstrap flow. Do not assume they exist or depend on them for bootstrap execution.
+
 Assume the copied `.github/` folder is the full bootstrap bundle. Prefer source-of-truth guidance inside `.github/`, then enrich it with evidence from the target repo's `README.md`, build files, source code, tests, and docs.
 Do not infer that the current repo is the `copilot-bootstrap` source repo from copied bundle files alone.
 

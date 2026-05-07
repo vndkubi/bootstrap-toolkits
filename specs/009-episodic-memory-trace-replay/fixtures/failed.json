@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "episode_id": "20260115-pbi-051-payment-retry",
+  "created_at": "2026-01-15T14:05:00Z",
+  "pbi_ref": { "type": "jira", "id": "PAY-51" },
+  "raw_intent": "Add exponential-backoff retry to payment gateway client.",
+  "summary": "Phase-5 TDD loop exceeded maxIterations (8) due to flaky integration tests; run ended at tdd-no-progress gate.",
+  "detected": {
+    "modules": ["payments/client"],
+    "contracts": [],
+    "stacks": ["node"]
+  },
+  "embedding": {
+    "model": "local-minilm-l6-v2@sha256-abc123def456abc123def456",
+    "vector_ref": ".github/.episode-index/vectors.f32.bin#1536+1536"
+  },
+  "phases": [
+    { "phase": "intake", "duration_ms": 900, "token_cost": 400 },
+    { "phase": "test-first", "duration_ms": 1800, "token_cost": 700 },
+    { "phase": "implement", "duration_ms": 12000, "token_cost": 4800 }
+  ],
+  "outcome": "failed",
+  "outcome_score": 0.2,
+  "score_components": { "tests": 0.3, "review": 0.2, "contract": 0.0, "rounds": 0.2 },
+  "artifacts": {
+    "spec": "specs/051-payment-retry/spec.md",
+    "evidence": ".artifacts/051/evidence-summary.md"
+  },
+  "regression_events": [],
+  "replay_count": 0,
+  "tags": ["payments", "flaky"]
+}

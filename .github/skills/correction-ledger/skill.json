@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "correction-ledger",
+  "displayName": "correction-ledger",
+  "description": "Aggregate trusted correction signals from accepted review fixes, explicit user redirections, and repeated reviewer findings into approval-ready promotion candidates. Use when running the learning loop, analyzing correction patterns, or feeding stable signals into review-memory-promotion. Keywords: correction ledger, learning loop, correction patterns, promotion candidates, recurring fixes.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "prompt",
+    "report",
+    "review findings"
+  ],
+  "triggers": [
+    "correction ledger",
+    "correction patterns",
+    "learning loop",
+    "promotion candidates",
+    "recurring fixes"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/correction-ledger/SKILL.md",
+    "scripts": ".github/skills/correction-ledger/scripts",
+    "assets": ".github/skills/correction-ledger/assets",
+    "references": ".github/skills/correction-ledger/references"
+  },
+  "keywords": [
+    "correction ledger",
+    "correction patterns",
+    "learning loop",
+    "promotion candidates",
+    "recurring fixes"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

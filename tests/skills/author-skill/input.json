@@ -1,0 +1,27 @@
+{
+  "displayName": "Finance Briefing Skill",
+  "description": "Create a concise finance briefing from a quarterly metric snapshot.",
+  "goal": "Turn a plain-language finance update request into a short, reviewable briefing.",
+  "tier": "foundational",
+  "inputs": [
+    "quarterly metrics snapshot",
+    "plain-language focus areas"
+  ],
+  "outputs": [
+    "briefing markdown"
+  ],
+  "triggers": [
+    "finance briefing",
+    "quarterly summary",
+    "briefing"
+  ],
+  "whenToUse": [
+    "Summarizing quarterly metrics for business review"
+  ],
+  "requiresMcp": [
+    "list_skills"
+  ],
+  "mcpToolsUsed": [
+    "list_skills"
+  ]
+}

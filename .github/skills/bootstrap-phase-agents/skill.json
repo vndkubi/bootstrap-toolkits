@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-agents",
+  "displayName": "bootstrap-phase-agents",
+  "description": "Run Phase 8 of the bootstrap pipeline: Generate Agents. Generate agents and routing files that reflect the target repo stack, workflow, and escalation paths. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 8, generate agents, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "agents",
+    "routing updates"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 8",
+    "bootstrap pipeline",
+    "generate agents"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-agents/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-agents/scripts",
+    "assets": ".github/skills/bootstrap-phase-agents/assets",
+    "references": ".github/skills/bootstrap-phase-agents/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 8",
+    "bootstrap pipeline",
+    "generate agents"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

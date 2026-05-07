@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-domain-repo-truth",
+  "displayName": "bootstrap-phase-domain-repo-truth",
+  "description": "Run Phase 3 of the bootstrap pipeline: Domain and Repo Truth Pack. Build the progressive-disclosure truth pack that anchors global, module, and workflow reasoning for the target repo. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 3, domain and repo truth pack, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "domain map",
+    "repo truth pack"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 3",
+    "bootstrap pipeline",
+    "domain and repo truth pack"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-domain-repo-truth/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-domain-repo-truth/scripts",
+    "assets": ".github/skills/bootstrap-phase-domain-repo-truth/assets",
+    "references": ".github/skills/bootstrap-phase-domain-repo-truth/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 3",
+    "bootstrap pipeline",
+    "domain and repo truth pack"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

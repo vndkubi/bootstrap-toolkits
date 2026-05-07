@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "upgrade-config",
+  "displayName": "upgrade-config",
+  "description": "Upgrade a previously bootstrapped Copilot configuration to the current toolkit version. Reads .github/.bootstrap-manifest.json to detect the toolkit version used, diffs against current toolkit capabilities, and generates a migration plan. Use when pulling a newer toolkit version into an existing bootstrapped project. Keywords: upgrade config, migrate copilot config, update toolkit, version migration.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "review findings"
+  ],
+  "triggers": [
+    "migrate copilot config",
+    "update toolkit",
+    "upgrade config",
+    "version migration"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/upgrade-config/SKILL.md",
+    "scripts": ".github/skills/upgrade-config/scripts",
+    "assets": ".github/skills/upgrade-config/assets",
+    "references": ".github/skills/upgrade-config/references"
+  },
+  "keywords": [
+    "migrate copilot config",
+    "update toolkit",
+    "upgrade config",
+    "version migration"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

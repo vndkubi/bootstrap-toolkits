@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-classify",
+  "displayName": "bootstrap-phase-classify",
+  "description": "Run Phase 2 of the bootstrap pipeline: Classify. Translate scan evidence into repo size, complexity, and retained-surface strategy before generation starts. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 2, classify, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "classification summary",
+    "tier recommendation"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 2",
+    "bootstrap pipeline",
+    "classify"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-classify/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-classify/scripts",
+    "assets": ".github/skills/bootstrap-phase-classify/assets",
+    "references": ".github/skills/bootstrap-phase-classify/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 2",
+    "bootstrap pipeline",
+    "classify"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

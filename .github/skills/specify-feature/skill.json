@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "specify-feature",
+  "displayName": "specify-feature",
+  "description": "Transforms a feature description, PBI, or user request into a structured specification using the PRD template. Creates a feature workspace under specs/, marks uncertainties with [NEEDS CLARIFICATION], and prepares the repo for the Spec -> Plan -> Tasks pipeline.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "plan",
+    "review findings",
+    "task list"
+  ],
+  "triggers": [
+    "clarification",
+    "creates",
+    "description",
+    "feature",
+    "marks",
+    "needs",
+    "pbi",
+    "pipeline",
+    "plan",
+    "prd",
+    "prepares",
+    "repo"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/specify-feature/SKILL.md",
+    "scripts": ".github/skills/specify-feature/scripts",
+    "assets": ".github/skills/specify-feature/assets",
+    "references": ".github/skills/specify-feature/references"
+  },
+  "keywords": [
+    "clarification",
+    "creates",
+    "description",
+    "feature",
+    "marks",
+    "needs",
+    "pbi",
+    "pipeline",
+    "plan",
+    "prd",
+    "prepares",
+    "repo"
+  ],
+  "routedBy": [
+    "investigator",
+    "spec-reviewer"
+  ],
+  "referencedByAgents": [
+    "investigator",
+    "spec-reviewer"
+  ]
+}

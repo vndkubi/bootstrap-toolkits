@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "evaluate-skill",
+  "displayName": "evaluate-skill",
+  "description": "Evaluate a skill against repo-local checks and fixtures under tests/skills/<name>/eval.json. Produces pass/fail results and a numeric score so new or changed skills are validated before retention. Keywords: evaluate skill, skill checks, skill regression, skill score.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "experimental",
+  "requires": {
+    "skills": [
+      "trace-replay"
+    ],
+    "mcp": [
+      "audit_discoverability",
+      "validate_bootstrap_output"
+    ],
+    "tools": []
+  },
+  "inputs": [
+    "Optional repo root override",
+    "Skill id"
+  ],
+  "outputs": [
+    "JSON result with pass/fail counts, score, and individual check results"
+  ],
+  "triggers": [
+    "evaluate skill",
+    "skill checks",
+    "skill regression",
+    "skill score"
+  ],
+  "mcp_tools_used": [
+    "audit_discoverability",
+    "validate_bootstrap_output"
+  ],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/evaluate-skill/SKILL.md",
+    "scripts": ".github/skills/evaluate-skill/scripts",
+    "assets": ".github/skills/evaluate-skill/assets",
+    "references": ".github/skills/evaluate-skill/references"
+  },
+  "keywords": [
+    "evaluate skill",
+    "skill checks",
+    "skill regression",
+    "skill score"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-pr-description",
+  "displayName": "generate-pr-description",
+  "description": "Generate comprehensive pull request descriptions by analyzing git diff, commit history, and related issues. Creates structured PR descriptions with summary, changes, testing notes, and review checklist. Use when creating or improving PR descriptions.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "analyzing",
+    "changes",
+    "checklist",
+    "commit",
+    "comprehensive",
+    "creates",
+    "creating",
+    "description",
+    "descriptions",
+    "diff",
+    "generate",
+    "git"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-pr-description/SKILL.md",
+    "scripts": ".github/skills/generate-pr-description/scripts",
+    "assets": ".github/skills/generate-pr-description/assets",
+    "references": ".github/skills/generate-pr-description/references"
+  },
+  "keywords": [
+    "analyzing",
+    "changes",
+    "checklist",
+    "commit",
+    "comprehensive",
+    "creates",
+    "creating",
+    "description",
+    "descriptions",
+    "diff",
+    "generate",
+    "git"
+  ],
+  "routedBy": [
+    "pr-manager"
+  ],
+  "referencedByAgents": [
+    "pr-manager"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "author-skill",
+  "checks": [
+    {
+      "type": "file_exists",
+      "path": ".github/skills/author-skill/SKILL.md"
+    },
+    {
+      "type": "file_exists",
+      "path": ".github/skills/author-skill/scripts/draft-skill.js"
+    },
+    {
+      "type": "json_field_equals",
+      "path": ".github/skills/author-skill/skill.json",
+      "field": "stability",
+      "value": "experimental"
+    },
+    {
+      "type": "text_includes",
+      "path": ".github/skills/author-skill/SKILL.md",
+      "includes": [
+        "correction-ledger",
+        "evaluate-skill",
+        "tests/skills/<id>/eval.json"
+      ]
+    }
+  ]
+}

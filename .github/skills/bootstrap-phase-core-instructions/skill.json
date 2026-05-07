@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-core-instructions",
+  "displayName": "bootstrap-phase-core-instructions",
+  "description": "Run Phase 4 of the bootstrap pipeline: Generate Core Instructions. Generate the small always-loaded instruction layer that teaches the target repo operating model and global guardrails. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 4, generate core instructions, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "core instructions"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 4",
+    "bootstrap pipeline",
+    "generate core instructions"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-core-instructions/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-core-instructions/scripts",
+    "assets": ".github/skills/bootstrap-phase-core-instructions/assets",
+    "references": ".github/skills/bootstrap-phase-core-instructions/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 4",
+    "bootstrap pipeline",
+    "generate core instructions"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

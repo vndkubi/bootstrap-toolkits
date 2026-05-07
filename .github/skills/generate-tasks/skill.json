@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-tasks",
+  "displayName": "generate-tasks",
+  "description": "Analyzes an implementation plan and supporting spec-kit artifacts to generate an executable task list. Converts contracts, data models, research, and verification scenarios into ordered tasks with dependencies, parallel groups, and checkpoints.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "analyzes",
+    "artifacts",
+    "checkpoints",
+    "contracts",
+    "converts",
+    "data",
+    "dependencies",
+    "executable",
+    "generate",
+    "groups",
+    "implementation",
+    "kit"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-tasks/SKILL.md",
+    "scripts": ".github/skills/generate-tasks/scripts",
+    "assets": ".github/skills/generate-tasks/assets",
+    "references": ".github/skills/generate-tasks/references"
+  },
+  "keywords": [
+    "analyzes",
+    "artifacts",
+    "checkpoints",
+    "contracts",
+    "converts",
+    "data",
+    "dependencies",
+    "executable",
+    "generate",
+    "groups",
+    "implementation",
+    "kit"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

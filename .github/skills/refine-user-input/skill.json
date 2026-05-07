@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "refine-user-input",
+  "displayName": "refine-user-input",
+  "description": "Analyze raw freeform user input and restructure it into an actionable prompt following the Goal/Anchor/Constraints/Verify shape. Default intake normalizer for non-trivial requests: use proactively before routing heavy workflows or when prompts are vague, cross-cutting, or missing scope, constraints, or verification details. Skip explicit refinement for trivial, already-clear asks.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "--",
+    "| Input | Required | Description |",
+    "| Raw input | Yes | The user's freeform text exactly as provided |",
+    "| Target skill | No | Downstream skill this input is destined for. Defaults to auto-detect from intent classification |",
+    "|-------|----------|-------------|"
+  ],
+  "outputs": [
+    "prompt",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "actionable",
+    "already",
+    "analyze",
+    "anchor",
+    "are",
+    "asks",
+    "clear",
+    "constraints",
+    "cross",
+    "cutting",
+    "default",
+    "details"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/refine-user-input/SKILL.md",
+    "scripts": ".github/skills/refine-user-input/scripts",
+    "assets": ".github/skills/refine-user-input/assets",
+    "references": ".github/skills/refine-user-input/references"
+  },
+  "keywords": [
+    "actionable",
+    "already",
+    "analyze",
+    "anchor",
+    "are",
+    "asks",
+    "clear",
+    "constraints",
+    "cross",
+    "cutting",
+    "default",
+    "details"
+  ],
+  "routedBy": [
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator"
+  ]
+}

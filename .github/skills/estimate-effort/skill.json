@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "estimate-effort",
+  "displayName": "estimate-effort",
+  "description": "Estimate development effort for user stories, PBIs, or technical tasks by analyzing codebase complexity, affected layers, test coverage needs, and risk factors. Produces story point estimates with justification and confidence levels. Use when estimating backlog items or planning capacity.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "affected",
+    "analyzing",
+    "backlog",
+    "capacity",
+    "codebase",
+    "complexity",
+    "confidence",
+    "coverage",
+    "development",
+    "effort",
+    "estimate",
+    "estimates"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/estimate-effort/SKILL.md",
+    "scripts": ".github/skills/estimate-effort/scripts",
+    "assets": ".github/skills/estimate-effort/assets",
+    "references": ".github/skills/estimate-effort/references"
+  },
+  "keywords": [
+    "affected",
+    "analyzing",
+    "backlog",
+    "capacity",
+    "codebase",
+    "complexity",
+    "confidence",
+    "coverage",
+    "development",
+    "effort",
+    "estimate",
+    "estimates"
+  ],
+  "routedBy": [
+    "dev-orchestrator",
+    "sprint-planner"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator",
+    "sprint-planner"
+  ]
+}

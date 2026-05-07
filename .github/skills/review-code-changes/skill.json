@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "review-code-changes",
+  "displayName": "review-code-changes",
+  "description": "Multi-stage code review pipeline: Self-Review → Functional Review (@functional-reviewer) → Technical Review (@technical-reviewer). Functional Review runs first — if business logic is wrong, reject immediately. Each finding must include actionable code snippets. Produces a combined review report with verdict. Use when reviewing PRs or branch changes via @code-reviewer.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "actionable",
+    "branch",
+    "business",
+    "changes",
+    "code",
+    "combined",
+    "each",
+    "finding",
+    "first",
+    "functional",
+    "immediately",
+    "include"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/review-code-changes/SKILL.md",
+    "scripts": ".github/skills/review-code-changes/scripts",
+    "assets": ".github/skills/review-code-changes/assets",
+    "references": ".github/skills/review-code-changes/references"
+  },
+  "keywords": [
+    "actionable",
+    "branch",
+    "business",
+    "changes",
+    "code",
+    "combined",
+    "each",
+    "finding",
+    "first",
+    "functional",
+    "immediately",
+    "include"
+  ],
+  "routedBy": [
+    "code-reviewer",
+    "pr-manager"
+  ],
+  "referencedByAgents": [
+    "code-reviewer",
+    "pr-manager"
+  ]
+}

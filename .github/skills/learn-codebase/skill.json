@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "learn-codebase",
+  "displayName": "learn-codebase",
+  "description": "Interactive codebase learning guide. Teaches developers the business domains, workflows, rules, data model, and external integrations of any codebase. Use when onboarding new team members, understanding a specific domain, or preparing to work on a feature.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "diagram",
+    "report",
+    "task list"
+  ],
+  "triggers": [
+    "any",
+    "business",
+    "codebase",
+    "data",
+    "developers",
+    "domain",
+    "domains",
+    "external",
+    "feature",
+    "guide",
+    "integrations",
+    "interactive"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/learn-codebase/SKILL.md",
+    "scripts": ".github/skills/learn-codebase/scripts",
+    "assets": ".github/skills/learn-codebase/assets",
+    "references": ".github/skills/learn-codebase/references"
+  },
+  "keywords": [
+    "any",
+    "business",
+    "codebase",
+    "data",
+    "developers",
+    "domain",
+    "domains",
+    "external",
+    "feature",
+    "guide",
+    "integrations",
+    "interactive"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

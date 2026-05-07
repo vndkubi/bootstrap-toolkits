@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "drift-detector",
+  "displayName": "drift-detector",
+  "description": "Detect configuration drift between the bootstrap snapshot and the current repository state. Scans module topology, frameworks, instruction coverage, reference integrity, and source-of-truth changes to produce a drift score with actionable recommendations. Use after significant repo changes, dependency updates, or when Copilot suggestions seem stale. Keywords: drift detection, config drift, bootstrap freshness, stale config, rebootstrap, configuration audit.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "--",
+    "| Input | Required | Description |",
+    "| Scan depth | Optional | `lightweight` (default) or `deep`. Lightweight checks build files + directory structure only. Deep re-runs full Phase 1 scan logic. |",
+    "| Snapshot path | Optional | Path to `.github/.bootstrap-snapshot.json`. Defaults to `.github/.bootstrap-snapshot.json` |",
+    "|-------|----------|-------------|"
+  ],
+  "outputs": [
+    "configuration",
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "bootstrap freshness",
+    "config drift",
+    "configuration audit",
+    "drift detection",
+    "rebootstrap",
+    "stale config"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/drift-detector/SKILL.md",
+    "scripts": ".github/skills/drift-detector/scripts",
+    "assets": ".github/skills/drift-detector/assets",
+    "references": ".github/skills/drift-detector/references"
+  },
+  "keywords": [
+    "bootstrap freshness",
+    "config drift",
+    "configuration audit",
+    "drift detection",
+    "rebootstrap",
+    "stale config"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

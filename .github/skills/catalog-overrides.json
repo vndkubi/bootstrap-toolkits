@@ -1,0 +1,181 @@
+{
+  "author-skill": {
+    "tier": "foundational",
+    "stability": "experimental",
+    "requires": {
+      "skills": [
+        "context-budget-check",
+        "skill-discoverability-audit"
+      ],
+      "mcp": [
+        "list_skills",
+        "audit_discoverability"
+      ],
+      "tools": []
+    },
+    "mcp_tools_used": [
+      "list_skills",
+      "audit_discoverability"
+    ]
+  },
+  "evaluate-skill": {
+    "tier": "enterprise",
+    "stability": "experimental",
+    "requires": {
+      "skills": [
+        "trace-replay"
+      ],
+      "mcp": [
+        "audit_discoverability",
+        "validate_bootstrap_output"
+      ],
+      "tools": []
+    },
+    "mcp_tools_used": [
+      "audit_discoverability",
+      "validate_bootstrap_output"
+    ]
+  },
+  "generate-copilot-config": {
+    "tier": "foundational",
+    "stability": "stable",
+    "requires": {
+      "skills": [
+        "bootstrap-phase-agents",
+        "bootstrap-phase-classify",
+        "bootstrap-phase-cleanup-summary",
+        "bootstrap-phase-core-instructions",
+        "bootstrap-phase-devcontainer",
+        "bootstrap-phase-domain-instructions",
+        "bootstrap-phase-domain-repo-truth",
+        "bootstrap-phase-hooks-workflows",
+        "bootstrap-phase-language-framework-instructions",
+        "bootstrap-phase-prompts",
+        "bootstrap-phase-runtime-compilation",
+        "bootstrap-phase-scan",
+        "bootstrap-phase-skills",
+        "bootstrap-phase-templates",
+        "bootstrap-phase-validate",
+        "context-budget-check",
+        "drift-detector",
+        "instruction-conflict-detector",
+        "repo-memory-promoter",
+        "review-effectiveness",
+        "review-memory-promotion",
+        "skill-discoverability-audit",
+        "tool-permission-auditor",
+        "validate-bootstrap-output"
+      ],
+      "mcp": [
+        "analyze_repo",
+        "detect_drift",
+        "audit_context",
+        "audit_tools",
+        "list_skills",
+        "list_domains",
+        "inspect_source_of_truth",
+        "get_module_graph",
+        "audit_discoverability",
+        "validate_bootstrap_output",
+        "audit_instruction_conflicts"
+      ],
+      "tools": []
+    },
+    "mcp_tools_used": [
+      "analyze_repo",
+      "detect_drift",
+      "audit_context",
+      "audit_tools",
+      "list_skills",
+      "list_domains",
+      "inspect_source_of_truth",
+      "get_module_graph",
+      "audit_discoverability",
+      "validate_bootstrap_output",
+      "audit_instruction_conflicts"
+    ]
+  },
+  "review-effectiveness": {
+    "requires": {
+      "skills": [
+        "correction-ledger"
+      ],
+      "mcp": [],
+      "tools": []
+    }
+  },
+  "review-memory-promotion": {
+    "requires": {
+      "skills": [
+        "correction-ledger"
+      ],
+      "mcp": [],
+      "tools": []
+    }
+  },
+  "bootstrap-phase-scan": {
+    "tier": "foundational",
+    "stability": "stable",
+    "requires": {
+      "skills": [],
+      "mcp": [
+        "analyze_repo",
+        "get_module_graph",
+        "list_domains"
+      ],
+      "tools": []
+    },
+    "mcp_tools_used": [
+      "analyze_repo",
+      "get_module_graph",
+      "list_domains"
+    ]
+  },
+  "bootstrap-phase-validate": {
+    "tier": "foundational",
+    "stability": "stable",
+    "requires": {
+      "skills": [],
+      "mcp": [
+        "audit_discoverability",
+        "audit_instruction_conflicts",
+        "validate_bootstrap_output"
+      ],
+      "tools": []
+    },
+    "mcp_tools_used": [
+      "audit_discoverability",
+      "audit_instruction_conflicts",
+      "validate_bootstrap_output"
+    ]
+  },
+  "skill-pack-export": {
+    "tier": "foundational",
+    "stability": "experimental",
+    "requires": {
+      "skills": [
+        "skill-pack-import"
+      ],
+      "mcp": [],
+      "tools": []
+    }
+  },
+  "trace-replay": {
+    "stability": "experimental"
+  },
+  "autorun": {
+    "stability": "experimental"
+  },
+  "upgrade-skill-pack": {
+    "tier": "foundational",
+    "stability": "experimental",
+    "requires": {
+      "skills": [
+        "skill-pack-import",
+        "skill-pack-export"
+      ],
+      "mcp": [],
+      "tools": []
+    }
+  }
+}

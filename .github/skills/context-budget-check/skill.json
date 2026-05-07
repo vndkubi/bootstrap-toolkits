@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "context-budget-check",
+  "displayName": "context-budget-check",
+  "description": "Validate that all generated Copilot configuration files comply with context budget targets. Calculates worst-case co-loading scenarios and flags oversized files. Use after generating or modifying .github/ configuration files.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "prompt",
+    "report"
+  ],
+  "triggers": [
+    "all",
+    "budget",
+    "calculates",
+    "case",
+    "check",
+    "comply",
+    "configuration",
+    "context",
+    "copilot",
+    "files",
+    "flags",
+    "generated"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/context-budget-check/SKILL.md",
+    "scripts": ".github/skills/context-budget-check/scripts",
+    "assets": ".github/skills/context-budget-check/assets",
+    "references": ".github/skills/context-budget-check/references"
+  },
+  "keywords": [
+    "all",
+    "budget",
+    "calculates",
+    "case",
+    "check",
+    "comply",
+    "configuration",
+    "context",
+    "copilot",
+    "files",
+    "flags",
+    "generated"
+  ],
+  "routedBy": [
+    "conductor"
+  ],
+  "referencedByAgents": [
+    "conductor"
+  ]
+}

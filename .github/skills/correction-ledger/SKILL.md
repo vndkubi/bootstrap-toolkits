@@ -9,26 +9,25 @@ Aggregate recurring correction signals into approval-ready promotion candidates 
 
 ## When to Use
 
-- After several sessions have accumulated observations in `.memory/observations.jsonl`
+- After review reports or explicit correction artifacts have accumulated repeated correction signals
 - After completed code reviews have produced accepted fixes or repeated findings
 - When users ask to "check for correction patterns", "run the learning loop", or "find recurring fixes"
 - When `review-effectiveness` reports repeated-issue rates above zero
 
 **Do NOT use when:**
-- No Layer 2 memory data exists yet — the ledger needs observations to aggregate
+- No review or correction source data exists yet — the ledger needs signals to aggregate
 - A single one-off correction is the only signal — wait for recurrence or human confirmation
 - You want to auto-edit durable rules — this skill produces candidates only
 
 ## Prerequisites
 
-- `.memory/observations.jsonl` exists with at least some correction or accepted_fix records, OR
-- Review reports under `docs/reviews/` contain accepted fixes or repeated findings
+- Review reports under `docs/reviews/` contain accepted fixes or repeated findings, OR
+- Another explicit correction-ledger source artifact exists
 - The `review-memory-promotion` skill is available for downstream candidate delivery
 
 ## Source of Truth
 
 - `specs/003-cross-repo-improvement-ideas/data-model.md` for CorrectionSignal, CorrectionAggregate, and PromotionCandidate models
-- `specs/003-cross-repo-improvement-ideas/contracts/memory-observation.schema.json` for observation record shape
 - `.github/skills/review-memory-promotion/SKILL.md` for downstream candidate delivery
 
 ## Workflow
@@ -37,9 +36,9 @@ Aggregate recurring correction signals into approval-ready promotion candidates 
 
 Read all available correction sources:
 
-1. `.memory/observations.jsonl` — filter for `type` in `correction`, `accepted_fix`, `review_finding`
-2. Review reports under `docs/reviews/` — extract accepted fixes and repeated findings
-3. Investigation reports under `specs/` — extract structural gotchas surfaced during analysis
+1. Review reports under `docs/reviews/` — extract accepted fixes and repeated findings
+2. Investigation reports under `specs/` — extract structural gotchas surfaced during analysis
+3. Explicit correction-ledger source artifacts supplied by the user
 
 For each qualifying record, build a CorrectionSignal:
 
@@ -148,11 +147,11 @@ For each aggregate with status `candidate`, produce a PromotionCandidate:
 
 Save the report as: `docs/reviews/correction-ledger-<YYYY-MM-DD>.md`
 
-### Step 5b: Update Effectiveness Tracking
+### Step 5b: Include Effectiveness Tracking
 
-After generating the ledger report, update the promotion tracker:
+After generating the ledger report, include a promotion-effectiveness section when prior approved promotions can be inferred from review-memory-promotion reports:
 
-1. Read `.memory/promotion-tracker.json` if it exists
+1. Read prior `docs/reviews/` promotion reports when available
 2. For each pattern with status `promoted` or `approved`:
    - If not yet in the tracker, add it with `promotedAt`, `postPromotionOccurrences: 0`, `effectivenessStatus: "monitoring"`
    - If already in the tracker, update `postPromotionOccurrences` by counting how many times this pattern's correction signals appear **after** the `promotedAt` date
@@ -161,9 +160,7 @@ After generating the ledger report, update the promotion tracker:
    - `"monitoring"`: fewer than 5 sessions since promotion
    - `"ineffective"`: `postPromotionOccurrences > 0` after 5+ sessions
    - `"reverted"`: manually marked by a human reviewer
-4. Write the updated tracker to `.memory/promotion-tracker.json`
-
-**Schema**: See `specs/006-self-improving-intelligence/contracts/promotion-tracker.schema.json`
+4. Include the computed status in the current ledger report
 
 Include a summary in the ledger report:
 
@@ -179,12 +176,12 @@ Include a summary in the ledger report:
 - Ineffective: <N> (consider refining or escalating)
 ```
 
-### Step 5c: Write Correction Patterns File
+### Step 5c: Include Recurring Pattern Appendix
 
-Write aggregated patterns to `.memory/correction-patterns.json` for consumption by `memory-inject.js` proactive warnings:
+Include recurring patterns in the ledger report so they can be reviewed, compared over time, and promoted through `review-memory-promotion`:
 
 1. Collect all aggregates (both global and per-agent) with `occurrenceCount >= 2`
-2. Write the file with this schema:
+2. Include entries with this shape:
 
 ```json
 {
@@ -203,10 +200,6 @@ Write aggregated patterns to `.memory/correction-patterns.json` for consumption 
 }
 ```
 
-**Schema**: See `specs/006-self-improving-intelligence/contracts/correction-patterns.schema.json`
-
-This file acts as a cache: the correction-ledger writes it, `memory-inject.js` reads it at session start to surface proactive warnings.
-
 ### Step 6: Route To Review-Memory-Promotion
 
 Pass the candidate list to `review-memory-promotion` as a source artifact. The downstream skill handles the approval gate — corrections never self-promote.
@@ -217,7 +210,7 @@ Pass the candidate list to `review-memory-promotion` as a source artifact. The d
 # Correction Ledger Report
 
 > Generated: <date>
-> Sources: observations.jsonl, review reports
+> Sources: review reports, explicit correction artifacts
 > Signals collected: <N>
 > Trusted signals: <N>
 > Patterns found: <N> (after semantic merge: <N>)
@@ -263,15 +256,14 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 
 ## Verification Contract
 
-- **Expected outcome**: A ledger report containing only candidates that meet the promotion threshold, with semantic grouping, effectiveness tracking, and correction-patterns.json output
+- **Expected outcome**: A ledger report containing only candidates that meet the promotion threshold, with semantic grouping, effectiveness tracking, and recurring-pattern appendix
 - **How to verify**:
   - Retries without human confirmation are excluded from candidates (may appear in noise section)
   - Every candidate has at least one trusted signal OR at least 3 total occurrences
   - Every candidate names a target file and proposed delta
   - Semantic merge only occurs when BOTH keyword Jaccard ≥ 0.50 AND shared file scope
   - Merged candidates list all contributing wording variants
-  - `.memory/promotion-tracker.json` is written with current effectiveness statuses
-  - `.memory/correction-patterns.json` is written with all patterns having ≥2 occurrences
+  - Recurring pattern appendix lists patterns with ≥2 occurrences when present
   - Per-agent profiles are generated when agentName data is available
   - The report routes to `review-memory-promotion`, not to direct source edits
 - **Stop condition**: Report generated and saved; do not proceed to edit durable files
@@ -286,8 +278,7 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 - [ ] Per-agent profiles are generated alongside global aggregates
 - [ ] Every candidate has evidence anchors
 - [ ] Every candidate names a target layer and suggested file
-- [ ] `.memory/correction-patterns.json` written with ≥2 occurrence patterns
-- [ ] `.memory/promotion-tracker.json` updated with effectiveness statuses
+- [ ] Recurring pattern appendix lists ≥2 occurrence patterns when present
 - [ ] No durable source files were modified by this skill
 - [ ] The report was saved under `docs/reviews/`
 - [ ] Candidates were routed to `review-memory-promotion` for approval
@@ -301,17 +292,11 @@ Route candidates to `review-memory-promotion` or `/promote-review-memory` for ap
 - Counting bot or system signals as trusted without human acceptance
 - Semantic merge with only keyword overlap but no file-scope overlap (false merge)
 - Semantic merge with only file-scope overlap but no keyword overlap (false merge)
-- Not writing correction-patterns.json after ledger report generation
-- Not updating promotion-tracker.json with post-promotion occurrence counts
+- Omitting recurring patterns from the ledger report
 
 ## Related Files
 
 - `.github/skills/review-memory-promotion/SKILL.md`
 - `.github/skills/review-effectiveness/SKILL.md`
 - `.github/prompts/promote-learning.prompt.md`
-- `.memory/observations.jsonl`
-- `.memory/correction-patterns.json` — pattern cache for proactive warnings
-- `.memory/promotion-tracker.json` — effectiveness tracking state
-- `specs/006-self-improving-intelligence/contracts/correction-patterns.schema.json`
-- `specs/006-self-improving-intelligence/contracts/promotion-tracker.schema.json`
 - `docs/reviews/`

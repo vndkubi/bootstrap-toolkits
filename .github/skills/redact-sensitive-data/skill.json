@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "redact-sensitive-data",
+  "displayName": "redact-sensitive-data",
+  "description": "Redact secrets and PII before any write to the trace file, evidence bundle, or generated fixtures. Layered defense: deny-list regex at write time + signature scan (gitleaks/detect-secrets) at commit time. Used by the autorun orchestrator and @mock-data-specialist.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "`{text: string, redactedCategories: string[]}` or `{ok: boolean, findings: []}`."
+  ],
+  "triggers": [
+    "any",
+    "autorun",
+    "bundle",
+    "commit",
+    "data",
+    "defense",
+    "deny",
+    "detect",
+    "evidence",
+    "file",
+    "fixtures",
+    "generated"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/redact-sensitive-data/SKILL.md",
+    "scripts": ".github/skills/redact-sensitive-data/scripts",
+    "assets": ".github/skills/redact-sensitive-data/assets",
+    "references": ".github/skills/redact-sensitive-data/references"
+  },
+  "keywords": [
+    "any",
+    "autorun",
+    "bundle",
+    "commit",
+    "data",
+    "defense",
+    "deny",
+    "detect",
+    "evidence",
+    "file",
+    "fixtures",
+    "generated"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

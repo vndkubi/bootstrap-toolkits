@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "conventional-commit",
+  "displayName": "conventional-commit",
+  "description": "Generate conventional commit messages by analyzing staged git changes and applying the Conventional Commits specification. Supports scopes, breaking changes, and multi-line bodies. Use when committing changes or writing commit messages.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "review findings",
+    "task list",
+    "tests"
+  ],
+  "triggers": [
+    "analyzing",
+    "applying",
+    "bodies",
+    "breaking",
+    "changes",
+    "commit",
+    "commits",
+    "committing",
+    "conventional",
+    "generate",
+    "git",
+    "line"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/conventional-commit/SKILL.md",
+    "scripts": ".github/skills/conventional-commit/scripts",
+    "assets": ".github/skills/conventional-commit/assets",
+    "references": ".github/skills/conventional-commit/references"
+  },
+  "keywords": [
+    "analyzing",
+    "applying",
+    "bodies",
+    "breaking",
+    "changes",
+    "commit",
+    "commits",
+    "committing",
+    "conventional",
+    "generate",
+    "git",
+    "line"
+  ],
+  "routedBy": [
+    "pr-manager"
+  ],
+  "referencedByAgents": [
+    "pr-manager"
+  ]
+}

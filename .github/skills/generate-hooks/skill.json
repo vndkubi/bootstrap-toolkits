@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-hooks",
+  "displayName": "generate-hooks",
+  "description": "Generate GitHub Copilot hooks (.github/hooks/*.json) for formatter, lint, compile, security, and audit automation. Uses only official hook events and prefers postToolUse with tool filtering for quality checks. Use when bootstrapping Copilot config, setting up quality automation, or adding lifecycle hooks.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "prompt",
+    "report",
+    "tests"
+  ],
+  "triggers": [
+    "adding",
+    "audit",
+    "automation",
+    "bootstrapping",
+    "checks",
+    "compile",
+    "config",
+    "copilot",
+    "events",
+    "filtering",
+    "formatter",
+    "generate"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-hooks/SKILL.md",
+    "scripts": ".github/skills/generate-hooks/scripts",
+    "assets": ".github/skills/generate-hooks/assets",
+    "references": ".github/skills/generate-hooks/references"
+  },
+  "keywords": [
+    "adding",
+    "audit",
+    "automation",
+    "bootstrapping",
+    "checks",
+    "compile",
+    "config",
+    "copilot",
+    "events",
+    "filtering",
+    "formatter",
+    "generate"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

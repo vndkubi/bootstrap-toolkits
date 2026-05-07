@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "validate-bootstrap-output",
+  "displayName": "validate-bootstrap-output",
+  "description": "Validate the quality of a bootstrapped Copilot configuration beyond structural checks. Tests that generated agents, skills, instructions, and cleanup decisions actually match the target project rather than leaving generic bootstrap residue.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "prompt",
+    "report",
+    "tests"
+  ],
+  "triggers": [
+    "actually",
+    "agents",
+    "beyond",
+    "bootstrap",
+    "bootstrapped",
+    "checks",
+    "cleanup",
+    "configuration",
+    "copilot",
+    "decisions",
+    "generated",
+    "generic"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/validate-bootstrap-output/SKILL.md",
+    "scripts": ".github/skills/validate-bootstrap-output/scripts",
+    "assets": ".github/skills/validate-bootstrap-output/assets",
+    "references": ".github/skills/validate-bootstrap-output/references"
+  },
+  "keywords": [
+    "actually",
+    "agents",
+    "beyond",
+    "bootstrap",
+    "bootstrapped",
+    "checks",
+    "cleanup",
+    "configuration",
+    "copilot",
+    "decisions",
+    "generated",
+    "generic"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

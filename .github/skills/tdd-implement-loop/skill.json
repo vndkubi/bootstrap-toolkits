@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "tdd-implement-loop",
+  "displayName": "tdd-implement-loop",
+  "description": "Drives Phase 5 (IMPLEMENT) of the /autorun loop. Runs a bounded red→green→refactor loop against the red suite authored in Phase 3. Enforces maxIterations + noProgressThreshold stop conditions; scopes regression via impact-analysis skill (fallback: full suite). Halts with tdd-no-progress or cost-cap gates. Never edits tests.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "`config.cost.maxUsd` — global cap; reset-free.",
+    "`config.tddLoop.maxIterations` (default `6`).",
+    "`config.tddLoop.noProgressThreshold` (default `2` consecutive iterations with no newly green test).",
+    "`failedTests[]` — initial list (all primary tests from Phase 3).",
+    "`test-coverage.md` — AC→test map from Phase 3."
+  ],
+  "outputs": [
+    "configuration",
+    "prompt",
+    "tests"
+  ],
+  "triggers": [
+    "analysis",
+    "authored",
+    "autorun",
+    "bounded",
+    "cap",
+    "conditions",
+    "cost",
+    "drives",
+    "edits",
+    "enforces",
+    "fallback",
+    "full"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/tdd-implement-loop/SKILL.md",
+    "scripts": ".github/skills/tdd-implement-loop/scripts",
+    "assets": ".github/skills/tdd-implement-loop/assets",
+    "references": ".github/skills/tdd-implement-loop/references"
+  },
+  "keywords": [
+    "analysis",
+    "authored",
+    "autorun",
+    "bounded",
+    "cap",
+    "conditions",
+    "cost",
+    "drives",
+    "edits",
+    "enforces",
+    "fallback",
+    "full"
+  ],
+  "routedBy": [
+    "api-test-author",
+    "mock-data-specialist"
+  ],
+  "referencedByAgents": [
+    "api-test-author",
+    "mock-data-specialist"
+  ]
+}

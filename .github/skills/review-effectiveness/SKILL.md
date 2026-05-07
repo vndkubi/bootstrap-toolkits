@@ -76,19 +76,19 @@ Check:
 
 ### 6. Learning Loop Metrics
 
-When the correction-ledger workflow and Layer 2 memory hooks are active, additionally check:
+When the correction-ledger workflow is active, additionally check:
 
 - **Adoption**: whether `/promote-learning` or the `correction-ledger` skill is being used
-- **Signal volume**: total correction signals collected in `.memory/observations.jsonl`
+- **Signal volume**: total correction signals found in ledger reports and review artifacts
 - **Noise rate**: percentage of signals filtered as noise versus promoted to candidate status
 - **Approval rate**: percentage of correction-ledger candidates approved versus rejected by humans
 - **Repeat-issue rate**: whether the same correction pattern reappears after a candidate was promoted (indicates ineffective promotion)
 - **Time to promotion**: average lag between first signal occurrence and human approval
 - **Ledger freshness**: date of most recent correction-ledger report under `docs/reviews/correction-ledger-*.md`
 
-#### Promotion Effectiveness (from promotion-tracker.json)
+#### Promotion Effectiveness
 
-When `.memory/promotion-tracker.json` exists, read it and report:
+When ledger reports or review-memory-promotion reports include approved candidates, report:
 
 - **Total promoted patterns**: count of tracked promotions
 - **Effective**: patterns with zero post-promotion occurrences after 5+ sessions
@@ -108,7 +108,7 @@ When correction-ledger reports include semantic merges:
 
 #### Agent-Specific Insights
 
-When `.memory/correction-patterns.json` contains agent-specific entries:
+When correction-ledger reports contain agent-specific entries:
 
 - **Agents with profiles**: list of agents that have correction data
 - **Top agent-specific patterns**: most frequent per-agent corrections
@@ -116,13 +116,12 @@ When `.memory/correction-patterns.json` contains agent-specific entries:
 
 Red flags:
 
-- No correction-ledger reports exist despite active Layer 2 hooks
+- No correction-ledger reports exist despite repeated review corrections
 - Noise rate exceeds 80% — thresholds may be too loose or signal quality is poor
 - Approval rate below 20% — candidates are not actionable enough
 - Same pattern reappears 3+ times after promotion — the promoted rule is not effective
 - No ledger reports in the last 30 days despite active development
 - Promotion success rate below 50% — promoted instructions are not reducing corrections
-- No `.memory/correction-patterns.json` exists despite ledger reports being generated
 
 ## Workflow
 
@@ -226,6 +225,6 @@ Save as `docs/reviews/copilot-effectiveness-<YYYY-MM-DD>.md`.
 - [ ] Recommended actions are incremental and prioritized
 - [ ] Knowledge-sync or memory-promotion quality was evaluated when those workflows were retained
 - [ ] Learning loop metrics were evaluated when correction-ledger and Layer 2 hooks are active
-- [ ] Promotion effectiveness was reported when `.memory/promotion-tracker.json` exists
+- [ ] Promotion effectiveness was reported when approved promotion history exists
 - [ ] Semantic grouping quality was assessed when ledger reports include merges
-- [ ] Agent-specific insights were reported when agent data is available in correction-patterns.json
+- [ ] Agent-specific insights were reported when agent data is available in ledger reports

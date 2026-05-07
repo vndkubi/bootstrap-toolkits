@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "specs/011-bootstrap-mcp-server/contracts/mcp-tools.schema.json",
+  "title": "bootstrap-mcp v1 tool schemas",
+  "description": "Input and output schemas for every tool registered in v1. Each tool key has .input and .output. Host MCP clients receive these via tools/list.",
+  "type": "object",
+  "$defs": {
+    "RepoPath": {
+      "type": "string",
+      "description": "Absolute path to a local repository. Must be readable by the server process.",
+      "minLength": 1
+    },
+    "Provenance": {
+      "type": "object",
+      "required": ["tool", "tool_version", "server_version", "inputs_hash", "timestamp"],
+      "properties": {
+        "tool": {"type": "string"},
+        "tool_version": {"type": "string"},
+        "server_version": {"type": "string"},
+        "inputs_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "timestamp": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "Finding": {
+      "type": "object",
+      "required": ["severity", "message"],
+      "properties": {
+        "severity": {"enum": ["info", "warning", "error"]},
+        "message": {"type": "string"},
+        "article_id": {"type": "string", "description": "Constitution article reference, when applicable."},
+        "file": {"type": "string"},
+        "remediation": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "DualRepresentation": {
+      "type": "object",
+      "description": "Every generate/audit response returns both markdown and JSON so hosts can render or machine-process (US-4 AC-3).",
+      "required": ["markdown", "json"],
+      "properties": {
+        "markdown": {"type": "string"},
+        "json": {"type": "object"}
+      }
+    }
+  },
+  "properties": {
+    "analyze_repo": {
+      "input": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "depth": {"enum": ["quick", "standard", "deep"], "default": "standard"}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["stacks", "modules", "domains", "risks"],
+        "properties": {
+          "stacks": {"type": "array", "items": {"type": "object", "required": ["name", "confidence"], "properties": {"name": {"type": "string"}, "version": {"type": "string"}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}}},
+          "modules": {"type": "array", "items": {"type": "object", "required": ["id", "path"], "properties": {"id": {"type": "string"}, "path": {"type": "string"}, "build_file": {"type": "string"}}}},
+          "domains": {"type": "array", "items": {"type": "string"}},
+          "risks": {"type": "array", "items": {"$ref": "#/$defs/Finding"}}
+        }
+      }
+    },
+    "detect_drift": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["score", "category_scores", "recommendations"],
+        "properties": {
+          "score": {"type": "number", "minimum": 0, "maximum": 100, "description": "0 = fresh, 100 = severely drifted"},
+          "category_scores": {"type": "object"},
+          "recommendations": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "audit_context": {
+      "input": {
+        "type": "object",
+        "required": ["path", "agent", "filepath"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "agent": {"type": "string", "description": "Agent name, e.g. dev-orchestrator"},
+          "filepath": {"type": "string", "description": "Workspace-relative path being edited"}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["loaded_files", "total_kb", "budget_ok"],
+        "properties": {
+          "loaded_files": {"type": "array", "items": {"type": "object", "required": ["path", "kb"], "properties": {"path": {"type": "string"}, "kb": {"type": "number"}, "reason": {"type": "string"}}}},
+          "total_kb": {"type": "number"},
+          "budget_ok": {"type": "boolean"},
+          "flags": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "audit_tools": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["matrix", "overprivileged", "underprivileged"],
+        "properties": {
+          "matrix": {"type": "object", "description": "agent → tool-category → boolean"},
+          "overprivileged": {"type": "array", "items": {"type": "string"}},
+          "underprivileged": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "list_skills": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["skills"],
+        "properties": {
+          "skills": {"type": "array", "items": {"type": "object", "required": ["name", "description", "invocable_via_mcp"], "properties": {"name": {"type": "string"}, "description": {"type": "string"}, "triggers": {"type": "array", "items": {"type": "string"}}, "invocable_via_mcp": {"type": "boolean"}}}}
+        }
+      }
+    },
+    "list_domains": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["domains"],
+        "properties": {
+          "domains": {"type": "array", "items": {"type": "object", "required": ["name", "path"], "properties": {"name": {"type": "string"}, "path": {"type": "string"}, "summary": {"type": "string"}}}}
+        }
+      }
+    },
+    "inspect_source_of_truth": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["entries"],
+        "properties": {
+          "entries": {"type": "array", "items": {"type": "object", "required": ["domain", "canonical_files"], "properties": {"domain": {"type": "string"}, "canonical_files": {"type": "array", "items": {"type": "string"}}}}}
+        }
+      }
+    },
+    "get_module_graph": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["nodes", "edges"],
+        "properties": {
+          "nodes": {"type": "array", "items": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string"}, "language": {"type": "string"}}}},
+          "edges": {"type": "array", "items": {"type": "object", "required": ["from", "to"], "properties": {"from": {"type": "string"}, "to": {"type": "string"}, "kind": {"enum": ["compile", "runtime", "test"]}}}}
+        }
+      }
+    },
+    "generate_spec": {
+      "input": {
+        "type": "object",
+        "required": ["path", "description"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "description": {"type": "string", "minLength": 10},
+          "target_path": {"type": "string", "description": "Workspace-relative target; required when write=true"},
+          "write": {"type": "boolean", "default": false}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["content", "provenance"],
+        "properties": {
+          "content": {"$ref": "#/$defs/DualRepresentation"},
+          "written_to": {"type": "string"},
+          "provenance": {"$ref": "#/$defs/Provenance"},
+          "hints": {"type": "object"}
+        }
+      }
+    },
+    "generate_plan": {
+      "input": {
+        "type": "object",
+        "required": ["path", "spec_path"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "spec_path": {"type": "string"},
+          "write": {"type": "boolean", "default": false}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["content", "provenance"],
+        "properties": {
+          "content": {"$ref": "#/$defs/DualRepresentation"},
+          "written_to": {"type": "string"},
+          "provenance": {"$ref": "#/$defs/Provenance"},
+          "hints": {"type": "object"}
+        }
+      }
+    },
+    "generate_tasks": {
+      "input": {
+        "type": "object",
+        "required": ["path", "plan_path"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "plan_path": {"type": "string"},
+          "write": {"type": "boolean", "default": false}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["content", "provenance"],
+        "properties": {
+          "content": {"$ref": "#/$defs/DualRepresentation"},
+          "written_to": {"type": "string"},
+          "provenance": {"$ref": "#/$defs/Provenance"},
+          "hints": {"type": "object"}
+        }
+      }
+    },
+    "generate_pr_description": {
+      "input": {
+        "type": "object",
+        "required": ["path", "base", "head"],
+        "properties": {
+          "path": {"$ref": "#/$defs/RepoPath"},
+          "base": {"type": "string"},
+          "head": {"type": "string"}
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "required": ["content", "provenance"],
+        "properties": {
+          "content": {"$ref": "#/$defs/DualRepresentation"},
+          "provenance": {"$ref": "#/$defs/Provenance"}
+        }
+      }
+    },
+    "audit_discoverability": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["score", "per_skill", "findings"],
+        "properties": {
+          "score": {"type": "number", "minimum": 0, "maximum": 100},
+          "per_skill": {"type": "array", "items": {"type": "object", "required": ["name", "score"], "properties": {"name": {"type": "string"}, "score": {"type": "number"}, "issues": {"type": "array", "items": {"type": "string"}}}}},
+          "findings": {"type": "array", "items": {"$ref": "#/$defs/Finding"}}
+        }
+      }
+    },
+    "validate_bootstrap_output": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["verdict", "findings"],
+        "properties": {
+          "verdict": {"enum": ["pass", "warn", "fail"]},
+          "stale_files": {"type": "array", "items": {"type": "string"}},
+          "generic_residue": {"type": "array", "items": {"type": "string"}},
+          "findings": {"type": "array", "items": {"$ref": "#/$defs/Finding"}}
+        }
+      }
+    },
+    "audit_instruction_conflicts": {
+      "input": {"type": "object", "required": ["path"], "properties": {"path": {"$ref": "#/$defs/RepoPath"}}, "additionalProperties": false},
+      "output": {
+        "type": "object",
+        "required": ["overlaps", "contradictions"],
+        "properties": {
+          "overlaps": {"type": "array", "items": {"type": "object", "required": ["files", "glob"], "properties": {"files": {"type": "array", "items": {"type": "string"}}, "glob": {"type": "string"}}}},
+          "contradictions": {"type": "array", "items": {"$ref": "#/$defs/Finding"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "investigate-pbi",
+  "displayName": "investigate-pbi",
+  "description": "PBI and technical investigation workflow. Performs as-is analysis by tracing current code flow, designs to-be state with proposed changes, maps scenarios with edge cases, assesses impact on affected modules and systems, identifies risks, and outputs a structured markdown investigation report. Use when asked to investigate a PBI, bug, performance issue, or plan a technical change in Java/Jakarta EE projects.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "tests"
+  ],
+  "triggers": [
+    "affected",
+    "analysis",
+    "asked",
+    "assesses",
+    "bug",
+    "cases",
+    "change",
+    "changes",
+    "code",
+    "current",
+    "designs",
+    "edge"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/investigate-pbi/SKILL.md",
+    "scripts": ".github/skills/investigate-pbi/scripts",
+    "assets": ".github/skills/investigate-pbi/assets",
+    "references": ".github/skills/investigate-pbi/references"
+  },
+  "keywords": [
+    "affected",
+    "analysis",
+    "asked",
+    "assesses",
+    "bug",
+    "cases",
+    "change",
+    "changes",
+    "code",
+    "current",
+    "designs",
+    "edge"
+  ],
+  "routedBy": [
+    "investigator"
+  ],
+  "referencedByAgents": [
+    "investigator"
+  ]
+}

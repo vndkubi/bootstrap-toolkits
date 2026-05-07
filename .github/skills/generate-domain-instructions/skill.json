@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-domain-instructions",
+  "displayName": "generate-domain-instructions",
+  "description": "Generate domain-scoped .instructions.md files from codebase analysis results. Creates one instruction file per business domain with business rules, entity relationships, patterns, and glossary. Each file is ≤ 4KB with narrow applyTo patterns for efficient context loading.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "report"
+  ],
+  "triggers": [
+    "4kb",
+    "analysis",
+    "applyto",
+    "business",
+    "codebase",
+    "context",
+    "creates",
+    "domain",
+    "each",
+    "efficient",
+    "entity",
+    "file"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/generate-domain-instructions/SKILL.md",
+    "scripts": ".github/skills/generate-domain-instructions/scripts",
+    "assets": ".github/skills/generate-domain-instructions/assets",
+    "references": ".github/skills/generate-domain-instructions/references"
+  },
+  "keywords": [
+    "4kb",
+    "analysis",
+    "applyto",
+    "business",
+    "codebase",
+    "context",
+    "creates",
+    "domain",
+    "each",
+    "efficient",
+    "entity",
+    "file"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

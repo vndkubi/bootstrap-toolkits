@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "id": "review-memory-promotion",
+  "displayName": "review-memory-promotion",
+  "description": "Generate approval-ready repo memory and review checklist candidates from completed code reviews, human-authored PR discussion artifacts, investigation reports, and recurring findings. Use when promoting review findings, learning from PR discussions, creating or updating functional or technical checklist packs, curating recurring gotchas, or improving local knowledge sync after bootstrap.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [
+      "correction-ledger"
+    ],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "prompt",
+    "report",
+    "review findings",
+    "task list"
+  ],
+  "triggers": [
+    "approval",
+    "artifacts",
+    "authored",
+    "bootstrap",
+    "candidates",
+    "checklist",
+    "code",
+    "completed",
+    "creating",
+    "curating",
+    "discussion",
+    "discussions"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/review-memory-promotion/SKILL.md",
+    "scripts": ".github/skills/review-memory-promotion/scripts",
+    "assets": ".github/skills/review-memory-promotion/assets",
+    "references": ".github/skills/review-memory-promotion/references"
+  },
+  "keywords": [
+    "approval",
+    "artifacts",
+    "authored",
+    "bootstrap",
+    "candidates",
+    "checklist",
+    "code",
+    "completed",
+    "creating",
+    "curating",
+    "discussion",
+    "discussions"
+  ],
+  "routedBy": [
+    "code-reviewer",
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "code-reviewer",
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

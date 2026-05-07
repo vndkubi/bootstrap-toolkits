@@ -1,0 +1,21 @@
+{
+  "name": "skill-pack-export",
+  "checks": [
+    {
+      "type": "file_exists",
+      "path": ".github/skills/skill-pack-export/SKILL.md"
+    },
+    {
+      "type": "file_exists",
+      "path": ".github/skills/skill-pack-export/scripts/export-pack.js"
+    },
+    {
+      "type": "text_includes",
+      "path": ".github/skills/skill-pack-export/SKILL.md",
+      "includes": [
+        ".github/.skill-lineage.json",
+        "manifest hashes"
+      ]
+    }
+  ]
+}

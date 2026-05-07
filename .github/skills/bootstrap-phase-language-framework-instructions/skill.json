@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bootstrap-phase-language-framework-instructions",
+  "displayName": "bootstrap-phase-language-framework-instructions",
+  "description": "Run Phase 6 of the bootstrap pipeline: Generate Language and Framework Instructions. Retain only the language and framework instructions justified by the detected stack and file layout. Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase 6, generate language and framework instructions, bootstrap pipeline, /bootstrap-copilot.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Existing bootstrap state when resuming",
+    "Outputs from the previous phase",
+    "Target repo root"
+  ],
+  "outputs": [
+    "framework instructions",
+    "language instructions"
+  ],
+  "triggers": [
+    "/bootstrap-copilot",
+    "bootstrap phase 6",
+    "bootstrap pipeline",
+    "generate language and framework instructions"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "pipeline_only",
+  "paths": {
+    "skill": ".github/skills/bootstrap-phase-language-framework-instructions/SKILL.md",
+    "scripts": ".github/skills/bootstrap-phase-language-framework-instructions/scripts",
+    "assets": ".github/skills/bootstrap-phase-language-framework-instructions/assets",
+    "references": ".github/skills/bootstrap-phase-language-framework-instructions/references"
+  },
+  "keywords": [
+    "/bootstrap-copilot",
+    "bootstrap phase 6",
+    "bootstrap pipeline",
+    "generate language and framework instructions"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

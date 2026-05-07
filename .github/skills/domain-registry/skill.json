@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "domain-registry",
+  "displayName": "domain-registry",
+  "description": "Auto-detect and register business domains from source code analysis. Scans package/module structure, entities, services, and cross-domain dependencies to generate domain-registry.json and domain-scoped .instructions.md files. Use for projects with 5+ business domains or 10+ modules.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "workflow output"
+  ],
+  "triggers": [
+    "analysis",
+    "auto",
+    "business",
+    "code",
+    "cross",
+    "dependencies",
+    "detect",
+    "domain",
+    "domains",
+    "entities",
+    "files",
+    "generate"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/domain-registry/SKILL.md",
+    "scripts": ".github/skills/domain-registry/scripts",
+    "assets": ".github/skills/domain-registry/assets",
+    "references": ".github/skills/domain-registry/references"
+  },
+  "keywords": [
+    "analysis",
+    "auto",
+    "business",
+    "code",
+    "cross",
+    "dependencies",
+    "detect",
+    "domain",
+    "domains",
+    "entities",
+    "files",
+    "generate"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}

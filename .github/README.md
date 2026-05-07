@@ -127,6 +127,12 @@ Use capability tiers separately from repo-size classification:
 
 When generated, `.github/.bootstrap-summary.md` gives maintainers a concise explanation of classification, retained assets, removed assets, and the reasons behind the final surface. `docs/06-copilot-onboarding.md` gives maintainers a repo-specific starting guide when the retained runtime surface is rich enough to justify it.
 
+Generated runtime metadata should also include a skill-manifest layer:
+
+- `.github/skills/<name>/skill.json` for per-skill machine-readable metadata
+- `.github/skills/INDEX.json` for the aggregated skill catalog used by progressive disclosure and tier-aware pruning
+- `.github/.skill-index.json` for discoverability-only runtime metadata consumed by routing and diagnostics
+
 ## Practical Rule For Maintainers
 
 If you change how bootstrap works, update the skill first, then sync the prompt, agents, instructions, templates, and any user-facing guidance that describes the same behavior.

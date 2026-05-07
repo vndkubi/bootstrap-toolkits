@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "implement-mobile-feature",
+  "displayName": "implement-mobile-feature",
+  "description": "Guided mobile feature implementation across all layers of Android (Kotlin/Jetpack Compose) and iOS (Swift/SwiftUI) applications. Creates or modifies screens, ViewModels, use cases, repositories, data sources, DTOs, navigation routes, and DI modules following MVVM + Clean Architecture patterns. Use when asked to implement a feature, fix a bug, add a screen, or make code changes in mobile projects.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "configuration",
+    "plan",
+    "report",
+    "tests"
+  ],
+  "triggers": [
+    "across",
+    "add",
+    "all",
+    "android",
+    "applications",
+    "architecture",
+    "asked",
+    "bug",
+    "cases",
+    "changes",
+    "clean",
+    "code"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/implement-mobile-feature/SKILL.md",
+    "scripts": ".github/skills/implement-mobile-feature/scripts",
+    "assets": ".github/skills/implement-mobile-feature/assets",
+    "references": ".github/skills/implement-mobile-feature/references"
+  },
+  "keywords": [
+    "across",
+    "add",
+    "all",
+    "android",
+    "applications",
+    "architecture",
+    "asked",
+    "bug",
+    "cases",
+    "changes",
+    "clean",
+    "code"
+  ],
+  "routedBy": [
+    "mobile-implementor"
+  ],
+  "referencedByAgents": [
+    "mobile-implementor"
+  ]
+}

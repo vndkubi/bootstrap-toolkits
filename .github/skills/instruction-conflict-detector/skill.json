@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "instruction-conflict-detector",
+  "displayName": "instruction-conflict-detector",
+  "description": "Scan all .instructions.md files in .github/instructions/, build a glob overlap matrix, and detect contradicting rules across files. Flags overlapping instruction scopes as Warning (overlap only) or Error (overlap plus contradicting keywords). Use after bootstrap or when adding new instruction files. Keywords: instruction conflict, applyTo overlap, rule contradiction, instruction audit.",
+  "version": "0.6.0",
+  "tier": "enterprise",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "report",
+    "review findings",
+    "tests"
+  ],
+  "triggers": [
+    "applyTo overlap",
+    "instruction audit",
+    "instruction conflict",
+    "rule contradiction"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/instruction-conflict-detector/SKILL.md",
+    "scripts": ".github/skills/instruction-conflict-detector/scripts",
+    "assets": ".github/skills/instruction-conflict-detector/assets",
+    "references": ".github/skills/instruction-conflict-detector/references"
+  },
+  "keywords": [
+    "applyTo overlap",
+    "instruction audit",
+    "instruction conflict",
+    "rule contradiction"
+  ],
+  "routedBy": [
+    "conductor",
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "conductor",
+    "dev-orchestrator"
+  ]
+}

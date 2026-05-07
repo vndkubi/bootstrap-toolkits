@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/contracts/autorun.config.schema.json",
+  "title": "Autorun Config",
+  "description": "Parsed from .github/autorun.config.json at session start. Unknown keys raise a config-unknown-key gate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "tddLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxIterations": { "type": "integer", "minimum": 1, "maximum": 32, "default": 8 },
+        "noProgressThreshold": { "type": "integer", "minimum": 1, "maximum": 8, "default": 2 },
+        "regression": { "enum": ["scoped", "full"], "default": "scoped" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tokenCap": { "type": "integer", "minimum": 10000, "default": 200000 }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["local-gitignored", "ci-upload", "lfs"], "default": "local-gitignored" }
+      }
+    },
+    "pbi": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolver": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "order": {
+              "type": "array",
+              "items": { "enum": ["folder", "github", "jira", "freetext"] },
+              "uniqueItems": true,
+              "minItems": 1,
+              "default": ["folder", "github", "jira", "freetext"]
+            }
+          }
+        }
+      }
+    },
+    "taxonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "autoClassify": { "type": "boolean", "default": true }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "postEditRunTests": { "type": "boolean", "default": false }
+      }
+    },
+    "secretScanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": { "enum": ["auto", "detect-secrets", "gitleaks"], "default": "auto" }
+      }
+    }
+  }
+}

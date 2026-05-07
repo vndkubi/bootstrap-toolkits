@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "generate-sequence-diagram",
+  "displayName": "generate-sequence-diagram",
+  "description": "Generate detailed Mermaid sequence diagrams by tracing code flows through Java/Jakarta EE applications. Identifies all participants across layers (REST resources, services, repositories, databases, external services, message queues). Creates both as-is and to-be diagrams with visual change markers for new, modified, and removed components. Use when asked to create a sequence diagram, visualize a flow, or document request processing.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "workspace context"
+  ],
+  "outputs": [
+    "diagram",
+    "review findings"
+  ],
+  "triggers": [
+    "across",
+    "all",
+    "applications",
+    "asked",
+    "both",
+    "change",
+    "code",
+    "components",
+    "create",
+    "creates",
+    "databases",
+    "detailed"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/generate-sequence-diagram/SKILL.md",
+    "scripts": ".github/skills/generate-sequence-diagram/scripts",
+    "assets": ".github/skills/generate-sequence-diagram/assets",
+    "references": ".github/skills/generate-sequence-diagram/references"
+  },
+  "keywords": [
+    "across",
+    "all",
+    "applications",
+    "asked",
+    "both",
+    "change",
+    "code",
+    "components",
+    "create",
+    "creates",
+    "databases",
+    "detailed"
+  ],
+  "routedBy": [
+    "agent-generator"
+  ],
+  "referencedByAgents": [
+    "agent-generator"
+  ]
+}

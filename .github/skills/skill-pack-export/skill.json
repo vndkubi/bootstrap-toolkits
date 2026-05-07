@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "skill-pack-export",
+  "displayName": "skill-pack-export",
+  "description": "Export a selected set of local skills into a shareable skill-pack manifest with lineage metadata, manifest hashes, and source provenance. Use when publishing reusable skills to another repo, team, or pack registry. Keywords: export skill pack, skill lineage, share skills, pack manifest.",
+  "version": "0.6.0",
+  "tier": "foundational",
+  "stability": "experimental",
+  "requires": {
+    "skills": [
+      "skill-pack-import"
+    ],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "Pack descriptor JSON with `packId`, `title`, `skillIds`, and `source`"
+  ],
+  "outputs": [
+    "JSON pack manifest with skill versions, hashes, and source provenance"
+  ],
+  "triggers": [
+    "export skill pack",
+    "pack manifest",
+    "share skills",
+    "skill lineage"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "model_routed",
+  "paths": {
+    "skill": ".github/skills/skill-pack-export/SKILL.md",
+    "scripts": ".github/skills/skill-pack-export/scripts",
+    "assets": ".github/skills/skill-pack-export/assets",
+    "references": ".github/skills/skill-pack-export/references"
+  },
+  "keywords": [
+    "export skill pack",
+    "pack manifest",
+    "share skills",
+    "skill lineage"
+  ],
+  "routedBy": [],
+  "referencedByAgents": []
+}
