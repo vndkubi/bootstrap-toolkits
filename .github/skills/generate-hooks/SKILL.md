@@ -30,11 +30,12 @@ These GitHub Copilot hook events are supported in `.github/hooks/*.json`:
 - `preToolUse` — before a tool executes
 - `postToolUse` — after a tool executes
 - `preCompact` — before context compaction (use to export critical state)
+- `agentStop` — the main agent finishes a turn; can block and force continuation
 - `subagentStart` — a subagent is spawned
-- `subagentStop` — a subagent completes
-- `stop` — session ends (use for reports, notifications, cleanup)
+- `subagentStop` — a subagent completes; can block and force continuation
+- `sessionEnd` — session ends (use for reports, notifications, cleanup)
 
-`agentStop` and `sessionEnd` are not valid GitHub Copilot hook events. Use `stop` for session-end logic.
+When you need a must-pass policy gate, prefer `agentStop` or `subagentStop` because those events can block completion and force another turn. Use `sessionEnd` for non-blocking final logging or reporting.
 
 ## Event Selection Rules
 
@@ -46,8 +47,9 @@ These GitHub Copilot hook events are supported in `.github/hooks/*.json`:
 | Security guardrails | `preToolUse` | Block risky commands before execution |
 | Prompt/session audit | `userPromptSubmitted`, `sessionStart` | Good for logging and governance |
 | Context preservation | `preCompact` | Export decisions, constraints, plan state before compaction |
+| Must-pass post-turn policy gate | `agentStop` | Validate final state before the main agent turn can end |
 | Subagent tracking | `subagentStart`, `subagentStop` | Log nested agent lifecycle for audit |
-| Session cleanup/reporting | `stop` | Generate reports, send notifications at session end |
+| Session cleanup/reporting | `sessionEnd` | Generate reports, send notifications at session end |
 
 ## Detection Matrix
 
@@ -123,17 +125,18 @@ The hook receives the current conversation state via stdin. A checkpoint script 
 
 Location: `.github/hooks/<hook-name>.json`
 
-VS Code uses PascalCase event names, a `command` field (cross-platform default), and optional OS-specific overrides (`windows`, `linux`, `osx`).
+For GitHub Copilot CLI command hooks, use official hook JSON fields: `bash`, `powershell`, optional `cwd`, optional `env`, and `timeoutSec`.
 
 ```json
 {
+  "version": 1,
   "hooks": {
-    "PostToolUse": [
+    "postToolUse": [
       {
         "type": "command",
-        "command": "./scripts/run-quality-check.sh",
-        "windows": "powershell -File scripts\\run-quality-check.ps1",
-        "timeout": 30
+        "bash": "./scripts/run-quality-check.sh",
+        "powershell": "powershell -File scripts\\run-quality-check.ps1",
+        "timeoutSec": 30
       }
     ]
   }
@@ -145,13 +148,11 @@ VS Code uses PascalCase event names, a `command` field (cross-platform default),
 | Property | Type | Description |
 |---|---|---|
 | `type` | string | Must be `"command"` |
-| `command` | string | Default command (cross-platform) |
-| `windows` | string | Windows-specific override |
-| `linux` | string | Linux-specific override |
-| `osx` | string | macOS-specific override |
+| `bash` | string | Shell command for Unix-like environments |
+| `powershell` | string | Shell command for Windows |
 | `cwd` | string | Working directory (relative to repository root) |
 | `env` | object | Additional environment variables |
-| `timeout` | number | Timeout in seconds (default: 30) |
+| `timeoutSec` | number | Timeout in seconds (default: 30) |
 
 ## Generation Workflow
 
@@ -197,9 +198,9 @@ For each `.github/hooks/*.json` file:
 
 1. Parse as JSON — must not throw
 2. Confirm a `hooks` object exists at the top level
-3. Confirm every event key is PascalCase (`PostToolUse`, `SessionStart`, `Stop`, `PreCompact`, etc.)
-4. Confirm every entry has `type: "command"` and at least one of `command`, `windows`, `linux`, `osx`
-5. Confirm `timeout` is a number (when present)
+3. Confirm every event key is an official Copilot hook event (`postToolUse`, `preToolUse`, `agentStop`, `sessionEnd`, etc.)
+4. Confirm every entry has `type: "command"` and at least one of `bash`, `powershell`
+5. Confirm `timeoutSec` is a number (when present)
 
 #### 5b. Script Availability Check
 
@@ -216,8 +217,8 @@ For each hook that references a Node.js script under `.github/scripts/`:
 
 1. Run the script with empty stdin and a temporary `MEMORY_DIR`: `echo '{}' | node <script>`
 2. The script must exit 0 (fail-open contract)
-3. For `SessionStart` hooks: validate that stdout is valid JSON with `hookSpecificOutput.additionalContext` (or empty when no memory data exists)
-4. For other hooks: stdout can be empty
+3. For blocking hooks such as `agentStop` or `subagentStop`: validate that stdout is valid JSON with `decision: "allow" | "block"`
+4. For non-blocking hooks: stdout can be empty unless that hook explicitly injects additional context
 
 #### 5d. External Command Availability (best-effort)
 
@@ -242,20 +243,20 @@ Skip 5d failures (external command not found) — these are warnings, not errors
 
 - Every hook file is valid JSON with a `hooks` object
 - Commands exist and are appropriate for the target project
-- Hook events use PascalCase: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`
-- Lint/compile hooks use `PostToolUse`, not fictional events
+- Hook events use official GitHub Copilot names such as `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `preCompact`, `agentStop`, `subagentStart`, `subagentStop`, `sessionEnd`
+- Lint/compile hooks use `postToolUse`, not fictional events
 - Expensive checks are filtered to relevant tool usage
-- A `command` field is present (cross-platform default); `windows`/`linux`/`osx` overrides only when needed
-- `PreCompact` hooks finish in < 10 seconds
+- At least one of `bash` or `powershell` is present; use both when you need cross-platform parity
+- `preCompact` hooks finish in < 10 seconds
 - Checkpoint files are added to `.gitignore`
-- `SessionStart` hooks that inject context return JSON: `{ hookSpecificOutput: { hookEventName: "SessionStart", additionalContext: "..." } }`
+- Blocking policy hooks use `agentStop` or `subagentStop` and return `{ "decision": "block" | "allow", "reason"?: "..." }`
 - **Step 5 smoke test passed**: all generated hooks validated structurally, scripts syntax-checked, dry-runs exit 0, and any failures were fixed before completion
 
 ## Common Failure Modes
 
-- Using lowerCamelCase event names (`postToolUse`) instead of PascalCase (`PostToolUse`)
-- Using Copilot CLI fields (`bash`/`powershell`/`timeoutSec`) instead of VS Code native fields (`command`/`windows`/`timeout`)
-- Using unsupported events such as `agentStop`, `sessionEnd`, or `errorOccurred`
+- Using fictional event names or cargo-culted aliases instead of official Copilot hook events
+- Mixing unrelated hook schemas instead of the official Copilot CLI fields `bash` / `powershell` / `timeoutSec`
+- Treating `agentStop` or `sessionEnd` as unsupported and therefore missing the official post-turn / session-end hook surfaces
 - Running lint or compile after every tool call without filtering
 - Generating hooks for commands the target project does not actually use
 - Making `preToolUse` or `preCompact` hooks so slow that they block normal work
@@ -272,6 +273,7 @@ Hooks Generated:
 - lint-check.json          <- postToolUse: linter command
 - compile-check.json       <- postToolUse: compile command
 - security-gate.json       <- preToolUse: optional policy command
+- manifest-fidelity.json   <- agentStop: block turn end if manifest and disk diverge
 - context-checkpoint.json  <- preCompact: checkpoint session state (Standard/Enterprise)
 ```
 

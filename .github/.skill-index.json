@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-05-07T22:08:16.659Z",
+  "generatedAt": "2026-05-08T15:44:26.720Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -121,7 +121,7 @@
       "tier": "domain",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2063
+      "estimatedTokenCost": 2098
     },
     "autorun-branch": {
       "manifestPath": ".github/skills/autorun-branch/skill.json",
@@ -900,7 +900,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 18335
+      "estimatedTokenCost": 18466
     },
     "generate-domain-instructions": {
       "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
@@ -985,7 +985,7 @@
       "tier": "domain",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2950
+      "estimatedTokenCost": 3049
     },
     "generate-mobile-tests": {
       "manifestPath": ".github/skills/generate-mobile-tests/skill.json",
@@ -1256,7 +1256,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 1229
+      "estimatedTokenCost": 1272
     },
     "implement-mobile-feature": {
       "manifestPath": ".github/skills/implement-mobile-feature/skill.json",
@@ -1454,7 +1454,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 1411
+      "estimatedTokenCost": 1448
     },
     "redact-sensitive-data": {
       "manifestPath": ".github/skills/redact-sensitive-data/skill.json",
@@ -1623,7 +1623,7 @@
       "tier": "domain",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 4955
+      "estimatedTokenCost": 5343
     },
     "review-effectiveness": {
       "manifestPath": ".github/skills/review-effectiveness/skill.json",
@@ -2148,7 +2148,7 @@
       "tier": "enterprise",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2748
+      "estimatedTokenCost": 2914
     }
   }
 }

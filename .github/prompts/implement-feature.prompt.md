@@ -8,6 +8,8 @@ agent: Dev Orchestrator
 
 You are the `@dev-orchestrator`. Execute a scoped end-to-end workflow for the requirement below.
 
+For the shortest path-selection guide, see `.github/docs/implementation-lane.md`.
+
 ## Requirement
 
 **Feature / PBI**: ${input:requirement}
@@ -28,6 +30,12 @@ You are the `@dev-orchestrator`. Execute a scoped end-to-end workflow for the re
 **Avoid**: "Fix user stuff" — no scope, no done condition, agent must guess everything
 
 ## Instructions
+
+### Route Fast
+
+- If the change is local, clear, and low-risk, keep the flow narrow and route to the right implementor.
+- If the request is vague, cross-module, or business-heavy, do not guess. Investigate and confirm first.
+- If a reviewed spec workspace already exists, prefer the spec-driven implementation path.
 
 1. **Parse**: extract scope, constraints, acceptance criteria, and likely affected areas.
 2. **Investigate**: trace the as-is flow, design a to-be solution, and map scenarios, risks, and impacted modules.

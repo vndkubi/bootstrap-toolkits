@@ -16,6 +16,7 @@ Use the `@conductor` agent and follow the `generate-copilot-config` skill. That 
 - `/bootstrap-copilot` is the primary bootstrap entrypoint for a copied bundle inside a target repository.
 - The bootstrap handoff is `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`.
 - Expected bootstrap outputs are a project-specific `.github/` tree, `.github/.bootstrap-state.json` progress updates, a repo truth pack sized to the target repo, `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and cleanup to the manifest keep set.
+- The bootstrap state must use summary-first phase hand-offs: each completed `bootstrap-phase-*` writes a structured entry that matches `.github/schemas/bootstrap-phase-state.schema.json`, and later phases should read `summary` plus `nextPhaseInputs` before opening full details.
 - If the current repository or workflow also has separate audit or delivery artifacts, treat them as optional evidence inputs around the bootstrap flow. Do not assume they exist or depend on them for bootstrap execution.
 
 Assume the copied `.github/` folder is the full bootstrap bundle. Prefer source-of-truth guidance inside `.github/`, then enrich it with evidence from the target repo's `README.md`, build files, source code, tests, and docs.
@@ -42,6 +43,7 @@ When you need runtime or context guidance, use:
 9. **Phase 13 (Validate) is mandatory**: structural, functional, and context-budget checks must pass before completion.
 10. **Phase 12 (Runtime Compilation) is mandatory**: compile runtime fidelity manifest and skill index after generation phases complete.
 11. **Phase 15 (Cleanup) is mandatory**: after validation, remove copied toolkit files that are out of scope for this repo so the final `.github/` matches the manifest and repo classification.
+12. **Phase hand-offs are summary-first**: later phases must prefer `summary` and `nextPhaseInputs` from `.github/.bootstrap-state.json` over re-reading the full prior artifact set unless evidence conflicts or the summary is insufficient.
 
 ## Post-Bootstrap Maintenance
 

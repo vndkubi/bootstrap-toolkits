@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://copilot-bootstrap/.github/schemas/review-report.schema.json",
+  "title": "Review Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verdict",
+    "articleXCompliant",
+    "businessContextConfidence",
+    "statistics",
+    "findings",
+    "checklistPacksApplied",
+    "slicesReviewed"
+  ],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "reject", "needs-clarification"]
+    },
+    "articleXCompliant": {
+      "type": "boolean"
+    },
+    "businessContextConfidence": {
+      "type": "string",
+      "enum": ["High", "Medium", "Low"]
+    },
+    "planningMode": {
+      "type": "boolean"
+    },
+    "checklistPacksApplied": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "slicesReviewed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "risk"],
+        "properties": {
+          "name": { "type": "string" },
+          "risk": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["planned", "reviewed", "skipped"]
+          }
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blockers", "warnings", "suggestions", "praise"],
+      "properties": {
+        "blockers": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "suggestions": { "type": "integer", "minimum": 0 },
+        "praise": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "stage", "severity", "category", "message"],
+        "properties": {
+          "id": { "type": "string" },
+          "stage": {
+            "type": "string",
+            "enum": ["functional", "technical", "mobile"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["blocker", "warning", "suggestion", "praise"]
+          },
+          "category": { "type": "string" },
+          "acRef": { "type": "string" },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "message": { "type": "string" },
+          "suggestedFix": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "followups": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

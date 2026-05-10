@@ -7,6 +7,10 @@ description: "Executes an approved spec-driven implementation using the feature 
 
 Use this skill after specification, planning, and task generation are complete enough to begin coding.
 
+## Read This First
+
+For the shortest operator-facing summary of when to use direct implementation versus spec-driven implementation, see `.github/docs/implementation-lane.md`.
+
 ## When to Use
 
 - A feature workspace already exists under `specs/`

@@ -164,7 +164,8 @@ Create `.github/hooks/*.json` files for automated quality enforcement during age
 - Keep `postToolUse` hooks fast (< 30s) — they run after every tool call
 - Keep `preToolUse` hooks very fast (< 10s) — they block tool execution
 - Non-zero exit code blocks the action
-- Use `postToolUse` with tool-name filtering for heavier checks (lint, compile); GitHub Copilot does not support `agentStop`
+- Use `postToolUse` with tool-name filtering for heavier checks (lint, compile)
+- Use `agentStop` when you need a must-pass policy gate after a turn completes
 
 ### Phase 7: Validate
 

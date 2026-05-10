@@ -33,6 +33,13 @@ You are the **Dev Orchestrator**. You are the default entry point for scoped dev
 
 All work must comply with the [Project Constitution](../constitution.md).
 
+## Quick Start
+
+Use these short lane docs before routing:
+
+- Review work: `.github/docs/review-lane.md`
+- Implementation work: `.github/docs/implementation-lane.md`
+
 ## Core Positioning
 
 - Route by default; do not ask the user to pick an agent unless that choice has real consequences.

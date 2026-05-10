@@ -63,9 +63,10 @@ These are the supported GitHub Copilot hook events for `.github/hooks/*.json`:
 | `preToolUse` | Before a tool executes | security gates, confirmation, input checks |
 | `postToolUse` | After a tool executes | formatter, lint, compile, usage logging |
 | `preCompact` | Before context compaction | export decisions, constraints, plan state |
+| `agentStop` | Main agent turn completes | must-pass turn-end policy gates |
 | `subagentStart` | A subagent is spawned | track nested agent lifecycle |
-| `subagentStop` | A subagent completes | aggregate results, audit trail |
-| `stop` | Session ends | generate reports, send notifications, cleanup |
+| `subagentStop` | A subagent completes | aggregate results, audit trail, blocking review gates |
+| `sessionEnd` | Session ends | generate reports, send notifications, cleanup |
 
 Use `postToolUse` with tool filtering for expensive quality checks so they run after relevant edit/write tools only.
 
@@ -115,7 +116,7 @@ Use the lightest tool that answers the question. Start with prompt and tool tran
 - Assuming tool results are visible to the model in the same round they are produced.
 - Debugging a missing tool flow as a prompt-writing issue when the tool was never exposed.
 - Assuming the model can call tools that were never exposed.
-- Using fictional hook events such as `agentStop`, `sessionEnd`, or `errorOccurred`.
+- Using fictional hook events or claiming official events are unsupported.
 - Running expensive checks after irrelevant tool calls.
 - Making `preCompact` hooks too slow (> 10s) — they block compaction and degrade responsiveness.
 

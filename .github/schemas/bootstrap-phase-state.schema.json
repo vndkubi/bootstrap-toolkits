@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://copilot-bootstrap/.github/schemas/bootstrap-phase-state.schema.json",
+  "title": "Bootstrap Phase State",
+  "description": "Structured handoff contract for one completed bootstrap phase. Used to persist summary-first phase outputs in .github/.bootstrap-state.json so the next phase can load only the minimum required context by default.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "phaseId",
+    "phaseNumber",
+    "goal",
+    "summary",
+    "detailsPath",
+    "evidencePaths",
+    "decisions",
+    "assumptions",
+    "openQuestions",
+    "nextPhaseInputs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "phaseId": {
+      "type": "string",
+      "pattern": "^bootstrap-phase-[a-z0-9-]+$"
+    },
+    "phaseNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 15
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200,
+      "description": "Short phase summary used for default handoff. Keep concise enough to load before full details."
+    },
+    "detailsPath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Canonical artifact path for the full retained phase output."
+    },
+    "evidencePaths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Source files and retained artifacts that justify the phase result."
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "nextPhaseInputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nextPhaseInput"
+      },
+      "description": "Small structured payload that the next phase should read before opening full details."
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "rationale",
+        "evidencePaths"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencePaths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "nextPhaseInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "valueSummary"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "valueSummary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourcePath": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

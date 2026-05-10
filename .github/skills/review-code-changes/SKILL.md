@@ -7,6 +7,10 @@ description: 'Multi-stage code review pipeline: Self-Review → Functional Revie
 
 Structured multi-stage code review pipeline with short-circuit logic for maximum efficiency.
 
+## Read This First
+
+For the shortest human-facing summary of the review workflow, see `.github/docs/review-lane.md`.
+
 ## When to Use
 
 - Reviewing a pull request
@@ -74,6 +78,12 @@ The Review Scope Plan must include:
 - slice plan when needed
 - checklist packs to apply when available
 - missing anchors or `[NEEDS CLARIFICATION]` items
+
+When checklist packs exist under `docs/reviews/checklists/`, planning output should nominate which packs apply. At minimum:
+
+- `docs/reviews/checklists/functional-core.md`
+- `docs/reviews/checklists/technical-core.md`
+- `docs/reviews/checklists/mobile-core.md` when mobile files are in scope
 
 Do not produce a review verdict in planning-only mode.
 
@@ -400,6 +410,41 @@ Output:
 1. [Must fix #1 — with file and line reference]
 2. [Must fix #2 — with file and line reference]
 ```
+
+After the markdown report, emit a final fenced JSON block for `review-report.json`. This is required in full-review mode and should conform to `.github/schemas/review-report.schema.json`.
+
+Minimum fields:
+
+```json
+{
+  "verdict": "pass | reject | needs-clarification",
+  "articleXCompliant": true,
+  "businessContextConfidence": "High | Medium | Low",
+  "planningMode": false,
+  "checklistPacksApplied": [
+    "docs/reviews/checklists/functional-core.md",
+    "docs/reviews/checklists/technical-core.md"
+  ],
+  "slicesReviewed": [
+    { "name": "business logic", "risk": "high", "status": "reviewed" }
+  ],
+  "statistics": {
+    "blockers": 0,
+    "warnings": 1,
+    "suggestions": 2,
+    "praise": 0
+  },
+  "findings": [],
+  "followups": []
+}
+```
+
+Rules:
+
+- Do not emit the JSON block in `--planning-only` mode.
+- In evidence-bundle mode, every finding in `findings[]` must preserve its evidence anchors.
+- If the functional reviewer returns `articleXCompliant=false`, the combined JSON must also set `articleXCompliant=false`.
+- If business context confidence is Low and the change is risky, use `needs-clarification` instead of pretending to pass.
 
 ## Verdict Determination
 

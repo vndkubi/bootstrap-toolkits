@@ -7,6 +7,8 @@ description: "Create a detailed implementation plan from an approved feature spe
 
 Follow the `plan-implementation` skill to create a comprehensive implementation plan from an existing feature specification.
 
+For the shortest path-selection guide, see `.github/docs/implementation-lane.md`.
+
 ## Instructions
 
 1. Locate the feature specification in `specs/<feature>/spec.md`. If no spec exists, recommend running `/specify-feature` first.

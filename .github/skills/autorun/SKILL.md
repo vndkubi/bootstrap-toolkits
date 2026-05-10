@@ -93,6 +93,7 @@ Every pause emits a gate validated against [`.github/schemas/gate.schema.json`](
 - Invoke `review-code-changes` with `--evidence-bundle .artifacts/<pbi>/`.
 - Pipeline: functional → technical (→ mobile when detected).
 - `@functional-reviewer` returns `{verdict, findings[], articleXCompliant}`.
+- The combined review output must end with a structured `review-report.json` block that conforms to `.github/schemas/review-report.schema.json`.
 - `articleXCompliant=false` without ratified `.artifacts/<pbi>/mock-exceptions.md` → exit 31.
 - Blocker finding → gate `review-blocker` (category business).
 - Commit phase 6.

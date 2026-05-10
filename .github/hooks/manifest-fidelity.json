@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "node .github/scripts/manifest-fidelity-hook.js",
+        "powershell": "node .github/scripts/manifest-fidelity-hook.js",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

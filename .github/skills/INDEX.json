@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "toolkitVersion": "0.6.0",
-  "generatedAt": "2026-05-07T22:08:16.659Z",
+  "generatedAt": "2026-05-08T15:44:26.720Z",
   "skills": {
     "analyze-codebase": {
       "schemaVersion": 1,
@@ -3174,7 +3174,8 @@
         "configuration",
         "plan",
         "review findings",
-        "task list"
+        "task list",
+        "tests"
       ],
       "triggers": [
         "artifacts",

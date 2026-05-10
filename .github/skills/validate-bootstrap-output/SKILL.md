@@ -105,9 +105,12 @@ For all generated documentation files, verify:
 - [ ] Manifest keep entries match all files intentionally retained after cleanup
 - [ ] Explicit tier choices are preserved honestly on upgrade, and inferred tier changes have a recorded reason
 - [ ] Files outside the manifest keep set were deleted
+- [ ] `.github/scripts/validate-manifest-fidelity.js` passes against the final workspace
 - [ ] If the reviewed artifact is `.github`-only, any retained external `docs/` outputs are included alongside it or the artifact is explicitly marked partial
 - [ ] `contextBudget.passed` is `true`
 - [ ] The full copied toolkit inventory was not retained unless non-bundle evidence proves the repo truly is the toolkit source repository
+
+Run `.github/scripts/validate-manifest-fidelity.js --json` during this tier and treat any reported issue as a real cleanup defect, not a documentation mismatch. The validator is responsible for proving three facts from disk state: manifest `removed.*` entries are actually gone, manifest keep entries actually exist, and runtime-loaded Copilot surfaces do not still reference removed skills, agents, prompts, or instructions by name.
 
 ## Output Format
 
@@ -164,6 +167,7 @@ For all generated documentation files, verify:
 | Manifest exists | PASS | |
 | Keep set complete | WARN | 2 files retained but missing from manifest |
 | Toolkit residue removed | FAIL | 14 copied toolkit files remain without justification |
+| Manifest fidelity validator | FAIL | `removed.skills` lists `common-doc-generator` but `.github/skills/common-doc-generator/` still exists |
 
 ### Recommendations
 1. Rewrite `copilot-instructions.md` if it still describes the target repo as the toolkit.

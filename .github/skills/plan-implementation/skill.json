@@ -18,7 +18,8 @@
     "configuration",
     "plan",
     "review findings",
-    "task list"
+    "task list",
+    "tests"
   ],
   "triggers": [
     "artifacts",

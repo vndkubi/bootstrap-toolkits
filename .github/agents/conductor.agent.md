@@ -79,12 +79,14 @@ When asked to bootstrap Copilot for a repository:
 - treat the canonical handoff as `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`
 - treat yourself as the routing and evidence gate for that flow, not as an alternate bootstrap workflow
 - expect successful bootstrap work to report repo identity evidence, classification, repo truth outputs, `.github/.bootstrap-summary.md` with retained or removed assets and next action, generated keep-set files, and cleanup status
+- require summary-first phase hand-offs in `.github/.bootstrap-state.json` so each `bootstrap-phase-*` passes `summary` plus `nextPhaseInputs` before loading full details
 
 - use the `generate-copilot-config` skill as the single source of truth
 - do not invent alternate phases here
 - require a repo truth pack before making broad business-aware claims
 - do not infer that the current repo is the toolkit source repo from copied bundle files alone
 - expect the final `.github/` tree to be pruned to the generated keep set, not left as the full copied toolkit
+- prefer phase-local bootstrap skills when resuming or auditing one phase; they should load the cheapest valid hand-off first and open large retained artifacts only on demand
 
 The repo truth pack should include, when applicable:
 

@@ -31,6 +31,12 @@ Use this playbook when:
 5. Run the full `@code-reviewer` flow.
 6. If the review and human discussion reveal durable lessons, run `/promote-review-memory` afterward.
 
+Default checklist packs to apply when no narrower pack exists yet:
+
+- `docs/reviews/checklists/functional-core.md`
+- `docs/reviews/checklists/technical-core.md`
+- `docs/reviews/checklists/mobile-core.md` for mobile slices
+
 Only use the promotion step when the lesson is backed by an accepted human fix or resolved human discussion, or when the same reasoning recurs across at least two reviews or investigations.
 
 ## Review Complexity Model
@@ -105,6 +111,7 @@ Use this exact shape when `/plan-review-scope` is invoked.
 - The plan identifies the first files to load rather than dumping the full PR.
 - The plan includes a functional scenario pack for the highest-risk flows.
 - The plan states missing anchors or clarification needs explicitly.
+- Full review runs end with a structured `review-report.json` contract aligned with `.github/schemas/review-report.schema.json`.
 
 ## Common Failure Modes
 

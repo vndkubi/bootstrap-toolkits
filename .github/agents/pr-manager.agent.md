@@ -173,7 +173,7 @@ When invoked from `prompts/autorun.prompt.md` Phase 7 with an `--evidence-bundle
 - `test-coverage.md` — AC↔test map.
 - `tdd-log.md` — iteration log.
 - `mocks-used.md` + (optional) `mock-exceptions.md`.
-- `review-report.json` — combined verdict from `review-code-changes` including `articleXCompliant`.
+- `review-report.json` — combined verdict from `review-code-changes`, validated against `.github/schemas/review-report.schema.json`, including `articleXCompliant`.
 
 ### Hard gate: articleXCompliant
 
@@ -181,7 +181,7 @@ Before the PR is marked **ready for review**:
 
 1. Parse `review-report.json`.
 2. If `articleXCompliant === false` and `mock-exceptions.md` does not contain a ratified entry covering the offending mock → **do not open** a ready PR. Open as **draft** instead, add the Article X blocker to the PR body under ⚠️ **Blocking**, and emit exit code 31 back to `/autorun`.
-3. If `verdict === "reject"` → same treatment; draft PR with blocker summary at the top.
+3. If `verdict === "reject"` or `verdict === "needs-clarification"` → same treatment; draft PR with blocker or clarification summary at the top.
 4. If `verdict === "pass"` and `articleXCompliant === true` → open the PR as ready, populated from [templates/pr-body.autorun.md](../templates/pr-body.autorun.md).
 
 ### PR body generation

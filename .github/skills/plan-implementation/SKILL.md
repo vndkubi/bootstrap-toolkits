@@ -7,6 +7,10 @@ description: "Creates a comprehensive implementation plan from a reviewed specif
 
 Transforms a reviewed specification into a detailed, actionable implementation plan. This is the second step in the Spec -> Plan -> Tasks pipeline.
 
+## Read This First
+
+For the shortest operator-facing summary of when to plan first versus code directly, see `.github/docs/implementation-lane.md`.
+
 ## When to Use
 
 - A specification from `specify-feature` or an equivalent user-approved spec is ready
