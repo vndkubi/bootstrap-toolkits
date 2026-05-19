@@ -56,6 +56,31 @@ test('Conductor declares the same canonical bootstrap handoff', () => {
   );
 });
 
+test('Bootstrap routing layers agree on summary-first phase handoffs', () => {
+  assert(prompt.includes('summary-first'), 'Prompt should require summary-first phase handoffs');
+  assert(prompt.includes('bootstrap-phase-state.schema.json'), 'Prompt should reference the bootstrap phase state schema');
+  assert(conductor.includes('summary-first'), 'Conductor should require summary-first phase handoffs');
+  assert(bootstrapSkill.includes('summary-first'), 'Bootstrap skill should define summary-first phase handoffs');
+  assert(bootstrapSkill.includes('bootstrap-phase-state.schema.json'), 'Bootstrap skill should reference the bootstrap phase state schema');
+});
+
+test('Bootstrap scan starts from deterministic repo index when available', () => {
+  const scanPhase = read('.github/skills/bootstrap-phase-scan/SKILL.md');
+  assert(fs.existsSync(path.join(ROOT, '.github', 'scripts', 'repo-index.js')), 'repo-index script should exist in the portable bundle');
+  assert(prompt.includes('deterministic repo index'), 'Prompt should include deterministic repo index in expected outputs');
+  assert(bootstrapSkill.includes('node .github/scripts/repo-index.js'), 'Bootstrap skill should run repo-index before broad scan');
+  assert(bootstrapSkill.includes('docs/ai/00-repo-index.md'), 'Bootstrap skill should name repo index markdown output');
+  assert(scanPhase.includes('node .github/scripts/repo-index.js'), 'Phase scan skill should run repo-index first');
+});
+
+test('Generated repo memory supports Copilot and future Codex usage', () => {
+  const promptContext = read('.github/docs/prompt-and-context.md');
+  assert(promptContext.includes('Codex'), 'Prompt/context guide should name Codex compatibility');
+  assert(promptContext.includes('docs/ai/00-repo-index.md'), 'Prompt/context guide should route agents to repo index');
+  assert(runtimeOverview.includes('Codex'), 'Runtime overview should describe tool-neutral Codex-compatible artifacts');
+  assert(bootstrapSkill.includes('root `AGENTS.md`'), 'Bootstrap skill should support root AGENTS.md for non-Copilot agents');
+});
+
 test('Runtime docs keep bootstrap summary in the output contract', () => {
   assert(prompt.includes('.github/.bootstrap-summary.md'), 'Prompt should require .github/.bootstrap-summary.md in expected outputs');
   assert(conductor.includes('.github/.bootstrap-summary.md'), 'Conductor should expect .github/.bootstrap-summary.md in successful bootstrap output');
@@ -65,6 +90,13 @@ test('Runtime docs keep bootstrap summary in the output contract', () => {
 test('Bootstrap skill and operator guidance both recognize the summary artifact', () => {
   assert(bootstrapSkill.includes('.github/.bootstrap-summary.md'), 'Bootstrap skill should mention .github/.bootstrap-summary.md');
   assert(userPlaybook.includes('.github/.bootstrap-summary.md'), 'User playbook should mention .github/.bootstrap-summary.md');
+});
+
+test('Bootstrap contract requires manifest fidelity validation before completion', () => {
+  const validateBootstrapOutput = read('.github/skills/validate-bootstrap-output/SKILL.md');
+  assert(bootstrapSkill.includes('validate-manifest-fidelity.js'), 'Bootstrap skill should require validate-manifest-fidelity.js');
+  assert(validateBootstrapOutput.includes('validate-manifest-fidelity.js'), 'validate-bootstrap-output should run validate-manifest-fidelity.js');
+  assert(fs.existsSync(path.join(ROOT, '.github', 'scripts', 'validate-manifest-fidelity.js')), 'manifest fidelity validator script should exist');
 });
 
 test('Optional workflow artifacts stay optional', () => {

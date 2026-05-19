@@ -154,6 +154,25 @@ Build an evidence-backed picture of the target repo using a structured scan prot
 
 ### Scan Protocol
 
+#### Round 0 — Deterministic Repo Index (1 terminal command)
+
+Before asking the model to inspect broad repo structure, run the checked-in deterministic indexer:
+
+```bash
+node .github/scripts/repo-index.js
+```
+
+This writes:
+
+- `docs/ai/00-repo-index.md`
+- `docs/ai/00-repo-index.json`
+
+Use this index as the first scan input. It is generated from `git ls-files`, so it is cheaper and more stable than model-driven repo exploration. The index should guide which module roots, build files, and search recipes are worth reading next.
+
+If the script fails because `git` or `node` is unavailable, record that gap in the scan report and continue with Round 1. Do not silently replace the index with a broad agent scan.
+
+For large or enterprise repos, read `docs/ai/00-repo-index.md` before any broad source sampling. Start from the module candidates and exclusion candidates in the index; do not ask Copilot to inspect the whole repository.
+
 #### Round 1 — Project Fingerprint (2 parallel tool calls)
 
 Run two tool calls simultaneously:
@@ -265,6 +284,7 @@ After writing the scan report, update `.github/.bootstrap-state.json`: set phase
 scanned_at: "<ISO 8601>"
 toolkit_version: "<from .github/VERSION>"
 file_count: <total non-ignored files>
+repo_index: "docs/ai/00-repo-index.md"
 ---
 
 # Scan Report
@@ -326,6 +346,7 @@ Use this matrix to identify stacks from build files found in Round 1:
 | `tsconfig.json` | TypeScript | `compilerOptions.target`, `paths`, `strict` |
 | `pom.xml` | Java / Maven | `java.version`, `<dependencies>`, `<modules>`, `<plugins>` |
 | `build.gradle(.kts)` | Java / Gradle | `sourceCompatibility`, `plugins`, `dependencies` |
+| `pom.xml` / `build.gradle(.kts)` + `WEB-INF/web.xml`, `META-INF/beans.xml`, `META-INF/persistence.xml`, `microprofile-config.properties` | Java EE / Jakarta EE / MicroProfile | Determine `javax.*` vs `jakarta.*`, app server target, CDI/JAX-RS/JPA/EJB/JSF usage, packaging (`war`, `ear`, `jar`) |
 | `*.csproj` | .NET | `TargetFramework`, `PackageReference` |
 | `*.sln` | .NET multi-project | Project list and references |
 | `go.mod` | Go | `module`, `go` version, `require` |
@@ -929,6 +950,8 @@ Rules:
 
 For Standard and Enterprise repos, generate `.github/AGENTS.md` as a discovery index for all generated agents. VS Code surfaces this file to help users and the model discover available agents.
 
+When the repo is expected to use Codex or other non-Copilot coding agents, also generate or update a concise root `AGENTS.md` as the shared agent operating card. The root file should point to `docs/ai/00-repo-index.md`, the retained repo truth pack, and the primary verification commands; it must not duplicate the full `.github/` catalog.
+
 #### When to generate
 
 | Classification | Generate AGENTS.md? |
@@ -936,6 +959,14 @@ For Standard and Enterprise repos, generate `.github/AGENTS.md` as a discovery i
 | Small | No — few agents, discovery is trivial |
 | Standard | Yes — when 6+ agents are generated |
 | Enterprise | Always |
+
+Root `AGENTS.md` generation:
+
+| Condition | Generate root AGENTS.md? |
+|---|---|
+| Existing root `AGENTS.md` | Update carefully, preserving user-owned rules |
+| Codex or multi-agent compatibility requested | Yes |
+| No non-Copilot agent usage expected | Optional |
 
 #### Format
 
@@ -972,6 +1003,7 @@ For Standard and Enterprise repos, generate `.github/AGENTS.md` as a discovery i
 - One-line purpose per agent — derive from the agent's `description` frontmatter.
 - Only include agents that exist in the generated set (not bootstrap-only agents).
 - Keep the file under 2 KB — this is a discovery index, not documentation.
+- Keep root `AGENTS.md` under 2 KB and tool-neutral. It should say where to find repo index, repo truth, constraints, and verification, not restate every Copilot prompt or skill.
 - If the repo has nested module structure with domain-specific agents, generate per-module `AGENTS.md` files in the relevant module directories.
 
 #### Nested AGENTS.md for Enterprise repos

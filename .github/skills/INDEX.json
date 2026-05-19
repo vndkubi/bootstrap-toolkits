@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "toolkitVersion": "0.6.0",
-  "generatedAt": "2026-05-08T15:44:26.720Z",
+  "generatedAt": "2026-05-19T22:22:55.768Z",
   "skills": {
     "analyze-codebase": {
       "schemaVersion": 1,
@@ -340,11 +340,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "agents",
+        "next phase inputs bundle",
+        "phase summary",
         "routing updates"
       ],
       "triggers": [
@@ -385,11 +387,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "classification summary",
+        "next phase inputs bundle",
+        "phase summary",
         "tier recommendation"
       ],
       "triggers": [
@@ -430,12 +434,14 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "cleanup report",
         "manifest",
+        "next phase inputs bundle",
+        "phase summary",
         "summary"
       ],
       "triggers": [
@@ -482,11 +488,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
-        "core instructions"
+        "core instructions",
+        "next phase inputs bundle",
+        "phase summary"
       ],
       "triggers": [
         "/bootstrap-copilot",
@@ -526,11 +534,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
-        "devcontainer guidance"
+        "devcontainer guidance",
+        "next phase inputs bundle",
+        "phase summary"
       ],
       "triggers": [
         "/bootstrap-copilot",
@@ -570,11 +580,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
-        "domain instructions"
+        "domain instructions",
+        "next phase inputs bundle",
+        "phase summary"
       ],
       "triggers": [
         "/bootstrap-copilot",
@@ -614,11 +626,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "domain map",
+        "next phase inputs bundle",
+        "phase summary",
         "repo truth pack"
       ],
       "triggers": [
@@ -659,12 +673,14 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "hooks",
-        "optional workflows"
+        "next phase inputs bundle",
+        "optional workflows",
+        "phase summary"
       ],
       "triggers": [
         "/bootstrap-copilot",
@@ -704,12 +720,14 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
         "framework instructions",
-        "language instructions"
+        "language instructions",
+        "next phase inputs bundle",
+        "phase summary"
       ],
       "triggers": [
         "/bootstrap-copilot",
@@ -749,10 +767,12 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "next phase inputs bundle",
+        "phase summary",
         "prompts"
       ],
       "triggers": [
@@ -793,10 +813,12 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "next phase inputs bundle",
+        "phase summary",
         "runtime fidelity manifest",
         "skill indexes"
       ],
@@ -838,10 +860,13 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "deterministic repo index",
+        "next phase inputs bundle",
+        "phase summary",
         "repo identity evidence",
         "scan findings"
       ],
@@ -883,10 +908,12 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "next phase inputs bundle",
+        "phase summary",
         "runtime skills"
       ],
       "triggers": [
@@ -927,10 +954,12 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "next phase inputs bundle",
+        "phase summary",
         "templates"
       ],
       "triggers": [
@@ -971,10 +1000,12 @@
       },
       "inputs": [
         "Existing bootstrap state when resuming",
-        "Outputs from the previous phase",
+        "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
         "Target repo root"
       ],
       "outputs": [
+        "next phase inputs bundle",
+        "phase summary",
         "validation report"
       ],
       "triggers": [

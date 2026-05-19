@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Explain the high-level GitHub Copilot Chat execution model that matters when maintaining or bootstrapping this bundle.
+Explain the high-level GitHub Copilot Chat execution model that matters when maintaining or bootstrapping this bundle, while keeping generated repo-memory artifacts useful for Codex and other coding agents.
 
 ## Source of Truth
 
@@ -10,6 +10,7 @@ Explain the high-level GitHub Copilot Chat execution model that matters when mai
 - `.github/prompts/bootstrap-copilot.prompt.md`
 - `.github/agents/conductor.agent.md`
 - `.github/copilot-instructions.md`
+- `docs/ai/00-repo-index.md` when generated
 
 ## Request / Data Flow
 
@@ -18,10 +19,12 @@ Explain the high-level GitHub Copilot Chat execution model that matters when mai
 3. `@conductor` defers bootstrap execution to `generate-copilot-config` as the canonical workflow.
 4. Copilot Chat assembles model input from repo instructions, current-turn context, history, tool results, and available tool schemas.
 5. The model may call tools across multiple rounds; tool results are injected into later prompt rounds.
-6. The bootstrap workflow writes progress into `.github/.bootstrap-state.json`, generates repo-truth and runtime outputs sized to the target repo, emits `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and prunes copied toolkit residue to the manifest keep set.
+6. The bootstrap workflow writes progress into `.github/.bootstrap-state.json`, generates deterministic repo index, repo-truth, and runtime outputs sized to the target repo, emits `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and prunes copied toolkit residue to the manifest keep set.
 7. If the current repository or surrounding workflow has separate delivery artifacts, they may audit, review, or prioritize follow-up work around that bootstrap flow, but they are optional context and not alternate runtime entrypoints.
 
 When reviewing generated output, distinguish between the full generated repo surface and a `.github`-only capture. Treat a `.github` snapshot as a partial artifact: it may legitimately omit retained `docs/` artifacts, but if so the capture should say that explicitly instead of implying those docs were never generated.
+
+Tool-neutral artifacts such as `docs/ai/00-repo-index.md`, `docs/00-repo-overview.md`, and root `AGENTS.md` should remain useful outside GitHub Copilot. Copilot-specific files route Copilot behavior; shared repo-memory files should orient Copilot CLI, VS Code Copilot, Codex, and other coding agents without requiring them to load the full `.github/` bundle.
 
 ## What Goes Into the Model Request
 

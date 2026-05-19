@@ -21,6 +21,7 @@ This phase skill is the phase-local companion to `generate-copilot-config`. It n
 
 ## Outputs
 
+- deterministic repo index
 - scan findings
 - repo identity evidence
 - phase summary
@@ -29,6 +30,8 @@ This phase skill is the phase-local companion to `generate-copilot-config`. It n
 ## Phase Contract
 
 - Goal: Read root-level evidence from the target repo and produce stack, module, build, test, and identity findings before classification.
+- Start by running `node .github/scripts/repo-index.js` when Node and Git are available. Use `docs/ai/00-repo-index.md` and `docs/ai/00-repo-index.json` as the first scan evidence before any broad model-driven exploration.
+- For large repos, use the index's module candidates, exclusion candidates, and search recipes to choose the smallest follow-up file set. Do not inspect the whole repository.
 - Hand-off: continue with `bootstrap-phase-classify`.
 
 ## Progressive Disclosure Contract

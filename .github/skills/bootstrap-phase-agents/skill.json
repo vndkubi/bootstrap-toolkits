@@ -13,11 +13,13 @@
   },
   "inputs": [
     "Existing bootstrap state when resuming",
-    "Outputs from the previous phase",
+    "Previous phase hand-off loaded from `.github/.bootstrap-state.json`",
     "Target repo root"
   ],
   "outputs": [
     "agents",
+    "next phase inputs bundle",
+    "phase summary",
     "routing updates"
   ],
   "triggers": [

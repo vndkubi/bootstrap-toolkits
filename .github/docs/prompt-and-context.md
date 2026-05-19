@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Capture the practical context-optimization rules that make Copilot more accurate and less noisy when using this bundle.
+Capture the practical context-optimization rules that make GitHub Copilot, Copilot CLI, Codex, and other coding agents more accurate and less noisy when using this bundle.
 
 This file is about **context quality**, not tool exposure, hook sequencing, or execution-loop control.
 
@@ -11,6 +11,7 @@ This file is about **context quality**, not tool exposure, hook sequencing, or e
 - `.github/copilot-instructions.md`
 - `.github/prompts/bootstrap-copilot.prompt.md`
 - `.github/skills/generate-copilot-config/SKILL.md`
+- `docs/ai/00-repo-index.md` when generated
 - `.github/docs/runtime-overview.md`
 
 ## Three-Layer Context Model
@@ -19,6 +20,8 @@ Context flows through three layers before reaching the model:
 
 1. **Repo-level context** — durable, shared across tasks:
    - `copilot-instructions.md`, scoped `.instructions.md`
+   - `docs/ai/00-repo-index.md` as the tool-neutral repo map
+   - root `AGENTS.md` when Codex or other coding agents need a shared operating card
    - agents, prompts, skills
    - architecture and source-of-truth docs
 
@@ -76,6 +79,7 @@ If question 5 is "yes, the agent can find it easily" → mention lightly, do not
 | Only relevant to the current task | Current prompt |
 | Multiple people keep re-explaining it | Common doc in `docs/` |
 | A durable rule or convention | `.instructions.md` or `copilot-instructions.md` |
+| Shared agent orientation for Copilot and Codex | Root `AGENTS.md` plus `docs/ai/00-repo-index.md` |
 | A multi-step reusable workflow | Skill file |
 | Agent keeps misunderstanding a subsystem | Targeted common doc |
 
@@ -95,6 +99,7 @@ If a rule is mainly about which tools can run or why a loop continues, document 
 - Put durable rules into instructions, skills, or common docs instead of repeating them in prompts.
 - Put task-only details in the current prompt.
 - Use paths for large files and paste only short source-of-truth snippets, errors, acceptance criteria, or verify commands.
+- Prefer generated repo maps like `docs/ai/00-repo-index.md` before asking any agent to scan a large repository.
 - Every substantial prompt should make outcome, anchor, constraints, and verification clear.
 
 ## Context Optimization Checklist
@@ -130,3 +135,4 @@ Before sending a large prompt:
 - `.github/docs/user-playbook.md`
 - `.github/docs/github-resource-conventions.md`
 - `.github/copilot-instructions.md`
+- `docs/ai/00-repo-index.md`

@@ -134,6 +134,12 @@ function renderSkill(phase) {
   const nextStep = phase.next
     ? `- Hand-off: continue with \`${phase.next}\`.`
     : '- Hand-off: none. This closes the bootstrap execution slice.';
+  const scanOutputs = phase.id === 'bootstrap-phase-scan'
+    ? '- deterministic repo index\n'
+    : '';
+  const scanContract = phase.id === 'bootstrap-phase-scan'
+    ? '- Start by running `node .github/scripts/repo-index.js` when Node and Git are available. Use `docs/ai/00-repo-index.md` and `docs/ai/00-repo-index.json` as the first scan evidence before any broad model-driven exploration.\n- For large repos, use the index\'s module candidates, exclusion candidates, and search recipes to choose the smallest follow-up file set. Do not inspect the whole repository.\n'
+    : '';
   return `---
 name: ${phase.id}
 description: "Run Phase ${phase.phase} of the bootstrap pipeline: ${phase.title}. ${phase.goal} Use when orchestrating /bootstrap-copilot one phase at a time or resuming a failed phase without loading the full monolith. Keywords: bootstrap phase ${phase.phase}, ${phase.title.toLowerCase()}, bootstrap pipeline, /bootstrap-copilot."
@@ -157,14 +163,14 @@ This phase skill is the phase-local companion to \`generate-copilot-config\`. It
 
 ## Outputs
 
-- ${phase.outputs.join('\n- ')}
+${scanOutputs}- ${phase.outputs.join('\n- ')}
 - phase summary
 - next phase inputs bundle
 
 ## Phase Contract
 
 - Goal: ${phase.goal}
-${nextStep}
+${scanContract}${nextStep}
 
 ## Progressive Disclosure Contract
 

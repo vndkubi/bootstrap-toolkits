@@ -15,7 +15,7 @@ Use the `@conductor` agent and follow the `generate-copilot-config` skill. That 
 
 - `/bootstrap-copilot` is the primary bootstrap entrypoint for a copied bundle inside a target repository.
 - The bootstrap handoff is `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`.
-- Expected bootstrap outputs are a project-specific `.github/` tree, `.github/.bootstrap-state.json` progress updates, a repo truth pack sized to the target repo, `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and cleanup to the manifest keep set.
+- Expected bootstrap outputs are a project-specific `.github/` tree, `.github/.bootstrap-state.json` progress updates, a deterministic repo index when tooling is available, a repo truth pack sized to the target repo, `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and cleanup to the manifest keep set.
 - The bootstrap state must use summary-first phase hand-offs: each completed `bootstrap-phase-*` writes a structured entry that matches `.github/schemas/bootstrap-phase-state.schema.json`, and later phases should read `summary` plus `nextPhaseInputs` before opening full details.
 - If the current repository or workflow also has separate audit or delivery artifacts, treat them as optional evidence inputs around the bootstrap flow. Do not assume they exist or depend on them for bootstrap execution.
 
@@ -32,7 +32,7 @@ When you need runtime or context guidance, use:
 
 ## Critical Rules
 
-1. **Phase 1 (Scan) is foundational**: read all relevant build files, sample enough real code, and detect actual runtime/tooling versions.
+1. **Phase 1 (Scan) is foundational**: run the deterministic repo index first when available, then read all relevant build files, sample enough real code, and detect actual runtime/tooling versions.
 2. **Repo identity comes from target-repo evidence**: use root files, code, tests, and docs to decide what this repo is; copied bootstrap assets are not sufficient proof.
 3. **Phase 2 (Classify) happens before generation**: project size and complexity determine generation strategy.
 4. **Phase 3 (Domain) is evidence-driven**: do not claim business truth without code/doc anchors; otherwise label assumptions explicitly.

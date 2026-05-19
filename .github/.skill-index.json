@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-05-08T15:44:26.720Z",
+  "generatedAt": "2026-05-19T22:22:55.768Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -167,7 +167,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 391
+      "estimatedTokenCost": 576
     },
     "bootstrap-phase-classify": {
       "manifestPath": ".github/skills/bootstrap-phase-classify/skill.json",
@@ -186,7 +186,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 396
+      "estimatedTokenCost": 580
     },
     "bootstrap-phase-cleanup-summary": {
       "manifestPath": ".github/skills/bootstrap-phase-cleanup-summary/skill.json",
@@ -208,7 +208,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 430
+      "estimatedTokenCost": 615
     },
     "bootstrap-phase-core-instructions": {
       "manifestPath": ".github/skills/bootstrap-phase-core-instructions/skill.json",
@@ -227,7 +227,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 415
+      "estimatedTokenCost": 599
     },
     "bootstrap-phase-devcontainer": {
       "manifestPath": ".github/skills/bootstrap-phase-devcontainer/skill.json",
@@ -246,7 +246,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 395
+      "estimatedTokenCost": 579
     },
     "bootstrap-phase-domain-instructions": {
       "manifestPath": ".github/skills/bootstrap-phase-domain-instructions/skill.json",
@@ -265,7 +265,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 413
+      "estimatedTokenCost": 598
     },
     "bootstrap-phase-domain-repo-truth": {
       "manifestPath": ".github/skills/bootstrap-phase-domain-repo-truth/skill.json",
@@ -284,7 +284,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 416
+      "estimatedTokenCost": 601
     },
     "bootstrap-phase-hooks-workflows": {
       "manifestPath": ".github/skills/bootstrap-phase-hooks-workflows/skill.json",
@@ -303,7 +303,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 415
+      "estimatedTokenCost": 599
     },
     "bootstrap-phase-language-framework-instructions": {
       "manifestPath": ".github/skills/bootstrap-phase-language-framework-instructions/skill.json",
@@ -322,7 +322,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 432
+      "estimatedTokenCost": 617
     },
     "bootstrap-phase-prompts": {
       "manifestPath": ".github/skills/bootstrap-phase-prompts/skill.json",
@@ -341,7 +341,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 398
+      "estimatedTokenCost": 583
     },
     "bootstrap-phase-runtime-compilation": {
       "manifestPath": ".github/skills/bootstrap-phase-runtime-compilation/skill.json",
@@ -360,7 +360,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 409
+      "estimatedTokenCost": 593
     },
     "bootstrap-phase-scan": {
       "manifestPath": ".github/skills/bootstrap-phase-scan/skill.json",
@@ -379,7 +379,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 398
+      "estimatedTokenCost": 686
     },
     "bootstrap-phase-skills": {
       "manifestPath": ".github/skills/bootstrap-phase-skills/skill.json",
@@ -398,7 +398,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 390
+      "estimatedTokenCost": 575
     },
     "bootstrap-phase-templates": {
       "manifestPath": ".github/skills/bootstrap-phase-templates/skill.json",
@@ -417,7 +417,7 @@
       "tier": "foundational",
       "stability": "experimental",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 385
+      "estimatedTokenCost": 569
     },
     "bootstrap-phase-validate": {
       "manifestPath": ".github/skills/bootstrap-phase-validate/skill.json",
@@ -436,7 +436,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 391
+      "estimatedTokenCost": 575
     },
     "common-doc-generator": {
       "manifestPath": ".github/skills/common-doc-generator/skill.json",
@@ -900,7 +900,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 18466
+      "estimatedTokenCost": 19220
     },
     "generate-domain-instructions": {
       "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
