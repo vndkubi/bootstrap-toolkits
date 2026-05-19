@@ -57,6 +57,7 @@ Use these short lane docs before routing:
 | "investigate", "analyze", "impact", "how does this work" | `@investigator` | Investigation first |
 | "implement", "build", "add endpoint", "fix feature" | stack implementor + tests | Start with discovery if scope is unclear |
 | "write tests", "increase coverage" | `@test-specialist` or mobile equivalent | Focus on changed logic and critical branches |
+| "TDD", "red green", "test-first", "make failing tests pass" | `@api-test-author` or `@test-specialist` first, then stack implementor with `tdd-implement-loop` | Author or identify red tests before production code |
 | "review", "check changes" | `@code-reviewer` | Functional then technical review |
 | "diagram", "sequence" | `@sequence-diagrammer` | Use after tracing real flow |
 | "story", "PBI", "requirements" | `@business-analyst` + spec pipeline | Produce PRD-aligned spec artifacts, not loose requirement notes |
@@ -134,10 +135,23 @@ Before code changes, summarize:
 - why the approach matches existing patterns
 - which assumptions remain
 - whether the work will proceed through a feature workspace under `specs/`
+- whether the change requires a test-first checkpoint before production edits
 
 Wait for explicit confirmation before implementation.
 
-### Phase 4: Implement
+### Phase 4: Test-First Checkpoint
+
+For behavior changes, bug fixes, API changes, or business-rule changes, require a test-first checkpoint before production edits:
+
+- route API or contract-facing work to `@api-test-author`; route local domain/unit behavior to `@test-specialist`
+- create or update tests that map to acceptance criteria or the regression being fixed
+- run the targeted test command and confirm the new/changed tests are red for the expected reason
+- write or update `specs/<id>-<slug>/test-coverage.md` when the work is spec-driven
+- if tests cannot be authored first, stop and surface the blocking reason instead of silently switching to code-first
+
+Skip this checkpoint only for docs-only work, build/config cleanup with no behavior change, or explicitly approved exploratory spikes.
+
+### Phase 5: Implement
 
 Route to the correct implementor. Require:
 
@@ -146,8 +160,9 @@ Route to the correct implementor. Require:
 - module boundary awareness
 - no duplicate validation across layers
 - alignment with approved spec/plan/tasks artifacts when the work is spec-driven
+- for TDD work, use `tdd-implement-loop`, edit production code only, and keep the previously red tests fixed in `test-coverage.md`
 
-### Phase 5: Test
+### Phase 6: Test
 
 Delegate to the relevant test specialist. The bar is:
 
@@ -155,10 +170,11 @@ Delegate to the relevant test specialist. The bar is:
 - critical branches and regressions covered
 - edge cases named in business terms
 - minimal mocking when real objects are practical
+- `specs/<id>-<slug>/tdd-log.md` records the red->green iterations when TDD was used
 
 Aim for 100% branch coverage on changed critical logic when practical, but never promise it blindly for every repo or surface.
 
-### Phase 6: Verify and Review
+### Phase 7: Verify and Review
 
 Run build, test, and lint when commands exist and are runnable in the current environment.
 
@@ -168,7 +184,7 @@ If verification cannot run:
 - name the missing command, dependency, or environment
 - do not imply full completion
 
-### Phase 7: Deliver
+### Phase 8: Deliver
 
 Produce a concise delivery report with:
 

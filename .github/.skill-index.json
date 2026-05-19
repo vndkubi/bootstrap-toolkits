@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-05-19T22:22:55.768Z",
+  "generatedAt": "2026-05-19T23:53:23.784Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -900,7 +900,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 19220
+      "estimatedTokenCost": 19348
     },
     "generate-domain-instructions": {
       "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
@@ -1956,17 +1956,19 @@
       ],
       "routedBy": [
         "api-test-author",
+        "dev-orchestrator",
         "mock-data-specialist"
       ],
       "referencedByAgents": [
         "api-test-author",
+        "dev-orchestrator",
         "mock-data-specialist"
       ],
       "invocationMode": "agent_delegated",
       "tier": "domain",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 1113
+      "estimatedTokenCost": 1137
     },
     "technical-debt-analysis": {
       "manifestPath": ".github/skills/technical-debt-analysis/skill.json",

@@ -18,7 +18,7 @@ For the shortest path-selection guide, see `.github/docs/implementation-lane.md`
    - data model definitions
    - API contracts
    - phased implementation steps with prerequisites
-   - test strategy (contract tests, integration tests, unit tests)
+   - test-first strategy (which tests must be red before production edits, plus contract tests, integration tests, and unit tests)
    - verification and acceptance criteria mapping
 4. Write the plan and supporting artifacts to the feature directory:
    - `specs/<feature>/plan.md`
@@ -26,6 +26,16 @@ For the shortest path-selection guide, see `.github/docs/implementation-lane.md`
    - `specs/<feature>/contracts/` (when applicable)
    - `specs/<feature>/research.md` (when technical research was needed)
 5. After the plan is approved, recommend `/implement-feature` as the next step.
+
+## TDD Planning Rule
+
+For any behavior, bug, API, or business-rule change, the plan must name the first red test checkpoint before implementation begins:
+
+- acceptance criterion or regression covered
+- test file or test surface to create/update
+- command to run for the expected RED result
+- expected failure reason
+- follow-up GREEN verification command
 
 ## Constitutional Compliance
 

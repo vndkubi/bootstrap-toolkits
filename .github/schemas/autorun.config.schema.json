@@ -69,7 +69,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "postEditRunTests": { "type": "boolean", "default": false }
+        "postEditRunTests": { "type": "boolean", "default": false },
+        "tddEvidenceGate": { "type": "boolean", "default": true },
+        "tddEvidenceRequireSpecWorkspace": { "type": "boolean", "default": false }
       }
     },
     "secretScanner": {

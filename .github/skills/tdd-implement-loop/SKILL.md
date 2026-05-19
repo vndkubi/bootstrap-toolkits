@@ -10,6 +10,7 @@ Bounded TDD driver. Reads the red suite from Phase 3 and implements the minimum 
 ## When to Use
 
 - `prompts/autorun.prompt.md` Phase 5.
+- `prompts/implement-feature.prompt.md` after the test-first checkpoint has produced RED evidence.
 - Standalone when a human hands you a red suite and says "make it green".
 
 ## Inputs

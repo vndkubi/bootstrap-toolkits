@@ -67,7 +67,7 @@ Dependency chain: T-A1 → T-A2 → (T-A3..T-A7 in parallel) → T-A8 → T-A9 �
 - **T-C4** `[P]` ⚠️ Patch `agents/mock-data-specialist.agent.md` — add (a) testfixture builder + DB seed responsibility, (b) PII scan on generated stubs.
 - **T-C5** `[P]` Write `skills/tdd-implement-loop/SKILL.md` with `maxIterations`, `noProgressThreshold`; call `impact-analysis` for scoped regression (fallback: full).
   - Group C1 = {T-C3, T-C4, T-C5}; depend on T-C2.
-- **T-C6** Write `hooks/post-edit-run-tests.json` — opt-in `false` default; branch-gated to `autorun/*`; cost-cap-aware.
+- **T-C6** Write `scripts/post-edit-run-tests.js` as the retained helper surface, and emit `hooks/post-edit-run-tests.json` only when `postEditRunTests=true`; branch-gated to `autorun/*`; cost-cap-aware.
   - depends_on: T-C5
 - **T-C7** ⚠️ Patch `agents/functional-reviewer.agent.md` — emit structured `{verdict, findings[], articleXCompliant}`.
   - depends_on: T-C1

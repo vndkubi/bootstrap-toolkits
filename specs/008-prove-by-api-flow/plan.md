@@ -90,7 +90,7 @@ Complete mapping of spec requirements to plan elements. Rows are collapsed where
 │   ├── update-spec/SKILL.md               ← MOD  re-emit contract when spec changes
 │   └── review-code-changes/SKILL.md       ← MOD  accept evidence bundle path
 ├── hooks/
-│   └── post-edit-run-tests.json   ← NEW  opt-in, branch-gated
+│   └── post-edit-run-tests.json   ← NEW only when enabled; branch-gated
 ├── templates/
 │   └── pr-body.autorun.md         ← NEW  PR template with evidence checklist
 ├── constitution.md                 ← MOD  add Article X
@@ -140,7 +140,7 @@ Total new files: **12**. Modified files: **7**. Each new file ≤ 4 KB per NFR "
 
 - `skills/tdd-implement-loop`: red → green iteration with configurable `maxIterations`/`noProgressThreshold` (see `autorun.config.schema.json`).
 - Scoped regression (US-C3 AC-3): the skill calls the existing `impact-analysis` skill (research R-8) to get the module filter. Falls back to full regression when `impact-analysis` is absent.
-- `hooks/post-edit-run-tests.json` (opt-in, `false` by default). Safeguards per research R-9: branch-gated + cost-cap-aware + scoped test only.
+- `scripts/post-edit-run-tests.js` retained as the optional helper surface; emit `hooks/post-edit-run-tests.json` only when explicitly enabled. Safeguards per research R-9: branch-gated + cost-cap-aware + scoped test only.
 
 ### 3.8 Review + evidence
 
@@ -179,7 +179,7 @@ No target-repo `data-model.md` entities are added — Article II is untouched.
 | **0 — Spike** | R-1 Copilot CLI decision doc appended to [research.md](./research.md) | Decision recorded, fallback path chosen |
 | **A — Autorun skeleton** | `autorun.prompt.md`, `resolve-pbi-ref`, `autorun-branch`, `sanitize-untrusted-input`, `redact-sensitive-data`, harness detect, trace emitter, gate emitter, cost tracker | CLI smoke test passes; 1 dry-run on a toy PBI with all 7 phases as no-ops |
 | **B — Contract-first** | `generate-api-contract`, `run-local-stack`, patch `plan-implementation`, taxonomy gate | Valid OpenAPI + healthcheck on golden Java repo |
-| **C — TDD + fixtures** | `api-test-author` agent, `generate-api-flow-tests`, extended `mock-data-specialist`, `tdd-implement-loop`, `post-edit-run-tests.json`, Article X in constitution | Red→green loop completes a toy feature on golden Java + .NET repos |
+| **C — TDD + fixtures** | `api-test-author` agent, `generate-api-flow-tests`, extended `mock-data-specialist`, `tdd-implement-loop`, optional post-edit test hook/helper, Article X in constitution | Red→green loop completes a toy feature on golden Java + .NET repos |
 | **D — Review + evidence** | `review-code-changes` patch, `functional-reviewer` patch, `pr-manager` patch + `pr-body.autorun.md`, `evidence-summary.md` generator | PR opens on golden repo with full evidence bundle; `articleXCompliant` enforcement verified by a negative test |
 
 ### Ordering rules

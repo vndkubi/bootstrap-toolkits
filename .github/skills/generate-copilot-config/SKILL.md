@@ -1233,6 +1233,7 @@ Use the `generate-hooks` skill as the reference for hook file format, event sele
 - `postToolUse` lint checks (ESLint, Checkstyle, PMD, detekt)
 - `postToolUse` compile checks (Maven, Gradle, tsc, dotnet build)
 - `preToolUse` security gates for dangerous commands
+- `agentStop` TDD evidence gate when the retained workflow includes test-first implementation
 
 ### Context preservation hooks (conditional on repo size)
 
@@ -1262,6 +1263,15 @@ If a target repo explicitly enables post-edit test runs, then generate both:
 - `.github/hooks/post-edit-run-tests.json`
 
 Otherwise keep the script only when it is useful as a documented opt-in helper, or remove both if the repo does not retain autorun-related workflows.
+
+### TDD evidence gate surface
+
+When the retained workflow includes `/implement-feature`, `/autorun`, or the `tdd-implement-loop` skill, retain:
+
+- `.github/scripts/tdd-evidence-hook.js`
+- `.github/hooks/tdd-evidence.json`
+
+The hook must stay cheap and fail-open outside Git repositories or when `autorun.config.json.hooks.tddEvidenceGate=false`. It blocks only when production code changed without corresponding TDD evidence.
 
 ### Context-packet manifest (conditional on repo size)
 

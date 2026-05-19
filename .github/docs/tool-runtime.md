@@ -70,6 +70,8 @@ These are the supported GitHub Copilot hook events for `.github/hooks/*.json`:
 
 Use `postToolUse` with tool filtering for expensive quality checks so they run after relevant edit/write tools only.
 
+Use `agentStop` for cheap must-pass policy gates. This bundle includes a TDD evidence gate that only evaluates changed production code and blocks completion when the test-first evidence is missing.
+
 Use `preCompact` to preserve critical session state before the system summarizes conversation context. This is essential for long-running feature work where losing in-progress decisions would cause rework.
 
 ## Why A Tool Flow Does Not Run

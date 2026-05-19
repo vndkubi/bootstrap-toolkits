@@ -25,7 +25,9 @@
     "allowed": ["api-rest", "api-graphql", "api-grpc", "event-driven", "library", "cli", "ui-only", "mixed"]
   },
   "hooks": {
-    "postEditRunTests": false
+    "postEditRunTests": false,
+    "tddEvidenceGate": true,
+    "tddEvidenceRequireSpecWorkspace": false
   },
   "secretScanner": {
     "tool": "auto"

@@ -255,7 +255,7 @@ PR = "trust me, tests pass".             PR = attached trace, report, diagram.
 | FR-C2 | Add `skills/generate-api-flow-tests/SKILL.md` — input: contract + AC; output: failing integration tests per stack. | Must Have | US-C1 |
 | FR-C3 | Extend `@mock-data-specialist` to emit reusable testfixture builders and WireMock stubs (only external) per Phase 4. | Must Have | US-C2 |
 | FR-C4 | Add `skills/tdd-implement-loop/SKILL.md` — iterative red→green loop with budget and progress detection. | Must Have | US-C3 |
-| FR-C5 | Add `hooks/post-edit-run-tests.json` (postToolUse) to optionally auto-run tests after file edits. | Should Have | US-C3 |
+| FR-C5 | Add an opt-in post-edit test helper. Retain `scripts/post-edit-run-tests.js` as the helper surface, and emit `hooks/post-edit-run-tests.json` only when the target repo explicitly enables post-edit test runs. | Should Have | US-C3 |
 | FR-D1 | `review-code-changes` pipeline accepts an evidence bundle path and cites it in findings. | Must Have | US-D1 |
 | FR-D2 | Add Article X "Evidence over Mocks" to `constitution.md` as a Phase -1 + review gate. | Must Have | US-C2, US-D1 |
 | FR-D3 | `@pr-manager` template updated to include evidence bundle section and Constitution gate checklist. | Must Have | US-D2 |

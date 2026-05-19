@@ -20,7 +20,9 @@
     "autoClassify": true
   },
   "hooks": {
-    "postEditRunTests": false
+    "postEditRunTests": false,
+    "tddEvidenceGate": true,
+    "tddEvidenceRequireSpecWorkspace": false
   },
   "secretScanner": {
     "tool": "auto"

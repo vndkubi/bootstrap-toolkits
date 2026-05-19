@@ -61,10 +61,12 @@
   ],
   "routedBy": [
     "api-test-author",
+    "dev-orchestrator",
     "mock-data-specialist"
   ],
   "referencedByAgents": [
     "api-test-author",
+    "dev-orchestrator",
     "mock-data-specialist"
   ]
 }

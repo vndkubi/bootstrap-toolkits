@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "node .github/scripts/tdd-evidence-hook.js",
+        "powershell": "node .github/scripts/tdd-evidence-hook.js",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

@@ -40,14 +40,16 @@ For the shortest path-selection guide, see `.github/docs/implementation-lane.md`
 1. **Parse**: extract scope, constraints, acceptance criteria, and likely affected areas.
 2. **Investigate**: trace the as-is flow, design a to-be solution, and map scenarios, risks, and impacted modules.
 3. **Confirm**: present the investigation summary and wait for explicit user confirmation before implementation.
-4. **Implement**: follow existing repo patterns and work in small, verifiable increments.
-5. **Test**: target high branch coverage for changed logic, especially critical branches, edge cases, and regression paths.
-6. **Verify**: run the repo's build, test, and lint commands when they exist and the environment supports them.
-7. **Document**: provide a markdown summary with changes, business reasoning, assumptions, verification evidence, and any unverified gaps.
+4. **Test-first checkpoint**: for behavior changes, route to `@api-test-author` or `@test-specialist` before production edits. Add or update tests that map to the acceptance criteria, run the targeted command, and confirm the new/changed tests fail for the expected reason.
+5. **Implement**: follow existing repo patterns and work in small, verifiable increments. For TDD work, drive `tdd-implement-loop`, edit production code only, and keep the red tests fixed as the target.
+6. **Test**: turn the targeted tests green, then run scoped regression. Record `specs/<feature>/test-coverage.md` and `specs/<feature>/tdd-log.md` when a spec workspace exists.
+7. **Verify**: run the repo's build, test, and lint commands when they exist and the environment supports them.
+8. **Document**: provide a markdown summary with changes, business reasoning, assumptions, verification evidence, TDD evidence, and any unverified gaps.
 
 ## Rules
 
 - Do not proceed to implementation without user confirmation after investigation.
+- Do not write production code for a behavior change until the test-first checkpoint has either produced red evidence or recorded a user-approved exception.
 - Match existing codebase patterns instead of introducing new abstractions by default.
 - Every business-rule claim must have an evidence anchor or be labeled `[ASSUMPTION]` / `[NEEDS CLARIFICATION]`.
 - If the repo is large or business-heavy, prefer domain-scoped execution over whole-repo implementation.

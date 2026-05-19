@@ -152,7 +152,7 @@ Reuse the existing `impact-analysis` skill. Call with `--since <branch-base>` to
 
 Hook runs arbitrary commands after file edits. Risks: infinite loop, runaway cost, accidental side-effect on tracked files outside `autorun/<PBI>` branch.
 
-**Decision**: the hook is **opt-in** (default `false`), governed by `autorun.config.json.hooks.postEditRunTests`. When enabled, the hook:
+**Decision**: post-edit test runs are **opt-in** (default `false`), governed by `autorun.config.json.hooks.postEditRunTests`. The bundle keeps the helper script as an optional surface, and only emits the hook registration when enabled. When enabled, the hook:
 1. Checks `git rev-parse --abbrev-ref HEAD` starts with `autorun/`; exits silently if not.
 2. Only runs the scoped test command for the changed module (not full regression).
 3. Emits a trace line with duration + result.
