@@ -25,6 +25,7 @@ Give one obvious path for code review work so reviewers do not need to reverse-e
 
 - `docs/reviews/checklists/functional-core.md`
 - `docs/reviews/checklists/technical-core.md`
+- `docs/reviews/checklists/java-finance-enterprise.md` when Java finance, banking, payment, pricing, ledger, authorization, migration, PII, or regulated-data code is in scope
 - `docs/reviews/checklists/mobile-core.md` when mobile files are present
 
 ## Key Rules

@@ -35,6 +35,7 @@ Default checklist packs to apply when no narrower pack exists yet:
 
 - `docs/reviews/checklists/functional-core.md`
 - `docs/reviews/checklists/technical-core.md`
+- `docs/reviews/checklists/java-finance-enterprise.md` for Java finance, banking, payment, pricing, ledger, authorization, migration, PII, or regulated-data slices
 - `docs/reviews/checklists/mobile-core.md` for mobile slices
 
 Only use the promotion step when the lesson is backed by an accepted human fix or resolved human discussion, or when the same reasoning recurs across at least two reviews or investigations.

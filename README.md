@@ -16,6 +16,7 @@ The toolkit includes:
 - **A project constitution** — 9 immutable Articles + Phase -1 Gates governing all specification-to-code transformation
 - **Spec-driven pipeline** — specify → plan → tasks → implement workflow for vague or large features
 - **Enterprise-ready** — domain-scoped instructions, context budget management, cross-module impact analysis
+- **Finance review support** — Java/Jakarta EE/JUnit review operating model, risk-tiered checklist packs, CI gates, waiver policy, and reviewer onboarding for regulated finance teams
 - **Capability tiers** — `Lean`, `Collaborative`, and `Governed` retained-surface profiles layered on top of repo-size classification
 - **Context Inspector** — a bounded runtime-diagnostic workflow for missing triggers, missing tools, context loading, and retained-surface explanations
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
@@ -26,6 +27,12 @@ Important packaging model:
 - This repository is the **source repository** for the portable `.github/` bootstrap bundle.
 - In real use, teams copy **only** `.github/` into a target repository, run `/bootstrap-copilot`, and let the pipeline rewrite and prune the copied templates into project-specific output.
 - Generated target-repo docs such as `docs/00-repo-overview.md` or `docs/02-architecture-map.md` are created **in the target repository when needed**. They are not expected to exist in this source repo before generation.
+
+Review support docs:
+
+- `docs/reviews/java-finance-review-system.md` defines the Java finance review operating model, approval matrix, CI gate baseline, structured report, waiver policy, metrics, and onboarding flow.
+- `docs/reviews/checklists/java-finance-enterprise.md` adds the Java/Jakarta EE/JUnit finance checklist pack for money correctness, transaction integrity, authorization, data handling, auditability, compatibility, and test quality.
+- `.github/instructions/java-finance-review.instructions.md` applies finance-oriented Java review rules automatically to Java files in target repos that retain this instruction.
 
 ## 🏗️ Architecture
 

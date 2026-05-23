@@ -37,6 +37,7 @@ const reviewPrompt = read('.github/prompts/review-code.prompt.md');
 const reviewSkill = read('.github/skills/review-code-changes/SKILL.md');
 const codeReviewer = read('.github/agents/code-reviewer.agent.md');
 const reviewPlaybook = read('.github/docs/review-playbook.md');
+const reviewLane = read('.github/docs/review-lane.md');
 const prManager = read('.github/agents/pr-manager.agent.md');
 const autorun = read('.github/skills/autorun/SKILL.md');
 
@@ -62,9 +63,12 @@ test('Review lane supports needs-clarification as a first-class verdict', () => 
 test('Review playbook and review lane ship reusable checklist packs', () => {
   assert(reviewPlaybook.includes('docs/reviews/checklists/functional-core.md'), 'playbook should mention functional core checklist');
   assert(reviewPlaybook.includes('docs/reviews/checklists/technical-core.md'), 'playbook should mention technical core checklist');
+  assert(reviewPlaybook.includes('docs/reviews/checklists/java-finance-enterprise.md'), 'playbook should mention Java finance enterprise checklist');
+  assert(reviewLane.includes('docs/reviews/checklists/java-finance-enterprise.md'), 'review lane should mention Java finance enterprise checklist');
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'functional-core.md')), 'functional core checklist should exist');
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'technical-core.md')), 'technical core checklist should exist');
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'mobile-core.md')), 'mobile core checklist should exist');
+  assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'java-finance-enterprise.md')), 'Java finance enterprise checklist should exist');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
