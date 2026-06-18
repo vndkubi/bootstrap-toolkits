@@ -1,5 +1,13 @@
 /results/
 
+# Local AI run/reference artifacts
+.copilot/runs/
+Prompt_Engineering.md
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
 # Layer 2 memory artifacts (ephemeral local state)
 .memory/
 .github/.session-checkpoint.md

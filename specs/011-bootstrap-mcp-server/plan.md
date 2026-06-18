@@ -9,6 +9,8 @@
 
 ## 0. Decision Record (resolving spec §9 open questions)
 
+Scope note: this plan keeps `bootstrap-mcp` focused on portable access to bootstrap skills. Large-repo context reduction is handled by `specs/012-repo-intelligence-context-router/`, not by widening this server into an unrestricted repo reader.
+
 | # | Question | Decision | Rationale |
 |---|---|---|---|
 | Q1 | Runtime language | **Python 3.11+** | Matches existing skill ecosystem; low porting friction; mature official `mcp` SDK (`modelcontextprotocol/python-sdk`); `pipx` install fits target audience. |

@@ -10,6 +10,7 @@ Explain how tool availability, tool invocation, tool-result round-trips, and off
 - `.github/skills/generate-hooks/SKILL.md`
 - `.github/prompts/bootstrap-copilot.prompt.md`
 - `.github/docs/runtime-overview.md`
+- `.github/docs/repo-intelligence-router.md`
 
 ## Request / Data Flow
 
@@ -32,6 +33,19 @@ Before the model sees any tools, code filters the full tool registry:
 5. Model-specific overrides and experiment flags
 
 The model can only choose from tools that pass these filters. It cannot invent new tools.
+
+### Large-Repo Toolsets
+
+For large repositories, expose tools by task instead of registering every MCP server and tool at once:
+
+| Task | Toolsets |
+|---|---|
+| Architecture or investigation | `repo-read`, `graph`, `domain-docs` |
+| Bug fix or feature edit | `repo-read`, `graph`, `tests` |
+| Validation or repair loop | `tests`, `guards`, relevant `repo-read` detail tools |
+| PR automation | add GitHub metadata tools after the code context is known |
+
+Keep write and shell tools separate from read routing. A repo intelligence MCP should return bounded context with line ranges, confidence, and next actions; it should not expose unrestricted file reads as the primary path.
 
 ### Invocation Round-Trip
 
@@ -103,6 +117,7 @@ Use the lightest tool that answers the question. Start with prompt and tool tran
 - `.github/hooks` automation must use official GitHub Copilot hook events only.
 - Heavy quality checks should be filtered so they run after relevant edit/write tools rather than after every tool call.
 - Tool results are not visible to the model in the same round they are produced.
+- MCP improves large-repo work only when tool outputs are scoped, clipped, and typed; adding more tools without routing can hurt quality.
 
 ## Verification
 
@@ -118,6 +133,8 @@ Use the lightest tool that answers the question. Start with prompt and tool tran
 - Assuming tool results are visible to the model in the same round they are produced.
 - Debugging a missing tool flow as a prompt-writing issue when the tool was never exposed.
 - Assuming the model can call tools that were never exposed.
+- Exposing every available MCP tool for every task instead of using task-specific toolsets.
+- Letting search tools return long unranked snippets without line ranges, confidence, or omitted-result counts.
 - Using fictional hook events or claiming official events are unsupported.
 - Running expensive checks after irrelevant tool calls.
 - Making `preCompact` hooks too slow (> 10s) — they block compaction and degrade responsiveness.
@@ -126,5 +143,6 @@ Use the lightest tool that answers the question. Start with prompt and tool tran
 
 - `.github/docs/runtime-overview.md`
 - `.github/docs/prompt-and-context.md`
+- `.github/docs/repo-intelligence-router.md`
 - `.github/docs/github-resource-conventions.md`
 - `.github/skills/generate-hooks/SKILL.md`

@@ -20,7 +20,8 @@
     "prompt",
     "report",
     "review findings",
-    "task list"
+    "task list",
+    "tests"
   ],
   "triggers": [
     "approval",

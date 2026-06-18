@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "runId": "synthetic-bootstrap-router",
+  "source": {
+    "kind": "synthetic",
+    "path": "tests/harness-bench/sample-runs/bootstrap-router.synthetic.json",
+    "note": "Calibration fixture for the benchmark runner; not evidence of real Copilot performance."
+  },
+  "variant": {
+    "id": "bootstrap-router",
+    "label": "Bootstrap plus repo intelligence router",
+    "model": "fixed-model",
+    "gitSha": "synthetic"
+  },
+  "tasks": [
+    {
+      "pbiId": "PBI-001",
+      "stack": "typescript",
+      "difficulty": "easy",
+      "passed": true,
+      "accepted": true,
+      "tokens": 31000,
+      "toolCalls": 9,
+      "repairLoops": 1,
+      "wallTimeMs": 420000,
+      "outcomeScore": 0.9
+    },
+    {
+      "pbiId": "PBI-002",
+      "stack": "python",
+      "difficulty": "medium",
+      "passed": true,
+      "accepted": true,
+      "tokens": 46000,
+      "toolCalls": 12,
+      "repairLoops": 1,
+      "wallTimeMs": 610000,
+      "outcomeScore": 0.84
+    },
+    {
+      "pbiId": "PBI-003",
+      "stack": "dotnet",
+      "difficulty": "medium",
+      "passed": true,
+      "accepted": true,
+      "tokens": 54000,
+      "toolCalls": 13,
+      "repairLoops": 1,
+      "wallTimeMs": 690000,
+      "outcomeScore": 0.86
+    },
+    {
+      "pbiId": "PBI-004",
+      "stack": "java",
+      "difficulty": "hard",
+      "passed": true,
+      "accepted": true,
+      "tokens": 79000,
+      "toolCalls": 17,
+      "repairLoops": 2,
+      "wallTimeMs": 960000,
+      "outcomeScore": 0.79
+    }
+  ]
+}

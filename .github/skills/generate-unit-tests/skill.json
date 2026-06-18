@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "generate-unit-tests",
   "displayName": "generate-unit-tests",
-  "description": "Generate comprehensive unit tests for Java classes with minimal mocking. Analyzes all code branches (if/switch/ternary/try-catch/loops), creates test builder classes, uses real objects over mocks whenever possible, applies reflection only as last resort for private methods. Outputs JUnit 5 tests with @Nested grouping, @DisplayName, AssertJ assertions, and AAA pattern. Use when asked to write tests, improve test coverage, or generate tests for existing code.",
+  "description": "Generate Java tests using Real Core, Mock Boundaries: API component tests for REST/API behavior, direct domain unit tests for decision tables, isolated test DB for persistence, and boundary-only mocks. Outputs JUnit 5/AssertJ tests with AC-to-test mapping, @Nested grouping, @DisplayName, builders/fixtures, and reflection only as a legacy escape hatch. Use when asked to write Java tests, improve coverage, or replace mock-heavy tests.",
   "version": "0.6.0",
   "tier": "domain",
   "stability": "stable",
@@ -18,18 +18,18 @@
     "tests"
   ],
   "triggers": [
-    "aaa",
-    "all",
-    "analyzes",
-    "applies",
+    "api",
     "asked",
-    "assertions",
     "assertj",
-    "branches",
-    "builder",
-    "catch",
-    "classes",
-    "code"
+    "behavior",
+    "boundaries",
+    "boundary",
+    "builders",
+    "component",
+    "core",
+    "coverage",
+    "decision",
+    "direct"
   ],
   "mcp_tools_used": [],
   "invocationMode": "agent_delegated",
@@ -40,23 +40,25 @@
     "references": ".github/skills/generate-unit-tests/references"
   },
   "keywords": [
-    "aaa",
-    "all",
-    "analyzes",
-    "applies",
+    "api",
     "asked",
-    "assertions",
     "assertj",
-    "branches",
-    "builder",
-    "catch",
-    "classes",
-    "code"
+    "behavior",
+    "boundaries",
+    "boundary",
+    "builders",
+    "component",
+    "core",
+    "coverage",
+    "decision",
+    "direct"
   ],
   "routedBy": [
-    "agent-generator"
+    "agent-generator",
+    "code-reviewer"
   ],
   "referencedByAgents": [
-    "agent-generator"
+    "agent-generator",
+    "code-reviewer"
   ]
 }

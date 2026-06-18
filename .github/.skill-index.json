@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-05-19T23:53:23.784Z",
+  "generatedAt": "2026-06-18T23:41:18.957Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -900,7 +900,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 19348
+      "estimatedTokenCost": 19603
     },
     "generate-domain-instructions": {
       "manifestPath": ".github/skills/generate-domain-instructions/skill.json",
@@ -1140,34 +1140,36 @@
     },
     "generate-unit-tests": {
       "manifestPath": ".github/skills/generate-unit-tests/skill.json",
-      "descriptionLength": 461,
+      "descriptionLength": 436,
       "hasKeywordsSuffix": false,
       "hasWhenToUse": true,
       "triggerKeywords": [
-        "aaa",
-        "all",
-        "analyzes",
-        "applies",
+        "api",
         "asked",
-        "assertions",
         "assertj",
-        "branches",
-        "builder",
-        "catch",
-        "classes",
-        "code"
+        "behavior",
+        "boundaries",
+        "boundary",
+        "builders",
+        "component",
+        "core",
+        "coverage",
+        "decision",
+        "direct"
       ],
       "routedBy": [
-        "agent-generator"
+        "agent-generator",
+        "code-reviewer"
       ],
       "referencedByAgents": [
-        "agent-generator"
+        "agent-generator",
+        "code-reviewer"
       ],
       "invocationMode": "agent_delegated",
       "tier": "domain",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 777
+      "estimatedTokenCost": 1697
     },
     "generate-wiremock": {
       "manifestPath": ".github/skills/generate-wiremock/skill.json",
@@ -1199,6 +1201,33 @@
       "stability": "stable",
       "mcpToolsUsed": [],
       "estimatedTokenCost": 757
+    },
+    "goal-tdd-engineer-loop": {
+      "manifestPath": ".github/skills/goal-tdd-engineer-loop/skill.json",
+      "descriptionLength": 282,
+      "hasKeywordsSuffix": true,
+      "hasWhenToUse": true,
+      "triggerKeywords": [
+        "Codex handoff",
+        "TDD",
+        "evals",
+        "feedback",
+        "goal loop",
+        "red green",
+        "token budget",
+        "traces"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
+      ],
+      "invocationMode": "agent_delegated",
+      "tier": "domain",
+      "stability": "stable",
+      "mcpToolsUsed": [],
+      "estimatedTokenCost": 2008
     },
     "impact-analysis": {
       "manifestPath": ".github/skills/impact-analysis/skill.json",
@@ -1427,7 +1456,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 1034
+      "estimatedTokenCost": 1114
     },
     "plan-implementation": {
       "manifestPath": ".github/skills/plan-implementation/skill.json",
@@ -1594,22 +1623,18 @@
     },
     "review-code-changes": {
       "manifestPath": ".github/skills/review-code-changes/skill.json",
-      "descriptionLength": 370,
+      "descriptionLength": 510,
       "hasKeywordsSuffix": true,
       "hasWhenToUse": true,
       "triggerKeywords": [
-        "actionable",
-        "branch",
-        "business",
-        "changes",
-        "code",
-        "combined",
-        "each",
-        "finding",
-        "first",
-        "functional",
-        "immediately",
-        "include"
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "actionable finding",
+        "code review",
+        "review PR",
+        "review-report"
       ],
       "routedBy": [
         "code-reviewer",
@@ -1623,7 +1648,7 @@
       "tier": "domain",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 5343
+      "estimatedTokenCost": 6701
     },
     "review-effectiveness": {
       "manifestPath": ".github/skills/review-effectiveness/skill.json",
@@ -1691,7 +1716,7 @@
       "tier": "enterprise",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2277
+      "estimatedTokenCost": 2485
     },
     "review-spec": {
       "manifestPath": ".github/skills/review-spec/skill.json",

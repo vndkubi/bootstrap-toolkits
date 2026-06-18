@@ -41,6 +41,7 @@ const prompt = read('.github/prompts/bootstrap-copilot.prompt.md');
 const conductor = read('.github/agents/conductor.agent.md');
 const runtimeOverview = read('.github/docs/runtime-overview.md');
 const userPlaybook = read('.github/docs/user-playbook.md');
+const applyGuide = read('.github/docs/apply-copilot-bootstrap.md');
 const bootstrapSkill = read('.github/skills/generate-copilot-config/SKILL.md');
 test('Prompt declares the canonical bootstrap handoff', () => {
   assert(
@@ -81,6 +82,17 @@ test('Generated repo memory supports Copilot and future Codex usage', () => {
   assert(bootstrapSkill.includes('root `AGENTS.md`'), 'Bootstrap skill should support root AGENTS.md for non-Copilot agents');
 });
 
+test('Source repo ships thin provider-neutral Codex and Claude adapters', () => {
+  const agents = read('AGENTS.md');
+  const claude = read('CLAUDE.md');
+  assert(agents.includes('portable AI bootstrap bundle'), 'AGENTS.md should describe provider-neutral bundle identity');
+  assert(agents.includes('.github/skills/generate-copilot-config/SKILL.md'), 'AGENTS.md should point to the canonical bootstrap skill');
+  assert(agents.includes('Do not assume Copilot, Codex, Claude'), 'AGENTS.md should warn about provider-specific loading');
+  assert(Buffer.byteLength(agents, 'utf8') <= 2048, 'AGENTS.md should stay under 2 KB');
+  assert(claude.includes('@AGENTS.md'), 'CLAUDE.md should import shared AGENTS.md guidance');
+  assert(Buffer.byteLength(claude, 'utf8') <= 1024, 'CLAUDE.md should stay thin');
+});
+
 test('Runtime docs keep bootstrap summary in the output contract', () => {
   assert(prompt.includes('.github/.bootstrap-summary.md'), 'Prompt should require .github/.bootstrap-summary.md in expected outputs');
   assert(conductor.includes('.github/.bootstrap-summary.md'), 'Conductor should expect .github/.bootstrap-summary.md in successful bootstrap output');
@@ -114,6 +126,19 @@ test('Bundle docs distinguish full output from .github-only review captures', ()
   const bundleReadme = read('.github/README.md');
   assert(bundleReadme.includes('partial artifact'), 'Bundle README should describe partial review artifacts');
   assert(runtimeOverview.includes('partial artifact'), 'Runtime overview should distinguish partial captures from full output');
+});
+
+test('Operator guide explains how to apply the bundle correctly', () => {
+  const bundleReadme = read('.github/README.md');
+  assert(applyGuide.includes('Copy **only** the `.github/` folder'), 'apply guide should require copying only .github');
+  assert(applyGuide.includes('/bootstrap-copilot'), 'apply guide should use /bootstrap-copilot as primary entry point');
+  assert(applyGuide.includes('@conductor Analyze this codebase'), 'apply guide should include direct @conductor fallback');
+  assert(applyGuide.includes('Daily Usage After Bootstrap'), 'apply guide should include daily usage commands');
+  assert(applyGuide.includes('/review-code'), 'apply guide should include review-code daily command');
+  assert(applyGuide.includes('[P0]'), 'apply guide should include P0-P3 review priority guidance');
+  assert(applyGuide.includes('Post-Bootstrap Validation'), 'apply guide should include validation checklist');
+  assert(bundleReadme.includes('apply-copilot-bootstrap.md'), 'bundle README should link the apply guide');
+  assert(userPlaybook.includes('Copy only `.github/`'), 'user playbook should mention copying only .github');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

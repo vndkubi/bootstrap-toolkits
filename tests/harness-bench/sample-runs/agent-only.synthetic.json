@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "runId": "synthetic-agent-only",
+  "source": {
+    "kind": "synthetic",
+    "path": "tests/harness-bench/sample-runs/agent-only.synthetic.json",
+    "note": "Calibration fixture for the benchmark runner; not evidence of real Copilot performance."
+  },
+  "variant": {
+    "id": "agent-only",
+    "label": "Agent without bootstrap context",
+    "model": "fixed-model",
+    "gitSha": "synthetic"
+  },
+  "tasks": [
+    {
+      "pbiId": "PBI-001",
+      "stack": "typescript",
+      "difficulty": "easy",
+      "passed": true,
+      "accepted": true,
+      "tokens": 52000,
+      "toolCalls": 16,
+      "repairLoops": 2,
+      "wallTimeMs": 640000,
+      "outcomeScore": 0.72
+    },
+    {
+      "pbiId": "PBI-002",
+      "stack": "python",
+      "difficulty": "medium",
+      "passed": false,
+      "accepted": false,
+      "tokens": 69000,
+      "toolCalls": 22,
+      "repairLoops": 3,
+      "wallTimeMs": 830000,
+      "outcomeScore": 0.38,
+      "failureReason": "missed related integration test"
+    },
+    {
+      "pbiId": "PBI-003",
+      "stack": "dotnet",
+      "difficulty": "medium",
+      "passed": true,
+      "accepted": true,
+      "tokens": 74000,
+      "toolCalls": 19,
+      "repairLoops": 2,
+      "wallTimeMs": 910000,
+      "outcomeScore": 0.76
+    },
+    {
+      "pbiId": "PBI-004",
+      "stack": "java",
+      "difficulty": "hard",
+      "passed": false,
+      "accepted": false,
+      "tokens": 104000,
+      "toolCalls": 31,
+      "repairLoops": 4,
+      "wallTimeMs": 1250000,
+      "outcomeScore": 0.22,
+      "failureReason": "changed wrong module boundary"
+    }
+  ]
+}

@@ -56,6 +56,15 @@
       "tools": []
     }
   },
+  "goal-tdd-engineer-loop": {
+    "requires": {
+      "skills": [
+        "tdd-implement-loop"
+      ],
+      "mcp": [],
+      "tools": []
+    }
+  },
   "review-effectiveness": {
     "requires": {
       "skills": [

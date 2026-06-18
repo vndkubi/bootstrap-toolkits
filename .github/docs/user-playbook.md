@@ -9,6 +9,7 @@ Give maintainers and users a practical way to prompt Copilot effectively when wo
 - `.github/prompts/bootstrap-copilot.prompt.md`
 - `.github/skills/generate-copilot-config/SKILL.md`
 - `.github/copilot-instructions.md`
+- `.github/docs/apply-copilot-bootstrap.md`
 
 ## Prompt Shape
 
@@ -39,6 +40,16 @@ Verify with ...
 ```
 
 ## Task-Specific Prompt Templates
+
+### Apply this bundle correctly
+
+1. Copy only `.github/` into the target repository.
+2. Run `/bootstrap-copilot` in GitHub Copilot Chat.
+3. Use `@conductor Analyze this codebase and generate a complete GitHub Copilot configuration` only when slash prompts are unavailable.
+4. Treat copied files as temporary bootstrap assets until generated output is validated.
+5. Start daily work from retained prompts and agents such as `@dev-orchestrator`, `@investigator`, `/review-code`, and `/plan-review-scope`.
+
+After bootstrap, verify `.github/copilot-instructions.md`, retained agents/skills/instructions, `.github/.bootstrap-summary.md`, review lane routing, and repo-truth docs for large repositories.
 
 ### Bootstrap this repository
 

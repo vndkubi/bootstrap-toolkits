@@ -26,6 +26,14 @@
       "owner": "context-assembly-simulator"
     },
     {
+      "path": ".github/docs/apply-copilot-bootstrap.md",
+      "tier": "workflow",
+      "whenToLoad": "summary-first",
+      "tinySummary": "Operator guide for copying only .github, running bootstrap, daily commands, and validation",
+      "keyAnchors": ["Initial Setup For A Target Repository", "Daily Usage After Bootstrap", "Post-Bootstrap Validation"],
+      "owner": "generate-copilot-config"
+    },
+    {
       "path": ".github/docs/tool-runtime.md",
       "tier": "workflow",
       "whenToLoad": "on-demand",
@@ -40,6 +48,14 @@
       "tinySummary": "Prompt engineering patterns and context budget guidance for generated assets",
       "keyAnchors": ["Progressive Disclosure", "Budget Targets", "Instruction Patterns"],
       "owner": "generate-copilot-config"
+    },
+    {
+      "path": ".github/docs/repo-intelligence-router.md",
+      "tier": "workflow",
+      "whenToLoad": "summary-first",
+      "tinySummary": "Large-repo routing model for small typed context packets instead of repo dumps",
+      "keyAnchors": ["Context Packet Shape", "Tool Groups", "Tool Result Contract", "Progressive Disclosure Budget"],
+      "owner": "context-assembly-simulator"
     },
     {
       "path": ".github/docs/team-operating-model.md",
@@ -63,6 +79,14 @@
       "whenToLoad": "on-demand",
       "tinySummary": "Multi-stage code review pipeline and checklist conventions",
       "keyAnchors": ["Review Stages", "Checklist Packs", "Severity Ratings"],
+      "owner": "review-code-changes"
+    },
+    {
+      "path": ".github/skills/review-code-changes/references/codex-review-contract.md",
+      "tier": "workflow",
+      "whenToLoad": "on-demand",
+      "tinySummary": "Codex-style review finding bar, P0-P3 priorities, and short-line comment rules",
+      "keyAnchors": ["Qualifying Finding", "Priority Mapping", "Comment Rules"],
       "owner": "review-code-changes"
     },
     {

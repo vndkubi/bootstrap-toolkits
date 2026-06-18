@@ -58,6 +58,7 @@ Use these short lane docs before routing:
 | "implement", "build", "add endpoint", "fix feature" | stack implementor + tests | Start with discovery if scope is unclear |
 | "write tests", "increase coverage" | `@test-specialist` or mobile equivalent | Focus on changed logic and critical branches |
 | "TDD", "red green", "test-first", "make failing tests pass" | `@api-test-author` or `@test-specialist` first, then stack implementor with `tdd-implement-loop` | Author or identify red tests before production code |
+| "/goal" + "TDD", "goal loop", "agent improvement loop", "engineering loop" | `/goal-tdd-engineer-loop` or `goal-tdd-engineer-loop` skill | Normalize goal, cap context, create RED tests, run TDD, eval, feedback, and Codex handoff |
 | "review", "check changes" | `@code-reviewer` | Functional then technical review |
 | "diagram", "sequence" | `@sequence-diagrammer` | Use after tracing real flow |
 | "story", "PBI", "requirements" | `@business-analyst` + spec pipeline | Produce PRD-aligned spec artifacts, not loose requirement notes |

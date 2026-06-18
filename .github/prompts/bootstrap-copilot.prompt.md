@@ -15,9 +15,11 @@ Use the `@conductor` agent and follow the `generate-copilot-config` skill. That 
 
 - `/bootstrap-copilot` is the primary bootstrap entrypoint for a copied bundle inside a target repository.
 - The bootstrap handoff is `/bootstrap-copilot` -> `@conductor` -> `generate-copilot-config`.
+- `/bootstrap-copilot` starts a fresh bootstrap by default. Existing `.github/.bootstrap-state.json`, `.github/.bootstrap-manifest.json`, `.github/.bootstrap-summary.md`, `.github/.bootstrap-snapshot.json`, or `.github/.runtime-fidelity.json` files from a prior run are stale evidence unless the user explicitly asks to resume.
 - Expected bootstrap outputs are a project-specific `.github/` tree, `.github/.bootstrap-state.json` progress updates, a deterministic repo index when tooling is available, a repo truth pack sized to the target repo, `.github/.bootstrap-summary.md` with classification, retained or removed assets, and next action, and cleanup to the manifest keep set.
 - The bootstrap state must use summary-first phase hand-offs: each completed `bootstrap-phase-*` writes a structured entry that matches `.github/schemas/bootstrap-phase-state.schema.json`, and later phases should read `summary` plus `nextPhaseInputs` before opening full details.
 - If the current repository or workflow also has separate audit or delivery artifacts, treat them as optional evidence inputs around the bootstrap flow. Do not assume they exist or depend on them for bootstrap execution.
+- Starting a background agent is not completion. In non-interactive CLI or automation surfaces, either execute the phases in the current session or wait for delegated work to finish, then verify the on-disk files before reporting success.
 
 Assume the copied `.github/` folder is the full bootstrap bundle. Prefer source-of-truth guidance inside `.github/`, then enrich it with evidence from the target repo's `README.md`, build files, source code, tests, and docs.
 Do not infer that the current repo is the `copilot-bootstrap` source repo from copied bundle files alone.
@@ -32,6 +34,7 @@ When you need runtime or context guidance, use:
 
 ## Critical Rules
 
+0. **Fresh-run guardrail**: do not skip phases because a copied or pre-existing `.bootstrap-*` file says a prior bootstrap completed. Recreate the state for the current run, preserve old files only as optional evidence, and overwrite generated outputs after fresh scan/classification.
 1. **Phase 1 (Scan) is foundational**: run the deterministic repo index first when available, then read all relevant build files, sample enough real code, and detect actual runtime/tooling versions.
 2. **Repo identity comes from target-repo evidence**: use root files, code, tests, and docs to decide what this repo is; copied bootstrap assets are not sufficient proof.
 3. **Phase 2 (Classify) happens before generation**: project size and complexity determine generation strategy.

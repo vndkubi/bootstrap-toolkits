@@ -10,6 +10,7 @@ Make it obvious which implementation path to take before coding starts.
 |---|---|---|
 | Local, clear, low-risk code change | `@implementor` or stack implementor | Direct implementation with repo-pattern alignment |
 | Non-trivial feature with approved spec workspace | `/implement-feature` | Spec-driven implementation with verification checkpoints |
+| Active `/goal` needs strict TDD plus repeatable eval/feedback cycles | `/goal-tdd-engineer-loop` | Goal brief, bounded context packet, RED/GREEN evidence, evals, feedback, and ranked handoff |
 | Vague, cross-module, high-risk, or business-heavy request | `@dev-orchestrator` or `/specify-feature` first | Investigation, scope clarification, then plan or implementation |
 | Need technical plan before coding | `/plan-implementation` | `plan.md` + supporting spec-kit artifacts |
 | Need strict TDD | `/implement-feature` after an approved plan | Red test checkpoint, production-only implementation, green regression evidence |
@@ -47,15 +48,23 @@ If any item fails, route back to orchestration or the spec pipeline before codin
 
 For strict TDD work, completion evidence should include:
 
+- the trunk branch, task branch, and intended small commit boundary
 - the targeted RED command and expected failure reason
 - the GREEN command after implementation
 - `specs/<feature>/test-coverage.md` for AC-to-test mapping when a spec workspace exists
 - `specs/<feature>/tdd-log.md` for red->green iterations when a TDD loop was used
 
+When the work is driven by an active `/goal`, use `/goal-tdd-engineer-loop` so trace, eval, feedback, and `codex_handoff.md` artifacts stay attached to the goal instead of living only in chat.
+
+## Java Testing Shape
+
+For Java API behavior, use **Outside-in API Component Testing - Real Core, Mock Boundaries** as the default confidence path. Exercise behavior through HTTP or an in-memory host, keep owned internals real, use an isolated test database for persistence, and mock only system boundaries. Use direct domain unit tests for decision tables and edge cases that would be too expensive to express through API setup.
+
 ## Key Rules
 
 - Never guess missing business rules.
 - Do not duplicate validation across layers.
+- Start implementation work from trunk and keep each task slice small enough for one reviewable commit unless a staged plan is explicit.
 - Prefer existing repo patterns over new abstractions.
 - If verification cannot run, say exactly what is missing.
 - Do not skip or disable failing tests to make the loop green.

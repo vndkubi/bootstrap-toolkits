@@ -264,3 +264,16 @@ PR opens:                                 Result:
 2. On approval → `plan-implementation` produces `plan.md`, `research.md`, `data-model.md`, `contracts/scorecard.schema.json`, `quickstart.md`.
 3. Then `generate-tasks` → `tasks.md`.
 4. Phased delivery: v1 with 2 fixtures + 10 PBIs + CI gate off (report-only); v2 grows to 4+ fixtures + 20 PBIs + gate on.
+
+## 14. MVP Slice
+
+An offline scorecard runner now exists at `tests/harness-bench/bench.js`.
+
+It can:
+
+- score imported run JSON into a benchmark scorecard
+- compare baseline and candidate variants
+- enforce default regression gates for pass rate, median tokens, and credits per accepted useful change
+- validate the scorer with synthetic calibration fixtures
+
+The synthetic fixtures are intentionally marked as calibration data. They prove the measurement machinery works, not that the harness is effective on real tasks. Real effectiveness claims require A/B runs with fixed model, fixed PBIs, fixed fixture repos, and machine-checkable acceptance checks.

@@ -10,7 +10,10 @@ Give reviewers a consistent way to plan and execute deep code reviews, especiall
 - `.github/skills/review-code-changes/SKILL.md`
 - `.github/agents/code-reviewer.agent.md`
 - `.github/agents/functional-reviewer.agent.md`
+- `.github/instructions/code-review.instructions.md`
+- `.github/skills/review-code-changes/references/codex-review-contract.md`
 - `.github/prompts/promote-review-memory.prompt.md`
+- `.github/docs/review-development-learning-loop.md`
 
 ## When To Use
 
@@ -29,7 +32,9 @@ Use this playbook when:
 3. If the change is simple and local, continue with the normal review flow.
 4. If the change is high-blast-radius or low-confidence, review by slices in the planned order.
 5. Run the full `@code-reviewer` flow.
-6. If the review and human discussion reveal durable lessons, run `/promote-review-memory` afterward.
+6. Calibrate findings with the Codex-style review contract before publishing.
+7. If the review reveals reusable development-process gaps, add `developmentLearning[]` candidates to the structured review output.
+8. If the review and human discussion reveal durable lessons, run `/promote-review-memory` afterward.
 
 Default checklist packs to apply when no narrower pack exists yet:
 
@@ -39,6 +44,8 @@ Default checklist packs to apply when no narrower pack exists yet:
 - `docs/reviews/checklists/mobile-core.md` for mobile slices
 
 Only use the promotion step when the lesson is backed by an accepted human fix or resolved human discussion, or when the same reasoning recurs across at least two reviews or investigations.
+
+For development upgrades, prefer the smallest owning surface: `orchestrate-development`, `implement-feature`, `tdd-implement-loop`, `generate-unit-tests`, Java testing instructions, or the relevant specialist agent. Do not expand review checklists when the real fix is to improve development behavior before review.
 
 ## Review Complexity Model
 
@@ -104,6 +111,8 @@ Use this exact shape when `/plan-review-scope` is invoked.
 - Do not produce findings or a verdict in planning-only mode.
 - Prefer blast radius over raw LOC when deciding whether to plan first.
 - If business docs are missing, state the fallback signals and confidence level explicitly.
+- Report only concrete, introduced, actionable findings; skip speculative, duplicate, style-only, and pre-existing issues.
+- Prefix finding titles with `[P0]`, `[P1]`, `[P2]`, or `[P3]`.
 - Keep the plan short enough that another reviewer or agent can execute it immediately.
 
 ## Verification
@@ -113,6 +122,7 @@ Use this exact shape when `/plan-review-scope` is invoked.
 - The plan includes a functional scenario pack for the highest-risk flows.
 - The plan states missing anchors or clarification needs explicitly.
 - Full review runs end with a structured `review-report.json` contract aligned with `.github/schemas/review-report.schema.json`.
+- Reusable development-process gaps are captured as `developmentLearning[]` candidates with evidence, target surface, and approval requirement.
 
 ## Common Failure Modes
 
@@ -121,9 +131,11 @@ Use this exact shape when `/plan-review-scope` is invoked.
 - Producing a verdict before blast radius and business context are understood
 - Dumping a giant file list instead of prioritizing load order
 - Hiding low business-context confidence instead of stating it plainly
+- Reporting reviewer preferences as findings when no concrete bug or risk is identified
 
 ## Related Files
 
 - `.github/docs/user-playbook.md`
 - `.github/docs/prompt-and-context.md`
+- `.github/docs/review-development-learning-loop.md`
 - `.github/skills/review-memory-promotion/SKILL.md`

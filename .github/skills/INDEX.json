@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "toolkitVersion": "0.6.0",
-  "generatedAt": "2026-05-19T23:53:23.784Z",
+  "generatedAt": "2026-06-18T23:41:18.957Z",
   "skills": {
     "analyze-codebase": {
       "schemaVersion": 1,
@@ -2573,7 +2573,7 @@
       "schemaVersion": 1,
       "id": "generate-unit-tests",
       "displayName": "generate-unit-tests",
-      "description": "Generate comprehensive unit tests for Java classes with minimal mocking. Analyzes all code branches (if/switch/ternary/try-catch/loops), creates test builder classes, uses real objects over mocks whenever possible, applies reflection only as last resort for private methods. Outputs JUnit 5 tests with @Nested grouping, @DisplayName, AssertJ assertions, and AAA pattern. Use when asked to write tests, improve test coverage, or generate tests for existing code.",
+      "description": "Generate Java tests using Real Core, Mock Boundaries: API component tests for REST/API behavior, direct domain unit tests for decision tables, isolated test DB for persistence, and boundary-only mocks. Outputs JUnit 5/AssertJ tests with AC-to-test mapping, @Nested grouping, @DisplayName, builders/fixtures, and reflection only as a legacy escape hatch. Use when asked to write Java tests, improve coverage, or replace mock-heavy tests.",
       "version": "0.6.0",
       "tier": "domain",
       "stability": "stable",
@@ -2589,18 +2589,18 @@
         "tests"
       ],
       "triggers": [
-        "aaa",
-        "all",
-        "analyzes",
-        "applies",
+        "api",
         "asked",
-        "assertions",
         "assertj",
-        "branches",
-        "builder",
-        "catch",
-        "classes",
-        "code"
+        "behavior",
+        "boundaries",
+        "boundary",
+        "builders",
+        "component",
+        "core",
+        "coverage",
+        "decision",
+        "direct"
       ],
       "mcp_tools_used": [],
       "invocationMode": "agent_delegated",
@@ -2611,24 +2611,26 @@
         "references": ".github/skills/generate-unit-tests/references"
       },
       "keywords": [
-        "aaa",
-        "all",
-        "analyzes",
-        "applies",
+        "api",
         "asked",
-        "assertions",
         "assertj",
-        "branches",
-        "builder",
-        "catch",
-        "classes",
-        "code"
+        "behavior",
+        "boundaries",
+        "boundary",
+        "builders",
+        "component",
+        "core",
+        "coverage",
+        "decision",
+        "direct"
       ],
       "routedBy": [
-        "agent-generator"
+        "agent-generator",
+        "code-reviewer"
       ],
       "referencedByAgents": [
-        "agent-generator"
+        "agent-generator",
+        "code-reviewer"
       ]
     },
     "generate-wiremock": {
@@ -2692,6 +2694,74 @@
       ],
       "referencedByAgents": [
         "agent-generator"
+      ]
+    },
+    "goal-tdd-engineer-loop": {
+      "schemaVersion": 1,
+      "id": "goal-tdd-engineer-loop",
+      "displayName": "goal-tdd-engineer-loop",
+      "description": "Runs a /goal-driven engineering loop that converts an active goal into acceptance criteria, context budget, red tests, TDD implementation, eval evidence, feedback, and a ranked Codex handoff. Keywords: goal loop, TDD, red green, evals, traces, feedback, Codex handoff, token budget.",
+      "version": "0.6.0",
+      "tier": "domain",
+      "stability": "stable",
+      "requires": {
+        "skills": [
+          "tdd-implement-loop"
+        ],
+        "mcp": [],
+        "tools": []
+      },
+      "inputs": [
+        "- `goal-eval-plan.md`",
+        "- `goal-feedback.md`",
+        "- `goal-trace.jsonl`",
+        "Active goal text or explicit goal statement.",
+        "Optional prior artifacts:",
+        "Repo evidence anchors: issue, spec, failing behavior, test file, prompt, or user-provided requirement."
+      ],
+      "outputs": [
+        "Write under `specs/<id>-<slug>/` when a feature workspace exists. Otherwise use local `.artifacts/<goal-slug>/` run artifacts.",
+        "`context-packet.md`: the minimal source/doc/test anchors required for the next step.",
+        "`goal-brief.md`: normalized goal, assumptions, non-goals, acceptance criteria, and verification commands.",
+        "`goal-eval-plan.md`: eval cases or commands that decide whether the goal is met.",
+        "`goal-feedback.md`: human, model, review, or test feedback captured after each run.",
+        "`goal-trace.jsonl`: append-only run events with phase, action, inputs, outputs, commands, and result.",
+        "`tdd-log.md`: red->green implementation iterations.",
+        "`test-coverage.md`: acceptance-criteria-to-test map."
+      ],
+      "triggers": [
+        "Codex handoff",
+        "TDD",
+        "evals",
+        "feedback",
+        "goal loop",
+        "red green",
+        "token budget",
+        "traces"
+      ],
+      "mcp_tools_used": [],
+      "invocationMode": "agent_delegated",
+      "paths": {
+        "skill": ".github/skills/goal-tdd-engineer-loop/SKILL.md",
+        "scripts": ".github/skills/goal-tdd-engineer-loop/scripts",
+        "assets": ".github/skills/goal-tdd-engineer-loop/assets",
+        "references": ".github/skills/goal-tdd-engineer-loop/references"
+      },
+      "keywords": [
+        "Codex handoff",
+        "TDD",
+        "evals",
+        "feedback",
+        "goal loop",
+        "red green",
+        "token budget",
+        "traces"
+      ],
+      "routedBy": [
+        "dev-orchestrator"
+      ],
+      "referencedByAgents": [
+        "dev-orchestrator"
       ]
     },
     "impact-analysis": {
@@ -3549,7 +3619,7 @@
       "schemaVersion": 1,
       "id": "review-code-changes",
       "displayName": "review-code-changes",
-      "description": "Multi-stage code review pipeline: Self-Review → Functional Review (@functional-reviewer) → Technical Review (@technical-reviewer). Functional Review runs first — if business logic is wrong, reject immediately. Each finding must include actionable code snippets. Produces a combined review report with verdict. Use when reviewing PRs or branch changes via @code-reviewer.",
+      "description": "Multi-stage code review pipeline calibrated with Codex-style actionable finding rules: Self-Review -> Functional Review (@functional-reviewer) -> Technical Review (@technical-reviewer) -> finding calibration with P0-P3 priority. Functional Review runs first; if business logic is wrong, reject immediately. Produces a combined review report and review-report.json. Use when reviewing PRs or branch changes via @code-reviewer. Keywords: review PR, code review, actionable finding, P0, P1, P2, P3, review-report.",
       "version": "0.6.0",
       "tier": "domain",
       "stability": "stable",
@@ -3571,18 +3641,14 @@
         "tests"
       ],
       "triggers": [
-        "actionable",
-        "branch",
-        "business",
-        "changes",
-        "code",
-        "combined",
-        "each",
-        "finding",
-        "first",
-        "functional",
-        "immediately",
-        "include"
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "actionable finding",
+        "code review",
+        "review PR",
+        "review-report"
       ],
       "mcp_tools_used": [],
       "invocationMode": "agent_delegated",
@@ -3593,18 +3659,14 @@
         "references": ".github/skills/review-code-changes/references"
       },
       "keywords": [
-        "actionable",
-        "branch",
-        "business",
-        "changes",
-        "code",
-        "combined",
-        "each",
-        "finding",
-        "first",
-        "functional",
-        "immediately",
-        "include"
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "actionable finding",
+        "code review",
+        "review PR",
+        "review-report"
       ],
       "routedBy": [
         "code-reviewer",
@@ -3708,7 +3770,8 @@
         "prompt",
         "report",
         "review findings",
-        "task list"
+        "task list",
+        "tests"
       ],
       "triggers": [
         "approval",

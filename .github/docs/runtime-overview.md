@@ -8,13 +8,14 @@ Explain the high-level GitHub Copilot Chat execution model that matters when mai
 
 - `.github/skills/generate-copilot-config/SKILL.md`
 - `.github/prompts/bootstrap-copilot.prompt.md`
+- `.github/docs/apply-copilot-bootstrap.md`
 - `.github/agents/conductor.agent.md`
 - `.github/copilot-instructions.md`
 - `docs/ai/00-repo-index.md` when generated
 
 ## Request / Data Flow
 
-1. User runs `/bootstrap-copilot` inside the target repository after copying the portable `.github/` bundle.
+1. User runs `/bootstrap-copilot` inside the target repository after copying only the portable `.github/` bundle.
 2. The prompt routes bootstrap work to `@conductor`.
 3. `@conductor` defers bootstrap execution to `generate-copilot-config` as the canonical workflow.
 4. Copilot Chat assembles model input from repo instructions, current-turn context, history, tool results, and available tool schemas.
@@ -131,6 +132,7 @@ Keep these roles separate. Do not restate the same operational rule in prompts, 
 ## Related Files
 
 - `.github/docs/prompt-and-context.md`
+- `.github/docs/apply-copilot-bootstrap.md`
 - `.github/docs/tool-runtime.md`
 - `.github/docs/github-resource-conventions.md`
 - `.github/docs/user-playbook.md`

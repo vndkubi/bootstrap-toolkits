@@ -14,6 +14,8 @@ Today `copilot-bootstrap` only runs inside GitHub Copilot Chat. Users on Claude 
 
 The server exposes a curated subset — not every skill — chosen by two criteria: (a) high reuse value outside Copilot, (b) safe-to-expose (no destructive side-effects without explicit consent). Capabilities fall into three buckets: **analyze** (read-only), **generate** (produces artifacts as text), **audit** (runs checks, returns diagnostics).
 
+This spec is about bootstrap portability. It is not the large-repo token-reduction layer. For the repo intelligence and context router direction, see `specs/012-repo-intelligence-context-router/`, which treats MCP as the gateway for bounded context tools rather than as the optimization itself.
+
 ### Architecture snapshot
 
 ```

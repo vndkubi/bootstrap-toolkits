@@ -10,6 +10,7 @@ Turn stable review or investigation findings into auditable candidate repo-memor
 ## When to Use
 
 - After a completed code review identifies recurring warnings, repeated fixes, or durable pitfalls
+- After a completed code review emits `developmentLearning[]` candidates that should upgrade development behavior
 - After PR discussion threads or resolved review summaries reveal stable human reasoning worth reusing
 - After an investigation report surfaces structural gotchas, workflow traps, or verification lessons that should outlive the current task
 - After the `correction-ledger` skill produces a ledger report with qualified promotion candidates
@@ -28,7 +29,7 @@ The default first consumer is the **local deep-review lane**. Use this skill aft
 
 ## Prerequisites
 
-- A completed review report, PR discussion summary, investigation report, correction-ledger report, or other durable finding source
+- A completed review report, including `developmentLearning[]` when present, PR discussion summary, investigation report, correction-ledger report, or other durable finding source
 - Evidence anchors to real files or docs, not only chat recollection
 - Evidence that meets at least one promotion threshold: accepted human fix or resolved human discussion, or recurrence across at least two reviews or investigations, or qualification through correction-ledger aggregation thresholds
 - A likely target layer for the promoted knowledge
@@ -109,6 +110,8 @@ Map each candidate to the smallest durable home that can own it:
 | Repeated technical review risk or architecture guardrail | review checklist pack, for example `docs/reviews/checklists/technical-<scope>.md` |
 | Repeated review pitfall | `docs/05-common-failure-modes.md` or `docs/modules/<module>.md` |
 | Workflow or verification lesson | `docs/03-verification-runbook.md` or `docs/workflows/<workflow>.md` |
+| Development process, TDD, or implementation evidence gap | `.github/skills/orchestrate-development/SKILL.md`, `.github/skills/implement-feature/SKILL.md`, `.github/skills/tdd-implement-loop/SKILL.md`, or relevant agent |
+| Java test strategy gap | `.github/skills/generate-unit-tests/SKILL.md`, `.github/instructions/testing.instructions.md`, or `.github/docs/java-test-architecture.md` |
 | Investigation note that is not yet durable | Defer — do not promote yet |
 
 If a matching checklist pack already exists, prefer updating it instead of creating a near-duplicate file.
@@ -121,6 +124,7 @@ Classify every candidate into one of these groups:
 
 - functional checklist candidate
 - technical checklist candidate
+- development upgrade candidate
 - other durable memory promotion
 
 For each candidate, include:
@@ -164,6 +168,8 @@ Never auto-apply durable-memory changes from this skill alone.
 
 ## Summary
 
+## Development Upgrade Candidates
+
 ## Functional Checklist Candidates
 
 ## Technical Checklist Candidates
@@ -184,6 +190,8 @@ Never auto-apply durable-memory changes from this skill alone.
 - [ ] Every promoted candidate met the accepted-human or repeated-recurrence threshold and recorded how that threshold was met
 - [ ] Every promoted candidate has evidence anchors
 - [ ] Every candidate names a target layer and suggested file
+- [ ] Every development upgrade candidate targets the smallest owning development surface
+- [ ] Development upgrade candidates remain separate from review checklist candidates
 - [ ] Every checklist candidate states whether it creates a new checklist pack or updates an existing one
 - [ ] Every checklist candidate names its reuse surface and trust rationale
 - [ ] One-off or noisy findings were explicitly rejected or deferred
@@ -197,5 +205,6 @@ Never auto-apply durable-memory changes from this skill alone.
 - `.github/skills/review-effectiveness/SKILL.md`
 - `.github/skills/correction-ledger/SKILL.md`
 - `.github/prompts/promote-learning.prompt.md`
+- `.github/docs/review-development-learning-loop.md`
 - `.github/docs/team-operating-model.md`
 - `.github/docs/prompt-and-context.md`

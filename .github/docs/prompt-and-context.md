@@ -13,6 +13,7 @@ This file is about **context quality**, not tool exposure, hook sequencing, or e
 - `.github/skills/generate-copilot-config/SKILL.md`
 - `docs/ai/00-repo-index.md` when generated
 - `.github/docs/runtime-overview.md`
+- `.github/docs/repo-intelligence-router.md`
 
 ## Three-Layer Context Model
 
@@ -22,6 +23,7 @@ Context flows through three layers before reaching the model:
    - `copilot-instructions.md`, scoped `.instructions.md`
    - `docs/ai/00-repo-index.md` as the tool-neutral repo map
    - root `AGENTS.md` when Codex or other coding agents need a shared operating card
+   - root `CLAUDE.md` when Claude Code needs a thin adapter, preferably importing `@AGENTS.md`
    - agents, prompts, skills
    - architecture and source-of-truth docs
 
@@ -35,6 +37,19 @@ Context flows through three layers before reaching the model:
    - verification steps
 
 Rule: put durable rules at the repo layer, not in every prompt. Put task-only details in the current prompt. Trust compaction for conversation-level continuity.
+
+## Repo Intelligence Router Rule
+
+For large repositories, do not try to make Copilot or another agent "know the whole repo." Use a repo intelligence layer to route each task into a compact context packet with:
+
+- the likely domain
+- relevant symbols and line ranges
+- small snippets only when needed
+- business rules and invariants
+- related tests and validation commands
+- confidence, relevance reasons, and omitted-result counts
+
+MCP only exposes tools. It does not reduce token use by itself. Token use drops when tools return small, typed, confidence-scored results instead of broad search dumps or full files.
 
 ## Signal / Noise / Cost Framework
 
@@ -80,6 +95,7 @@ If question 5 is "yes, the agent can find it easily" → mention lightly, do not
 | Multiple people keep re-explaining it | Common doc in `docs/` |
 | A durable rule or convention | `.instructions.md` or `copilot-instructions.md` |
 | Shared agent orientation for Copilot and Codex | Root `AGENTS.md` plus `docs/ai/00-repo-index.md` |
+| Claude-specific project memory | Thin `CLAUDE.md` that imports `@AGENTS.md` and adds only Claude-specific notes |
 | A multi-step reusable workflow | Skill file |
 | Agent keeps misunderstanding a subsystem | Targeted common doc |
 
@@ -100,6 +116,7 @@ If a rule is mainly about which tools can run or why a loop continues, document 
 - Put task-only details in the current prompt.
 - Use paths for large files and paste only short source-of-truth snippets, errors, acceptance criteria, or verify commands.
 - Prefer generated repo maps like `docs/ai/00-repo-index.md` before asking any agent to scan a large repository.
+- For large repos, prefer a context packet from the repo intelligence router before opening implementation files.
 - Every substantial prompt should make outcome, anchor, constraints, and verification clear.
 
 ## Context Optimization Checklist
@@ -134,5 +151,6 @@ Before sending a large prompt:
 
 - `.github/docs/user-playbook.md`
 - `.github/docs/github-resource-conventions.md`
+- `.github/docs/repo-intelligence-router.md`
 - `.github/copilot-instructions.md`
 - `docs/ai/00-repo-index.md`

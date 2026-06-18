@@ -21,12 +21,15 @@ The toolkit includes:
 - **Context Inspector** — a bounded runtime-diagnostic workflow for missing triggers, missing tools, context loading, and retained-surface explanations
 - **Agentic workflow** support — generate autonomous GitHub Actions-based AI workflows
 - **Intelligence stack** — 4-rule operating core, context packets, correction ledger, and skill-pack import for cross-session learning and cross-repo skill reuse
+- **Closed-loop development learning** - code review can emit `developmentLearning[]` candidates that upgrade development skills, test strategy, or routing after human approval
+- **Multi-AI orientation** — root `AGENTS.md` for Codex and other coding agents, thin `CLAUDE.md` import for Claude Code, and `.github/` adapters for Copilot
 
 Important packaging model:
 
 - This repository is the **source repository** for the portable `.github/` bootstrap bundle.
 - In real use, teams copy **only** `.github/` into a target repository, run `/bootstrap-copilot`, and let the pipeline rewrite and prune the copied templates into project-specific output.
 - Generated target-repo docs such as `docs/00-repo-overview.md` or `docs/02-architecture-map.md` are created **in the target repository when needed**. They are not expected to exist in this source repo before generation.
+- The root `AGENTS.md` and `CLAUDE.md` files orient non-Copilot agents while this source repo is being maintained. Generated target repos should get their own compact `AGENTS.md` or `CLAUDE.md` only when the bootstrap classification and requested agent surface justify it.
 
 Review support docs:
 
@@ -88,6 +91,24 @@ Idea/Request ──▶ /specify-feature ──▶ specify → plan → tasks →
                   Structured Spec    Tech Plan     Task List    Code + Tests
                   (PRD format)    (with gates)   (ordered)    (verified)
 ```
+
+### Self-Upgrading Development Ecosystem
+
+Generated projects should behave like a small, closed-loop engineering system, not a static prompt dump:
+
+```text
+bootstrap -> bounded context -> development evidence -> code review -> developmentLearning[] -> approved upgrade -> next development run
+```
+
+The loop is intentionally approval-gated. Review may propose a durable process improvement, but it does not silently rewrite source-of-truth rules. Approved upgrades should target the smallest surface that prevents recurrence, such as `orchestrate-development`, `tdd-implement-loop`, `generate-unit-tests`, Java testing instructions, agent routing, or a focused review checklist pack.
+
+The core files are:
+
+- `.github/docs/review-development-learning-loop.md`
+- `.github/docs/review-lane.md`
+- `.github/skills/review-code-changes/SKILL.md`
+- `.github/skills/review-memory-promotion/SKILL.md`
+- `.github/schemas/review-report.schema.json`
 
 ## 🧱 Project Constitution & Core Principles
 
@@ -224,6 +245,7 @@ In multi-module projects, understand module boundaries before making changes:
 │   ├── testing.instructions.md                      #   Testing standards (Java)
 │   ├── wiremock.instructions.md                     #   WireMock standards
 │   ├── api-design.instructions.md                   #   REST API design
+│   ├── code-review.instructions.md                  #   Actionable P0-P3 review finding standards
 │   ├── security.instructions.md                     #   Security standards
 │   ├── logging.instructions.md                      #   Logging & observability
 │   ├── error-handling.instructions.md               #   Error handling patterns
@@ -422,9 +444,10 @@ In multi-module projects, understand module boundaries before making changes:
 | `jakartaee.instructions.md` | `**/*.java` | CDI, JPA, JAX-RS, Bean Validation, transactions |
 | `maven.instructions.md` | `**/pom.xml` | Version management, BOM, plugins, profiles |
 | `oracle-sql.instructions.md` | `**/*.sql` | Sequences, indexes, pagination, query optimization |
-| `testing.instructions.md` | `**/*Test*.java` | JUnit 5, minimal mocks, branch coverage, builders |
+| `testing.instructions.md` | `**/*Test*.java` | Java Real Core/Mock Boundaries, API component tests, domain unit tests, branch coverage |
 | `wiremock.instructions.md` | `**/wiremock/**/*.json` | Stub format, scenarios, response templating |
 | `api-design.instructions.md` | `**/*Resource*,**/*Controller*` | REST API design, versioning, pagination, errors |
+| `code-review.instructions.md` | `**/*` | Actionable introduced defects, P0-P3 priorities, short line ranges |
 | `security.instructions.md` | `**/*.java` | Auth, input validation, SQL injection, OWASP |
 | `logging.instructions.md` | `**/*.java` | Structured logging, log levels, correlation IDs |
 | `error-handling.instructions.md` | `**/*.java` | Exception hierarchy, error codes, retry, circuit breaker |
@@ -499,7 +522,7 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
 
 ### Quick Start
 
-1. **Copy the `.github/` folder** into your target project:
+1. **Copy only the `.github/` folder** into your target project for the implemented Copilot bootstrap flow:
    ```bash
    cp -r .github/ /path/to/your-project/.github/
    ```
@@ -512,6 +535,50 @@ Prompts can be triggered via `/prompt-name` in VS Code Chat:
    ```
 
 4. **Review the output** and adjust as needed
+
+For the canonical operator guide, see `.github/docs/apply-copilot-bootstrap.md`.
+
+`/bootstrap-copilot` starts a fresh run by default. Existing target-repo bootstrap metadata such as `.github/.bootstrap-state.json`, `.github/.bootstrap-manifest.json`, `.github/.bootstrap-summary.md`, and `.github/.runtime-fidelity.json` should be treated as stale unless you explicitly invoke a resume workflow.
+
+For Codex, Claude Code, Cursor, or other non-Copilot agents, use the generated root `AGENTS.md`, `CLAUDE.md`, and `docs/ai/00-repo-index.md` as the shared orientation layer after bootstrap. The planned MCP runtime in `specs/011-bootstrap-mcp-server/` is the path for portable tool access; the planned repo intelligence router in `specs/012-repo-intelligence-context-router/` is the path for token-efficient context packets.
+
+This source repo now includes the first `bootstrap-mcp` portability slice under `mcp/bootstrap_mcp/`. It exposes read-only stdio tools for `analyze_repo` and `audit_context` so MCP-capable hosts can consume bounded bootstrap evidence before the full v1 server is complete.
+
+### Optional TokenOpt + CodeGraph Stack
+
+`copilot-bootstrap` is the portable operating layer. If you later install local `tokenopt` and `code-graph`, treat them as optional intelligence providers, not required runtime dependencies:
+
+| Layer | Role | Good default |
+|---|---|---|
+| `copilot-bootstrap` | Generates agents, prompts, skills, instructions, review loop, and provider-neutral orientation | Use this as the retained workflow contract in the target repo |
+| `tokenopt` | Chooses acquisition mode, token budget, anchors, and when to bypass heavy routing | Use before broad scans; bypass for exact, small, already-anchored edits |
+| `code-graph` | Locks graph boundaries, callers, dependencies, routes, and related tests | Use after anchors exist; start from `codegraph_context`, then call lower-level tools only when needed |
+
+Using all three can reduce cost and increase quality when the task needs context routing, boundary discovery, or repeated development/review loops. It is not guaranteed to reduce cost on small exact tasks. For small anchored edits, the cheaper path is often direct bounded search/read plus targeted tests.
+
+Use this default chain for non-trivial work:
+
+```text
+/goal or task brief
+-> TokenOpt scope and context budget
+-> CodeGraph boundary and evidence packet
+-> bootstrap development or review skill
+-> tests and review-report.json
+-> developmentLearning[] only when review exposes a reusable gap
+```
+
+### Effectiveness Scorecard
+
+Prove the setup on real target repos instead of judging it by prompt size:
+
+| Metric | What to compare |
+|---|---|
+| Input token estimate | baseline agent run vs TokenOpt/CodeGraph routed run |
+| Tool calls before first edit | broad search/read count vs bounded packet count |
+| Full files read | full-file reads before edit should drop on large repos |
+| First-pass validation | targeted tests pass rate before repair loops |
+| Review quality | actionable P0-P3 findings, false-positive count, and missed accepted findings |
+| Learning loop value | repeated review issues should become fewer after approved `developmentLearning[]` promotions |
 
 If you prefer direct agent invocation, this is the equivalent bootstrap request:
 
@@ -531,12 +598,32 @@ Use the copied `.github/` bundle when you want Copilot behavior to be generated 
 
 ### How To Apply It To A Target Project
 
-1. **Copy the bundle as-is** into the target repository.
+1. **Copy only the `.github/` bundle as-is** into the target repository.
 2. **Treat the copied files as bootstrap templates** until the pipeline rewrites them. The target repository's `README.md`, build files, source code, tests, and docs remain the source of truth for repo identity.
 3. **Run `/bootstrap-copilot` first**. Use `@conductor` directly only when you want to provide a more specific chat instruction.
 4. **Let bootstrap generate the right depth of output**. Small repositories may only get a short global truth layer, while larger repositories can also get generated docs such as `docs/00-repo-overview.md` and `docs/02-architecture-map.md`.
 5. **Review the generated result, not the copied template**. Keep the files that match the detected stack and workflow, and let cleanup remove out-of-scope toolkit assets.
 6. **Start day-to-day work from the generated setup** using the relevant prompts, agents, and instructions for investigation, implementation, testing, and review.
+
+### Day-To-Day Commands After Bootstrap
+
+| Goal | Entry point |
+|------|-------------|
+| Implement a feature | `@dev-orchestrator Implement ...` |
+| Implement an active goal with strict TDD | `/goal-tdd-engineer-loop` |
+| Investigate a PBI, bug, or feature | `@investigator Investigate ...` |
+| Review normal changes | `/review-code` or `@code-reviewer Review ...` |
+| Plan a high-risk review | `/plan-review-scope`, then `/review-code` |
+| Promote recurring review lessons | `/promote-review-memory` or `/promote-learning` |
+| Upgrade development behavior from review findings | `developmentLearning[]`, then `/promote-review-memory` after approval |
+
+### Post-Bootstrap Validation
+
+- `.github/copilot-instructions.md` should describe the target repo, not generic bundle identity.
+- Agents, skills, instructions, and prompts should match the detected stack and workflow.
+- `.github/.bootstrap-summary.md` should explain classification, retained assets, removed assets, and next action.
+- `/review-code` should still route through the review lane when review support is retained.
+- Large repositories should include repo-truth docs under `docs/` when retained assets reference them.
 
 ### 📦 Bootstrapping a Brand New Project (From Scratch)
 
@@ -917,6 +1004,7 @@ Output: Imported skills registered in the local `.github/` tree with full confli
 | Specify a feature (spec-driven) | `/specify-feature` or `@dev-orchestrator Spec: [description]` |
 | Investigate a PBI / bug / feature | `@investigator Investigate: [description]` |
 | Implement a feature (auto-detect stack) | `@dev-orchestrator Implement: [description]` |
+| Implement an active goal with strict TDD | `/goal-tdd-engineer-loop` |
 | Implement (Java) | `@implementor [description]` |
 | Implement (.NET) | `@dotnet-implementor [description]` |
 | Implement (Python) | `@python-implementor [description]` |
@@ -935,6 +1023,7 @@ Output: Imported skills registered in the local `.github/` tree with full confli
 | Spec-driven (vague/large features) | `/specify-feature` |
 | Review config effectiveness | `@dev-orchestrator Review effectiveness` |
 | Promote learnings from reviews | `/promote-learning` |
+| Upgrade development behavior from accepted review findings | `developmentLearning[]` then `/promote-review-memory` |
 | Import a shared skill pack | `/import-skill-pack` |
 
 ### Developer Daily Workflows

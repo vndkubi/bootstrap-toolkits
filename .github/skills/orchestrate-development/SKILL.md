@@ -97,7 +97,10 @@ Testing goals:
 
 - strong branch coverage on changed logic
 - edge cases and regressions covered
-- minimal mocking when real objects are practical
+- for Java API behavior, default to Outside-in API Component Testing - Real Core, Mock Boundaries
+- minimal mocking: run owned internal components real and mock only system boundaries
+- isolated test database for persistence behavior when practical
+- direct domain unit tests for decision tables, state machines, pricing, tax, discount, date/time rules, and permission matrices
 - business-scenario naming
 
 Aim for 100% branch coverage on changed critical logic when practical. Do not promise 100% across the whole surface by default.

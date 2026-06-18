@@ -38,6 +38,8 @@ const reviewSkill = read('.github/skills/review-code-changes/SKILL.md');
 const codeReviewer = read('.github/agents/code-reviewer.agent.md');
 const reviewPlaybook = read('.github/docs/review-playbook.md');
 const reviewLane = read('.github/docs/review-lane.md');
+const reviewInstruction = read('.github/instructions/code-review.instructions.md');
+const reviewSchema = read('.github/schemas/review-report.schema.json');
 const prManager = read('.github/agents/pr-manager.agent.md');
 const autorun = read('.github/skills/autorun/SKILL.md');
 
@@ -69,6 +71,16 @@ test('Review playbook and review lane ship reusable checklist packs', () => {
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'technical-core.md')), 'technical core checklist should exist');
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'mobile-core.md')), 'mobile core checklist should exist');
   assert(fs.existsSync(path.join(ROOT, 'docs', 'reviews', 'checklists', 'java-finance-enterprise.md')), 'Java finance enterprise checklist should exist');
+});
+
+test('Review lane calibrates findings with Codex-style actionable rules', () => {
+  assert(reviewSkill.includes('codex-review-contract.md'), 'review skill should reference Codex review contract');
+  assert(codeReviewer.includes('Finding Calibration'), 'code-reviewer should include finding calibration stage');
+  assert(reviewLane.includes('[P0]'), 'review lane should mention P0-P3 priorities');
+  assert(reviewInstruction.includes('introduced or worsened'), 'code-review instruction should suppress pre-existing issues');
+  assert(fs.existsSync(path.join(ROOT, '.github', 'skills', 'review-code-changes', 'references', 'codex-review-contract.md')), 'Codex review contract reference should exist');
+  assert(reviewSchema.includes('"priority"'), 'review schema should support priority');
+  assert(reviewSchema.includes('"codeLocation"'), 'review schema should support codeLocation');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

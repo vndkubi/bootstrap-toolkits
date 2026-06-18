@@ -20,6 +20,7 @@ Until bootstrap rewrites this file, treat it as temporary operator guidance, not
 - `.github/agents/conductor.agent.md`: orchestration behavior
 - `.github/docs/*.md`: runtime, context, prompting, and operating-model guidance for the copied bundle
 - `.github/constitution.md`: governance that generated agents and skills should inherit
+- `.github/instructions/code-review.instructions.md`: review finding bar for actionable P0-P3 comments
 
 ## Identity Guardrail
 

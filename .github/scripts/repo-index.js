@@ -7,6 +7,60 @@ const path = require('path');
 
 const DEFAULT_OUT_DIR = path.join('docs', 'ai');
 
+const FILESYSTEM_SKIP_DIRS = new Set([
+  '.artifacts',
+  '.git',
+  '.gradle',
+  '.idea',
+  '.memory',
+  'bin',
+  'build',
+  'coverage',
+  'DerivedData',
+  'dist',
+  'node_modules',
+  'obj',
+  'out',
+  'Pods',
+  'results',
+  'target',
+  'vendor'
+]);
+
+const BOOTSTRAP_BUNDLE_PREFIXES = [
+  '.github/agents/',
+  '.github/docs/',
+  '.github/hooks/',
+  '.github/instructions/',
+  '.github/prompts/',
+  '.github/schemas/',
+  '.github/scripts/',
+  '.github/skills/',
+  '.github/templates/'
+];
+
+const BOOTSTRAP_BUNDLE_FILES = new Set([
+  '.github/.bootstrap-manifest.json',
+  '.github/.bootstrap-snapshot.json',
+  '.github/.bootstrap-state.json',
+  '.github/.bootstrap-summary.md',
+  '.github/.context-packets.json',
+  '.github/.phase3-checkpoint.md',
+  '.github/.runtime-fidelity.json',
+  '.github/.scan-report.md',
+  '.github/.skill-index.json',
+  '.github/.skill-lineage.json',
+  '.github/MODULE-ARCHITECTURE.md',
+  '.github/autorun.allowlist.example',
+  '.github/autorun.config.example.json',
+  '.github/autorun.config.json',
+  '.github/constitution.md',
+  '.github/copilot-instructions.md',
+  '.github/module-dependency-map.json',
+  '.github/README.md',
+  '.github/VERSION'
+]);
+
 const EXCLUDE_PATTERNS = [
   /(^|\/)dist\//,
   /(^|\/)build\//,
@@ -330,7 +384,7 @@ function searchRecipes(activeEcosystems) {
   return recipes;
 }
 
-function buildIndex(files, generatedAt = new Date().toISOString()) {
+function buildIndex(files, generatedAt = new Date().toISOString(), options = {}) {
   const topDirectories = new Map();
   const extensions = new Map();
 
@@ -346,7 +400,8 @@ function buildIndex(files, generatedAt = new Date().toISOString()) {
   return {
     schemaVersion: 1,
     generatedAt,
-    source: 'git ls-files',
+    source: options.source || 'git ls-files',
+    sourceWarnings: options.sourceWarnings || [],
     repoSize: classifyRepoSize(files.length),
     indexingRisk: indexingRisk(files.length),
     totalFiles: files.length,
@@ -366,7 +421,12 @@ function renderMarkdown(index) {
 
   lines.push('# Repo Index');
   lines.push('');
-  lines.push('Generated deterministically from `git ls-files`. No AI was used.');
+  lines.push(`Generated deterministically from \`${index.source || 'git ls-files'}\`. No AI was used.`);
+  if (Array.isArray(index.sourceWarnings) && index.sourceWarnings.length > 0) {
+    for (const warning of index.sourceWarnings) {
+      lines.push(`Warning: ${warning}`);
+    }
+  }
   lines.push('');
   lines.push('This is shared AI-agent context for GitHub Copilot, Copilot CLI, Codex, and other coding agents. Prefer this map over whole-repo scans.');
   lines.push('');
@@ -466,7 +526,8 @@ function renderMarkdown(index) {
 }
 
 function gitLsFiles(rootDir) {
-  const output = execFileSync('git', ['-C', rootDir, 'ls-files', '-z'], {
+  const safeDirectory = toPosixPath(path.resolve(rootDir));
+  const output = execFileSync('git', ['-c', `safe.directory=${safeDirectory}`, '-C', rootDir, 'ls-files', '-z'], {
     encoding: 'buffer',
     stdio: ['ignore', 'pipe', 'pipe']
   });
@@ -476,6 +537,62 @@ function gitLsFiles(rootDir) {
     .filter(Boolean)
     .map(toPosixPath)
     .sort();
+}
+
+function hasCopiedBootstrapBundle(rootDir) {
+  return fs.existsSync(path.join(rootDir, '.github', 'prompts', 'bootstrap-copilot.prompt.md'))
+    && fs.existsSync(path.join(rootDir, '.github', 'skills', 'generate-copilot-config', 'SKILL.md'));
+}
+
+function isCopiedBootstrapBundleFile(filePath) {
+  return BOOTSTRAP_BUNDLE_FILES.has(filePath)
+    || BOOTSTRAP_BUNDLE_PREFIXES.some((prefix) => filePath.startsWith(prefix));
+}
+
+function walkFilesystemFiles(rootDir, currentDir = rootDir, files = []) {
+  const excludeCopiedBundle = hasCopiedBootstrapBundle(rootDir);
+  for (const entry of fs.readdirSync(currentDir, { withFileTypes: true })) {
+    if (entry.isDirectory() && FILESYSTEM_SKIP_DIRS.has(entry.name)) {
+      continue;
+    }
+
+    const absolutePath = path.join(currentDir, entry.name);
+    if (entry.isDirectory()) {
+      walkFilesystemFiles(rootDir, absolutePath, files);
+      continue;
+    }
+    if (entry.isFile()) {
+      const relativePath = toPosixPath(path.relative(rootDir, absolutePath));
+      if (excludeCopiedBundle && isCopiedBootstrapBundleFile(relativePath)) {
+        continue;
+      }
+      files.push(relativePath);
+    }
+  }
+  return files.sort();
+}
+
+function collectRepoFiles(rootDir) {
+  const warnings = [];
+  try {
+    const files = gitLsFiles(rootDir);
+    if (files.length > 0) {
+      return {
+        files,
+        source: 'git ls-files',
+        sourceWarnings: warnings
+      };
+    }
+    warnings.push('git ls-files returned no files; falling back to current filesystem files.');
+  } catch (error) {
+    warnings.push(`git ls-files failed: ${error.message}; falling back to current filesystem files.`);
+  }
+
+  return {
+    files: walkFilesystemFiles(rootDir),
+    source: 'filesystem walk',
+    sourceWarnings: warnings
+  };
 }
 
 function parseArgs(argv) {
@@ -502,8 +619,11 @@ function parseArgs(argv) {
 }
 
 function writeIndex(rootDir, outDir, generatedAt) {
-  const files = gitLsFiles(rootDir);
-  const index = buildIndex(files, generatedAt);
+  const collected = collectRepoFiles(rootDir);
+  const index = buildIndex(collected.files, generatedAt, {
+    source: collected.source,
+    sourceWarnings: collected.sourceWarnings
+  });
   const absoluteOutDir = path.resolve(rootDir, outDir);
   fs.mkdirSync(absoluteOutDir, { recursive: true });
   const jsonPath = path.join(absoluteOutDir, '00-repo-index.json');
@@ -528,11 +648,16 @@ function main(argv) {
     printHelp();
     return;
   }
-  const { index, jsonPath, markdownPath } = writeIndex(options.root, options.outDir);
   if (options.stdoutJson) {
+    const collected = collectRepoFiles(options.root);
+    const index = buildIndex(collected.files, undefined, {
+      source: collected.source,
+      sourceWarnings: collected.sourceWarnings
+    });
     console.log(JSON.stringify(index, null, 2));
     return;
   }
+  const { jsonPath, markdownPath } = writeIndex(options.root, options.outDir);
   console.log(`Wrote ${path.relative(options.root, markdownPath)}`);
   console.log(`Wrote ${path.relative(options.root, jsonPath)}`);
 }
@@ -548,8 +673,12 @@ if (require.main === module) {
 
 module.exports = {
   buildIndex,
+  collectRepoFiles,
   detectModules,
   gitLsFiles,
+  hasCopiedBootstrapBundle,
+  isCopiedBootstrapBundleFile,
   renderMarkdown,
+  walkFilesystemFiles,
   writeIndex
 };

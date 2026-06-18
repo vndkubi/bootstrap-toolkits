@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "specs/010-harness-benchmarking/contracts/scorecard.schema.json",
+  "title": "Harness benchmark scorecard",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "runId", "harnessVersion", "source", "variant", "summary", "byStack", "byDifficulty", "tasks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "runId": { "type": "string", "minLength": 1 },
+    "harnessVersion": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "object",
+      "required": ["kind", "path"],
+      "properties": {
+        "kind": { "enum": ["synthetic", "autorun-trace", "manual-import"] },
+        "path": { "type": "string" },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "variant": {
+      "type": "object",
+      "required": ["id", "label", "model"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "gitSha": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "totalTasks",
+        "passedTasks",
+        "passRate",
+        "acceptedUsefulChanges",
+        "totalTokens",
+        "totalCreditUnits",
+        "creditsPerAcceptedChange",
+        "medianTokens",
+        "medianToolCalls",
+        "medianRepairLoops",
+        "medianWallTimeMs"
+      ],
+      "properties": {
+        "totalTasks": { "type": "integer", "minimum": 0 },
+        "passedTasks": { "type": "integer", "minimum": 0 },
+        "passRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "acceptedUsefulChanges": { "type": "integer", "minimum": 0 },
+        "totalTokens": { "type": "integer", "minimum": 0 },
+        "totalCreditUnits": { "type": "number", "minimum": 0 },
+        "creditsPerAcceptedChange": { "type": "number", "minimum": 0 },
+        "medianTokens": { "type": "number", "minimum": 0 },
+        "medianToolCalls": { "type": "number", "minimum": 0 },
+        "medianRepairLoops": { "type": "number", "minimum": 0 },
+        "medianWallTimeMs": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "byStack": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/groupScore" }
+    },
+    "byDifficulty": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/groupScore" }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/taskScore" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "groupScore": {
+      "type": "object",
+      "required": ["key", "totalTasks", "passedTasks", "passRate", "acceptedUsefulChanges", "medianTokens", "medianRepairLoops"],
+      "properties": {
+        "key": { "type": "string" },
+        "totalTasks": { "type": "integer", "minimum": 0 },
+        "passedTasks": { "type": "integer", "minimum": 0 },
+        "passRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "acceptedUsefulChanges": { "type": "integer", "minimum": 0 },
+        "medianTokens": { "type": "number", "minimum": 0 },
+        "medianRepairLoops": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "taskScore": {
+      "type": "object",
+      "required": ["pbiId", "stack", "difficulty", "passed", "accepted", "tokens", "toolCalls", "repairLoops", "wallTimeMs", "outcomeScore"],
+      "properties": {
+        "pbiId": { "type": "string" },
+        "stack": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "passed": { "type": "boolean" },
+        "accepted": { "type": "boolean" },
+        "tokens": { "type": "integer", "minimum": 0 },
+        "toolCalls": { "type": "integer", "minimum": 0 },
+        "repairLoops": { "type": "integer", "minimum": 0 },
+        "wallTimeMs": { "type": "integer", "minimum": 0 },
+        "outcomeScore": { "type": "number", "minimum": 0, "maximum": 1 },
+        "failureReason": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

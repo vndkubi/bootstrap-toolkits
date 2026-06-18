@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "goal-tdd-engineer-loop",
+  "displayName": "goal-tdd-engineer-loop",
+  "description": "Runs a /goal-driven engineering loop that converts an active goal into acceptance criteria, context budget, red tests, TDD implementation, eval evidence, feedback, and a ranked Codex handoff. Keywords: goal loop, TDD, red green, evals, traces, feedback, Codex handoff, token budget.",
+  "version": "0.6.0",
+  "tier": "domain",
+  "stability": "stable",
+  "requires": {
+    "skills": [
+      "tdd-implement-loop"
+    ],
+    "mcp": [],
+    "tools": []
+  },
+  "inputs": [
+    "- `goal-eval-plan.md`",
+    "- `goal-feedback.md`",
+    "- `goal-trace.jsonl`",
+    "Active goal text or explicit goal statement.",
+    "Optional prior artifacts:",
+    "Repo evidence anchors: issue, spec, failing behavior, test file, prompt, or user-provided requirement."
+  ],
+  "outputs": [
+    "Write under `specs/<id>-<slug>/` when a feature workspace exists. Otherwise use local `.artifacts/<goal-slug>/` run artifacts.",
+    "`context-packet.md`: the minimal source/doc/test anchors required for the next step.",
+    "`goal-brief.md`: normalized goal, assumptions, non-goals, acceptance criteria, and verification commands.",
+    "`goal-eval-plan.md`: eval cases or commands that decide whether the goal is met.",
+    "`goal-feedback.md`: human, model, review, or test feedback captured after each run.",
+    "`goal-trace.jsonl`: append-only run events with phase, action, inputs, outputs, commands, and result.",
+    "`tdd-log.md`: red->green implementation iterations.",
+    "`test-coverage.md`: acceptance-criteria-to-test map."
+  ],
+  "triggers": [
+    "Codex handoff",
+    "TDD",
+    "evals",
+    "feedback",
+    "goal loop",
+    "red green",
+    "token budget",
+    "traces"
+  ],
+  "mcp_tools_used": [],
+  "invocationMode": "agent_delegated",
+  "paths": {
+    "skill": ".github/skills/goal-tdd-engineer-loop/SKILL.md",
+    "scripts": ".github/skills/goal-tdd-engineer-loop/scripts",
+    "assets": ".github/skills/goal-tdd-engineer-loop/assets",
+    "references": ".github/skills/goal-tdd-engineer-loop/references"
+  },
+  "keywords": [
+    "Codex handoff",
+    "TDD",
+    "evals",
+    "feedback",
+    "goal loop",
+    "red green",
+    "token budget",
+    "traces"
+  ],
+  "routedBy": [
+    "dev-orchestrator"
+  ],
+  "referencedByAgents": [
+    "dev-orchestrator"
+  ]
+}

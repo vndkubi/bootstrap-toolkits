@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "review-code-changes",
   "displayName": "review-code-changes",
-  "description": "Multi-stage code review pipeline: Self-Review → Functional Review (@functional-reviewer) → Technical Review (@technical-reviewer). Functional Review runs first — if business logic is wrong, reject immediately. Each finding must include actionable code snippets. Produces a combined review report with verdict. Use when reviewing PRs or branch changes via @code-reviewer.",
+  "description": "Multi-stage code review pipeline calibrated with Codex-style actionable finding rules: Self-Review -> Functional Review (@functional-reviewer) -> Technical Review (@technical-reviewer) -> finding calibration with P0-P3 priority. Functional Review runs first; if business logic is wrong, reject immediately. Produces a combined review report and review-report.json. Use when reviewing PRs or branch changes via @code-reviewer. Keywords: review PR, code review, actionable finding, P0, P1, P2, P3, review-report.",
   "version": "0.6.0",
   "tier": "domain",
   "stability": "stable",
@@ -24,18 +24,14 @@
     "tests"
   ],
   "triggers": [
-    "actionable",
-    "branch",
-    "business",
-    "changes",
-    "code",
-    "combined",
-    "each",
-    "finding",
-    "first",
-    "functional",
-    "immediately",
-    "include"
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "actionable finding",
+    "code review",
+    "review PR",
+    "review-report"
   ],
   "mcp_tools_used": [],
   "invocationMode": "agent_delegated",
@@ -46,18 +42,14 @@
     "references": ".github/skills/review-code-changes/references"
   },
   "keywords": [
-    "actionable",
-    "branch",
-    "business",
-    "changes",
-    "code",
-    "combined",
-    "each",
-    "finding",
-    "first",
-    "functional",
-    "immediately",
-    "include"
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "actionable finding",
+    "code review",
+    "review PR",
+    "review-report"
   ],
   "routedBy": [
     "code-reviewer",

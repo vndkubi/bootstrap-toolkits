@@ -80,6 +80,19 @@ The point is not to generate the largest doc set possible. The point is to gener
 
 Write or update `.github/.bootstrap-state.json` after **every phase** completes, not just at the end. This makes the pipeline resumable from any point.
 
+### Fresh Run vs Resume
+
+`/bootstrap-copilot` is a fresh run unless the user explicitly asks to resume a prior bootstrap. Existing `.github/.bootstrap-state.json`, `.github/.bootstrap-manifest.json`, `.github/.bootstrap-summary.md`, `.github/.bootstrap-snapshot.json`, `.github/.runtime-fidelity.json`, and generated `docs/ai/*` files may be useful evidence, but they do not prove the current run is complete.
+
+At the start of Phase 1:
+
+- create or overwrite `.github/.bootstrap-state.json` for the current run
+- do not skip any phase because stale state says it completed
+- only resume from a prior state when the user invoked a resume workflow or explicitly asked to continue a failed run
+- treat stale manifest/summary files as previous-output evidence that must be regenerated before final validation
+
+Starting or delegating a background agent is not a valid terminal state. Bootstrap is complete only after Phase 12, Phase 13, and Phase 15 finish, required files exist on disk, and manifest fidelity validation passes.
+
 Initial state file (create at the start of Phase 1):
 
 ```json

@@ -1,6 +1,6 @@
 ---
 name: review-code-changes
-description: 'Multi-stage code review pipeline: Self-Review → Functional Review (@functional-reviewer) → Technical Review (@technical-reviewer). Functional Review runs first — if business logic is wrong, reject immediately. Each finding must include actionable code snippets. Produces a combined review report with verdict. Use when reviewing PRs or branch changes via @code-reviewer.'
+description: 'Multi-stage code review pipeline calibrated with Codex-style actionable finding rules: Self-Review -> Functional Review (@functional-reviewer) -> Technical Review (@technical-reviewer) -> finding calibration with P0-P3 priority. Functional Review runs first; if business logic is wrong, reject immediately. Produces a combined review report and review-report.json. Use when reviewing PRs or branch changes via @code-reviewer. Keywords: review PR, code review, actionable finding, P0, P1, P2, P3, review-report.'
 ---
 
 # Review Code Changes — Multi-Stage Pipeline
@@ -11,12 +11,18 @@ Structured multi-stage code review pipeline with short-circuit logic for maximum
 
 For the shortest human-facing summary of the review workflow, see `.github/docs/review-lane.md`.
 
+For finding calibration, read
+`.github/skills/review-code-changes/references/codex-review-contract.md`.
+This reference adapts OpenAI Codex's public review prompt into this bundle's
+multi-stage review contract.
+
 ## When to Use
 
 - Reviewing a pull request
 - Pre-merge quality gate
 - Code review as part of feature delivery pipeline
-- Keywords: "review PR", "review code", "check changes", "code review"
+- Calibrating findings for inline review comments
+- Keywords: "review PR", "review code", "check changes", "code review", "actionable finding", "P0", "P1", "P2", "P3"
 
 ## Arguments
 
@@ -98,6 +104,8 @@ Stage 2: FUNCTIONAL REVIEW → @functional-reviewer validates business logic
     ↓ If 🔴 BLOCKER found → REJECT immediately, skip Stage 3
     ↓
 Stage 3: TECHNICAL REVIEW → @technical-reviewer validates architecture & quality
+    ↓
+Stage 4: FINDING CALIBRATION → Apply Codex-style qualifying finding rules and P0-P3 priority
     ↓
 COMBINED REPORT → Merge findings from both stages with verdict
 ```
@@ -334,9 +342,58 @@ For huge PRs, build one scenario pack per slice instead of forcing one giant mat
 
 **Technical Review runs in full — no short-circuit.**
 
-## Optional Stage 4: Discussion Harvest, Checklist Learning, And Review Memory Promotion
+## Stage 4: Finding Calibration
 
-Use this stage only when the combined review or the follow-up PR discussion surfaces **durable** or **recurring** knowledge that should outlive the current pull request.
+Before publishing findings, apply
+`.github/skills/review-code-changes/references/codex-review-contract.md`.
+
+Calibration rules:
+
+- Keep only findings the author would likely fix.
+- Remove speculative, broad, duplicate, pre-existing, and style-only comments.
+- Require each finding to identify the affected scenario, input, environment, or caller.
+- Add `[P0]`, `[P1]`, `[P2]`, or `[P3]` to every finding title.
+- Map P0/P1 to blocker, P2 to warning, and P3 to suggestion unless a stricter domain checklist applies.
+- Keep line ranges short and overlapping the diff whenever possible.
+- Prefer no findings over low-confidence noise.
+- Set `needs-clarification` instead of forcing a verdict when context is too weak for a risky change.
+
+## Stage 5: Development Learning Loop
+
+After finding calibration, decide whether any surviving finding exposes a reusable development-process gap.
+
+Read `.github/docs/review-development-learning-loop.md` before emitting learning candidates.
+
+Create a `developmentLearning[]` entry only when the finding can prevent future review churn by upgrading a development surface. Examples:
+
+- missing acceptance-criteria-to-test mapping
+- missing RED evidence before production edits
+- Java API behavior tested with controller + mocked service instead of API component coverage
+- persistence behavior tested with repository mocks instead of an isolated test database
+- domain decision table only covered through one happy-path API test
+- repeated duplicate validation across layers
+- implementation summary missing files changed, reasons, assumptions, or verification gaps
+
+Do not create a learning entry for one-off branch details, style nits, transient CI failures, unresolved reviewer debate, or speculative preferences.
+
+Map each candidate to the smallest owning surface:
+
+| Gap | Target surface |
+|---|---|
+| implementation evidence gap | `.github/skills/orchestrate-development/SKILL.md` or `.github/skills/implement-feature/SKILL.md` |
+| TDD discipline gap | `.github/skills/tdd-implement-loop/SKILL.md` |
+| Java test strategy gap | `.github/skills/generate-unit-tests/SKILL.md`, `.github/instructions/testing.instructions.md`, or `.github/docs/java-test-architecture.md` |
+| review checklist gap | `docs/reviews/checklists/*.md` |
+| agent routing gap | `.github/agents/dev-orchestrator.agent.md` or the relevant specialist agent |
+| context routing gap | `.github/docs/prompt-and-context.md` or repo-intelligence docs |
+
+Every candidate must include evidence, a source finding id, a proposed target surface, and `approvalRequired: true`.
+
+This stage produces candidates only. Do not silently edit durable development rules from review output.
+
+## Optional Stage 6: Discussion Harvest, Checklist Learning, And Review Memory Promotion
+
+Use this stage only when the combined review, `developmentLearning[]`, or the follow-up PR discussion surfaces **durable** or **recurring** knowledge that should outlive the current pull request.
 
 Only enter this stage when at least one surviving signal is backed by an accepted human fix or resolved human discussion, or when equivalent reasoning recurs across at least two reviews or investigations.
 
@@ -345,9 +402,10 @@ Delegate to `review-memory-promotion` with:
 1. the final combined review report
 2. the Stage 0 context map
 3. a PR discussion summary, resolved-thread artifact, or accepted-fix notes when available
-4. the requirement or investigation artifact when present
-5. existing docs likely to own the promoted knowledge
-6. existing checklist packs under `docs/reviews/checklists/` when they exist
+4. `developmentLearning[]` candidates from `review-report.json` when present
+5. the requirement or investigation artifact when present
+6. existing docs likely to own the promoted knowledge
+7. existing checklist packs under `docs/reviews/checklists/` when they exist
 
 Rules:
 
@@ -364,6 +422,7 @@ Output:
 
 - a reviewable candidate memory report under `docs/reviews/`
 - functional checklist candidates, technical checklist candidates, and any other durable memory promotions kept separate
+- development upgrade candidates kept separate from review checklist candidates
 - a create-vs-update recommendation for each affected checklist pack
 - a clear follow-up task for accepted candidates
 
@@ -434,7 +493,36 @@ Minimum fields:
     "suggestions": 2,
     "praise": 0
   },
-  "findings": [],
+  "findings": [
+    {
+      "id": "R-001",
+      "stage": "functional",
+      "severity": "blocker",
+      "priority": 1,
+      "confidenceScore": 0.88,
+      "category": "traceability",
+      "file": "src/main/java/.../OrderService.java",
+      "line": 45,
+      "codeLocation": {
+        "absoluteFilePath": "/absolute/path/src/main/java/.../OrderService.java",
+        "lineRange": { "start": 45, "end": 45 }
+      },
+      "message": "[P1] Cancel path does not restore inventory.",
+      "suggestedFix": "Restore inventory before the cancel transaction commits."
+    }
+  ],
+  "developmentLearning": [
+    {
+      "id": "DL-001",
+      "sourceFindingId": "R-001",
+      "category": "test-strategy",
+      "targetSurface": ".github/skills/generate-unit-tests/SKILL.md",
+      "proposedChange": "Require Java API behavior tests to use API component coverage with real service/domain/repository and boundary mocks only.",
+      "evidence": ["review-report.json#/findings/0"],
+      "approvalRequired": true,
+      "status": "candidate"
+    }
+  ],
   "followups": []
 }
 ```
@@ -443,6 +531,7 @@ Rules:
 
 - Do not emit the JSON block in `--planning-only` mode.
 - In evidence-bundle mode, every finding in `findings[]` must preserve its evidence anchors.
+- Every item in `developmentLearning[]` must preserve evidence anchors and must be approval-gated.
 - If the functional reviewer returns `articleXCompliant=false`, the combined JSON must also set `articleXCompliant=false`.
 - If business context confidence is Low and the change is risky, use `needs-clarification` instead of pretending to pass.
 
@@ -450,19 +539,19 @@ Rules:
 
 | Condition | Verdict |
 |-----------|---------|
-| Any 🔴 BLOCKER from either stage | ❌ REQUEST CHANGES |
-| Only 🟡 WARNING + 🔵 SUGGESTION | ⚠️ APPROVE WITH COMMENTS |
-| Only 🔵 SUGGESTION + 🟢 PRAISE | ✅ APPROVE |
-| No findings | ✅ APPROVE |
+| Any P0/P1 or 🔴 BLOCKER from any stage | ❌ REQUEST CHANGES |
+| P2 findings only, or 🟡 WARNING + 🔵 SUGGESTION | ⚠️ APPROVE WITH COMMENTS |
+| P3 findings only, or 🔵 SUGGESTION + 🟢 PRAISE | ✅ APPROVE |
+| No qualifying findings | ✅ APPROVE |
 
 ## Actionable Comment Rules
 
-**Every finding at 🔴 or 🟡 level MUST follow this format:**
+**Every finding at P0-P3 level MUST follow this format:**
 
 ```markdown
-### [SEVERITY]: [Title] — `File.java:L45`
+### [P1] [Title] - `File.java:L45`
 
-**Problem:** [Explain WHAT is wrong and WHY it matters]
+**Problem:** [One paragraph explaining the concrete failing scenario and why it matters]
 
 **Current code:**
 [problematic code snippet]
@@ -475,6 +564,16 @@ Rules:
 - ❌ "This could be improved" (how?)
 - ❌ "Consider refactoring" (to what?)
 - ❌ "Code looks good" (not helpful)
+- ❌ "This might break something" without naming the affected caller, input, or environment
+- ❌ Pre-existing issue not introduced or worsened by the reviewed change
+
+Additional calibration rules:
+
+- Keep line ranges as small as possible and tied to the diff.
+- Do not include more than one distinct root cause in a finding.
+- Do not use code blocks longer than 3 lines unless the exact replacement is required.
+- Use `suggestion` blocks only for concrete replacement code, preserving indentation.
+- If no issue meets the qualifying bar, emit no findings and explain that no actionable defect was found.
 
 ## Stack-Specific Review Focus
 
@@ -494,8 +593,10 @@ Rules:
 - [ ] Requirement document was located and read (or flagged as missing)
 - [ ] Functional review traceability table was produced
 - [ ] Every changed file was reviewed by the appropriate stage
-- [ ] All 🔴 and 🟡 findings include code snippets
+- [ ] Findings were calibrated against `references/codex-review-contract.md`
+- [ ] Every finding has a P0-P3 priority label, scenario, and short location
 - [ ] Short-circuit logic was applied correctly
 - [ ] Combined report has accurate statistics
 - [ ] Verdict matches finding severity rules
 - [ ] If memory promotion was requested, one-off findings were filtered out and approval-required candidates were marked explicitly
+- [ ] Reusable development-process gaps were either captured in `developmentLearning[]` or intentionally omitted as one-off/noise

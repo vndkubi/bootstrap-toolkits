@@ -27,6 +27,31 @@ If the user points to a specific class, **proceed immediately** after checking f
 
 ## Core Testing Philosophy
 
+### Default Design: Real Core, Mock Boundaries
+
+For Java API behavior, prefer **Outside-in API Component Testing - Real Core, Mock Boundaries**.
+
+```text
+HTTP request
+  -> routing / middleware / auth / validation
+  -> controller/resource
+  -> application service / use case
+  -> domain logic
+  -> repository / ORM
+  -> isolated test database
+  -> HTTP response
+```
+
+Use a test HTTP client or in-memory test host when behavior crosses an API boundary. Do not make a controller test that mocks the service the primary proof of business behavior.
+
+Keep the owned internal core real by default: routing, validation, controller/resource, service/use case, domain logic, mapper, validator, repository, ORM, and isolated test database.
+
+Mock only system boundaries: third-party HTTP services, payment/email/SMS/cloud providers, external identity provider, clock/random/UUID, message broker ports, and unsafe or non-deterministic side effects.
+
+Use direct domain unit tests for decision tables, state machines, pricing, tax, discount, date/time rules, permission matrices, and other combinatorial logic that would be too expensive to cover through API setup.
+
+Reflection and partial mocks are escape hatches, not the default strategy. Prefer constructor injection, ports around external dependencies, factory/configuration injection, fakes, mock HTTP servers, or package-private test seams first. If reflection is unavoidable, centralize it in a helper and add a debt note.
+
 ### Mock Minimization Strategy
 
 **Priority order (prefer higher):**

@@ -4,7 +4,8 @@
       "WebSearch",
       "WebFetch(domain:docs.github.com)",
       "WebFetch(domain:code.visualstudio.com)",
-      "WebFetch(domain:github.blog)"
+      "WebFetch(domain:github.blog)",
+      "WebFetch(domain:accessibility.github.com)"
     ]
   }
 }

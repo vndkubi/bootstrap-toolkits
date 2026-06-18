@@ -256,6 +256,16 @@ public class CreateOrderRequest {
 Before adding validation, ALWAYS check if it's already handled at another layer. If it is, do NOT duplicate it.
 ```
 
+### Expected Java Test Strategy
+
+When handing behavior changes to `@test-specialist`, expect **Outside-in API Component Testing - Real Core, Mock Boundaries** for API behavior:
+
+- test through HTTP client or in-memory host when behavior crosses the resource/controller boundary
+- keep controller/resource, service/use case, domain logic, mapper, repository, ORM, and isolated test database real
+- mock only system boundaries such as third-party APIs, payment/email/SMS/cloud providers, external identity provider, clock/random/UUID, message broker ports, and unsafe side effects
+- use direct domain unit tests for combinatorial logic such as pricing, tax, discount, state machines, date/time rules, and permission matrices
+- avoid controller tests that mock the service as the primary proof of business behavior
+
 ### Code Quality Rules
 
 1. **Readability**: Code should be self-documenting; add JavaDoc for public APIs
