@@ -41,6 +41,28 @@ node tests/harness-bench/bench.js compare \
   --candidate tests/harness-bench/sample-runs/bootstrap-router.synthetic.json
 ```
 
+Run local read-only probes against real repositories:
+
+```bash
+node tests/harness-bench/bench.js local-run \
+  --config tests/harness-bench/local-repos.json \
+  --model "gpt 5.3 codex spark" \
+  --out .github/.benchmarks/local/run.json
+```
+
+Import an `/autorun` JSONL trace:
+
+```bash
+node tests/harness-bench/bench.js import-trace \
+  --trace .github/.traces/autorun-real-run.jsonl \
+  --model "gpt 5.3 codex spark" \
+  --out .github/.benchmarks/local/imported-run.json
+```
+
+The CLI default model label is `gpt 5.3 codex spark`. Use `--model` only when deliberately recording a different fixed model. Imported traces that declare another model are marked with `modelMismatch: true`, and compare fails unless `--allow-model-mismatch` is passed.
+
+`local-repos.example.json` uses environment variables for portability. Repo ids `copilot-bootstrap`, `tokenopt`, and `code-graph` also fall back to paths derived from the current checkout layout when those folders exist; emitted task metadata stores only a path hash.
+
 Probe a bootstrapped target repo for output consistency:
 
 ```bash

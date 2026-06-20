@@ -17,7 +17,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="bootstrap-mcp")
     parser.add_argument("--stdio", action="store_true", help="Run stdio JSON-RPC transport. This is the default.")
     parser.add_argument("--repo", default=".", help="Default repository path for tool calls.")
-    parser.add_argument("--allow-write", action="store_true", help="Reserved for future generate tools; ignored by read-only M1 tools.")
+    parser.add_argument("--allow-write", action="store_true", help="Allow confirmed in-repo writes from generate tools.")
     parser.add_argument("--version", action="store_true", help="Print version and exit.")
     return parser
 

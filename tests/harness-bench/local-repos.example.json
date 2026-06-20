@@ -1,0 +1,22 @@
+{
+  "variantId": "local-real-repos",
+  "variantLabel": "Local real repository probes",
+  "model": "gpt 5.3 codex spark",
+  "repos": [
+    {
+      "id": "copilot-bootstrap",
+      "pathEnv": "COPILOT_BOOTSTRAP_REPO",
+      "stack": "bootstrap"
+    },
+    {
+      "id": "tokenopt",
+      "pathEnv": "TOKENOPT_REPO",
+      "stack": "node"
+    },
+    {
+      "id": "code-graph",
+      "pathEnv": "CODE_GRAPH_REPO",
+      "stack": "typescript"
+    }
+  ]
+}

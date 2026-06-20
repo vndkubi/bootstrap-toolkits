@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    {
+      "id": "bootstrap-output-probe",
+      "description": "Verify a bootstrapped repository retained the required bootstrap output files.",
+      "mode": "read-only-probe",
+      "acceptance": ["required files exist", "required JSON files parse", "manifest fidelity passes"]
+    },
+    {
+      "id": "autorun-trace-import",
+      "description": "Import one completed /autorun trace and score it with fixed model metadata.",
+      "mode": "trace-import",
+      "acceptance": ["trace JSONL parses", "tokenCost totals are captured", "variant.model is gpt 5.3 codex spark"]
+    }
+  ]
+}

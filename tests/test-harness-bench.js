@@ -7,8 +7,10 @@ const os = require('os');
 const path = require('path');
 const { validateSchema } = require('./helpers/mini-json-schema');
 const {
+  DEFAULT_MODEL,
   buildScorecard,
   compareScorecards,
+  importTraceRun,
   median
 } = require('./harness-bench/bench.js');
 const {
@@ -138,6 +140,43 @@ test('scorecard output validates against the scorecard schema subset', () => {
   assert(result.valid, `scorecard invalid: ${result.errors.join('; ')}`);
 });
 
+test('buildScorecard defaults CLI benchmark model to gpt 5.3 codex spark', () => {
+  const scorecard = buildScorecard({
+    runId: 'default-model',
+    source: { kind: 'manual-import', path: 'inline' },
+    variant: { id: 'local', label: 'Local' },
+    tasks: [
+      {
+        pbiId: 'PBI-DEFAULT',
+        stack: 'node',
+        difficulty: 'small',
+        passed: true,
+        accepted: true
+      }
+    ]
+  }, { generatedAt: '2026-05-22T00:00:00.000Z' });
+  assert(scorecard.variant.model === DEFAULT_MODEL, `unexpected default model ${scorecard.variant.model}`);
+});
+
+test('CLI score command allows explicit model override', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-model-'));
+  try {
+    const runPath = path.join(tempDir, 'run.json');
+    fs.writeFileSync(runPath, `${JSON.stringify({
+      runId: 'override-model',
+      source: { kind: 'manual-import', path: 'inline' },
+      variant: { id: 'local', label: 'Local' },
+      tasks: [
+        { pbiId: 'PBI-OVERRIDE', stack: 'node', difficulty: 'small', passed: true, accepted: true }
+      ]
+    })}\n`);
+    const scorecard = runJson(['score', '--run', runPath, '--model', 'explicit-model']);
+    assert(scorecard.variant.model === 'explicit-model', `unexpected override model ${scorecard.variant.model}`);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test('compareScorecards reports candidate improvement without making real-world claims', () => {
   const baseline = buildScorecard(readJson(BASELINE_RUN), { generatedAt: '2026-05-22T00:00:00.000Z' });
   const candidate = buildScorecard(readJson(CANDIDATE_RUN), { generatedAt: '2026-05-22T00:00:00.000Z' });
@@ -158,6 +197,25 @@ test('compareScorecards fails regression gates', () => {
   assert(diff.failures.length > 0, 'expected failure reasons');
 });
 
+test('compareScorecards fails model mismatches unless explicitly allowed', () => {
+  const baseline = buildScorecard(readJson(BASELINE_RUN), { generatedAt: '2026-05-22T00:00:00.000Z' });
+  const candidate = buildScorecard({
+    ...readJson(CANDIDATE_RUN),
+    variant: {
+      id: 'candidate-mismatch',
+      label: 'Candidate mismatch',
+      model: DEFAULT_MODEL,
+      traceModel: 'different-model',
+      modelMismatch: true
+    }
+  }, { generatedAt: '2026-05-22T00:00:00.000Z' });
+  const blocked = compareScorecards(baseline, candidate);
+  assert(blocked.verdict === 'fail', 'expected model mismatch to fail');
+  assert(blocked.failures.some((failure) => failure.includes('model')), 'expected model failure reason');
+  const allowed = compareScorecards(baseline, candidate, { allowModelMismatch: true });
+  assert(allowed.failures.every((failure) => !failure.includes('model')), 'expected model mismatch to be allowed');
+});
+
 test('CLI score command writes an optional scorecard file', () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-bench-'));
   try {
@@ -175,6 +233,101 @@ test('CLI compare command accepts raw run files', () => {
   const diff = runJson(['compare', '--baseline', BASELINE_RUN, '--candidate', CANDIDATE_RUN]);
   assert(diff.verdict === 'pass', 'expected candidate fixture to pass gates');
   assert(diff.deltas.acceptedUsefulChangesDelta === 2, 'expected +2 accepted useful changes');
+});
+
+test('CLI local-run reads local repo config without exposing absolute path', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-local-'));
+  try {
+    const configPath = path.join(tempDir, 'local-repos.json');
+    fs.writeFileSync(configPath, `${JSON.stringify({
+      repos: [
+        { id: 'fixture', path: ROOT, stack: 'bootstrap' }
+      ]
+    })}\n`);
+    const scorecard = runJson(['local-run', '--config', configPath]);
+    assert(scorecard.variant.model === DEFAULT_MODEL, 'expected default model on local-run');
+    assert(scorecard.tasks.some((task) => task.pbiId === 'fixture:exists' && task.passed), 'expected exists probe');
+    const task = scorecard.tasks.find((item) => item.pbiId === 'fixture:exists');
+    assert(task.repoPathHash && !JSON.stringify(task).includes(ROOT), 'expected hashed repo path only');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('importTraceRun marks model mismatch from trace metadata', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-trace-'));
+  try {
+    const tracePath = path.join(tempDir, 'autorun-test.jsonl');
+    fs.writeFileSync(tracePath, [
+      JSON.stringify({ kind: 'meta', schemaVersion: '1', pbi: 'PBI-TRACE', slug: 'pbi-trace', harness: 'cli', toolkitVersion: '0.1.0', startedAt: '2026-05-22T00:00:00.000Z', model: 'different-model' }),
+      JSON.stringify({ kind: 'event', schemaVersion: '1', phase: 1, agent: 'tester', action: 'scan', durationMs: 10, tokenCost: 25 }),
+      ''
+    ].join('\n'));
+    const run = importTraceRun(tracePath, { model: DEFAULT_MODEL });
+    assert(run.variant.modelMismatch === true, 'expected trace model mismatch');
+    assert(run.tasks[0].tokens === 25, 'expected token cost import');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('CLI import-trace writes run JSON with model mismatch metadata', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-trace-cli-'));
+  try {
+    const tracePath = path.join(tempDir, 'autorun-test.jsonl');
+    const outPath = path.join(tempDir, 'run.json');
+    fs.writeFileSync(tracePath, [
+      JSON.stringify({ kind: 'meta', schemaVersion: '1', pbi: 'PBI-TRACE-CLI', slug: 'pbi-trace-cli', harness: 'cli', toolkitVersion: '0.1.0', startedAt: '2026-05-22T00:00:00.000Z', model: 'different-model' }),
+      JSON.stringify({ kind: 'event', schemaVersion: '1', phase: 1, agent: 'tester', action: 'scan', durationMs: 10, tokenCost: 25 }),
+      ''
+    ].join('\n'));
+    const run = runJson(['import-trace', '--trace', tracePath, '--out', outPath]);
+    assert(fs.existsSync(outPath), 'expected written run file');
+    assert(run.variant.model === DEFAULT_MODEL, 'expected default model in imported run');
+    assert(run.variant.modelMismatch === true, 'expected model mismatch metadata');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('CLI compare blocks model mismatch unless allowed', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-compare-cli-'));
+  try {
+    const baselinePath = path.join(tempDir, 'baseline.json');
+    const candidatePath = path.join(tempDir, 'candidate.json');
+    const baseline = buildScorecard(readJson(BASELINE_RUN), { generatedAt: '2026-05-22T00:00:00.000Z' });
+    const candidate = buildScorecard({
+      ...readJson(CANDIDATE_RUN),
+      variant: { id: 'candidate', label: 'Candidate', model: DEFAULT_MODEL, traceModel: 'different-model', modelMismatch: true }
+    }, { generatedAt: '2026-05-22T00:00:00.000Z' });
+    fs.writeFileSync(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
+    fs.writeFileSync(candidatePath, `${JSON.stringify(candidate, null, 2)}\n`);
+    const blocked = runJson(['compare', '--baseline', baselinePath, '--candidate', candidatePath]);
+    assert(blocked.verdict === 'fail', 'expected mismatch compare failure');
+    const allowed = runJson(['compare', '--baseline', baselinePath, '--candidate', candidatePath, '--allow-model-mismatch']);
+    assert(allowed.verdict === 'pass', 'expected allowed model mismatch to pass');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('CLI report command writes markdown report', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'harness-report-'));
+  try {
+    const scorecardPath = path.join(tempDir, 'scorecard.json');
+    const reportPath = path.join(tempDir, 'report.md');
+    const scorecard = buildScorecard(readJson(BASELINE_RUN), { generatedAt: '2026-05-22T00:00:00.000Z' });
+    fs.writeFileSync(scorecardPath, `\uFEFF${JSON.stringify(scorecard, null, 2)}\n`);
+    execFileSync(NODE, [path.join(ROOT, 'tests', 'harness-bench', 'bench.js'), 'report', '--scorecard', scorecardPath, '--out', reportPath], {
+      cwd: ROOT,
+      encoding: 'utf8'
+    });
+    const report = fs.readFileSync(reportPath, 'utf8');
+    assert(report.includes('# Harness Benchmark Report'), 'expected report heading');
+    assert(report.includes('Median tokens'), 'expected metric section');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
 });
 
 test('extractReferencedRepoDocs finds docs/ai markdown references', () => {
