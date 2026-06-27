@@ -1,18 +1,21 @@
 ---
 name: skill-pack-import
-description: "Import, export, and manage portable skill packs from Git URLs or local paths. Handles conflict resolution to prevent overwriting local customizations. Supports offline-first workflows where the bundle remains fully self-contained. Use when importing shared skills, exporting domain skills for reuse, or auditing installed skill packs. Keywords: skill pack, import skill, export skill, portable skills, shared skills, org skills, reuse."
+description: "Import and audit portable skill packs from Git URLs or local paths into this repo. Handles conflict resolution to prevent overwriting local customizations, and supports offline-first workflows where the bundle stays self-contained. Use when importing shared skills or auditing installed packs; to publish local skills outward, use skill-pack-export instead. Keywords: skill pack, import skill, install skill pack, portable skills, shared skills, org skills, reuse."
 ---
 
-# Skill Pack Import / Export
+# Skill Pack Import
 
-Import and export portable skill packs between repositories using Git URLs or local paths. The bundle remains fully offline and self-contained — skill packs are an optional ecosystem layer, not a required dependency.
+Import portable skill packs into this repository using Git URLs or local paths. The bundle remains fully offline and self-contained — skill packs are an optional ecosystem layer, not a required dependency.
+
+> **Publishing skills outward?** Use the dedicated [`skill-pack-export`](../skill-pack-export/SKILL.md) skill. This skill owns the inbound (import + audit) direction only.
 
 ## When to Use
 
 - Importing shared domain skills from an org-level skill pack
-- Exporting local skills into a reusable pack for other repos
 - Auditing which skill packs are installed and their versions
 - Checking for conflicts between imported and local skills
+
+Do **not** use this skill to publish local skills — route export requests to `skill-pack-export`.
 
 ## Prerequisites
 
@@ -182,28 +185,9 @@ Errors:    none
 Registry updated: .github/.skill-pack-registry.json
 ```
 
-## Export Workflow
+## Exporting Skills
 
-To export local skills as a reusable pack:
-
-### Step 1: Select Skills
-
-Identify which skills to include. Exclude:
-- Bootstrap-only skills (e.g., `resume-bootstrap`, `validate-bootstrap-output`)
-- Skills with repo-specific hardcoded paths that would not transfer
-
-### Step 2: Generate Manifest
-
-Create a `skill-pack-manifest.json` with:
-- Auto-generated `packId` from the repo name or user input
-- Current toolkit version as `minimumToolkitVersion`
-- Each selected skill as a descriptor with name, path, and description from SKILL.md frontmatter
-
-### Step 3: Package
-
-Output options:
-- **Git repository**: push to a specified Git URL
-- **Local directory**: copy to a local path for manual distribution
+Export is handled by the dedicated [`skill-pack-export`](../skill-pack-export/SKILL.md) skill, which generates a `skill-pack-manifest.json` with lineage metadata, manifest hashes, and source provenance. Use that skill when publishing local skills to another repo, team, or pack registry. This keeps the import and export directions from competing for the same routing triggers.
 
 ## Offline-First Design
 

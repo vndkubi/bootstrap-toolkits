@@ -195,9 +195,11 @@ test('SKILL.md documents import workflow', () => {
   assert(skillContent.includes('Step 4: Update Registry'), 'Missing registry update step');
 });
 
-test('SKILL.md documents export workflow', () => {
-  assert(skillContent.includes('Export Workflow'), 'Missing Export Workflow section');
-  assert(skillContent.includes('Generate Manifest'), 'Missing manifest generation');
+test('SKILL.md delegates export to skill-pack-export', () => {
+  // Export ownership lives in skill-pack-export to avoid routing collisions.
+  // See .github/docs/skill-routing-guide.md (Cluster 3).
+  assert(skillContent.includes('skill-pack-export'), 'Missing delegation to skill-pack-export');
+  assert(!skillContent.includes('## Export Workflow'), 'Import skill must not redefine the export workflow');
 });
 
 test('SKILL.md documents conflict resolution', () => {

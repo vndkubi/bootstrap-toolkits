@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-18T23:41:18.957Z",
+  "generatedAt": "2026-06-27T14:25:43.825Z",
   "skills": {
     "analyze-codebase": {
       "manifestPath": ".github/skills/analyze-codebase/skill.json",
@@ -1855,12 +1855,12 @@
     },
     "skill-pack-import": {
       "manifestPath": ".github/skills/skill-pack-import/skill.json",
-      "descriptionLength": 435,
+      "descriptionLength": 464,
       "hasKeywordsSuffix": true,
       "hasWhenToUse": true,
       "triggerKeywords": [
-        "export skill",
         "import skill",
+        "install skill pack",
         "org skills",
         "portable skills",
         "reuse",
@@ -1873,7 +1873,7 @@
       "tier": "foundational",
       "stability": "stable",
       "mcpToolsUsed": [],
-      "estimatedTokenCost": 2853
+      "estimatedTokenCost": 2824
     },
     "source-of-truth-map": {
       "manifestPath": ".github/skills/source-of-truth-map/skill.json",

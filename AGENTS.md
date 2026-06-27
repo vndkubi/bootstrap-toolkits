@@ -24,3 +24,5 @@ This repository is the source for a portable AI bootstrap bundle. The main shipp
 
 - Run focused Node tests for changed contracts, for example `node tests/test-repo-index.js`.
 - Before claiming bootstrap behavior is complete, run all visible `tests/test-*.js` files.
+- After adding or changing any agent, skill, instruction, or prompt, regenerate catalogs so docs cannot drift: `node .github/scripts/sync-skill-metadata.js` then `node scripts/sync-readme-catalog.js`. CI guards are `tests/test-skill-catalog.js`, `tests/test-readme-catalog.js`, and `tests/test-no-orphan-skills.js`.
+- Use `node scripts/audit-refs.js` to report skills with no inbound routing references before adding a new skill.

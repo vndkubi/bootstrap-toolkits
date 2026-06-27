@@ -163,6 +163,8 @@ In multi-module projects, understand module boundaries before making changes:
 
 ## 📁 Directory Structure
 
+> The tree below is an illustrative subset. The complete, always-current inventory of agents, skills, instructions, and prompts is the auto-generated catalog in the [Agents](#-agents-list) / [Skills](#-skills-list) / [Instructions](#-instructions-list) / [Prompts](#-prompts-list) sections below.
+
 ```
 .github/
 ├── copilot-instructions.md                          # 📖 Project-wide context
@@ -290,233 +292,212 @@ In multi-module projects, understand module boundaries before making changes:
 
 ## 🤖 Agents List
 
-### Conductor (Main Orchestrator)
+> **Note**: All agents use all available tools — codebase, terminal, edit, fetch, GitHub, MCP servers. The table below is generated from `.github/agents/`; run `node scripts/sync-readme-catalog.js` after adding or removing an agent.
 
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@conductor`** | Coordinates the entire pipeline — bootstrap or developer workflows. Auto-detects tech stack and routes to the right implementor. | Bootstrap a new project, or orchestrate multi-step tasks |
+<!-- BEGIN:agents -->
+_29 agents. Auto-generated from `.github/agents/*.agent.md`._
 
-### Dev Orchestrator (Full Lifecycle — The Star Agent ⭐)
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@dev-orchestrator`** | Full lifecycle: requirement → investigate → estimate → confirm → implement → test (100% coverage) → PR description → docs. Multi-stack. | End-to-end feature delivery — "just give me the PBI" |
-
-### Implementation Agents (Stack-Specific)
-
-| Agent | Stack | When to Use |
-|-------|-------|-------------|
-| **`@implementor`** | Java/Jakarta EE/Spring Boot | Java enterprise projects |
-| **`@dotnet-implementor`** | .NET/C#/ASP.NET Core/EF Core | .NET projects with Clean Architecture |
-| **`@python-implementor`** | Python/Django/FastAPI/SQLAlchemy | Python web services |
-| **`@php-implementor`** | PHP/Laravel/Symfony/Eloquent/Doctrine | PHP web applications |
-| **`@frontend-implementor`** | TypeScript/React/Vue/Angular/Next.js | Frontend web applications |
-
-### Analysis & Quality Agents
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@codebase-analyzer`** | Deep analysis: languages, frameworks, architecture, conventions, domain map | Understanding a new codebase |
-| **`@investigator`** | PBI investigation: as-is → to-be, scenarios, impact, risk → markdown report | Investigate a PBI, bug, or performance issue |
-| **`@test-specialist`** | Unit tests: minimal mocks, full branch coverage, test builders, <100ms | Write tests, increase coverage |
-| **`@sequence-diagrammer`** | Mermaid sequence diagrams with markers 🆕✏️❌ for changes | Create diagrams, document flows |
-| **`@code-reviewer`** | Code review orchestrator: Functional → Technical pipeline | Review PR, check code quality |
-| **`@functional-reviewer`** | Business logic review: AC traceability, data integrity, edge cases | Validate business logic correctness |
-| **`@technical-reviewer`** | Architecture review: migration safety, domain boundaries, NFRs | Validate technical quality |
-| **`@mock-data-specialist`** | WireMock stubs, test fixtures, mock data for local/devcontainer | Create mock data, set up WireMock |
-| **`@agent-generator`** | Generates agents/skills/instructions from codebase analysis | Bootstrap Copilot config |
-
-### Requirements & Specs Agents 📝
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@business-analyst`** | Requirements analysis, PBI writing, acceptance criteria, impact assessment | Define features, write stories/PBIs |
-| **`@spec-reviewer`** | Spec review with Security + Testability lenses, severity-rated findings | Review specs before development |
-
-### Enterprise Agents 🏢
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@dependency-analyzer`** | Cross-module dependency analysis, impact assessment, blast radius | Assess change impact, audit dependencies, detect circular deps |
-| **`@database-specialist`** | Schema review, migration strategy, query optimization, multi-schema | Database design, migration planning, performance tuning |
-
-### Mobile Agents 📱
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@mobile-implementor`** | Implementation for Android (Kotlin/Compose) and iOS (Swift/SwiftUI) | Implement mobile feature, fix a bug |
-| **`@mobile-test-specialist`** | Mobile tests: JUnit/MockK/Turbine, XCTest/Swift Testing, fakes | Write mobile tests, increase coverage |
-| **`@mobile-architect`** | Mobile architecture: MVVM, Clean Architecture, module structure | Review architecture, design modules |
-
-### Agile & Workflow Agents 📊
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@sprint-planner`** | Sprint planning: PBI decomposition, story point estimation, dependency mapping, capacity planning, risk assessment | Sprint planning sessions, backlog grooming |
-| **`@refactoring-specialist`** | Safe refactoring: code smell detection, behavior-preserving changes, before/after metrics, tech debt tracking | Refactor a class, reduce tech debt |
-| **`@pr-manager`** | PR lifecycle: description generation, review readiness, merge strategy, changelog | Create PR, improve PR description |
-
-### DevContainer & Infrastructure Agents 🐳
-
-| Agent | Description | When to Use |
-|-------|-------------|-------------|
-| **`@devcontainer-reviewer`** | DevContainer review: optimize performance, security, DX, generate configs for any stack | Review devcontainer, improve startup, create devcontainer config |
-
-> **Note**: All agents use all available tools — codebase, terminal, edit, fetch, GitHub, MCP servers.
+| Agent | Description |
+|-------|-------------|
+| `@agent-generator` | Meta-agent that generates GitHub Copilot configurations from codebase analysis. |
+| `@api-test-author` | Phase 3 (TEST-FIRST) specialist for the /autorun loop. |
+| `@business-analyst` | Requirements and PBI specialist. |
+| `@code-reviewer` | Code review orchestrator that runs a multi-stage pipeline: Functional Review (business logic, AC traceability, data integrity) → Technical Review (architecture… |
+| `@codebase-analyzer` | Deep codebase analysis expert. |
+| `@conductor` | Main orchestrator for bootstrapping GitHub Copilot configuration and coordinating multi-step developer workflows. |
+| `@database-specialist` | Database and schema expert for enterprise projects. |
+| `@dependency-analyzer` | Cross-module dependency analysis expert for enterprise multi-module projects. |
+| `@dev-orchestrator` | Default development orchestrator for scoped end-to-end work. |
+| `@devcontainer-reviewer` | Dev container configuration expert. |
+| `@dotnet-implementor` | C# and .NET implementation specialist for ASP.NET Core applications. |
+| `@frontend-implementor` | Frontend implementation specialist for TypeScript, React, Vue, Angular, and Next.js applications. |
+| `@functional-reviewer` | Business logic review expert. |
+| `@implementor` | Java implementation expert. |
+| `@investigator` | Technical investigation specialist for PBIs, bugs, performance issues, and codebase understanding. |
+| `@mobile-architect` | Mobile architecture expert for Android and iOS. |
+| `@mobile-implementor` | Mobile implementation expert for Android (Kotlin, Jetpack Compose, Hilt, Room, Retrofit) and iOS (Swift, SwiftUI, async/await, Core Data/SwiftData). |
+| `@mobile-reviewer` | Specialized code reviewer for Android (Kotlin/Compose) and iOS (Swift/SwiftUI) changes. |
+| `@mobile-test-specialist` | Mobile testing expert for Android (JUnit 5, MockK, Turbine, Compose Testing, Espresso, Robolectric) and iOS (XCTest, Swift Testing, ViewInspector). |
+| `@mock-data-specialist` | Creates WireMock stubs, test fixtures, and mock data for local development and testing. |
+| `@php-implementor` | PHP implementation expert. |
+| `@pr-manager` | Pull request lifecycle manager. |
+| `@python-implementor` | Python implementation expert. |
+| `@refactoring-specialist` | Code refactoring and tech debt reduction expert. |
+| `@sequence-diagrammer` | Creates detailed Mermaid sequence diagrams from codebase analysis. |
+| `@spec-reviewer` | Specification review expert. |
+| `@sprint-planner` | Agile sprint planning specialist. |
+| `@technical-reviewer` | Architecture and code quality review expert. |
+| `@test-specialist` | Unit test expert that creates comprehensive tests with minimal mocking. |
+<!-- END:agents -->
 
 ## 🎯 Skills List
 
-### Core Development Skills
+> Skills are grouped by capability tier and invocation mode. The tables below are generated from the skill manifests; run `node .github/scripts/sync-skill-metadata.js` then `node scripts/sync-readme-catalog.js` after adding or removing a skill. For routing guidance on overlapping skills, see [`.github/docs/skill-routing-guide.md`](.github/docs/skill-routing-guide.md).
 
-| Skill | Description | Trigger Keywords |
-|-------|--------|-----------------|
-| `analyze-codebase` | Deep analysis: structure, tech stack, domains, conventions | "analyze", "understand codebase", "domain map" |
-| `investigate-pbi` | PBI investigation: as-is/to-be, scenarios, impact → markdown | "investigate", "PBI", "impact analysis" |
-| `implement-feature` | Implementation guide across all layers (any stack) | "implement", "create feature", "add endpoint" |
-| `generate-unit-tests` | Unit tests: minimal mocks, all branches, builders | "write tests", "unit test", "coverage" |
-| `generate-sequence-diagram` | Mermaid diagrams with change markers | "sequence diagram", "flow diagram" |
-| `review-code-changes` | Code review: per-file markdown report | "review", "PR review", "check changes" |
-| `generate-wiremock` | WireMock stubs from codebase patterns | "wiremock", "mock", "stub", "mock data" |
-| `generate-copilot-config` | Full bootstrap pipeline | "bootstrap", "generate config", "setup copilot" |
-| `generate-adr` | Architecture Decision Records | "ADR", "architecture decision" |
-| `generate-hooks` | Copilot hooks for quality automation | "hooks", "auto-format", "lint check" |
-| `analyze-requirements` | Requirements → User Stories, PBIs, acceptance criteria | "requirements", "user story", "PBI", "acceptance criteria" |
-| `generate-state-diagram` | Mermaid state diagrams from entity lifecycle analysis | "state diagram", "status flow", "lifecycle" |
-| `review-spec` | Spec review with Security + Testability lenses | "review spec", "check spec", "validate requirements" |
-| `update-spec` | Incremental spec updates from Change Requests | "update spec", "change request", "patch spec" |
+<!-- BEGIN:skills -->
+_82 skills total (64 user-facing, 18 internal pipeline phases). Auto-generated from skill manifests; run `node .github/scripts/sync-skill-metadata.js` then `node scripts/sync-readme-catalog.js`._
 
-### Spec-Driven Pipeline Skills 📋
+### User-Facing Skills
 
-| Skill | Description | Trigger Keywords |
-|-------|--------|-----------------|
-| `specify-feature` | Requirements → structured spec (PRD) with `[NEEDS CLARIFICATION]` markers | "spec", "specify", "write PRD", "define requirements" |
-| `plan-implementation` | Spec → technical plan with Phase -1 Constitutional Gates | "plan", "technical plan", "how to build" |
-| `generate-tasks` | Plan → executable task list with parallelization + checkpoints | "tasks", "task list", "break into tasks" |
-| `review-effectiveness` | Feedback loop: review which agents/skills/instructions are working | "review config", "effectiveness", "what's working" |
-| `review-memory-promotion` | Turn stable review or investigation findings into approval-ready repo-memory candidates | "promote review findings", "pitfall pack", "memory candidate", "knowledge sync" |
-| `context-inspector` | Bounded runtime diagnostics using manifest, runtime fidelity, context assembly, and tool-permission evidence | "inspect context", "why didn't this skill trigger", "why is this tool missing", "what context gets loaded" |
+| Skill | Tier | Invocation | Description |
+|-------|------|-----------|-------------|
+| `analyze-codebase` | Foundational | agent-delegated | Deep multi-stack codebase analysis with per-stack detection recipes. |
+| `author-skill` | Foundational | model-routed | Turn a correction pattern or plain-language capability brief into a draft skill package with SKILL.md, skill.json, standard layout, and an evaluation… |
+| `common-doc-generator` | Foundational | agent-delegated | Generate a structured 7-section common doc for any subsystem or .github/ component by tracing source code or skill files. |
+| `context-budget-check` | Foundational | agent-delegated | Validate that all generated Copilot configuration files comply with context budget targets. |
+| `context-inspector` | Foundational | agent-delegated | Answer bounded runtime-behavior questions using manifest, runtime fidelity, context assembly, and tool-permission evidence. |
+| `conventional-commit` | Foundational | agent-delegated | Generate conventional commit messages by analyzing staged git changes and applying the Conventional Commits specification. |
+| `core-principles` | Foundational | model-routed | Core engineering principles for all agents: understand before changing, respect business rules and module boundaries, avoid duplicate validation, and… |
+| `generate-agentic-workflow` | Foundational | model-routed | Generate GitHub Copilot Agentic Workflow files (.md) with frontmatter for triggers, permissions, and safe-outputs. |
+| `generate-pr-description` | Foundational | agent-delegated | Generate comprehensive pull request descriptions by analyzing git diff, commit history, and related issues. |
+| `generate-tasks` | Foundational | model-routed | Analyzes an implementation plan and supporting spec-kit artifacts to generate an executable task list. |
+| `implement-feature` | Foundational | model-routed | Executes an approved spec-driven implementation using the feature workspace artifacts and the repo's actual stack. |
+| `implement-mobile-feature` | Foundational | agent-delegated | Guided mobile feature implementation across all layers of Android (Kotlin/Jetpack Compose) and iOS (Swift/SwiftUI) applications. |
+| `learn-codebase` | Foundational | model-routed | Interactive codebase learning guide. |
+| `orchestrate-development` | Foundational | model-routed | Scoped end-to-end development workflow: investigate, confirm, implement, test, verify, and document with evidence-backed reasoning. |
+| `plan-implementation` | Foundational | model-routed | Creates a comprehensive implementation plan from a reviewed specification. |
+| `refine-user-input` | Foundational | agent-delegated | Analyze raw freeform user input and restructure it into an actionable prompt following the Goal/Anchor/Constraints/Verify shape. |
+| `skill-discoverability-audit` | Foundational | agent-delegated | Audit all SKILL.md files for runtime discoverability quality. |
+| `skill-pack-export` | Foundational | model-routed | Export a selected set of local skills into a shareable skill-pack manifest with lineage metadata, manifest hashes, and source provenance. |
+| `skill-pack-import` | Foundational | model-routed | Import and audit portable skill packs from Git URLs or local paths into this repo. |
+| `specify-feature` | Foundational | agent-delegated | Transforms a feature description, PBI, or user request into a structured specification using the PRD template. |
+| `upgrade-skill-pack` | Foundational | model-routed | Compare a current skill-pack manifest to a newer one and report added, removed, and changed skills before import. |
+| `analyze-requirements` | Domain | agent-delegated | Requirements analysis and PBI writing workflow. |
+| `autorun` | Domain | agent-delegated | Run a scoped feature end-to-end through 7 phases: INTAKE → CONTRACT → TEST-FIRST → FIXTURE → IMPLEMENT (TDD) → REVIEW → EVIDENCE. |
+| `autorun-branch` | Domain | model-routed | Manage the autorun/<PBI> branch lifecycle: create from HEAD, commit-per-phase with a standard prefix, support --abort (clean reset), and --revert (po… |
+| `estimate-effort` | Domain | agent-delegated | Estimate development effort for user stories, PBIs, or technical tasks by analyzing codebase complexity, affected layers, test coverage needs, and ri… |
+| `generate-adr` | Domain | agent-delegated | Generate Architecture Decision Records (ADRs) for significant technical decisions. |
+| `generate-api-contract` | Domain | model-routed | Generate a protocol-appropriate API contract from a reviewed spec + acceptance criteria, based on the chosen taxonomy. |
+| `generate-api-flow-tests` | Domain | model-routed | Stack-agnostic skill that converts a contract + acceptance criteria into red API-flow tests against the locally booted stack. |
+| `generate-domain-instructions` | Domain | model-routed | Generate domain-scoped .instructions.md files from codebase analysis results. |
+| `generate-evidence-summary` | Domain | agent-delegated | Phase 7 of /autorun. |
+| `generate-hooks` | Domain | model-routed | Generate GitHub Copilot hooks (.github/hooks/*.json) for formatter, lint, compile, security, and audit automation. |
+| `generate-mobile-tests` | Domain | agent-delegated | Generate comprehensive unit and UI tests for Android (JUnit 5, MockK, Turbine, Compose Testing) and iOS (XCTest, Swift Testing) mobile applications. |
+| `generate-sequence-diagram` | Domain | agent-delegated | Generate detailed Mermaid sequence diagrams by tracing code flows through Java/Jakarta EE applications. |
+| `generate-state-diagram` | Domain | agent-delegated | Generate Mermaid state diagrams by analyzing entity lifecycle, status fields, and state transitions in the codebase. |
+| `generate-unit-tests` | Domain | agent-delegated | Generate Java tests using Real Core, Mock Boundaries: API component tests for REST/API behavior, direct domain unit tests for decision tables, isolat… |
+| `generate-wiremock` | Domain | agent-delegated | Generate WireMock stub configurations and response files by analyzing external HTTP service calls in the codebase. |
+| `goal-tdd-engineer-loop` | Domain | agent-delegated | Runs a /goal-driven engineering loop that converts an active goal into acceptance criteria, context budget, red tests, TDD implementation, eval evide… |
+| `impact-analysis` | Domain | agent-delegated | Cross-module impact analysis for enterprise projects. |
+| `investigate-pbi` | Domain | agent-delegated | PBI and technical investigation workflow. |
+| `optimize-devcontainer` | Domain | agent-delegated | Analyze and optimize dev container configurations (devcontainer.json, Dockerfile, Docker Compose) for performance, security, and developer experience. |
+| `redact-sensitive-data` | Domain | model-routed | Redact secrets and PII before any write to the trace file, evidence bundle, or generated fixtures. |
+| `resolve-pbi-ref` | Domain | model-routed | Resolve a PBI reference passed to /autorun into a concrete {pbi, slug, source, body}. |
+| `review-code-changes` | Domain | agent-delegated | Multi-stage code review pipeline calibrated with Codex-style actionable finding rules: Self-Review -> Functional Review (@functional-reviewer) -> Tec… |
+| `review-spec` | Domain | agent-delegated | Review a feature specification and its spec-kit artifacts for completeness, ambiguity, security gaps, testability, and traceability. |
+| `run-local-stack` | Domain | agent-delegated | Detect and start the local dev stack (devcontainer > docker-compose > make dev > native), then run a healthcheck. |
+| `sanitize-untrusted-input` | Domain | model-routed | Wrap any externally-sourced text (PBI body, issue description, commit message from another author) in <UNTRUSTED>...</UNTRUSTED> tags and scan for pr… |
+| `source-of-truth-map` | Domain | model-routed | Scan the .github/ and docs/ directories to generate SOURCE-OF-TRUTH.md — a persistent map of which files are canonical for each domain, instruction s… |
+| `sprint-planning` | Domain | agent-delegated | Sprint planning assistant for agile teams. |
+| `tdd-implement-loop` | Domain | agent-delegated | Drives Phase 5 (IMPLEMENT) of the /autorun loop. |
+| `technical-debt-analysis` | Domain | agent-delegated | Analyze codebase for technical debt including code smells, outdated dependencies, missing tests, architecture violations, and security vulnerabilitie… |
+| `trace-replay` | Domain | model-routed | Capture every completed /autorun run as a structured Episode and replay similar past episodes (both successful and cautionary) as few-shot precedent… |
+| `update-spec` | Domain | agent-delegated | Incrementally update an existing feature workspace when change requests arrive. |
+| `upgrade-config` | Domain | model-routed | Upgrade a previously bootstrapped Copilot configuration to the current toolkit version. |
+| `context-assembly-simulator` | Enterprise | agent-delegated | Simulate which .github/ files will be loaded into context for a given agent and file path. |
+| `correction-ledger` | Enterprise | model-routed | Aggregate trusted correction signals from accepted review fixes, explicit user redirections, and repeated reviewer findings into approval-ready promo… |
+| `dependency-extractor` | Enterprise | agent-delegated | Extract and write the module dependency graph for any codebase to .github/module-dependency-map.json and .github/MODULE-ARCHITECTURE.md. |
+| `domain-registry` | Enterprise | model-routed | Auto-detect and register business domains from source code analysis. |
+| `drift-detector` | Enterprise | agent-delegated | Detect configuration drift between the bootstrap snapshot and the current repository state. |
+| `evaluate-skill` | Enterprise | model-routed | Evaluate a skill against repo-local checks and fixtures under tests/skills/<name>/eval.json. |
+| `instruction-conflict-detector` | Enterprise | agent-delegated | Scan all .instructions.md files in .github/instructions/, build a glob overlap matrix, and detect contradicting rules across files. |
+| `repo-memory-promoter` | Enterprise | agent-delegated | Scan .github/ config to find information worth promoting to a persistent memory layer. |
+| `review-effectiveness` | Enterprise | agent-delegated | Review how well the generated Copilot configuration and spec-kit workflow are working in practice. |
+| `review-memory-promotion` | Enterprise | agent-delegated | Generate approval-ready repo memory and review checklist candidates from completed code reviews, human-authored PR discussion artifacts, investigatio… |
+| `tool-permission-auditor` | Enterprise | agent-delegated | Scan all .agent.md files, classify each agent's role from its description and body, and produce an agent × tool-category permission matrix. |
 
-### Mobile Skills 📱
+### Internal Pipeline-Phase Skills
 
-| Skill | Description | Trigger Keywords |
-|-------|--------|-----------------|
-| `implement-mobile-feature` | Mobile feature implementation across all layers (Android/iOS) | "mobile", "implement screen", "add feature" |
-| `generate-mobile-tests` | Mobile tests: fakes, builders, UI tests (Android/iOS) | "mobile tests", "viewmodel test", "compose test" |
+_Loaded by the bootstrap pipeline, not invoked directly._
 
-### Agile & Workflow Skills 📊
-
-| Skill | Description | Trigger Keywords |
-|-------|--------|-----------------|
-| `orchestrate-development` | Full lifecycle: analyze → confirm → implement → test → PR → docs | "end-to-end", "full implementation", "delivery" |
-| `sprint-planning` | Sprint planning: PBI decomposition, task breakdown, sprint backlog | "sprint planning", "break down", "decompose", "sprint" |
-| `estimate-effort` | Story point estimation calibrated against codebase complexity | "estimate", "how long", "story points", "effort" |
-| `conventional-commit` | Conventional commit messages from staged changes | "commit", "commit message" |
-| `generate-pr-description` | PR description with impact analysis and review checklist | "PR description", "pull request", "create PR" |
-| `technical-debt-analysis` | Tech debt assessment with prioritized remediation backlog | "tech debt", "code quality", "code smells" |
-| `generate-agentic-workflow` | GitHub Copilot Agentic Workflow automation (`.md` → Actions) | "agentic workflow", "automate", "scheduled" |
-| `optimize-devcontainer` | DevContainer analysis, optimization, and config generation | "devcontainer", "optimize container", "docker", "startup" |
-
-### Enterprise Skills 🏢
-
-| Skill | Description | Trigger Keywords |
-|-------|--------|-----------------|
-| `core-principles` | 7 core engineering principles all agents follow | "principles", "core rules" |
-| `learn-codebase` | Interactive codebase learning: domains, workflows, rules | "learn", "onboard", "understand codebase" |
-| `domain-registry` | Auto-detect and register business domains from source | "domain registry", "domain map" |
-| `context-budget-check` | Validate config file sizes and co-loading budgets | "check budget", "validate sizes" |
-| `impact-analysis` | Cross-module blast radius analysis | "impact", "blast radius", "what breaks" |
-| `generate-domain-instructions` | Generate per-domain .instructions.md files | "domain instructions" |
-
-### Intelligence & Learning Skills 🧠
-
-| Skill | Description | Trigger Keywords |
-|-------|--------|------------------|
-| `correction-ledger` | Aggregate trusted correction signals from reviews, redirections, and recurring findings into promotion candidates | "correction ledger", "learning loop", "correction patterns", "promotion candidates" |
-| `skill-pack-import` | Import, export, and manage portable skill packs from Git URLs or local paths with conflict resolution | "skill pack", "import skill", "export skill", "portable skills", "shared skills" |
+| Skill | Description |
+|-------|-------------|
+| `bootstrap-phase-agents` | Run Phase 8 of the bootstrap pipeline: Generate Agents. |
+| `bootstrap-phase-classify` | Run Phase 2 of the bootstrap pipeline: Classify. |
+| `bootstrap-phase-cleanup-summary` | Run Phase 15 of the bootstrap pipeline: Manifest, Snapshot, Cleanup, and Summary. |
+| `bootstrap-phase-core-instructions` | Run Phase 4 of the bootstrap pipeline: Generate Core Instructions. |
+| `bootstrap-phase-devcontainer` | Run Phase 14 of the bootstrap pipeline: Devcontainer. |
+| `bootstrap-phase-domain-instructions` | Run Phase 5 of the bootstrap pipeline: Generate Domain Instructions. |
+| `bootstrap-phase-domain-repo-truth` | Run Phase 3 of the bootstrap pipeline: Domain and Repo Truth Pack. |
+| `bootstrap-phase-hooks-workflows` | Run Phase 11 of the bootstrap pipeline: Hooks and Optional Workflows. |
+| `bootstrap-phase-language-framework-instructions` | Run Phase 6 of the bootstrap pipeline: Generate Language and Framework Instructions. |
+| `bootstrap-phase-prompts` | Run Phase 10 of the bootstrap pipeline: Generate Prompts. |
+| `bootstrap-phase-runtime-compilation` | Run Phase 12 of the bootstrap pipeline: Runtime Compilation. |
+| `bootstrap-phase-scan` | Run Phase 1 of the bootstrap pipeline: Scan. |
+| `bootstrap-phase-skills` | Run Phase 9 of the bootstrap pipeline: Generate Skills. |
+| `bootstrap-phase-templates` | Run Phase 7 of the bootstrap pipeline: Generate Templates. |
+| `bootstrap-phase-validate` | Run Phase 13 of the bootstrap pipeline: Validate. |
+| `generate-copilot-config` | Generate a project-specific GitHub Copilot configuration through a scan, classification, domain analysis, repo-truth-pack generation, artifact genera… |
+| `resume-bootstrap` | Resume an interrupted Copilot bootstrap pipeline from the last completed phase. |
+| `validate-bootstrap-output` | Validate the quality of a bootstrapped Copilot configuration beyond structural checks. |
+<!-- END:skills -->
 
 ## 📋 Instructions List
 
-### Java & Enterprise
+> Scoped coding standards auto-applied by file glob. Generated from `.github/instructions/`; run `node scripts/sync-readme-catalog.js` after changes.
+
+<!-- BEGIN:instructions -->
+_25 instruction files. Auto-generated from `.github/instructions/*.instructions.md`._
 
 | File | applyTo | Contents |
 |------|---------|----------|
-| `java.instructions.md` | `**/*.java` | Naming, null safety, error handling, logging, JavaDoc |
-| `jakartaee.instructions.md` | `**/*.java` | CDI, JPA, JAX-RS, Bean Validation, transactions |
-| `maven.instructions.md` | `**/pom.xml` | Version management, BOM, plugins, profiles |
-| `oracle-sql.instructions.md` | `**/*.sql` | Sequences, indexes, pagination, query optimization |
-| `testing.instructions.md` | `**/*Test*.java` | Java Real Core/Mock Boundaries, API component tests, domain unit tests, branch coverage |
-| `wiremock.instructions.md` | `**/wiremock/**/*.json` | Stub format, scenarios, response templating |
-| `api-design.instructions.md` | `**/*Resource*,**/*Controller*` | REST API design, versioning, pagination, errors |
-| `code-review.instructions.md` | `**/*` | Actionable introduced defects, P0-P3 priorities, short line ranges |
-| `security.instructions.md` | `**/*.java` | Auth, input validation, SQL injection, OWASP |
-| `logging.instructions.md` | `**/*.java` | Structured logging, log levels, correlation IDs |
-| `error-handling.instructions.md` | `**/*.java` | Exception hierarchy, error codes, retry, circuit breaker |
-| `database-migration.instructions.md` | `**/*.sql,**/db/migration/**` | Flyway/Liquibase naming, versioning, rollback |
-
-### .NET / C# 🟣
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `dotnet.instructions.md` | `**/*.cs, **/*.csproj, **/*.razor` | ASP.NET Core, EF Core, DI, middleware, Clean Architecture |
-
-### Python 🐍
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `python.instructions.md` | `**/*.py, **/pyproject.toml` | Django/FastAPI, SQLAlchemy, Pydantic, pytest, PEP compliance |
-
-### TypeScript & React 🔷
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `typescript.instructions.md` | `**/*.ts, **/*.tsx` | Strict mode, no `any`, discriminated unions, generics, null safety |
-| `react.instructions.md` | `**/*.tsx, **/*.jsx` | Functional components, hooks, state management, React Testing Library |
-
-### PHP 🐘
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `php.instructions.md` | `**/*.php, **/composer.json` | Laravel/Symfony, Eloquent/Doctrine, PSR-12, PHP 8.x |
-
-### DevContainer 🐳
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `devcontainer.instructions.md` | `**/.devcontainer/**, **/devcontainer.json` | Image selection, Features, lifecycle scripts, volumes, security, performance |
-
-### Enterprise 🏢
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `module-boundaries.instructions.md` | `**/pom.xml, **/build.gradle*` | Cross-module dependency rules, API boundary conventions, circular dep prevention |
-
-### Mobile 📱
-
-| File | applyTo | Contents |
-|------|---------|----------|
-| `kotlin.instructions.md` | `**/*.kt` | Null safety, coroutines, data classes, scope functions |
-| `swift.instructions.md` | `**/*.swift` | Optionals, protocols, async/await, value types |
-| `android.instructions.md` | `**/src/main/**/*.kt` | Compose, ViewModel, Hilt, Room, Navigation |
-| `ios.instructions.md` | `**/*.swift` | SwiftUI, @Observable, SwiftData, URLSession |
-| `gradle.instructions.md` | `**/*.gradle.kts` | Version catalogs, KTS, multi-module, dependencies |
+| `android.instructions.md` | `**/src/main/**/*.kt` | Android development conventions for Jetpack Compose, ViewModel, Hilt/Dagger, Room, Retrofit, Navigation, and multi-module architecture patt… |
+| `api-design.instructions.md` | `**/*Resource*.java,**/*Controller*.java` | REST API design standards including versioning, naming conventions, pagination, error responses, HATEOAS, and HTTP method semantics. |
+| `code-review.instructions.md` | `**/*` | Code review finding standards for actionable, introduced defects with P0-P3 priority labels and short line ranges. |
+| `database-migration.instructions.md` | `**/*.sql,**/db/migration/**` | Database migration conventions for Flyway and Liquibase including naming standards, versioning, rollback strategies, Oracle-specific patter… |
+| `devcontainer.instructions.md` | `**/.devcontainer/**, **/devcontainer.json` | Dev container configuration standards for devcontainer.json, Dockerfiles, and Docker Compose in development environments. |
+| `dotnet.instructions.md` | `**/*.cs, **/*.csproj, **/*.razor` | .NET/C# coding standards for ASP.NET Core, Entity Framework Core, dependency injection, middleware, and clean architecture patterns. |
+| `error-handling.instructions.md` | `**/*.java` | Error handling patterns for enterprise Java applications including exception hierarchy, error codes, retry policies, circuit breakers, and… |
+| `gradle.instructions.md` | `**/*.gradle.kts` | Gradle and Gradle Kotlin DSL conventions for Android and Kotlin projects. |
+| `ios.instructions.md` | `**/*.swift` | iOS development conventions for SwiftUI, UIKit, Combine, async/await, Core Data, dependency injection, and MVVM architecture patterns. |
+| `jakartaee.instructions.md` | `**/*.java` | Jakarta EE conventions for CDI, JPA, JAX-RS, EJB, Bean Validation, and transaction management. |
+| `java-finance-review.instructions.md` | `**/*.java` | Finance-oriented Java review rules for regulated enterprise systems. |
+| `java.instructions.md` | `**/*.java` | Java coding standards for enterprise applications. |
+| `kotlin.instructions.md` | `**/*.kt` | Kotlin coding standards for Android and multiplatform projects. |
+| `logging.instructions.md` | `**/*.java` | Logging and observability standards including structured logging, log levels, correlation IDs, metrics, and monitoring best practices for e… |
+| `maven.instructions.md` | `**/pom.xml` | Maven POM conventions, dependency management, and plugin configuration standards. |
+| `module-boundaries.instructions.md` | `**/pom.xml, **/build.gradle*, **/settings.gradle*, **/*.csproj, **/pyproject.toml, **/composer.json` | Cross-module dependency rules for enterprise multi-module projects. |
+| `oracle-sql.instructions.md` | `**/*.sql` | Oracle Database SQL coding standards including sequences, indexes, pagination, and query optimization. |
+| `php.instructions.md` | `**/*.php, **/composer.json` | PHP coding standards for Laravel/Symfony, PSR compliance, Eloquent/Doctrine ORM, Composer, and modern PHP 8.x patterns. |
+| `python.instructions.md` | `**/*.py, **/pyproject.toml, **/requirements*.txt` | Python coding standards for Django/FastAPI/Flask, SQLAlchemy/Django ORM, type hints, async patterns, testing with pytest, and PEP complianc… |
+| `react.instructions.md` | `**/*.tsx, **/*.jsx` | React/Next.js component standards. |
+| `security.instructions.md` | `**/*.java` | Security coding standards for enterprise Java applications including authentication, authorization, input validation, SQL injection prevent… |
+| `swift.instructions.md` | `**/*.swift` | Swift coding standards for iOS, macOS, and multiplatform projects. |
+| `testing.instructions.md` | `**/*Test*.java` | Java testing standards for Real Core, Mock Boundaries: API component tests for full-flow behavior, direct unit tests for domain decision ta… |
+| `typescript.instructions.md` | `**/*.ts, **/*.tsx, **/*.mts` | TypeScript coding standards. |
+| `wiremock.instructions.md` | `**/wiremock/**/*.json` | WireMock stub configuration standards for HTTP service mocking in integration tests and local development. |
+<!-- END:instructions -->
 
 ## 🚀 Prompts List
 
-Prompts can be triggered via `/prompt-name` in VS Code Chat:
+Prompts can be triggered via `/prompt-name` in VS Code Chat. Generated from `.github/prompts/`; run `node scripts/sync-readme-catalog.js` after changes.
 
-| Prompt | Description | When to Use |
-|--------|-------------|-------------|
-| `/bootstrap-copilot` | Full bootstrap: analyze codebase → generate all config | Set up Copilot for a new project |
-| `/analyze-project` | Detailed codebase analysis → structured report | Understand project structure |
-| `/learn-codebase` | Learn business domains, workflows, rules, data model interactively | Onboarding, understand business logic, learn workflows |
-| `/generate-agents` | Generate agents from detected tech stack | Create agents for a project |
-| `/generate-instructions` | Generate coding standards from conventions | Create instruction files |
-| `/generate-skills` | Generate skills from detected workflows | Create workflow skills |
-| `/implement-feature` | Full implementation: investigate → confirm → code → tests → docs | Well-defined PBIs — implement end-to-end |
-| `/inspect-context` | Bounded runtime diagnostics for missing triggers, missing tools, context loading, and retained-surface explanations | Debug Copilot runtime behavior without raw internal dumps |
-| `/specify-feature` | Spec-driven pipeline: specify → plan → tasks → implement | Vague ideas or large features — spec first, then implement |
-| `/promote-learning` | Trigger the correction-ledger → memory promotion loop | After reviews or recurring findings — learn from corrections |
-| `/import-skill-pack` | Import a portable skill pack from a Git URL or local path | Reuse skills across repos, import org-level skill packs |
+<!-- BEGIN:prompts -->
+_20 prompts. Triggered via `/prompt-name`. Auto-generated from `.github/prompts/*.prompt.md`._
+
+| Prompt | Description |
+|--------|-------------|
+| `/analyze-project` | Deep analysis of current codebase — detects languages, frameworks, architecture, domain boundaries, coding conventions, testing patterns, and external dependen… |
+| `/author-skill` | Draft a reusable skill package from a plain-language brief or a correction pattern using the repo's standard skill layout. |
+| `/autorun` | Run a scoped feature end-to-end through 7 phases: INTAKE → CONTRACT → TEST-FIRST → FIXTURE → IMPLEMENT (TDD) → REVIEW → EVIDENCE. |
+| `/bootstrap-copilot` | Analyze the current codebase and generate a project-specific GitHub Copilot configuration. |
+| `/export-skill-pack` | Create a shareable skill-pack manifest with lineage metadata from selected local skills. |
+| `/generate-agents` | Generate custom Copilot agents tailored to the current codebase. |
+| `/generate-instructions` | Generate scoped coding-standard instruction files from the detected stack and codebase conventions. |
+| `/generate-skills` | Generate reusable workflow skills from current codebase patterns. |
+| `/goal-tdd-engineer-loop` | Run a /goal-driven TDD engineering loop with bounded context, traces, evals, feedback, and a ranked Codex handoff. |
+| `/implement-feature` | Full feature workflow: investigate, confirm, implement, verify, document. |
+| `/import-skill-pack` | Import a skill pack from a Git URL or local path into this repository's .github/skills/ directory. |
+| `/inspect-context` | Explain bounded Copilot runtime behavior such as missing skill triggers, missing tools, likely .github context loading, or retained-artifact and capability-tie… |
+| `/investigate` | Investigate a PBI, bug, performance issue, or codebase behavior. |
+| `/learn-codebase` | Interactive codebase onboarding: understand business domains, workflows, rules, and data flows. |
+| `/plan-implementation` | Create a detailed implementation plan from an approved feature specification. |
+| `/plan-review-scope` | Plan a code review before deep review work starts by classifying blast radius, business-context confidence, scenario coverage, and slice order for high-complex… |
+| `/promote-learning` | Run the learning loop: aggregate correction patterns from session observations and review artifacts, then route qualified candidates to review-memory-promotion… |
+| `/promote-review-memory` | Learn from a completed PR review or PR discussion by creating or updating functional and technical checklist candidates from accepted human reviewer reasoning. |
+| `/review-code` | Run a multi-stage code review pipeline: functional review, technical review, optional mobile review, and Codex-style finding calibration. |
+| `/specify-feature` | Spec-driven pipeline: create a feature workspace, specify requirements, plan implementation, generate tasks, then implement from approved artifacts. |
+<!-- END:prompts -->
 
 ## 🚀 Usage
 

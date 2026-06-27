@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "toolkitVersion": "0.6.0",
-  "generatedAt": "2026-06-18T23:41:18.957Z",
+  "generatedAt": "2026-06-27T14:25:43.825Z",
   "skills": {
     "analyze-codebase": {
       "schemaVersion": 1,
@@ -4119,7 +4119,7 @@
       "schemaVersion": 1,
       "id": "skill-pack-import",
       "displayName": "skill-pack-import",
-      "description": "Import, export, and manage portable skill packs from Git URLs or local paths. Handles conflict resolution to prevent overwriting local customizations. Supports offline-first workflows where the bundle remains fully self-contained. Use when importing shared skills, exporting domain skills for reuse, or auditing installed skill packs. Keywords: skill pack, import skill, export skill, portable skills, shared skills, org skills, reuse.",
+      "description": "Import and audit portable skill packs from Git URLs or local paths into this repo. Handles conflict resolution to prevent overwriting local customizations, and supports offline-first workflows where the bundle stays self-contained. Use when importing shared skills or auditing installed packs; to publish local skills outward, use skill-pack-export instead. Keywords: skill pack, import skill, install skill pack, portable skills, shared skills, org skills, reuse.",
       "version": "0.6.0",
       "tier": "foundational",
       "stability": "stable",
@@ -4137,8 +4137,8 @@
         "tests"
       ],
       "triggers": [
-        "export skill",
         "import skill",
+        "install skill pack",
         "org skills",
         "portable skills",
         "reuse",
@@ -4154,8 +4154,8 @@
         "references": ".github/skills/skill-pack-import/references"
       },
       "keywords": [
-        "export skill",
         "import skill",
+        "install skill pack",
         "org skills",
         "portable skills",
         "reuse",

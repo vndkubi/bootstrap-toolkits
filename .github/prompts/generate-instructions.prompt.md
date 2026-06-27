@@ -1,5 +1,6 @@
 ---
 agent: 'Agent Generator'
+description: 'Generate scoped coding-standard instruction files from the detected stack and codebase conventions.'
 ---
 
 # Generate Instruction Files
