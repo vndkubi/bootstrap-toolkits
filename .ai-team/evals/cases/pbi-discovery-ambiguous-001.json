@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/eval-case.schema.json",
+  "id": "pbi-discovery-ambiguous-001",
+  "version": 1,
+  "skill": "pbi-discovery",
+  "objective": "Refuse to invent acceptance criteria when a PBI asks for a faster export without defining users, format, scope, or success threshold.",
+  "input": {
+    "task": "Managers need report export to be faster. Please prepare this for implementation.",
+    "artifacts": []
+  },
+  "expected": {
+    "must_include": ["Observable acceptance IDs", "Unknown export format", "Unknown authorized data scope", "Unknown measurable latency target", "NOT READY or explicit decision request"],
+    "must_not_include": ["Invented CSV requirement", "Invented performance target", "Implementation plan"]
+  },
+  "graders": [
+    {"type": "structural", "criterion": "The output separates confirmed, inferred, and unknown statements.", "weight": 0.4},
+    {"type": "human", "criterion": "A Product Owner can answer the smallest questions needed to make the PBI testable.", "weight": 0.6}
+  ],
+  "origin": {"kind": "baseline", "failure_mode": "Agent invents missing requirements instead of exposing ambiguity.", "trace_ids": []},
+  "tags": ["ambiguity", "requirements", "quality-gate"]
+}

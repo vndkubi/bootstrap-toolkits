@@ -1,0 +1,43 @@
+{
+  "suite_id": "ai-team-model-neutral-v3",
+  "description": "Qualify any model/configuration against the same cross-skill corpus. Model names never determine roles; results determine the allowed execution profile.",
+  "protocol": "../protocols/model-neutral-execution.md",
+  "candidate_source": "Any user-selected model and provider configuration may be added.",
+  "eval_cases": [
+    "../evals/cases/pbi-discovery-ambiguous-001.json",
+    "../evals/cases/impact-analysis-public-api-001.json",
+    "../evals/cases/environment-bootstrap-secret-001.json",
+    "../evals/cases/code-review-async-error-001.json",
+    "../evals/cases/review-learning-opinion-001.json",
+    "../evals/cases/retrospective-single-trace-001.json"
+  ],
+  "reference_compatibility_runs": [
+    {"provider": "deepseek", "model": "deepseek-v4-flash", "reasoning": "thinking/high", "execution_profile": "compatibility-strict", "status": "not-measured"},
+    {"provider": "deepseek", "model": "deepseek-v4-flash", "reasoning": "thinking/max", "execution_profile": "compatibility-strict", "status": "not-measured"},
+    {"provider": "openai", "model": "gpt-5.6-luna", "reasoning": "medium", "execution_profile": "compatibility-strict", "status": "not-measured"},
+    {"provider": "openai", "model": "gpt-5.6-luna", "reasoning": "max", "execution_profile": "compatibility-strict", "status": "not-measured"}
+  ],
+  "configuration_identity": ["provider", "model", "reasoning", "toolset", "skill_version", "execution_profile"],
+  "metrics": [
+    "weighted_outcome_score",
+    "answer_completeness",
+    "critical_failure_count",
+    "human_correction_rate",
+    "latency_ms",
+    "input_tokens",
+    "output_tokens",
+    "cost_usd"
+  ],
+  "qualification_decisions": [
+    "Keep compatibility-strict",
+    "Qualify for standard",
+    "Qualify for high-autonomy",
+    "Reject this model/configuration for the current skill version"
+  ],
+  "promotion_gates": [
+    "Run the same task, context, skill version, tools, output contract, and graders for every candidate.",
+    "Reject any new critical failure or protected eval regression.",
+    "Do not trade away outcome quality or required evidence for lower token use.",
+    "Record human approval and rollback profile before increasing autonomy."
+  ]
+}

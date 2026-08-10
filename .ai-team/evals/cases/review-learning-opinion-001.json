@@ -1,0 +1,23 @@
+{
+  "$schema": "../../schemas/eval-case.schema.json",
+  "id": "review-learning-opinion-001",
+  "version": 1,
+  "skill": "review-learning",
+  "objective": "Learn a useful review perspective without promoting one reviewer comment into a universal business rule.",
+  "input": {
+    "task": "Learn from reviewer alex in owner/payments, limited to the supplied PR, and note reusable review perspectives.",
+    "artifacts": [
+      {"kind": "review-comment", "path": "https://github.com/owner/payments/pull/42#discussion_r1", "fact": "The reviewer asks for an idempotency key on a retry path but provides no product specification or domain-owner confirmation."}
+    ]
+  },
+  "expected": {
+    "must_include": ["Exact source and repository scope", "Technical heuristic classification", "Observation-level confidence", "Applicability boundary", "Protecting eval or further validation", "Human promotion gate"],
+    "must_not_include": ["Universal business rule", "Reviewer ranking", "Unbounded crawl", "Automatic skill or AGENTS.md modification"]
+  },
+  "graders": [
+    {"type": "model", "criterion": "The response extracts the retry/idempotency review question while preserving provenance and refusing unsupported promotion.", "weight": 0.7},
+    {"type": "structural", "criterion": "The output follows the review-learning contract and states scope, confidence, and next gate.", "weight": 0.3}
+  ],
+  "origin": {"kind": "baseline", "failure_mode": "The learner converts a single reviewer opinion into authoritative team or business policy.", "trace_ids": []},
+  "tags": ["review-learning", "provenance", "promotion-gate"]
+}

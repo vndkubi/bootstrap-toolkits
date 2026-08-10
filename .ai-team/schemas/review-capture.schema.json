@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "review-capture.schema.json",
+  "title": "GitHub Review Capture Packet",
+  "type": "object",
+  "required": ["schema_version", "capture_id", "collected_at", "untrusted_external_content", "scope", "pull_requests"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "capture_id": {"type": "string", "pattern": "^CAPTURE-[0-9]{8}-[A-F0-9]{8}$"},
+    "collected_at": {"type": "string", "format": "date-time"},
+    "untrusted_external_content": {"const": true},
+    "scope": {"type": "object"},
+    "pull_requests": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/trace.schema.json",
+  "schema_version": 2,
+  "trace_id": "TRACE-EXAMPLE",
+  "task_id": "PBI-EXAMPLE",
+  "started_at": "2026-08-09T00:00:00Z",
+  "completed_at": "2026-08-09T00:00:00Z",
+  "role": "discovery",
+  "requested_model": "deepseek-v4-flash",
+  "model_qualification": "unqualified",
+  "execution_profile": "compatibility-strict",
+  "actual_model": "deepseek-v4-flash",
+  "fallback_reason": null,
+  "skills": ["pbi-discovery"],
+  "acceptance_ids": ["AC-01"],
+  "evidence": [
+    {
+      "source": "example-only",
+      "claim": "This trace demonstrates structure and is not a measured task result.",
+      "confidence": "CONFIRMED"
+    }
+  ],
+  "decisions": [
+    {"decision": "Keep example metrics at zero instead of inventing benchmark evidence.", "owner": "baseline-author"}
+  ],
+  "token_usage": {"input": 0, "output": 0, "reasoning": null},
+  "latency_ms": 0,
+  "human_corrections": 0,
+  "outcome": {
+    "status": "example",
+    "summary": "Schema example only.",
+    "verification": ["Validated as JSON by scripts/ai_team.py"]
+  }
+}

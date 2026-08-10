@@ -1,0 +1,4 @@
+interface:
+  display_name: "Environment Bootstrap"
+  short_description: "Reproduce and verify a runnable environment"
+  default_prompt: "Use $environment-bootstrap to establish and verify the smallest runnable environment."

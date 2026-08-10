@@ -1,0 +1,4 @@
+interface:
+  display_name: "PBI Discovery"
+  short_description: "Clarify PBIs into testable delivery contracts"
+  default_prompt: "Use $pbi-discovery to turn this PBI into an evidence-backed delivery contract."

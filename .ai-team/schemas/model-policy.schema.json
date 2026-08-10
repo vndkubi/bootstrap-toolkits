@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "model-policy.schema.json",
+  "title": "Model-Neutral AI Team Policy",
+  "type": "object",
+  "required": ["version", "status", "principles", "model_selection", "execution_profiles", "routes", "qualification", "required_trace_fields", "promotion_gates"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "integer", "minimum": 2},
+    "status": {"const": "model-neutral-baseline"},
+    "principles": {"type": "array", "minItems": 3, "items": {"type": "string", "minLength": 1}},
+    "model_selection": {
+      "type": "object",
+      "required": ["strategy", "allow_any_model", "default_model", "reference_compatibility_models"],
+      "properties": {
+        "strategy": {"const": "inherit-or-user-selected"},
+        "allow_any_model": {"const": true},
+        "default_model": {"const": "inherit"},
+        "reference_compatibility_models": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["provider", "model", "baseline_reasoning", "challenger_reasoning", "qualification", "purpose"],
+            "properties": {
+              "provider": {"type": "string", "minLength": 1},
+              "model": {"type": "string", "minLength": 1},
+              "baseline_reasoning": {"type": "string", "minLength": 1},
+              "challenger_reasoning": {"type": "array", "items": {"type": "string"}},
+              "qualification": {"enum": ["unqualified", "standard", "high-autonomy"]},
+              "purpose": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_profiles": {
+      "type": "object",
+      "required": ["compatibility-strict", "standard", "high-autonomy"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["purpose", "constraints"],
+        "properties": {
+          "purpose": {"type": "string", "minLength": 1},
+          "constraints": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "priority", "when", "match", "execution_profile"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "priority": {"type": "integer"},
+          "when": {
+            "type": "object",
+            "properties": {
+              "task_kind_in": {"type": "array", "items": {"type": "string"}},
+              "any_true": {"type": "array", "items": {"type": "string"}},
+              "qualification_in": {"type": "array", "items": {"enum": ["unqualified", "standard", "high-autonomy"]}}
+            },
+            "additionalProperties": false
+          },
+          "match": {"enum": ["all", "any"]},
+          "execution_profile": {"enum": ["compatibility-strict", "standard", "high-autonomy"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "required": ["unknown_model_default", "promotion_sequence", "required_eval_suite", "configuration_identity", "model_specific_prompt_forks"],
+      "properties": {
+        "unknown_model_default": {"const": "compatibility-strict"},
+        "promotion_sequence": {"type": "array", "items": {"enum": ["compatibility-strict", "standard", "high-autonomy"]}},
+        "required_eval_suite": {"type": "string"},
+        "configuration_identity": {"type": "array", "minItems": 3, "items": {"type": "string"}},
+        "model_specific_prompt_forks": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "required_trace_fields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "promotion_gates": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

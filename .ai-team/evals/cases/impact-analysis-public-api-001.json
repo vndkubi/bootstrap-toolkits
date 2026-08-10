@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schemas/eval-case.schema.json",
+  "id": "impact-analysis-public-api-001",
+  "version": 1,
+  "skill": "impact-analysis",
+  "objective": "Detect consumers, compatibility, rollout, and contract-test impact when a shared API field changes type.",
+  "input": {
+    "task": "Change OrderResponse.total from an integer number of cents to a decimal currency amount.",
+    "artifacts": [
+      {"kind": "contract", "path": "api/order.yaml", "fact": "OrderResponse is public."},
+      {"kind": "consumer", "path": "billing-client", "fact": "Deserializes total as integer."}
+    ]
+  },
+  "expected": {
+    "must_include": ["Public contract break", "Downstream consumer", "Serialization compatibility", "Migration or versioning option", "Contract test", "Rollback consideration"],
+    "must_not_include": ["Complete coverage without consumer evidence", "Implementation before compatibility decision"]
+  },
+  "graders": [
+    {"type": "model", "criterion": "The impact map connects the changed field to concrete consumers and failure modes.", "weight": 0.5},
+    {"type": "human", "criterion": "The compatibility choices are decision-ready and do not hide unknown consumers.", "weight": 0.5}
+  ],
+  "origin": {"kind": "baseline", "failure_mode": "Local code impact is found but downstream contract breakage is missed.", "trace_ids": []},
+  "tags": ["api", "compatibility", "consumer"]
+}

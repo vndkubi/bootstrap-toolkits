@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Learning"
+  short_description: "Learn bounded review heuristics with provenance"
+  default_prompt: "Use $review-learning to collect and curate review perspectives from the explicitly named PRs or reviewer scope."

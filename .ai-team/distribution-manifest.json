@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "package": "ai-engineering-team-bootstrap",
+  "version": "0.3.0",
+  "state_path": ".ai-team/install-state.json",
+  "conflict_root": ".ai-team/install-conflicts",
+  "managed_blocks": [
+    {
+      "source": "AGENTS.md",
+      "target": "AGENTS.md",
+      "marker": "constitution"
+    },
+    {
+      "source": ".github/copilot-instructions.md",
+      "target": ".github/copilot-instructions.md",
+      "marker": "copilot-instructions"
+    },
+    {
+      "source": ".gitignore",
+      "target": ".gitignore",
+      "marker": "gitignore"
+    }
+  ],
+  "copy_files": [
+    ".ai-team/distribution-manifest.json",
+    ".ai-team/model-policy.json",
+    ".ai-team/skill-changelog.md",
+    ".ai-team/PROJECT-GUIDE.md",
+    ".ai-team/benchmarks/manifest.json",
+    ".ai-team/benchmarks/results/example.result.json",
+    ".ai-team/improvement-backlog/IMPROVEMENT-0000-example.md",
+    ".ai-team/traces/example.trace.json",
+    ".codex/config.toml",
+    "scripts/ai_team.py",
+    "scripts/install_ai_team.py"
+  ],
+  "copy_roots": [
+    ".agents/skills",
+    ".ai-team/business",
+    ".ai-team/evals/cases",
+    ".ai-team/protocols",
+    ".ai-team/review-knowledge",
+    ".ai-team/schemas",
+    ".ai-team/templates",
+    ".codex/agents",
+    ".github/agents"
+  ]
+}

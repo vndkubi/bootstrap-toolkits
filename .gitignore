@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python and editor state
+__pycache__/
+*.py[cod]
+.venv/
+.idea/
+.vscode/
+
+# Generated telemetry (keep checked-in examples)
+.ai-team/traces/*.json
+!.ai-team/traces/example.trace.json
+.ai-team/benchmarks/results/*.json
+!.ai-team/benchmarks/results/example.result.json
+
+# Raw external review captures and installer conflicts
+.ai-team/review-knowledge/inbox/
+.ai-team/install-conflicts/
+
+# Local scratch
+work/
+*.log

@@ -1,0 +1,205 @@
+{
+  "$schema": "../schemas/template-catalog.schema.json",
+  "schema_version": 1,
+  "catalog_version": "1.0.0",
+  "templates": [
+    {
+      "id": "task-contract",
+      "path": "task-contract.md",
+      "phase": "orchestration",
+      "owner_role": "orchestrator",
+      "description": "Bound one model run to a role, phase, scope, evidence set, output, and stop condition.",
+      "default_output": ".ai-team/work/{{ID}}/task-contract.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "pbi-delivery-contract",
+      "path": "delivery/pbi-delivery-contract.md",
+      "phase": "discovery",
+      "owner_role": "discovery",
+      "description": "Turn a PBI into actors, scenarios, acceptance IDs, boundaries, unknowns, and a Definition of Done.",
+      "default_output": ".ai-team/work/{{ID}}/pbi-delivery-contract.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "business-change-model",
+      "path": "business/business-change-model.md",
+      "phase": "discovery",
+      "owner_role": "business-reviewer",
+      "description": "Reconstruct the expected business behavior, state transition, invariants, effects, and exceptional cases.",
+      "default_output": ".ai-team/work/{{ID}}/business-change-model.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "CAPABILITY"]
+    },
+    {
+      "id": "capability",
+      "path": "business/capability.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Describe one domain capability and link its actors, lifecycle, risks, rules, scenarios, and sources.",
+      "default_output": ".ai-team/business/capabilities/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "state-matrix",
+      "path": "business/state-matrix.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Record allowed and forbidden state transitions with conditions, effects, and authoritative provenance.",
+      "default_output": ".ai-team/business/state-matrices/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "CAPABILITY"]
+    },
+    {
+      "id": "decision-matrix",
+      "path": "business/decision-matrix.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Encode business conditions and expected actions as a reviewable decision table instead of ambiguous prose.",
+      "default_output": ".ai-team/business/decision-matrices/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "CAPABILITY"]
+    },
+    {
+      "id": "business-invariant",
+      "path": "business/business-invariant.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Capture a business condition that must always hold, including violation consequences and executable evidence.",
+      "default_output": ".ai-team/business/invariants/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "CAPABILITY"]
+    },
+    {
+      "id": "business-pattern",
+      "path": "business/business-pattern.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Capture a repeated business behavior pattern and connect it to technical concerns, test patterns, and scenarios.",
+      "default_output": ".ai-team/business/patterns/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "business-scenario",
+      "path": "business/business-scenario.md",
+      "phase": "business-knowledge",
+      "owner_role": "domain-owner",
+      "description": "Capture a real happy, edge, failure, recovery, operational, security, or compliance scenario with provenance.",
+      "default_output": ".ai-team/business/scenarios/{{CAPABILITY}}/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "CAPABILITY", "SOURCE"]
+    },
+    {
+      "id": "impact-analysis",
+      "path": "delivery/impact-analysis.md",
+      "phase": "impact-analysis",
+      "owner_role": "discovery",
+      "description": "Map acceptance IDs to code, contracts, data, consumers, operations, tests, rollout, and rollback evidence.",
+      "default_output": ".ai-team/work/{{ID}}/impact-analysis.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "implementation-plan",
+      "path": "delivery/implementation-plan.md",
+      "phase": "implementation",
+      "owner_role": "developer",
+      "description": "Define the smallest safe implementation slices, verification steps, approval boundaries, and rollback points.",
+      "default_output": ".ai-team/work/{{ID}}/implementation-plan.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "test-evidence",
+      "path": "delivery/test-evidence.md",
+      "phase": "verification",
+      "owner_role": "developer",
+      "description": "Map acceptance IDs and risks to exact commands, results, evidence, gaps, and environment identity.",
+      "default_output": ".ai-team/work/{{ID}}/test-evidence.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "review-context",
+      "path": "review/review-context.md",
+      "phase": "review",
+      "owner_role": "review-context-builder",
+      "description": "Provide an independent reviewer with the exact change, acceptance, business, code, operations, and compliance evidence.",
+      "default_output": ".ai-team/work/{{ID}}/review-context.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "business-review",
+      "path": "review/business-review.md",
+      "phase": "review",
+      "owner_role": "business-reviewer",
+      "description": "Decide whether behavior matches authoritative rules, transitions, invariants, money effects, and failure semantics.",
+      "default_output": ".ai-team/work/{{ID}}/reviews/business-review.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "technical-review",
+      "path": "review/technical-review.md",
+      "phase": "review",
+      "owner_role": "technical-reviewer",
+      "description": "Review correctness before simplicity, including failure handling, transactions, concurrency, idempotency, and testability.",
+      "default_output": ".ai-team/work/{{ID}}/reviews/technical-review.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "operability-review",
+      "path": "review/operability-review.md",
+      "phase": "review",
+      "owner_role": "operations-reviewer",
+      "description": "Simulate an incident and verify the change can be operated and investigated without exposing sensitive data.",
+      "default_output": ".ai-team/work/{{ID}}/reviews/operability-review.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "compliance-impact",
+      "path": "review/compliance-impact.md",
+      "phase": "review",
+      "owner_role": "security-compliance-reviewer",
+      "description": "Trace applicable data and control changes to versioned policy evidence without claiming certification or compliance.",
+      "default_output": ".ai-team/work/{{ID}}/reviews/compliance-impact.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "review-gate-decision",
+      "path": "review/review-gate-decision.md",
+      "phase": "review",
+      "owner_role": "review-gatekeeper",
+      "description": "Combine independent evidence lanes using hard-gate precedence and return APPROVE, CHANGES, or BLOCK.",
+      "default_output": ".ai-team/work/{{ID}}/review-gate-decision.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "review-learning-note",
+      "path": "learning/review-learning-note.md",
+      "phase": "review-learning",
+      "owner_role": "review-learner",
+      "description": "Curate evidence from named pull requests or reviewers into scoped observations without treating opinions as rules.",
+      "default_output": ".ai-team/review-knowledge/observations/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE", "SOURCE"]
+    },
+    {
+      "id": "review-heuristic-proposal",
+      "path": "learning/review-heuristic-proposal.md",
+      "phase": "review-learning",
+      "owner_role": "review-learner",
+      "description": "Propose a repeated review heuristic for human validation, an eval, and possible promotion into team guidance.",
+      "default_output": ".ai-team/review-knowledge/proposals/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "retrospective",
+      "path": "retrospective.md",
+      "phase": "retrospective",
+      "owner_role": "retrospective",
+      "description": "Summarize a measured evidence window and select improvement candidates without self-promoting them.",
+      "default_output": ".ai-team/retrospectives/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    },
+    {
+      "id": "improvement-proposal",
+      "path": "improvement-proposal.md",
+      "phase": "retrospective",
+      "owner_role": "retrospective",
+      "description": "Propose one falsifiable process change with a protecting eval, benchmark, risks, rollback, and human gate.",
+      "default_output": ".ai-team/improvement-backlog/{{ID}}.md",
+      "required_markers": ["ID", "TITLE", "OWNER", "DATE"]
+    }
+  ]
+}

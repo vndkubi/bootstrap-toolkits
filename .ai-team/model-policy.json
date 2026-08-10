@@ -1,0 +1,124 @@
+{
+  "$schema": "./schemas/model-policy.schema.json",
+  "version": 2,
+  "status": "model-neutral-baseline",
+  "principles": [
+    "Any compatible model may perform any role or skill.",
+    "Select guardrails and autonomy from evidence; never assign a role by model name.",
+    "Unknown model configurations start with compatibility-strict and earn autonomy through evals.",
+    "Quality-critical work keeps strict verification and independent review regardless of model capability."
+  ],
+  "model_selection": {
+    "strategy": "inherit-or-user-selected",
+    "allow_any_model": true,
+    "default_model": "inherit",
+    "reference_compatibility_models": [
+      {
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "baseline_reasoning": "thinking/high",
+        "challenger_reasoning": ["thinking/max"],
+        "qualification": "unqualified",
+        "purpose": "Reference compatibility target; not restricted to exploration and not a proven quality floor until measured."
+      },
+      {
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "baseline_reasoning": "medium",
+        "challenger_reasoning": ["high", "xhigh", "max"],
+        "qualification": "unqualified",
+        "purpose": "Reference compatibility target; may perform any role under the selected execution profile."
+      }
+    ]
+  },
+  "execution_profiles": {
+    "compatibility-strict": {
+      "purpose": "Make any unqualified or lower-capability model reliable through bounded work and explicit verification.",
+      "constraints": [
+        "One role, one skill, and one phase per run",
+        "Explicit task contract and fixed output contract",
+        "Bounded evidence search with UNKNOWN for missing inputs",
+        "Deterministic checks mapped to acceptance IDs",
+        "Independent review after implementation",
+        "Human approval for policy promotion"
+      ]
+    },
+    "standard": {
+      "purpose": "Run a qualified model with normal phase-level autonomy while retaining role and verification boundaries.",
+      "constraints": [
+        "Multiple bounded steps allowed within one phase",
+        "Exact skill output contract remains mandatory",
+        "Deterministic checks and independent review remain mandatory"
+      ]
+    },
+    "high-autonomy": {
+      "purpose": "Allow a repeatedly qualified model to coordinate phases with explicit handoffs.",
+      "constraints": [
+        "Preserve acceptance, evidence, trace, review, and promotion gates",
+        "Revoke on protected eval regression or excessive human correction"
+      ]
+    }
+  },
+  "routes": [
+    {
+      "id": "quality-critical",
+      "priority": 100,
+      "when": {
+        "task_kind_in": ["architecture", "code-review", "retrospective", "promotion"],
+        "any_true": ["public_api_change", "schema_change", "security_sensitive", "multi_repo_change", "ambiguous_acceptance"]
+      },
+      "match": "any",
+      "execution_profile": "compatibility-strict"
+    },
+    {
+      "id": "unqualified-model",
+      "priority": 90,
+      "when": {
+        "qualification_in": ["unqualified"]
+      },
+      "match": "all",
+      "execution_profile": "compatibility-strict"
+    },
+    {
+      "id": "high-autonomy-qualified",
+      "priority": 50,
+      "when": {
+        "qualification_in": ["high-autonomy"]
+      },
+      "match": "all",
+      "execution_profile": "high-autonomy"
+    },
+    {
+      "id": "default-qualified",
+      "priority": 0,
+      "when": {},
+      "match": "all",
+      "execution_profile": "standard"
+    }
+  ],
+  "qualification": {
+    "unknown_model_default": "compatibility-strict",
+    "promotion_sequence": ["compatibility-strict", "standard", "high-autonomy"],
+    "required_eval_suite": "ai-team-model-neutral-v3",
+    "configuration_identity": ["provider", "model", "reasoning", "toolset", "skill_version"],
+    "model_specific_prompt_forks": "Only after a repeated, eval-proven incompatibility; prefer improving the shared skill first."
+  },
+  "required_trace_fields": [
+    "requested_model",
+    "model_qualification",
+    "actual_model",
+    "execution_profile",
+    "fallback_reason",
+    "latency_ms",
+    "token_usage",
+    "human_corrections",
+    "outcome"
+  ],
+  "promotion_gates": [
+    "Same task, context, skill version, tools, and graders for every candidate",
+    "No protected eval regression or new critical failure",
+    "Quality, completeness, latency, token, cost, and human-correction deltas reported",
+    "Human approval recorded",
+    "Rollback profile recorded"
+  ]
+}

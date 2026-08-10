@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retrospective"
+  short_description: "Turn evidence into gated improvement proposals"
+  default_prompt: "Use $retrospective to convert recent evidence into a testable improvement proposal."

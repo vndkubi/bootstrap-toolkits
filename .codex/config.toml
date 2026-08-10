@@ -1,0 +1,6 @@
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+
+# Provider and authentication settings belong in the user's trusted
+# ~/.codex/config.toml. Project-local config cannot safely override them.

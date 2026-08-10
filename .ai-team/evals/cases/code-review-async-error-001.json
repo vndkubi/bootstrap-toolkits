@@ -1,0 +1,23 @@
+{
+  "$schema": "../../schemas/eval-case.schema.json",
+  "id": "code-review-async-error-001",
+  "version": 1,
+  "skill": "code-review",
+  "objective": "Find an introduced async error-handling regression and avoid unrelated style comments.",
+  "input": {
+    "task": "Review this change against the requirement that failed payments remain retryable.",
+    "artifacts": [
+      {"kind": "diff", "path": "payments.ts", "fact": "The change removes await from persistFailure(paymentId) inside try/catch, so a rejection escapes after retry state is reported saved."}
+    ]
+  },
+  "expected": {
+    "must_include": ["Concrete rejection path", "Retry state can be missing", "Changed line range", "Meaningful regression test", "P1 or P2 severity with rationale"],
+    "must_not_include": ["Style-only comments", "Unrelated refactor", "Direct code fix"]
+  },
+  "graders": [
+    {"type": "model", "criterion": "The finding explains why try/catch no longer observes the rejection and how behavior violates the requirement.", "weight": 0.7},
+    {"type": "structural", "criterion": "The output follows the finding contract and remains read-only.", "weight": 0.3}
+  ],
+  "origin": {"kind": "baseline", "failure_mode": "Reviewer misses an introduced asynchronous failure path or fills the review with noise.", "trace_ids": []},
+  "tags": ["review", "async", "regression"]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Impact Analysis"
+  short_description: "Map change impact, dependencies, and risks"
+  default_prompt: "Use $impact-analysis to map the affected paths, consumers, risks, and tests."
